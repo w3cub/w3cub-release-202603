@@ -1,0 +1,163 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Sched - Python 3.14 - W3cubDocs</title>
+  
+  <meta name="description" content=" Source code&#58; Lib&#47;sched.py ">
+  <meta name="keywords" content="sched, —, event, scheduler, python, python~3.14">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/python~3.14/library/sched.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/python~3.14.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/python~3.14/" class="_nav-link" title="" style="margin-left:0;">Python 3.14</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _python">
+				
+				
+<span id="sched-event-scheduler"></span><h1>sched — Event scheduler</h1> <p><strong>Source code:</strong> <a class="extlink-source reference external" href="https://github.com/python/cpython/tree/3.14/Lib/sched.py">Lib/sched.py</a></p>  <p>The <code>sched</code> module defines a class which implements a general purpose event scheduler:</p> <dl class="py class"> <dt class="sig sig-object py" id="sched.scheduler">
+<code>class sched.scheduler(timefunc=time.monotonic, delayfunc=time.sleep)</code> </dt> <dd>
+<p>The <a class="reference internal" href="#sched.scheduler" title="sched.scheduler"><code>scheduler</code></a> class defines a generic interface to scheduling events. It needs two functions to actually deal with the “outside world” — <em>timefunc</em> should be callable without arguments, and return a number (the “time”, in any units whatsoever). The <em>delayfunc</em> function should be callable with one argument, compatible with the output of <em>timefunc</em>, and should delay that many time units. <em>delayfunc</em> will also be called with the argument <code>0</code> after each event is run to allow other threads an opportunity to run in multi-threaded applications.</p> <div class="versionchanged"> <p><span class="versionmodified changed">Changed in version 3.3: </span><em>timefunc</em> and <em>delayfunc</em> parameters are optional.</p> </div> <div class="versionchanged"> <p><span class="versionmodified changed">Changed in version 3.3: </span><a class="reference internal" href="#sched.scheduler" title="sched.scheduler"><code>scheduler</code></a> class can be safely used in multi-threaded environments.</p> </div> </dd>
+</dl> <p>Example:</p> <pre data-language="python">&gt;&gt;&gt; import sched, time
+&gt;&gt;&gt; s = sched.scheduler(time.time, time.sleep)
+&gt;&gt;&gt; def print_time(a='default'):
+...     print("From print_time", time.time(), a)
+...
+&gt;&gt;&gt; def print_some_times():
+...     print(time.time())
+...     s.enter(10, 1, print_time)
+...     s.enter(5, 2, print_time, argument=('positional',))
+...     # despite having higher priority, 'keyword' runs after 'positional' as enter() is relative
+...     s.enter(5, 1, print_time, kwargs={'a': 'keyword'})
+...     s.enterabs(1_650_000_000, 10, print_time, argument=("first enterabs",))
+...     s.enterabs(1_650_000_000, 5, print_time, argument=("second enterabs",))
+...     s.run()
+...     print(time.time())
+...
+&gt;&gt;&gt; print_some_times()
+1652342830.3640375
+From print_time 1652342830.3642538 second enterabs
+From print_time 1652342830.3643398 first enterabs
+From print_time 1652342835.3694863 positional
+From print_time 1652342835.3696074 keyword
+From print_time 1652342840.369612 default
+1652342840.3697174
+</pre> <section id="scheduler-objects"> <span id="id1"></span><h2>Scheduler Objects</h2> <p><a class="reference internal" href="#sched.scheduler" title="sched.scheduler"><code>scheduler</code></a> instances have the following methods and attributes:</p> <dl class="py method"> <dt class="sig sig-object py" id="sched.scheduler.enterabs">
+<code>scheduler.enterabs(time, priority, action, argument=(), kwargs={})</code> </dt> <dd>
+<p>Schedule a new event. The <em>time</em> argument should be a numeric type compatible with the return value of the <em>timefunc</em> function passed to the constructor. Events scheduled for the same <em>time</em> will be executed in the order of their <em>priority</em>. A lower number represents a higher priority.</p> <p>Executing the event means executing <code>action(*argument, **kwargs)</code>. <em>argument</em> is a sequence holding the positional arguments for <em>action</em>. <em>kwargs</em> is a dictionary holding the keyword arguments for <em>action</em>.</p> <p>Return value is an event which may be used for later cancellation of the event (see <a class="reference internal" href="#sched.scheduler.cancel" title="sched.scheduler.cancel"><code>cancel()</code></a>).</p> <div class="versionchanged"> <p><span class="versionmodified changed">Changed in version 3.3: </span><em>argument</em> parameter is optional.</p> </div> <div class="versionchanged"> <p><span class="versionmodified changed">Changed in version 3.3: </span><em>kwargs</em> parameter was added.</p> </div> </dd>
+</dl> <dl class="py method"> <dt class="sig sig-object py" id="sched.scheduler.enter">
+<code>scheduler.enter(delay, priority, action, argument=(), kwargs={})</code> </dt> <dd>
+<p>Schedule an event for <em>delay</em> more time units. Other than the relative time, the other arguments, the effect and the return value are the same as those for <a class="reference internal" href="#sched.scheduler.enterabs" title="sched.scheduler.enterabs"><code>enterabs()</code></a>.</p> <div class="versionchanged"> <p><span class="versionmodified changed">Changed in version 3.3: </span><em>argument</em> parameter is optional.</p> </div> <div class="versionchanged"> <p><span class="versionmodified changed">Changed in version 3.3: </span><em>kwargs</em> parameter was added.</p> </div> </dd>
+</dl> <dl class="py method"> <dt class="sig sig-object py" id="sched.scheduler.cancel">
+<code>scheduler.cancel(event)</code> </dt> <dd>
+<p>Remove the event from the queue. If <em>event</em> is not an event currently in the queue, this method will raise a <a class="reference internal" href="exceptions#ValueError" title="ValueError"><code>ValueError</code></a>.</p> </dd>
+</dl> <dl class="py method"> <dt class="sig sig-object py" id="sched.scheduler.empty">
+<code>scheduler.empty()</code> </dt> <dd>
+<p>Return <code>True</code> if the event queue is empty.</p> </dd>
+</dl> <dl class="py method"> <dt class="sig sig-object py" id="sched.scheduler.run">
+<code>scheduler.run(blocking=True)</code> </dt> <dd>
+<p>Run all scheduled events. This method will wait (using the <em>delayfunc</em> function passed to the constructor) for the next event, then execute it and so on until there are no more scheduled events.</p> <p>If <em>blocking</em> is false executes the scheduled events due to expire soonest (if any) and then return the deadline of the next scheduled call in the scheduler (if any).</p> <p>Either <em>action</em> or <em>delayfunc</em> can raise an exception. In either case, the scheduler will maintain a consistent state and propagate the exception. If an exception is raised by <em>action</em>, the event will not be attempted in future calls to <a class="reference internal" href="#sched.scheduler.run" title="sched.scheduler.run"><code>run()</code></a>.</p> <p>If a sequence of events takes longer to run than the time available before the next event, the scheduler will simply fall behind. No events will be dropped; the calling code is responsible for canceling events which are no longer pertinent.</p> <div class="versionchanged"> <p><span class="versionmodified changed">Changed in version 3.3: </span><em>blocking</em> parameter was added.</p> </div> </dd>
+</dl> <dl class="py attribute"> <dt class="sig sig-object py" id="sched.scheduler.queue">
+<code>scheduler.queue</code> </dt> <dd>
+<p>Read-only attribute returning a list of upcoming events in the order they will be run. Each event is shown as a <a class="reference internal" href="../glossary#term-named-tuple"><span class="xref std std-term">named tuple</span></a> with the following fields: time, priority, action, argument, kwargs.</p> </dd>
+</dl> </section> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2001–2025 Python Software Foundation<br>Licensed under the PSF License.<br>
+    <a href="https://docs.python.org/3.14/library/sched.html" class="_attribution-link">https://docs.python.org/3.14/library/sched.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Thread Safety Guarantees - Python 3.14 - W3cubDocs</title>
+  
+  <meta name="description" content="This page documents thread-safety guarantees for built-in types in Python’s free-threaded build. The guarantees described here apply when using &hellip;">
+  <meta name="keywords" content="thread, safety, guarantees, python, python~3.14">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/python~3.14/library/threadsafety.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/python~3.14.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/python~3.14/" class="_nav-link" title="" style="margin-left:0;">Python 3.14</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _python">
+				
+				
+<span id="threadsafety"></span><h1>Thread Safety Guarantees</h1> <p>This page documents thread-safety guarantees for built-in types in Python’s free-threaded build. The guarantees described here apply when using Python with the <a class="reference internal" href="../glossary#term-GIL"><span class="xref std std-term">GIL</span></a> disabled (free-threaded mode). When the GIL is enabled, most operations are implicitly serialized.</p> <p>For general guidance on writing thread-safe code in free-threaded Python, see <a class="reference internal" href="../howto/free-threading-python#freethreading-python-howto"><span class="std std-ref">Python support for free threading</span></a>.</p> <section id="thread-safety-for-list-objects"> <span id="thread-safety-list"></span><h2>Thread safety for list objects</h2> <p>Reading a single element from a <a class="reference internal" href="stdtypes#list" title="list"><code>list</code></a> is <a class="reference internal" href="../glossary#term-atomic-operation"><span class="xref std std-term">atomic</span></a>:</p> <pre data-language="python">lst[i]   # list.__getitem__
+</pre> <p>The following methods traverse the list and use <a class="reference internal" href="../glossary#term-atomic-operation"><span class="xref std std-term">atomic</span></a> reads of each item to perform their function. That means that they may return results affected by concurrent modifications:</p> <pre data-language="python">item in lst
+lst.index(item)
+lst.count(item)
+</pre> <p>All of the above operations avoid acquiring <a class="reference internal" href="../glossary#term-per-object-lock"><span class="xref std std-term">per-object locks</span></a>. They do not block concurrent modifications. Other operations that hold a lock will not block these from observing intermediate states.</p> <p>All other operations from here on block using the <a class="reference internal" href="../glossary#term-per-object-lock"><span class="xref std std-term">per-object lock</span></a>.</p> <p>Writing a single item via <code>lst[i] = x</code> is safe to call from multiple threads and will not corrupt the list.</p> <p>The following operations return new objects and appear <a class="reference internal" href="../glossary#term-atomic-operation"><span class="xref std std-term">atomic</span></a> to other threads:</p> <pre data-language="python">lst1 + lst2    # concatenates two lists into a new list
+x * lst        # repeats lst x times into a new list
+lst.copy()     # returns a shallow copy of the list
+</pre> <p>The following methods that only operate on a single element with no shifting required are <a class="reference internal" href="../glossary#term-atomic-operation"><span class="xref std std-term">atomic</span></a>:</p> <pre data-language="python">lst.append(x)  # append to the end of the list, no shifting required
+lst.pop()      # pop element from the end of the list, no shifting required
+</pre> <p>The <a class="reference internal" href="stdtypes#list.clear" title="list.clear"><code>clear()</code></a> method is also <a class="reference internal" href="../glossary#term-atomic-operation"><span class="xref std std-term">atomic</span></a>. Other threads cannot observe elements being removed.</p> <p>The <a class="reference internal" href="stdtypes#list.sort" title="list.sort"><code>sort()</code></a> method is not <a class="reference internal" href="../glossary#term-atomic-operation"><span class="xref std std-term">atomic</span></a>. Other threads cannot observe intermediate states during sorting, but the list appears empty for the duration of the sort.</p> <p>The following operations may allow <a class="reference internal" href="../glossary#term-lock-free"><span class="xref std std-term">lock-free</span></a> operations to observe intermediate states since they modify multiple elements in place:</p> <pre data-language="python">lst.insert(idx, item)  # shifts elements
+lst.pop(idx)           # idx not at the end of the list, shifts elements
+lst *= x               # copies elements in place
+</pre> <p>The <a class="reference internal" href="stdtypes#list.remove" title="list.remove"><code>remove()</code></a> method may allow concurrent modifications since element comparison may execute arbitrary Python code (via <a class="reference internal" href="../reference/datamodel#object.__eq__" title="object.__eq__"><code>__eq__()</code></a>).</p> <p><a class="reference internal" href="stdtypes#list.extend" title="list.extend"><code>extend()</code></a> is safe to call from multiple threads. However, its guarantees depend on the iterable passed to it. If it is a <a class="reference internal" href="stdtypes#list" title="list"><code>list</code></a>, a <a class="reference internal" href="stdtypes#tuple" title="tuple"><code>tuple</code></a>, a <a class="reference internal" href="stdtypes#set" title="set"><code>set</code></a>, a <a class="reference internal" href="stdtypes#frozenset" title="frozenset"><code>frozenset</code></a>, a <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a> or a <a class="reference internal" href="stdtypes#dict-views"><span class="std std-ref">dictionary view object</span></a> (but not their subclasses), the <code>extend</code> operation is safe from concurrent modifications to the iterable. Otherwise, an iterator is created which can be concurrently modified by another thread. The same applies to inplace concatenation of a list with other iterables when using <code>lst += iterable</code>.</p> <p>Similarly, assigning to a list slice with <code>lst[i:j] = iterable</code> is safe to call from multiple threads, but <code>iterable</code> is only locked when it is also a <a class="reference internal" href="stdtypes#list" title="list"><code>list</code></a> (but not its subclasses).</p> <p>Operations that involve multiple accesses, as well as iteration, are never atomic. For example:</p> <pre data-language="python"># NOT atomic: read-modify-write
+lst[i] = lst[i] + 1
+
+# NOT atomic: check-then-act
+if lst:
+    item = lst.pop()
+
+# NOT thread-safe: iteration while modifying
+for item in lst:
+    process(item)  # another thread may modify lst
+</pre> <p>Consider external synchronization when sharing <a class="reference internal" href="stdtypes#list" title="list"><code>list</code></a> instances across threads.</p> </section> <section id="thread-safety-for-dict-objects"> <span id="thread-safety-dict"></span><h2>Thread safety for dict objects</h2> <p>Creating a dictionary with the <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a> constructor is atomic when the argument to it is a <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a> or a <a class="reference internal" href="stdtypes#tuple" title="tuple"><code>tuple</code></a>. When using the <a class="reference internal" href="stdtypes#dict.fromkeys" title="dict.fromkeys"><code>dict.fromkeys()</code></a> method, dictionary creation is atomic when the argument is a <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a>, <a class="reference internal" href="stdtypes#tuple" title="tuple"><code>tuple</code></a>, <a class="reference internal" href="stdtypes#set" title="set"><code>set</code></a> or <a class="reference internal" href="stdtypes#frozenset" title="frozenset"><code>frozenset</code></a>.</p> <p>The following operations and functions are <a class="reference internal" href="../glossary#term-lock-free"><span class="xref std std-term">lock-free</span></a> and <a class="reference internal" href="../glossary#term-atomic-operation"><span class="xref std std-term">atomic</span></a>.</p> <pre data-language="python">d[key]       # dict.__getitem__
+d.get(key)   # dict.get
+key in d     # dict.__contains__
+len(d)       # dict.__len__
+</pre> <p>All other operations from here on hold the <a class="reference internal" href="../glossary#term-per-object-lock"><span class="xref std std-term">per-object lock</span></a>.</p> <p>Writing or removing a single item is safe to call from multiple threads and will not corrupt the dictionary:</p> <pre data-language="python">d[key] = value        # write
+del d[key]            # delete
+d.pop(key)            # remove and return
+d.popitem()           # remove and return last item
+d.setdefault(key, v)  # insert if missing
+</pre> <p>These operations may compare keys using <a class="reference internal" href="../reference/datamodel#object.__eq__" title="object.__eq__"><code>__eq__()</code></a>, which can execute arbitrary Python code. During such comparisons, the dictionary may be modified by another thread. For built-in types like <a class="reference internal" href="stdtypes#str" title="str"><code>str</code></a>, <a class="reference internal" href="functions#int" title="int"><code>int</code></a>, and <a class="reference internal" href="functions#float" title="float"><code>float</code></a>, that implement <a class="reference internal" href="../reference/datamodel#object.__eq__" title="object.__eq__"><code>__eq__()</code></a> in C, the underlying lock is not released during comparisons and this is not a concern.</p> <p>The following operations return new objects and hold the <a class="reference internal" href="../glossary#term-per-object-lock"><span class="xref std std-term">per-object lock</span></a> for the duration of the operation:</p> <pre data-language="python">d.copy()      # returns a shallow copy of the dictionary
+d | other     # merges two dicts into a new dict
+d.keys()      # returns a new dict_keys view object
+d.values()    # returns a new dict_values view object
+d.items()     # returns a new dict_items view object
+</pre> <p>The <a class="reference internal" href="stdtypes#dict.clear" title="dict.clear"><code>clear()</code></a> method holds the lock for its duration. Other threads cannot observe elements being removed.</p> <p>The following operations lock both dictionaries. For <a class="reference internal" href="stdtypes#dict.update" title="dict.update"><code>update()</code></a> and <code>|=</code>, this applies only when the other operand is a <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a> that uses the standard dict iterator (but not subclasses that override iteration). For equality comparison, this applies to <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a> and its subclasses:</p> <pre data-language="python">d.update(other_dict)  # both locked when other_dict is a dict
+d |= other_dict       # both locked when other_dict is a dict
+d == other_dict       # both locked for dict and subclasses
+</pre> <p>All comparison operations also compare values using <a class="reference internal" href="../reference/datamodel#object.__eq__" title="object.__eq__"><code>__eq__()</code></a>, so for non-built-in types the lock may be released during comparison.</p> <p><a class="reference internal" href="stdtypes#dict.fromkeys" title="dict.fromkeys"><code>fromkeys()</code></a> locks both the new dictionary and the iterable when the iterable is exactly a <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a>, <a class="reference internal" href="stdtypes#set" title="set"><code>set</code></a>, or <a class="reference internal" href="stdtypes#frozenset" title="frozenset"><code>frozenset</code></a> (not subclasses):</p> <pre data-language="python">dict.fromkeys(a_dict)      # locks both
+dict.fromkeys(a_set)       # locks both
+dict.fromkeys(a_frozenset) # locks both
+</pre> <p>When updating from a non-dict iterable, only the target dictionary is locked. The iterable may be concurrently modified by another thread:</p> <pre data-language="python">d.update(iterable)        # iterable is not a dict: only d locked
+d |= iterable             # iterable is not a dict: only d locked
+dict.fromkeys(iterable)   # iterable is not a dict/set/frozenset: only result locked
+</pre> <p>Operations that involve multiple accesses, as well as iteration, are never atomic:</p> <pre data-language="python"># NOT atomic: read-modify-write
+d[key] = d[key] + 1
+
+# NOT atomic: check-then-act (TOCTOU)
+if key in d:
+    del d[key]
+
+# NOT thread-safe: iteration while modifying
+for key, value in d.items():
+    process(key)  # another thread may modify d
+</pre> <p>To avoid time-of-check to time-of-use (TOCTOU) issues, use atomic operations or handle exceptions:</p> <pre data-language="python"># Use pop() with default instead of check-then-delete
+d.pop(key, None)
+
+# Or handle the exception
+try:
+    del d[key]
+except KeyError:
+    pass
+</pre> <p>To safely iterate over a dictionary that may be modified by another thread, iterate over a copy:</p> <pre data-language="python"># Make a copy to iterate safely
+for key, value in d.copy().items():
+    process(key)
+</pre> <p>Consider external synchronization when sharing <a class="reference internal" href="stdtypes#dict" title="dict"><code>dict</code></a> instances across threads.</p> </section> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2001–2025 Python Software Foundation<br>Licensed under the PSF License.<br>
+    <a href="https://docs.python.org/3.14/library/threadsafety.html" class="_attribution-link">https://docs.python.org/3.14/library/threadsafety.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
