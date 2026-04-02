@@ -1,0 +1,242 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>DOM Testing - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" © bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;test&#47;dom ">
+  <meta name="keywords" content="dom, testing, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/test/dom.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">DOM testing</h1>
+<div data-page-title="DOM testing" data-page-href="/test/dom" id="content">
+<span data-as="p">Bun’s test runner plays well with existing component and DOM testing libraries, including React Testing Library and happy-dom.</span> <h2 id="happy-dom"><span>happy-dom</span></h2> <span data-as="p">For writing headless tests for your frontend code and components, we recommend happy-dom. Happy DOM implements a complete set of HTML and DOM APIs in plain JavaScript, making it possible to simulate a browser environment with high fidelity.</span> <span data-as="p">To get started install the <code>@happy-dom/global-registrator</code> package as a dev dependency.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun add -d @happy-dom/global-registrator
+</pre> <span data-as="p">We’ll be using Bun’s preload functionality to register the happy-dom globals before running our tests. This step will make browser APIs like <code>document</code> available in the global scope. Create a file called <code>happydom.ts</code> in the root of your project and add the following code:</span> <pre numberoflines="3" language="typescript" data-language="typescript">import { GlobalRegistrator } from "@happy-dom/global-registrator";
+
+GlobalRegistrator.register();
+</pre> <span data-as="p">To preload this file before <code>bun test</code>, open or create a <code>bunfig.toml</code> file and add the following lines.</span> <pre numberoflines="2" language="toml" data-language="typescript">[test]
+preload = ["./happydom.ts"]
+</pre> <span data-as="p">This will execute <code>happydom.ts</code> when you run <code>bun test</code>. Now you can write tests that use browser APIs like <code>document</code> and <code>window</code>.</span> <pre numberoflines="7" language="typescript" data-language="typescript">import { test, expect } from "bun:test";
+
+test("dom test", () =&gt; {
+  document.body.innerHTML = `&lt;button&gt;My button&lt;/button&gt;`;
+  const button = document.querySelector("button");
+  expect(button?.innerText).toEqual("My button");
+});
+</pre> <h3 id="typescript-support"><span>TypeScript Support</span></h3> <span data-as="p">Depending on your <code>tsconfig.json</code> setup, you may see a “Cannot find name ‘document’” type error in the code above. To “inject” the types for <code>document</code> and other browser APIs, add the following triple-slash directive to the top of any test file.</span> <pre numberoflines="9" language="typescript" data-language="typescript">/// &lt;reference lib="dom" /&gt;
+
+import { test, expect } from "bun:test";
+
+test("dom test", () =&gt; {
+  document.body.innerHTML = `&lt;button&gt;My button&lt;/button&gt;`;
+  const button = document.querySelector("button");
+  expect(button?.innerText).toEqual("My button");
+});
+</pre> <span data-as="p">Let’s run this test with <code>bun test</code>:</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun test
+</pre> <pre numberoflines="10" language="text" data-language="typescript">bun test v1.3.3
+
+dom.test.ts:
+✓ dom test [0.82ms]
+
+ 1 pass
+ 0 fail
+ 1 expect() calls
+Ran 1 tests across 1 files. 1 total [125.00ms]
+</pre> <h2 id="react-testing-library"><span>React Testing Library</span></h2> <span data-as="p">Bun works seamlessly with React Testing Library for testing React components. After setting up happy-dom as shown above, you can install and use React Testing Library normally.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun add -d @testing-library/react @testing-library/jest-dom
+</pre> <pre numberoflines="14" language="typescript" data-language="typescript">/// &lt;reference lib="dom" /&gt;
+
+import { test, expect } from 'bun:test';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+
+function Button({ children }: { children: React.ReactNode }) {
+  return &lt;button&gt;{children}&lt;/button&gt;;
+}
+
+test('renders button', () =&gt; {
+  render(&lt;Button&gt;Click me&lt;/Button&gt;);
+  expect(screen.getByRole('button')).toHaveTextContent('Click me');
+});
+</pre> <h2 id="advanced-dom-testing"><span>Advanced DOM Testing</span></h2> <h3 id="custom-elements"><span>Custom Elements</span></h3> <span data-as="p">You can test custom elements and web components using the same setup:</span> <pre numberoflines="20" language="typescript" data-language="typescript">/// &lt;reference lib="dom" /&gt;
+
+import { test, expect } from "bun:test";
+
+test("custom element", () =&gt; {
+  // Define a custom element
+  class MyElement extends HTMLElement {
+    constructor() {
+      super();
+      this.innerHTML = "&lt;p&gt;Custom element content&lt;/p&gt;";
+    }
+  }
+
+  customElements.define("my-element", MyElement);
+
+  // Use it in tests
+  document.body.innerHTML = "&lt;my-element&gt;&lt;/my-element&gt;";
+  const element = document.querySelector("my-element");
+  expect(element?.innerHTML).toBe("&lt;p&gt;Custom element content&lt;/p&gt;");
+});
+</pre> <h3 id="event-testing"><span>Event Testing</span></h3> <span data-as="p">Test DOM events and user interactions:</span> <pre numberoflines="17" language="typescript" data-language="typescript">/// &lt;reference lib="dom" /&gt;
+
+import { test, expect } from "bun:test";
+
+test("button click event", () =&gt; {
+  let clicked = false;
+
+  document.body.innerHTML = '&lt;button id="test-btn"&gt;Click me&lt;/button&gt;';
+  const button = document.getElementById("test-btn");
+
+  button?.addEventListener("click", () =&gt; {
+    clicked = true;
+  });
+
+  button?.click();
+  expect(clicked).toBe(true);
+});
+</pre> <h2 id="configuration-tips"><span>Configuration Tips</span></h2> <h3 id="global-setup"><span>Global Setup</span></h3> <span data-as="p">For more complex DOM testing setups, you can create a more comprehensive preload file:</span> <pre numberoflines="27" language="typescript" data-language="typescript">import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import "@testing-library/jest-dom";
+
+// Register happy-dom globals
+GlobalRegistrator.register();
+
+// Add any global test configuration here
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+// Mock other APIs as needed
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: jest.fn().mockImplementation(query =&gt; ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+</pre> <span data-as="p">Then update your <code>bunfig.toml</code>:</span> <pre numberoflines="2" language="toml" data-language="typescript">[test]
+preload = ["./test-setup.ts"]
+</pre> <h2 id="troubleshooting"><span>Troubleshooting</span></h2> <h3 id="common-issues"><span>Common Issues</span></h3> <span data-as="p"><strong>TypeScript errors for DOM APIs</strong>: Make sure to include the <code>/// &lt;reference lib="dom" /&gt;</code> directive at the top of your test files.</span> <span data-as="p"><strong>Missing globals</strong>: Ensure that <code>@happy-dom/global-registrator</code> is properly imported and registered in your preload file.</span> <span data-as="p"><strong>React component rendering issues</strong>: Make sure you’ve installed both <code>@testing-library/react</code> and have happy-dom set up correctly.</span> <h3 id="performance-considerations"><span>Performance Considerations</span></h3> <span data-as="p">Happy-dom is fast, but for very large test suites, you might want to:</span> <ul> <li>Use <code>beforeEach</code> to reset the DOM state between tests</li> <li>Avoid creating too many DOM elements in a single test</li> <li>Consider using <code>cleanup</code> functions from testing libraries</li> </ul> <pre numberoflines="7" language="typescript" data-language="typescript">import { afterEach } from "bun:test";
+import { cleanup } from "@testing-library/react";
+
+afterEach(() =&gt; {
+  cleanup();
+  document.body.innerHTML = "";
+});
+</pre>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/test/dom" class="_attribution-link">https://bun.com/docs/test/dom</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

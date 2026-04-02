@@ -1,0 +1,280 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Transpiler - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" Nitty gritty ">
+  <meta name="keywords" content="transpiler, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/runtime/transpiler.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">Transpiler</h1>
+<div data-page-title="Transpiler" data-page-href="/runtime/transpiler" id="content">
+<span data-as="p">Bun exposes its internal transpiler via the <code>Bun.Transpiler</code> class. To create an instance of Bun’s transpiler:</span> <pre numberoflines="3" language="typescript" data-language="typescript">const transpiler = new Bun.Transpiler({
+  loader: "tsx", // "js | "jsx" | "ts" | "tsx"
+});
+</pre> <hr> <h2 id="transformsync"><span><code>.transformSync()</code></span></h2> <span data-as="p">Transpile code synchronously with the <code>.transformSync()</code> method. Modules are not resolved and the code is not executed. The result is a string of vanilla JavaScript code.</span> <pre dir="ltr" data-orientation="horizontal" data-language="typescript">transpile.tsoutputconst transpiler = new Bun.Transpiler({
+  loader: 'tsx',
+});
+
+const code = `
+import * as whatever from "./whatever.ts"
+export function Home(props: {title: string}){
+  return &lt;p&gt;{props.title}&lt;/p&gt;;
+}`;
+
+const result = transpiler.transformSync(code);
+
+</pre> <span data-as="p">To override the default loader specified in the <code>new Bun.Transpiler()</code> constructor, pass a second argument to <code>.transformSync()</code>.</span> <pre numberoflines="1" language="typescript" data-language="typescript">transpiler.transformSync("&lt;div&gt;hi!&lt;/div&gt;", "tsx");
+</pre> <details><summary aria-controls="nitty-gritty accordion children" aria-expanded="false" data-component-part="accordion-button">
+
+<div contenteditable="false" data-component-part="accordion-title-container"><p data-component-part="accordion-title">Nitty gritty</p></div></summary><div id="nitty-gritty accordion children" role="region" aria-labelledby="nitty-gritty" data-component-part="accordion-content">
+<span data-as="p">When <code>.transformSync</code> is called, the transpiler is run in the same thread as the currently executed code.</span><span data-as="p">If a macro is used, it will be run in the same thread as the transpiler, but in a separate event loop from the rest of your application. Currently, globals between macros and regular code are shared, which means it is possible (but not recommended) to share states between macros and regular code. Attempting to use AST nodes outside of a macro is undefined behavior.</span>
+</div></details> <hr> <h2 id="transform"><span><code>.transform()</code></span></h2> <span data-as="p">The <code>transform()</code> method is an async version of <code>.transformSync()</code> that returns a <code>Promise&lt;string&gt;</code>.</span> <pre numberoflines="3" language="javascript" data-language="typescript">const transpiler = new Bun.Transpiler({ loader: "jsx" });
+const result = await transpiler.transform("&lt;div&gt;hi!&lt;/div&gt;");
+console.log(result);
+</pre> <span data-as="p">Unless you’re transpiling <em>many</em> large files, you should probably use <code>Bun.Transpiler.transformSync</code>. The cost of the threadpool will often take longer than actually transpiling code.</span> <pre numberoflines="1" language="typescript" data-language="typescript">await transpiler.transform("&lt;div&gt;hi!&lt;/div&gt;", "tsx");
+</pre> <details><summary aria-controls="nitty-gritty accordion children" aria-expanded="false" data-component-part="accordion-button">
+
+<div contenteditable="false" data-component-part="accordion-title-container"><p data-component-part="accordion-title">Nitty gritty</p></div></summary><div id="nitty-gritty accordion children" role="region" aria-labelledby="nitty-gritty" data-component-part="accordion-content">
+<span data-as="p">The <code>.transform()</code> method runs the transpiler in Bun’s worker threadpool, so if you run it 100 times, it will run it across <code>Math.floor($cpu_count * 0.8)</code> threads, without blocking the main JavaScript thread.</span><span data-as="p">If your code uses a macro, it will potentially spawn a new copy of Bun’s JavaScript runtime environment in that new thread.</span>
+</div></details> <h2 id="scan"><span><code>.scan()</code></span></h2> <span data-as="p">The <code>Transpiler</code> instance can also scan some source code and return a list of its imports and exports, plus additional metadata about each one. <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export" target="_blank" rel="noreferrer">Type-only</a> imports and exports are ignored.</span> <pre dir="ltr" data-orientation="horizontal" data-language="typescript">example.tsoutputconst transpiler = new Bun.Transpiler({
+  loader: "tsx",
+});
+
+const code = `
+import React from 'react';
+import type {ReactNode} from 'react';
+const val = require('./cjs.js')
+import('./loader');
+
+export const name = "hello";
+`;
+
+const result = transpiler.scan(code);
+</pre> <span data-as="p">Each import in the <code>imports</code> array has a <code>path</code> and <code>kind</code>. Bun categories imports into the following kinds:</span> <ul> <li>
+<code>import-statement</code>: <code>import React from 'react'</code>
+</li> <li>
+<code>require-call</code>: <code>const val = require('./cjs.js')</code>
+</li> <li>
+<code>require-resolve</code>: <code>require.resolve('./cjs.js')</code>
+</li> <li>
+<code>dynamic-import</code>: <code>import('./loader')</code>
+</li> <li>
+<code>import-rule</code>: <code>@import 'foo.css'</code>
+</li> <li>
+<code>url-token</code>: <code>url('./foo.png')</code>
+</li> </ul> <hr> <h2 id="scanimports"><span><code>.scanImports()</code></span></h2> <span data-as="p">For performance-sensitive code, you can use the <code>.scanImports()</code> method to get a list of imports. It’s faster than <code>.scan()</code> (especially for large files) but marginally less accurate due to some performance optimizations.</span> <pre dir="ltr" data-orientation="horizontal" data-language="typescript">example.tsresultsconst transpiler = new Bun.Transpiler({
+  loader: "tsx",
+});
+
+const code = `
+import React from 'react';
+import type {ReactNode} from 'react';
+const val = require('./cjs.js')
+import('./loader');
+
+export const name = "hello";
+`;
+
+const result = transpiler.scanImports(code);
+</pre> <hr> <h2 id="reference"><span>Reference</span></h2> <pre numberoflines="90" language="typescript" data-language="typescript">type Loader = "jsx" | "js" | "ts" | "tsx";
+
+interface TranspilerOptions {
+  // Replace key with value. Value must be a JSON string.
+  // { "process.env.NODE_ENV": "\"production\"" }
+  define?: Record&lt;string, string&gt;,
+
+  // Default loader for this transpiler
+  loader?: Loader,
+
+  // Default platform to target
+  // This affects how import and/or require is used
+  target?: "browser" | "bun" | "node",
+
+  // Specify a tsconfig.json file as stringified JSON or an object
+  // Use this to set a custom JSX factory, fragment, or import source
+  // For example, if you want to use Preact instead of React. Or if you want to use Emotion.
+  tsconfig?: string | TSConfig,
+
+  // Replace imports with macros
+  macro?: MacroMap,
+
+  // Specify a set of exports to eliminate
+  // Or rename certain exports
+  exports?: {
+      eliminate?: string[];
+      replace?: Record&lt;string, string&gt;;
+  },
+
+  // Whether to remove unused imports from transpiled file
+  // Default: false
+  trimUnusedImports?: boolean,
+
+  // Whether to enable a set of JSX optimizations
+  // jsxOptimizationInline ...,
+
+  // Experimental whitespace minification
+  minifyWhitespace?: boolean,
+
+  // Whether to inline constant values
+  // Typically improves performance and decreases bundle size
+  // Default: true
+  inline?: boolean,
+}
+
+// Map import paths to macros
+interface MacroMap {
+  // {
+  //   "react-relay": {
+  //     "graphql": "bun-macro-relay/bun-macro-relay.tsx"
+  //   }
+  // }
+  [packagePath: string]: {
+    [importItemName: string]: string,
+  },
+}
+
+class Bun.Transpiler {
+  constructor(options: TranspilerOptions)
+
+  transform(code: string, loader?: Loader): Promise&lt;string&gt;
+  transformSync(code: string, loader?: Loader): string
+
+  scan(code: string): {exports: string[], imports: Import}
+  scanImports(code: string): Import[]
+}
+
+type Import = {
+  path: string,
+  kind:
+  // import foo from 'bar'; in JavaScript
+  | "import-statement"
+  // require("foo") in JavaScript
+  | "require-call"
+  // require.resolve("foo") in JavaScript
+  | "require-resolve"
+  // Dynamic import() in JavaScript
+  | "dynamic-import"
+  // @import() in CSS
+  | "import-rule"
+  // url() in CSS
+  | "url-token"
+  // The import was injected by Bun
+  | "internal"
+  // Entry point (not common)
+  | "entry-point-build"
+  | "entry-point-run"
+}
+
+const transpiler = new Bun.Transpiler({ loader: "jsx" });
+See all 90 lines</pre>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/runtime/transpiler" class="_attribution-link">https://bun.com/docs/runtime/transpiler</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

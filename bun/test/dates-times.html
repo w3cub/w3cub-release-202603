@@ -1,0 +1,200 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Dates and Times - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" © bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;test&#47;dates-times ">
+  <meta name="keywords" content="dates, and, times, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/test/dates-times.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">Dates and times</h1>
+<div data-page-title="Dates and times" data-page-href="/test/dates-times" id="content">
+<span data-as="p"><code>bun:test</code> lets you change what time it is in your tests.</span> <span data-as="p">This works with any of the following:</span> <ul> <li><code>Date.now</code></li> <li><code>new Date()</code></li> <li><code>new Intl.DateTimeFormat().format()</code></li> </ul> <div data-callout-type="note">
+
+<div data-component-part="callout-content">Timers are not impacted yet, but may be in a future release of Bun.</div>
+</div> <h2 id="setsystemtime"><span>setSystemTime</span></h2> <span data-as="p">To change the system time, use <code>setSystemTime</code>:</span> <pre numberoflines="9" language="typescript" data-language="typescript">import { setSystemTime, beforeAll, test, expect } from "bun:test";
+
+beforeAll(() =&gt; {
+  setSystemTime(new Date("2020-01-01T00:00:00.000Z"));
+});
+
+test("it is 2020", () =&gt; {
+  expect(new Date().getFullYear()).toBe(2020);
+});
+</pre> <span data-as="p">To support existing tests that use Jest’s <code>useFakeTimers</code> and <code>useRealTimers</code>, you can use <code>useFakeTimers</code> and <code>useRealTimers</code>:</span> <pre numberoflines="22" language="typescript" data-language="typescript">test("just like in jest", () =&gt; {
+  jest.useFakeTimers();
+  jest.setSystemTime(new Date("2020-01-01T00:00:00.000Z"));
+  expect(new Date().getFullYear()).toBe(2020);
+  jest.useRealTimers();
+  expect(new Date().getFullYear()).toBeGreaterThan(2020);
+});
+
+test("unlike in jest", () =&gt; {
+  const OriginalDate = Date;
+  jest.useFakeTimers();
+  if (typeof Bun === "undefined") {
+    // In Jest, the Date constructor changes
+    // That can cause all sorts of bugs because suddenly Date !== Date before the test.
+    expect(Date).not.toBe(OriginalDate);
+    expect(Date.now).not.toBe(OriginalDate.now);
+  } else {
+    // In bun:test, Date constructor does not change when you useFakeTimers
+    expect(Date).toBe(OriginalDate);
+    expect(Date.now).toBe(OriginalDate.now);
+  }
+});
+</pre> <div data-callout-type="warning">
+
+<div data-component-part="callout-content"><span data-as="p"><strong>Timers</strong> — Note that we have not implemented builtin support for mocking timers yet, but this is on the roadmap.</span></div>
+</div> <h2 id="reset-the-system-time"><span>Reset the system time</span></h2> <span data-as="p">To reset the system time, pass no arguments to <code>setSystemTime</code>:</span> <pre numberoflines="12" language="typescript" data-language="typescript">import { setSystemTime, expect, test } from "bun:test";
+
+test("it was 2020, for a moment.", () =&gt; {
+  // Set it to something!
+  setSystemTime(new Date("2020-01-01T00:00:00.000Z"));
+  expect(new Date().getFullYear()).toBe(2020);
+
+  // reset it!
+  setSystemTime();
+
+  expect(new Date().getFullYear()).toBeGreaterThan(2020);
+});
+</pre> <h2 id="get-mocked-time-with-jest-now"><span>Get mocked time with jest.now()</span></h2> <span data-as="p">When you’re using mocked time (with <code>setSystemTime</code> or <code>useFakeTimers</code>), you can use <code>jest.now()</code> to get the current mocked timestamp:</span> <pre numberoflines="11" language="typescript" data-language="typescript">import { test, expect, jest } from "bun:test";
+
+test("get the current mocked time", () =&gt; {
+  jest.useFakeTimers();
+  jest.setSystemTime(new Date("2020-01-01T00:00:00.000Z"));
+
+  expect(Date.now()).toBe(1577836800000); // Jan 1, 2020 timestamp
+  expect(jest.now()).toBe(1577836800000); // Same value
+
+  jest.useRealTimers();
+});
+</pre> <span data-as="p">This is useful when you need to access the mocked time directly without creating a new Date object.</span> <h2 id="set-the-time-zone"><span>Set the time zone</span></h2> <span data-as="p">By default, the time zone for all <code>bun test</code> runs is set to UTC (<code>Etc/UTC</code>) unless overridden. To change the time zone, either pass the <code>$TZ</code> environment variable to <code>bun test</code>:</span> <pre numberoflines="1" language="shellscript" data-language="typescript">TZ=America/Los_Angeles bun test
+</pre> <span data-as="p">Or set <code>process.env.TZ</code> at runtime:</span> <pre numberoflines="14" language="typescript" data-language="typescript">import { test, expect } from "bun:test";
+
+test("Welcome to California!", () =&gt; {
+  process.env.TZ = "America/Los_Angeles";
+  expect(new Date().getTimezoneOffset()).toBe(420);
+  expect(new Intl.DateTimeFormat().resolvedOptions().timeZone).toBe("America/Los_Angeles");
+});
+
+test("Welcome to New York!", () =&gt; {
+  // Unlike in Jest, you can set the timezone multiple times at runtime and it will work.
+  process.env.TZ = "America/New_York";
+  expect(new Date().getTimezoneOffset()).toBe(240);
+  expect(new Intl.DateTimeFormat().resolvedOptions().timeZone).toBe("America/New_York");
+});
+</pre> <div data-callout-type="info">
+
+<div data-component-part="callout-content">Unlike in Jest, you can set the timezone multiple times at runtime and it will work.</div>
+</div>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/test/dates-times" class="_attribution-link">https://bun.com/docs/test/dates-times</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

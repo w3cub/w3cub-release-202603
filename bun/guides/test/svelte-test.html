@@ -1,0 +1,190 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Import, Require, and Test Svelte Components With Bun Test - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" © bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;guides&#47;test&#47;svelte-test ">
+  <meta name="keywords" content="import, require, and, test, svelte, components, with, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/guides/test/svelte-test.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">import, require, and test Svelte components with bun test</h1>
+<div data-page-title="import, require, and test Svelte components with bun test" data-page-href="/guides/test/svelte-test" id="content">
+<span data-as="p">Bun’s <a href="../../runtime/plugins">Plugin API</a> lets you add custom loaders to your project. The <code>test.preload</code> option in <code>bunfig.toml</code> lets you configure your loader to start before your tests run.</span> <span data-as="p">Firstly, install <code>@testing-library/svelte</code>, <code>svelte</code>, and <code>@happy-dom/global-registrator</code>.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun add @testing-library/svelte svelte@4 @happy-dom/global-registrator
+</pre> <span data-as="p">Then, save this plugin in your project.</span> <pre numberoflines="37" language="typescript" data-language="typescript">import { plugin } from "bun";
+import { compile } from "svelte/compiler";
+import { readFileSync } from "fs";
+import { beforeEach, afterEach } from "bun:test";
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
+
+beforeEach(async () =&gt; {
+  await GlobalRegistrator.register();
+});
+
+afterEach(async () =&gt; {
+  await GlobalRegistrator.unregister();
+});
+
+plugin({
+  title: "svelte loader",
+  setup(builder) {
+    builder.onLoad({ filter: /\.svelte(\?[^.]+)?$/ }, ({ path }) =&gt; {
+      try {
+        const source = readFileSync(path.substring(0, path.includes("?") ? path.indexOf("?") : path.length), "utf-8");
+
+        const result = compile(source, {
+          filetitle: path,
+          generate: "client",
+          dev: false,
+        });
+
+        return {
+          contents: result.js.code,
+          loader: "js",
+        };
+      } catch (err) {
+        throw new Error(`Failed to compile Svelte component: ${err.message}`);
+      }
+    });
+  },
+});
+</pre> <hr> <span data-as="p">Add this to <code>bunfig.toml</code> to tell Bun to preload the plugin, so it loads before your tests run.</span> <pre numberoflines="6" language="toml" data-language="typescript">[test]
+# Tell Bun to load this plugin before your tests run
+preload = ["./svelte-loader.ts"]
+
+# This also works:
+# test.preload = ["./svelte-loader.ts"]
+</pre> <hr> <span data-as="p">Add an example <code>.svelte</code> file in your project.</span> <pre numberoflines="6" language="html" data-language="typescript">&lt;script&gt;
+  export let initialCount = 0;
+  let count = initialCount;
+&lt;/script&gt;
+
+&lt;button on:click="{()" =""&gt;(count += 1)}&gt;+1&lt;/button&gt;
+</pre> <hr> <span data-as="p">Now you can <code>import</code> or <code>require</code> <code>*.svelte</code> files in your tests, and it will load the Svelte component as a JavaScript module.</span> <pre numberoflines="17" language="typescript" data-language="typescript">import { test, expect } from "bun:test";
+import { render, fireEvent } from "@testing-library/svelte";
+import Counter from "./Counter.svelte";
+
+test("Counter increments when clicked", async () =&gt; {
+  const { getByText, component } = render(Counter);
+  const button = getByText("+1");
+
+  // Initial state
+  expect(component.$$.ctx[0]).toBe(0); // initialCount is the first prop
+
+  // Click the increment button
+  await fireEvent.click(button);
+
+  // Check the new state
+  expect(component.$$.ctx[0]).toBe(1);
+});
+</pre> <hr> <span data-as="p">Use <code>bun test</code> to run your tests.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun test
+</pre>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/guides/test/svelte-test" class="_attribution-link">https://bun.com/docs/guides/test/svelte-test</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Selectively Run Tests Concurrently With Glob Patterns - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" © bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;guides&#47;test&#47;concurrent-test-glob ">
+  <meta name="keywords" content="selectively, run, tests, concurrently, with, glob, patterns, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/guides/test/concurrent-test-glob.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">Selectively run tests concurrently with glob patterns</h1>
+<div data-page-title="Selectively run tests concurrently with glob patterns" data-page-href="/guides/test/concurrent-test-glob" id="content">
+<span data-as="p">This guide demonstrates how to use the <code>concurrentTestGlob</code> option to selectively run tests concurrently based on file naming patterns.</span> <h2 id="project-structure"><span>Project Structure</span></h2> <pre numberoflines="9" language="shellscript" data-language="typescript">my-project/
+├── bunfig.toml
+├── tests/
+│   ├── unit/
+│   │   ├── math.test.ts          # Sequential
+│   │   └── utils.test.ts         # Sequential
+│   └── integration/
+│       ├── concurrent-api.test.ts     # Concurrent
+│       └── concurrent-database.test.ts # Concurrent
+</pre> <h2 id="configuration"><span>Configuration</span></h2> <span data-as="p">Configure your <code>bunfig.toml</code> to run test files with “concurrent-” prefix concurrently:</span> <pre numberoflines="3" language="toml" data-language="typescript">[test]
+# Run all test files with "concurrent-" prefix concurrently
+concurrentTestGlob = "**/concurrent-*.test.ts"
+</pre> <h2 id="test-files"><span>Test Files</span></h2> <h3 id="unit-test-sequential"><span>Unit Test (Sequential)</span></h3> <span data-as="p">Sequential tests are good for tests that share state or have specific ordering requirements:</span> <pre numberoflines="14" language="typescript" data-language="typescript">import { test, expect } from "bun:test";
+
+// These tests run sequentially by default
+let sharedState = 0;
+
+test("addition", () =&gt; {
+  sharedState = 5 + 3;
+  expect(sharedState).toBe(8);
+});
+
+test("uses previous state", () =&gt; {
+  // This test depends on the previous test's state
+  expect(sharedState).toBe(8);
+});
+</pre> <h3 id="integration-test-concurrent"><span>Integration Test (Concurrent)</span></h3> <span data-as="p">Tests in files matching the glob pattern automatically run concurrently:</span> <pre numberoflines="22" language="typescript" data-language="typescript">import { test, expect } from "bun:test";
+
+// These tests automatically run concurrently due to filename matching the glob pattern.
+// Using test() is equivalent to test.concurrent() when the file matches concurrentTestGlob.
+// Each test is independent and can run in parallel.
+
+test("fetch user data", async () =&gt; {
+  const response = await fetch("/api/user/1");
+  expect(response.ok).toBe(true);
+});
+
+// can also use test.concurrent() for explicitly marking it as concurrent
+test.concurrent("fetch posts", async () =&gt; {
+  const response = await fetch("/api/posts");
+  expect(response.ok).toBe(true);
+});
+
+// can also use test.serial() for explicitly marking it as sequential
+test.serial("fetch comments", async () =&gt; {
+  const response = await fetch("/api/comments");
+  expect(response.ok).toBe(true);
+});
+</pre> <h2 id="running-tests"><span>Running Tests</span></h2> <pre numberoflines="12" language="shellscript" data-language="typescript"># Run all tests - concurrent-*.test.ts files will run concurrently
+bun test
+
+# Override: Force ALL tests to run concurrently
+# Note: This overrides bunfig.toml and runs all tests concurrently, regardless of glob
+bun test --concurrent
+
+# Run only unit tests (sequential)
+bun test tests/unit
+
+# Run only integration tests (concurrent due to glob pattern)
+bun test tests/integration
+</pre> <h2 id="benefits"><span>Benefits</span></h2> <ol> <li>
+<strong>Gradual Migration</strong>: Migrate to concurrent tests file by file by renaming them</li> <li>
+<strong>Clear Organization</strong>: File naming convention indicates execution mode</li> <li>
+<strong>Performance</strong>: Integration tests run faster in parallel</li> <li>
+<strong>Safety</strong>: Unit tests remain sequential where needed</li> <li>
+<strong>Flexibility</strong>: Easy to change execution mode by renaming files</li> </ol> <h2 id="migration-strategy"><span>Migration Strategy</span></h2> <span data-as="p">To migrate existing tests to concurrent execution:</span> <ol> <li>
+<strong>Start with independent integration tests</strong> - These typically don’t share state</li> <li>
+<strong>Rename files to match the glob pattern</strong>: <code>mv api.test.ts concurrent-api.test.ts</code>
+</li> <li>
+<strong>Verify tests still pass</strong> - Run <code>bun test</code> to ensure no race conditions</li> <li>
+<strong>Monitor for shared state issues</strong> - Watch for flaky tests or unexpected failures</li> <li>
+<strong>Continue migrating stable tests incrementally</strong> - Don’t rush the migration</li> </ol> <h2 id="tips"><span>Tips</span></h2> <ul> <li>
+<strong>Use descriptive prefixes</strong>: <code>concurrent-</code>, <code>parallel-</code>, <code>async-</code>
+</li> <li>
+<strong>Keep related sequential tests together</strong> in the same directory</li> <li>
+<strong>Document why certain tests must remain sequential</strong> with comments</li> <li>
+<strong>Use <code>test.concurrent()</code> for fine-grained control</strong> in sequential files (Note: In files matched by <code>concurrentTestGlob</code>, plain <code>test()</code> already runs concurrently)</li> </ul> <h2 id="multiple-patterns"><span>Multiple Patterns</span></h2> <span data-as="p">You can specify multiple patterns for different test categories:</span> <pre numberoflines="6" language="toml" data-language="typescript">[test]
+concurrentTestGlob = [
+  "**/integration/*.test.ts",
+  "**/e2e/*.test.ts",
+  "**/concurrent-*.test.ts"
+]
+</pre> <span data-as="p">This configuration will run tests concurrently if they match any of these patterns:</span> <ul> <li>All tests in <code>integration/</code> directories</li> <li>All tests in <code>e2e/</code> directories</li> <li>All tests with <code>concurrent-</code> prefix anywhere in the project</li> </ul>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/guides/test/concurrent-test-glob" class="_attribution-link">https://bun.com/docs/guides/test/concurrent-test-glob</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

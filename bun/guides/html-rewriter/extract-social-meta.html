@@ -1,0 +1,204 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Extract Social Share Images and Open Graph Tags - Bun - W3cubDocs</title>
+  
+  <meta name="description" content="© bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;guides&#47;html-rewriter&#47;extract- &hellip;">
+  <meta name="keywords" content="extract, social, share, images, and, open, graph, tags, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/guides/html-rewriter/extract-social-meta.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">Extract social share images and Open Graph tags</h1>
+<div data-page-title="Extract social share images and Open Graph tags" data-page-href="/guides/html-rewriter/extract-social-meta" id="content">
+<h2 id="extract-social-share-images-and-open-graph-tags"><span>Extract social share images and Open Graph tags</span></h2> <span data-as="p">Bun’s <a href="../../runtime/html-rewriter">HTMLRewriter</a> API can be used to efficiently extract social share images and Open Graph metadata from HTML content. This is particularly useful for building link preview features, social media cards, or web scrapers. We can use HTMLRewriter to match CSS selectors to HTML elements, text, and attributes we want to process.</span> <pre numberoflines="72" language="typescript" data-language="typescript">interface SocialMetadata {
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  siteName?: string;
+  type?: string;
+}
+
+async function extractSocialMetadata(url: string): Promise&lt;SocialMetadata&gt; {
+  const metadata: SocialMetadata = {};
+  const response = await fetch(url);
+
+  const rewriter = new HTMLRewriter()
+    // Extract Open Graph meta tags
+    .on('meta[property^="og:"]', {
+      element(el) {
+        const property = el.getAttribute("property");
+        const content = el.getAttribute("content");
+        if (property &amp;&amp; content) {
+          // Convert "og:image" to "image" etc.
+          const key = property.replace("og:", "") as keyof SocialMetadata;
+          metadata[key] = content;
+        }
+      },
+    })
+    // Extract Twitter Card meta tags as fallback
+    .on('meta[name^="twitter:"]', {
+      element(el) {
+        const name = el.getAttribute("name");
+        const content = el.getAttribute("content");
+        if (name &amp;&amp; content) {
+          const key = name.replace("twitter:", "") as keyof SocialMetadata;
+          // Only use Twitter Card data if we don't have OG data
+          if (!metadata[key]) {
+            metadata[key] = content;
+          }
+        }
+      },
+    })
+    // Fallback to regular meta tags
+    .on('meta[name="description"]', {
+      element(el) {
+        const content = el.getAttribute("content");
+        if (content &amp;&amp; !metadata.description) {
+          metadata.description = content;
+        }
+      },
+    })
+    // Fallback to title tag
+    .on("title", {
+      text(text) {
+        if (!metadata.title) {
+          metadata.title = text.text;
+        }
+      },
+    });
+
+  // Process the response
+  await rewriter.transform(response).blob();
+
+  // Convert relative image URLs to absolute
+  if (metadata.image &amp;&amp; !metadata.image.startsWith("http")) {
+    try {
+      metadata.image = new URL(metadata.image, url).href;
+    } catch {
+      // Keep the original URL if parsing fails
+    }
+  }
+
+  return metadata;
+}
+</pre> <pre numberoflines="10" language="typescript" data-language="typescript">// Example usage
+const metadata = await extractSocialMetadata("https://bun.com");
+console.log(metadata);
+// {
+//   title: "Bun — A fast all-in-one JavaScript runtime",
+//   description: "Bundle, transpile, install and run JavaScript &amp; TypeScript projects — all in Bun. Bun is a fast all-in-one JavaScript runtime &amp; toolkit designed for speed, complete with a bundler, test runner, and Node.js-compatible package manager.",
+//   image: "https://bun.com/share.jpg",
+//   type: "website",
+//   ...
+// }
+</pre>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/guides/html-rewriter/extract-social-meta" class="_attribution-link">https://bun.com/docs/guides/html-rewriter/extract-social-meta</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

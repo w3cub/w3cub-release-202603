@@ -1,0 +1,151 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Migrate From Jest to Bun&#39;s Test Runner - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" © bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;guides&#47;test&#47;migrate-from-jest ">
+  <meta name="keywords" content="migrate, from, jest, bun&#39;s, test, runner, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/guides/test/migrate-from-jest.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">Migrate from Jest to Bun's test runner</h1>
+<div data-page-title="Migrate from Jest to Bun's test runner" data-page-href="/guides/test/migrate-from-jest" id="content">
+<span data-as="p">In many cases, Bun’s test runner can run Jest test suites with no code changes. Just run <code>bun test</code> instead of <code>npx jest</code>, <code>yarn test</code>, etc.</span> <pre numberoflines="3" language="shellscript" data-language="typescript">npx jest
+yarn test
+bun test
+</pre> <hr> <span data-as="p">There’s often no need for code changes.</span> <ul> <li>Bun internally re-writes imports from <code>@jest/globals</code> to use the <code>bun:test</code> equivalents.</li> <li>If you’re relying on Jest to inject <code>test</code>, <code>expect</code>, etc. as globals, Bun does that too.</li> </ul> <span data-as="p">But if you’d rather switch to the <code>bun:test</code> imports, you can do that too.</span> <pre numberoflines="2" language="typescript" data-language="typescript">import { test, expect } from "@jest/globals"; 
+import { test, expect } from "bun:test"; 
+</pre> <hr> <span data-as="p">Since Bun v1.2.19, you can enable <strong>TypeScript support</strong> for global test functions with a single triple-slash directive. This makes migrating from Jest even easier since you only need to add the directive once in your entire project:</span> <span data-as="p">Add this directive to <em>just one file</em> in your project, such as:</span> <ul> <li>A <code>global.d.ts</code> file in your project root</li> <li>Your test <code>preload.ts</code> setup file (if using <code>preload</code> in bunfig.toml)</li> <li>Any single <code>.ts</code> file that TypeScript includes in your compilation</li> </ul> <pre numberoflines="1" language="typescript" data-language="typescript">/// &lt;reference types="bun-types/test-globals" /&gt;
+</pre> <hr> <span data-as="p">Once added, all test files in your project automatically get TypeScript support for Jest globals:</span> <pre numberoflines="13" language="typescript" data-language="typescript">describe("my test suite", () =&gt; {
+  test("should work", () =&gt; {
+    expect(1 + 1).toBe(2);
+  });
+
+  beforeAll(() =&gt; {
+    // setup code
+  });
+
+  afterEach(() =&gt; {
+    // cleanup code
+  });
+});
+</pre> <hr> <span data-as="p">Bun implements the vast majority of Jest’s matchers, but compatibility isn’t 100% yet. Refer to the full compatibility table at <a href="../../test/writing-tests#matchers">Docs &gt; Test runner &gt; Writing tests</a>.</span> <span data-as="p">Some notable missing features:</span> <ul> <li><code>expect().toHaveReturned()</code></li> </ul> <hr> <span data-as="p">If you’re using <code>testEnvironment: "jsdom"</code> to run your tests in a browser-like environment, you should follow the <a href="happy-dom">DOM testing with Bun and happy-dom</a> guide to inject browser APIs into the global scope. This guide relies on <a href="https://github.com/capricorn86/happy-dom" target="_blank" rel="noreferrer"><code>happy-dom</code></a>, which is a leaner and faster alternative to <a href="https://github.com/jsdom/jsdom" target="_blank" rel="noreferrer"><code>jsdom</code></a>.</span> <span data-as="p">At the moment jsdom does not work in Bun due to its internal use of V8 APIs. Track support for it <a href="https://github.com/oven-sh/bun/issues/3554" target="_blank" rel="noreferrer">here</a>.</span> <pre numberoflines="2" language="toml" data-language="typescript">[test]
+preload = ["./happy-dom.ts"]
+</pre> <hr> <span data-as="p">Replace <code>bail</code> in your Jest config with the <code>--bail</code> CLI flag.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun test --bail=3
+</pre> <hr> <span data-as="p">Replace <code>collectCoverage</code> with the <code>--coverage</code> CLI flag.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun test --coverage
+</pre> <hr> <span data-as="p">Replace <code>testTimeout</code> with the <code>--test-timeout</code> CLI flag.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun test --timeout 10000
+</pre> <hr> <span data-as="p">Many other flags become irrelevant or obsolete when using <code>bun test</code>.</span> <ul> <li>
+<code>transform</code> — Bun supports TypeScript &amp; JSX. Other file types can be configured with <a href="../../runtime/plugins">Plugins</a>.</li> <li><code>extensionsToTreatAsEsm</code></li> <li>
+<code>haste</code> — Bun uses it’s own internal source maps</li> <li>
+<code>watchman</code>, <code>watchPlugins</code>, <code>watchPathIgnorePatterns</code> — use <code>--watch</code> to run tests in watch mode</li> <li>
+<code>verbose</code> — set <code>logLevel: "debug"</code> in <a href="../../runtime/bunfig#loglevel"><code>bunfig.toml</code></a>
+</li> </ul> <hr> <span data-as="p">Settings that aren’t mentioned here are not supported or have no equivalent. Please <a href="https://github.com/oven-sh/bun" target="_blank" rel="noreferrer">file a feature request</a> if something important is missing.</span> <hr> <span data-as="p">See also:</span> <ul> <li><a href="todo-tests">Mark a test as a todo</a></li> <li><a href="../../test/writing-tests">Docs &gt; Test runner &gt; Writing tests</a></li> </ul>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/guides/test/migrate-from-jest" class="_attribution-link">https://bun.com/docs/guides/test/migrate-from-jest</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

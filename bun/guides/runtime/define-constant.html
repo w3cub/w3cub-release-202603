@@ -1,0 +1,154 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Define and Replace Static Globals &#38; Constants - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" © bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;guides&#47;runtime&#47;define-constant ">
+  <meta name="keywords" content="define, and, replace, static, globals, &#38;, constants, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/guides/runtime/define-constant.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">Define and replace static globals &amp; constants</h1>
+<div data-page-title="Define and replace static globals &amp; constants" data-page-href="/guides/runtime/define-constant" id="content">
+<span data-as="p">The <code>--define</code> flag lets you declare statically-analyzable constants and globals. It replace all usages of an identifier or property in a JavaScript or TypeScript file with a constant value. This feature is supported at runtime and also in <code>bun build</code>. This is sort of similar to <code>#define</code> in C/C++, except for JavaScript.</span> <pre numberoflines="2" language="shellscript" data-language="typescript">bun --define process.env.NODE_ENV="'production'" src/index.ts # Runtime
+bun build --define process.env.NODE_ENV="'production'" src/index.ts # Build
+</pre> <hr> <span data-as="p">These statically-known values are used by Bun for dead code elimination and other optimizations.</span> <pre numberoflines="5" language="typescript" data-language="typescript">if (process.env.NODE_ENV === "production") {
+  console.log("Production mode");
+} else {
+  console.log("Development mode");
+}
+</pre> <hr> <span data-as="p">Before the code reaches the JavaScript engine, Bun replaces <code>process.env.NODE_ENV</code> with <code>"production"</code>.</span> <pre numberoflines="5" language="typescript" data-language="typescript">if ("production" === "production") { 
+  console.log("Production mode");
+} else {
+  console.log("Development mode");
+}
+</pre> <hr> <span data-as="p">It doesn’t stop there. Bun’s optimizing transpiler is smart enough to do some basic constant folding.</span> <span data-as="p">Since <code>"production" === "production"</code> is always <code>true</code>, Bun replaces the entire expression with the <code>true</code> value.</span> <pre numberoflines="5" language="typescript" data-language="typescript">if (true) { 
+  console.log("Production mode");
+} else {
+  console.log("Development mode");
+}
+</pre> <hr> <span data-as="p">And finally, Bun detects the <code>else</code> branch is not reachable, and eliminates it.</span> <pre numberoflines="1" language="typescript" data-language="typescript">console.log("Production mode");
+</pre> <hr> <h2 id="what-types-of-values-are-supported"><span>What types of values are supported?</span></h2> <span data-as="p">Values can be strings, identifiers, properties, or JSON.</span> <h3 id="replace-global-identifiers"><span>Replace global identifiers</span></h3> <span data-as="p">To make all usages of <code>window</code> be <code>undefined</code>, you can use the following command.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun --define window="undefined" src/index.ts
+</pre> <span data-as="p">This can be useful when Server-Side Rendering (SSR) or when you want to make sure that the code doesn’t depend on the <code>window</code> object.</span> <pre numberoflines="5" language="javascript" data-language="typescript">if (typeof window !== "undefined") {
+  console.log("Client-side code");
+} else {
+  console.log("Server-side code");
+}
+</pre> <span data-as="p">You can also set the value to be another identifier. For example, to make all usages of <code>global</code> be <code>globalThis</code>, you can use the following command.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun --define global="globalThis" src/index.ts
+</pre> <span data-as="p"><code>global</code> is a global object in Node.js, but not in web browsers. So, you can use this to fix some cases where the code assumes that <code>global</code> is available.</span> <h3 id="replace-values-with-json"><span>Replace values with JSON</span></h3> <span data-as="p"><code>--define</code> can also be used to replace values with JSON objects and arrays.</span> <span data-as="p">To replace all usages of <code>AWS</code> with the JSON object <code>{"ACCESS_KEY":"abc","SECRET_KEY":"def"}</code>, you can use the following command.</span> <pre numberoflines="2" language="shellscript" data-language="typescript"># JSON
+bun --define AWS='{"ACCESS_KEY":"abc","SECRET_KEY":"def"}' src/index.ts
+</pre> <span data-as="p">Those will be transformed into the equivalent JavaScript code.</span> <span data-as="p">From:</span> <pre numberoflines="1" language="typescript" data-language="typescript">console.log(AWS.ACCESS_KEY); // =&gt; "abc"
+</pre> <span data-as="p">To:</span> <pre numberoflines="1" language="typescript" data-language="typescript">console.log("abc");
+</pre> <h3 id="replace-values-with-other-properties"><span>Replace values with other properties</span></h3> <span data-as="p">You can also pass properties to the <code>--define</code> flag.</span> <span data-as="p">For example, to replace all usages of <code>console.write</code> with <code>console.log</code>, you can use the following command</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun --define console.write=console.log src/index.ts
+</pre> <span data-as="p">That transforms the following input:</span> <pre numberoflines="1" language="typescript" data-language="typescript">console.write("Hello, world!");
+</pre> <span data-as="p">Into the following output:</span> <pre numberoflines="1" language="typescript" data-language="typescript">console.log("Hello, world!");
+</pre> <h2 id="how-is-this-different-than-setting-a-variable"><span>How is this different than setting a variable?</span></h2> <span data-as="p">You can also set <code>process.env.NODE_ENV</code> to <code>"production"</code> in your code, but that won’t help with dead code elimination. In JavaScript, property accesses can have side effects. Getters &amp; setters can be functions, and even dynamically defined (due to prototype chains and Proxy). Even if you set <code>process.env.NODE_ENV</code> to <code>"production"</code>, on the next line, it is not safe for static analysis tools to assume that <code>process.env.NODE_ENV</code>is<code>"production"</code>.</span> <h2 id="how-is-this-different-than-find-and-replace-or-string-replacement"><span>How is this different than find-and-replace or string replacement?</span></h2> <span data-as="p">The <code>--define</code> flag operates on the AST (Abstract Syntax Tree) level, not on the text level. It happens during the transpilation process, which means it can be used in optimizations like dead code elimination.</span> <span data-as="p">String replacement tools tend to have escaping issues and replace unintended parts of the code.</span>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/guides/runtime/define-constant" class="_attribution-link">https://bun.com/docs/guides/runtime/define-constant</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

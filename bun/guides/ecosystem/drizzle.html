@@ -1,0 +1,204 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Use Drizzle ORM With Bun - Bun - W3cubDocs</title>
+  
+  <meta name="description" content=" © bun.com, oven-sh, Jarred SumnerLicensed under the MIT License. https&#58;&#47;&#47;bun.com&#47;docs&#47;guides&#47;ecosystem&#47;drizzle ">
+  <meta name="keywords" content="use, drizzle, orm, with, bun">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bun/guides/ecosystem/drizzle.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bun.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bun/" class="_nav-link" title="" style="margin-left:0;">Bun</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="header">Use Drizzle ORM with Bun</h1>
+<div data-page-title="Use Drizzle ORM with Bun" data-page-href="/guides/ecosystem/drizzle" id="content">
+<span data-as="p">Drizzle is an ORM that supports both a SQL-like “query builder” API and an ORM-like <a href="https://orm.drizzle.team/docs/rqb" target="_blank" rel="noreferrer">Queries API</a>. It supports the <code>bun:sqlite</code> built-in module.</span> <hr> <span data-as="p">Let’s get started by creating a fresh project with <code>bun init</code> and installing Drizzle.</span> <pre numberoflines="3" language="shellscript" data-language="typescript">bun init -y
+bun add drizzle-orm
+bun add -D drizzle-kit
+</pre> <hr> <span data-as="p">Then we’ll connect to a SQLite database using the <code>bun:sqlite</code> module and create the Drizzle database instance.</span> <pre numberoflines="5" language="typescript" data-language="typescript">import { drizzle } from "drizzle-orm/bun-sqlite";
+import { Database } from "bun:sqlite";
+
+const sqlite = new Database("sqlite.db");
+export const db = drizzle(sqlite);
+</pre> <hr> <span data-as="p">To see the database in action, add these lines to <code>index.ts</code>.</span> <pre numberoflines="6" language="typescript" data-language="typescript">import { db } from "./db";
+import { sql } from "drizzle-orm";
+
+const query = sql`select "hello world" as text`;
+const result = db.get&lt;{ text: string }&gt;(query);
+console.log(result);
+</pre> <hr> <span data-as="p">Then run <code>index.ts</code> with Bun. Bun will automatically create <code>sqlite.db</code> and execute the query.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun run index.ts
+</pre> <pre numberoflines="4" language="text" data-language="typescript">{
+  text: "hello world"
+}
+</pre> <hr> <span data-as="p">Lets give our database a proper schema. Create a <code>schema.ts</code> file and define a <code>movies</code> table.</span> <pre numberoflines="7" language="typescript" data-language="typescript">import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+
+export const movies = sqliteTable("movies", {
+  id: integer("id").primaryKey(),
+  title: text("name"),
+  releaseYear: integer("release_year"),
+});
+</pre> <hr> <span data-as="p">We can use the <code>drizzle-kit</code> CLI to generate an initial SQL migration.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bunx drizzle-kit generate --dialect sqlite --schema ./schema.ts
+</pre> <hr> <span data-as="p">This creates a new <code>drizzle</code> directory containing a <code>.sql</code> migration file and <code>meta</code> directory.</span> <pre numberoflines="6" language="text" data-language="typescript">drizzle
+├── 0000_ordinary_beyonder.sql
+└── meta
+    ├── 0000_snapshot.json
+    └── _journal.json
+</pre> <hr> <span data-as="p">We can execute these migrations with a simple <code>migrate.ts</code> script.</span> <span data-as="p">This script creates a new connection to a SQLite database that writes to <code>sqlite.db</code>, then executes all unexecuted migrations in the <code>drizzle</code> directory.</span> <pre numberoflines="8" language="typescript" data-language="typescript">import { migrate } from "drizzle-orm/bun-sqlite/migrator";
+
+import { drizzle } from "drizzle-orm/bun-sqlite";
+import { Database } from "bun:sqlite";
+
+const sqlite = new Database("sqlite.db");
+const db = drizzle(sqlite);
+migrate(db, { migrationsFolder: "./drizzle" });
+</pre> <hr> <span data-as="p">We can run this script with <code>bun</code> to execute the migration.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun run migrate.ts
+</pre> <hr> <span data-as="p">Now that we have a database, let’s add some data to it. Create a <code>seed.ts</code> file with the following contents.</span> <pre numberoflines="19" language="typescript" data-language="typescript">import { db } from "./db";
+import * as schema from "./schema";
+
+await db.insert(schema.movies).values([
+  {
+    title: "The Matrix",
+    releaseYear: 1999,
+  },
+  {
+    title: "The Matrix Reloaded",
+    releaseYear: 2003,
+  },
+  {
+    title: "The Matrix Revolutions",
+    releaseYear: 2003,
+  },
+]);
+
+console.log(`Seeding complete.`);
+</pre> <hr> <span data-as="p">Then run this file.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun run seed.ts
+</pre> <pre numberoflines="2" language="text" data-language="typescript">Seeding complete.
+</pre> <hr> <span data-as="p">We finally have a database with a schema and some sample data. Let’s use Drizzle to query it. Replace the contents of <code>index.ts</code> with the following.</span> <pre numberoflines="5" language="typescript" data-language="typescript">import * as schema from "./schema";
+import { db } from "./db";
+
+const result = await db.select().from(schema.movies);
+console.log(result);
+</pre> <hr> <span data-as="p">Then run the file. You should see the three movies we inserted.</span> <pre numberoflines="1" language="shellscript" data-language="typescript">bun run index.ts
+</pre> <pre numberoflines="16" language="text" data-language="typescript">[
+  {
+    id: 1,
+    title: "The Matrix",
+    releaseYear: 1999
+  }, {
+    id: 2,
+    title: "The Matrix Reloaded",
+    releaseYear: 2003
+  }, {
+    id: 3,
+    title: "The Matrix Revolutions",
+    releaseYear: 2003
+  }
+]
+</pre> <hr> <span data-as="p">Refer to the <a href="https://orm.drizzle.team/docs/overview" target="_blank" rel="noreferrer">Drizzle website</a> for complete documentation.</span>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © bun.com, oven-sh, Jarred Sumner<br>Licensed under the MIT License.<br>
+    <a href="https://bun.com/docs/guides/ecosystem/drizzle" class="_attribution-link">https://bun.com/docs/guides/ecosystem/drizzle</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
