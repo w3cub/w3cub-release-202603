@@ -1,0 +1,151 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>File Locks - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="When two users edit the same file at the same time, they are likely to interfere with each other. Emacs tries to prevent this situation from arising &hellip;">
+  <meta name="keywords" content="file, locks, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/file-locks.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h3 class="section">File Locks</h3>    <p>When two users edit the same file at the same time, they are likely to interfere with each other. Emacs tries to prevent this situation from arising by recording a <em>file lock</em> when a file is being modified. Emacs can then detect the first attempt to modify a buffer visiting a file that is locked by another Emacs job, and ask the user what to do. The file lock is really a file, a symbolic link with a special name, stored in the same directory as the file you are editing. The name is constructed by prepending <samp>.#</samp> to the file name of the buffer. The target of the symbolic link will be of the form <code><var>user</var>@<var>host</var>.<var>pid</var>:<var>boot</var></code>, where <var>user</var> is replaced with the current username (from <code>user-login-name</code>), <var>host</var> with the name of the host where Emacs is running (from <code>system-name</code>), <var>pid</var> with Emacs’s process id, and <var>boot</var> with the time since the last reboot. <code>:<var>boot</var></code> is omitted if the boot time is unavailable. (On file systems that do not support symbolic links, a regular file is used instead, with contents of the form <code><var>user</var>@<var>host</var>.<var>pid</var>:<var>boot</var></code>.) </p> <p>When you access files using NFS, there may be a small probability that you and another user will both lock the same file simultaneously. If this happens, it is possible for the two users to make changes simultaneously, but Emacs will still warn the user who saves second. Also, the detection of modification of a buffer visiting a file changed on disk catches some cases of simultaneous editing; see <a href="modification-time">Modification Time</a>. </p> <dl> <dt id="file-locked-p">Function: <strong>file-locked-p</strong> <em>filename</em>
+</dt> <dd>
+<p>This function returns <code>nil</code> if the file <var>filename</var> is not locked. It returns <code>t</code> if it is locked by this Emacs process, and it returns the name of the user who has locked it if it is locked by some other job. </p> <div class="example"> <pre class="example">(file-locked-p "foo")
+     ⇒ nil
+</pre>
+</div> </dd>
+</dl> <dl> <dt id="lock-buffer">Function: <strong>lock-buffer</strong> <em>&amp;optional filename</em>
+</dt> <dd><p>This function locks the file <var>filename</var>, if the current buffer is modified. The argument <var>filename</var> defaults to the current buffer’s visited file. Nothing is done if the current buffer is not visiting a file, or is not modified, or if the option <code>create-lockfiles</code> is <code>nil</code>. </p></dd>
+</dl> <dl> <dt id="unlock-buffer">Function: <strong>unlock-buffer</strong>
+</dt> <dd><p>This function unlocks the file being visited in the current buffer, if the buffer is modified. If the buffer is not modified, then the file should not be locked, so this function does nothing. It also does nothing if the current buffer is not visiting a file, or is not locked. This function handles file system errors by calling <code>display-warning</code> and otherwise ignores the error. </p></dd>
+</dl> <dl> <dt id="create-lockfiles">User Option: <strong>create-lockfiles</strong>
+</dt> <dd><p>If this variable is <code>nil</code>, Emacs does not lock files. </p></dd>
+</dl> <dl> <dt id="lock-file-name-transforms">User Option: <strong>lock-file-name-transforms</strong>
+</dt> <dd>
+<p>By default, Emacs creates the lock files in the same directory as the files that are being locked. This can be changed by customizing this variable. Is has the same syntax as <code>auto-save-file-name-transforms</code> (see <a href="auto_002dsaving">Auto-Saving</a>). For instance, to make Emacs write all the lock files to <samp>/var/tmp/</samp>, you could say something like: </p> <div class="lisp"> <pre class="lisp">(setq lock-file-name-transforms
+      '(("\\`/.*/\\([^/]+\\)\\'" "/var/tmp/\\1" t)))
+</pre>
+</div> </dd>
+</dl> <dl> <dt id="ask-user-about-lock">Function: <strong>ask-user-about-lock</strong> <em>file other-user</em>
+</dt> <dd>
+<p>This function is called when the user tries to modify <var>file</var>, but it is locked by another user named <var>other-user</var>. The default definition of this function asks the user to say what to do. The value this function returns determines what Emacs does next: </p> <ul> <li> A value of <code>t</code> says to grab the lock on the file. Then this user may edit the file and <var>other-user</var> loses the lock. </li>
+<li> A value of <code>nil</code> says to ignore the lock and let this user edit the file anyway. </li>
+<li>  This function may instead signal a <code>file-locked</code> error, in which case the change that the user was about to make does not take place. <p>The error message for this error looks like this: </p> <div class="example"> <pre class="example">error→ File is locked: <var>file</var> <var>other-user</var>
+</pre>
+</div> <p>where <code>file</code> is the name of the file and <var>other-user</var> is the name of the user who has locked the file. </p>
+</li>
+</ul> <p>If you wish, you can replace the <code>ask-user-about-lock</code> function with your own version that makes the decision in another way. </p>
+</dd>
+</dl> <dl> <dt id="remote-file-name-inhibit-locks">User Option: <strong>remote-file-name-inhibit-locks</strong>
+</dt> <dd><p>You can prevent the creation of remote lock files by setting the variable <code>remote-file-name-inhibit-locks</code> to <code>t</code>. </p></dd>
+</dl> <dl> <dt id="lock-file-mode">Command: <strong>lock-file-mode</strong>
+</dt> <dd><p>This command, called interactively, toggles the local value of <code>create-lockfiles</code> in the current buffer. </p></dd>
+</dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/File-Locks.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/File-Locks.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

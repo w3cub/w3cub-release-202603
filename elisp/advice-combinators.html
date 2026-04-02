@@ -1,0 +1,159 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Ways to Compose Advice - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="Here are the different possible values for the where argument of add-function and advice-add, specifying how the advice function and the original &hellip;">
+  <meta name="keywords" content="ways, compose, advice, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/advice-combinators.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h4 class="subsection">Ways to compose advice</h4> <p>Here are the different possible values for the <var>where</var> argument of <code>add-function</code> and <code>advice-add</code>, specifying how the advice <var>function</var> and the original function should be composed. </p> <dl compact> <dt><code>:before</code></dt> <dd>
+<p>Call <var>function</var> before the old function. Both functions receive the same arguments, and the return value of the composition is the return value of the old function. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (apply <var>function</var> r) (apply <var>oldfun</var> r))
+</pre>
+</div> <p><code>(add-function :before <var>funvar</var> <var>function</var>)</code> is comparable for single-function hooks to <code>(add-hook '<var>hookvar</var> <var>function</var>)</code> for normal hooks. </p> </dd> <dt><code>:after</code></dt> <dd>
+<p>Call <var>function</var> after the old function. Both functions receive the same arguments, and the return value of the composition is the return value of the old function. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (prog1 (apply <var>oldfun</var> r) (apply <var>function</var> r)))
+</pre>
+</div> <p><code>(add-function :after <var>funvar</var> <var>function</var>)</code> is comparable for single-function hooks to <code>(add-hook '<var>hookvar</var> <var>function</var>
+'append)</code> for normal hooks. </p> </dd> <dt><code>:override</code></dt> <dd>
+<p>This completely replaces the old function with the new one. The old function can of course be recovered if you later call <code>remove-function</code>. </p> </dd> <dt><code>:around</code></dt> <dd>
+<p>Call <var>function</var> instead of the old function, but provide the old function as an extra argument to <var>function</var>. This is the most flexible composition. For example, it lets you call the old function with different arguments, or many times, or within a let-binding, or you can sometimes delegate the work to the old function and sometimes override it completely. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (apply <var>function</var> <var>oldfun</var> r))
+</pre>
+</div> </dd> <dt><code>:before-while</code></dt> <dd>
+<p>Call <var>function</var> before the old function and don’t call the old function if <var>function</var> returns <code>nil</code>. Both functions receive the same arguments, and the return value of the composition is the return value of the old function. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (and (apply <var>function</var> r) (apply <var>oldfun</var> r)))
+</pre>
+</div> <p><code>(add-function :before-while <var>funvar</var> <var>function</var>)</code> is comparable for single-function hooks to <code>(add-hook '<var>hookvar</var> <var>function</var>)</code> when <var>hookvar</var> is run via <code>run-hook-with-args-until-failure</code>. </p> </dd> <dt><code>:before-until</code></dt> <dd>
+<p>Call <var>function</var> before the old function and only call the old function if <var>function</var> returns <code>nil</code>. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (or (apply <var>function</var> r) (apply <var>oldfun</var> r)))
+</pre>
+</div> <p><code>(add-function :before-until <var>funvar</var> <var>function</var>)</code> is comparable for single-function hooks to <code>(add-hook '<var>hookvar</var> <var>function</var>)</code> when <var>hookvar</var> is run via <code>run-hook-with-args-until-success</code>. </p> </dd> <dt><code>:after-while</code></dt> <dd>
+<p>Call <var>function</var> after the old function and only if the old function returned non-<code>nil</code>. Both functions receive the same arguments, and the return value of the composition is the return value of <var>function</var>. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (and (apply <var>oldfun</var> r) (apply <var>function</var> r)))
+</pre>
+</div> <p><code>(add-function :after-while <var>funvar</var> <var>function</var>)</code> is comparable for single-function hooks to <code>(add-hook '<var>hookvar</var> <var>function</var>
+'append)</code> when <var>hookvar</var> is run via <code>run-hook-with-args-until-failure</code>. </p> </dd> <dt><code>:after-until</code></dt> <dd>
+<p>Call <var>function</var> after the old function and only if the old function returned <code>nil</code>. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (or  (apply <var>oldfun</var> r) (apply <var>function</var> r)))
+</pre>
+</div> <p><code>(add-function :after-until <var>funvar</var> <var>function</var>)</code> is comparable for single-function hooks to <code>(add-hook '<var>hookvar</var> <var>function</var>
+'append)</code> when <var>hookvar</var> is run via <code>run-hook-with-args-until-success</code>. </p> </dd> <dt><code>:filter-args</code></dt> <dd>
+<p>Call <var>function</var> first and use the result (which should be a list) as the new arguments to pass to the old function. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (apply <var>oldfun</var> (funcall <var>function</var> r)))
+</pre>
+</div> </dd> <dt><code>:filter-return</code></dt> <dd>
+<p>Call the old function first and pass the result to <var>function</var>. More specifically, the composition of the two functions behaves like: </p>
+<div class="example"> <pre class="example">(lambda (&amp;rest r) (funcall <var>function</var> (apply <var>oldfun</var> r)))
+</pre>
+</div> </dd> </dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Advice-Combinators.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Advice-Combinators.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

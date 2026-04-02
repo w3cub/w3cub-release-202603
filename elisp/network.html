@@ -1,0 +1,136 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Network Connections - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="Emacs Lisp programs can open stream (TCP) and datagram (UDP) network connections (see Datagrams) to other processes on the same machine or other &hellip;">
+  <meta name="keywords" content="network, connections, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/network.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h3 class="section">Network Connections</h3>    <p>Emacs Lisp programs can open stream (TCP) and datagram (UDP) network connections (see <a href="datagrams">Datagrams</a>) to other processes on the same machine or other machines. A network connection is handled by Lisp much like a subprocess, and is represented by a process object. However, the process you are communicating with is not a child of the Emacs process, has no process <acronym>ID</acronym>, and you can’t kill it or send it signals. All you can do is send and receive data. <code>delete-process</code> closes the connection, but does not kill the program at the other end; that program must decide what to do about closure of the connection. </p> <p>Lisp programs can listen for connections by creating network servers. A network server is also represented by a kind of process object, but unlike a network connection, the network server never transfers data itself. When it receives a connection request, it creates a new network connection to represent the connection just made. (The network connection inherits certain information, including the process plist, from the server.) The network server then goes back to listening for more connection requests. </p> <p>Network connections and servers are created by calling <code>make-network-process</code> with an argument list consisting of keyword/argument pairs, for example <code>:server t</code> to create a server process, or <code>:type 'datagram</code> to create a datagram connection. See <a href="low_002dlevel-network">Low-Level Network</a>, for details. You can also use the <code>open-network-stream</code> function described below. </p> <p>To distinguish the different types of processes, the <code>process-type</code> function returns the symbol <code>network</code> for a network connection or server, <code>serial</code> for a serial port connection, <code>pipe</code> for a pipe connection, or <code>real</code> for a real subprocess. </p> <p>The <code>process-status</code> function returns <code>open</code>, <code>closed</code>, <code>connect</code>, <code>stop</code>, or <code>failed</code> for network connections. For a network server, the status is always <code>listen</code>. Except for <code>stop</code>, none of those values is possible for a real subprocess. See <a href="process-information">Process Information</a>. </p> <p>You can stop and resume operation of a network process by calling <code>stop-process</code> and <code>continue-process</code>. For a server process, being stopped means not accepting new connections. (Up to 5 connection requests will be queued for when you resume the server; you can increase this limit, unless it is imposed by the operating system—see the <code>:server</code> keyword of <code>make-network-process</code>, <a href="network-processes">Network Processes</a>.) For a network stream connection, being stopped means not processing input (any arriving input waits until you resume the connection). For a datagram connection, some number of packets may be queued but input may be lost. You can use the function <code>process-command</code> to determine whether a network connection or server is stopped; a non-<code>nil</code> value means yes. </p>     <p>Emacs can create encrypted network connections, using the built-in support for the GnuTLS Transport Layer Security Library; see <a href="https://www.gnu.org/software/gnutls/">the GnuTLS project page</a>. If your Emacs was compiled with GnuTLS support, the function <code>gnutls-available-p</code> is defined and returns non-<code>nil</code>. For more details, see <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs-gnutls/index.html#Top">Overview</a> in <cite>The Emacs-GnuTLS manual</cite>. The <code>open-network-stream</code> function can transparently handle the details of creating encrypted connections for you, using whatever support is available. </p> <dl> <dt id="open-network-stream">Function: <strong>open-network-stream</strong> <em>name buffer host service &amp;rest parameters</em>
+</dt> <dd>
+<p>This function opens a TCP connection, with optional encryption, and returns a process object that represents the connection. </p> <p>The <var>name</var> argument specifies the name for the process object. It is modified as necessary to make it unique. </p> <p>The <var>buffer</var> argument is the buffer to associate with the connection. Output from the connection is inserted in the buffer, unless you specify your own filter function to handle the output. If <var>buffer</var> is <code>nil</code>, it means that the connection is not associated with any buffer. </p> <p>The arguments <var>host</var> and <var>service</var> specify where to connect to; <var>host</var> is the host name (a string), and <var>service</var> is the name of a defined network service (a string) or a port number (an integer like <code>80</code> or an integer string like <code>"80"</code>). </p> <p>The remaining arguments <var>parameters</var> are keyword/argument pairs that are mainly relevant to encrypted connections: </p> <dl compact> <dt><code>:nowait <var>boolean</var></code></dt> <dd>
+<p>If non-<code>nil</code>, try to make an asynchronous connection. </p> </dd> <dt><code>:coding <var>coding</var></code></dt> <dd>
+<p>Use this to set the coding systems used by the network process, in preference to binding <code>coding-system-for-read</code> or <code>coding-system-for-write</code>. See <a href="network-processes">Network Processes</a>, for details. </p> </dd> <dt><code>:type <var>type</var></code></dt> <dd>
+<p>The type of connection. Options are: </p> <dl compact> <dt><code>plain</code></dt> <dd><p>An ordinary, unencrypted connection. </p></dd> <dt><code>tls</code></dt> <dt><code>ssl</code></dt> <dd><p>A <acronym>TLS</acronym> (Transport Layer Security) connection. </p></dd> <dt><code>nil</code></dt> <dt><code>network</code></dt> <dd><p>Start with a plain connection, and if parameters ‘<samp>:success</samp>’ and ‘<samp>:capability-command</samp>’ are supplied, try to upgrade to an encrypted connection via <acronym>STARTTLS</acronym>. If that fails, retain the unencrypted connection. </p></dd> <dt><code>starttls</code></dt> <dd><p>As for <code>nil</code>, but if <acronym>STARTTLS</acronym> fails drop the connection. </p></dd> <dt><code>shell</code></dt> <dd><p>A shell connection. </p></dd> </dl> </dd> <dt><code>:always-query-capabilities <var>boolean</var></code></dt> <dd>
+<p>If non-<code>nil</code>, always ask for the server’s capabilities, even when doing a ‘<samp>plain</samp>’ connection. </p> </dd> <dt><code>:capability-command <var>capability-command</var></code></dt> <dd>
+<p>Command to query the host capabilities. This can either be a string (which will then be sent verbatim to the server), or a function (called with a single parameter; the "greeting" from the server when connecting), and should return a string. </p> </dd> <dt><code>:end-of-command <var>regexp</var></code></dt> <dt><code>:end-of-capability <var>regexp</var></code></dt> <dd>
+<p>Regular expression matching the end of a command, or the end of the command <var>capability-command</var>. The latter defaults to the former. </p> </dd> <dt><code>:starttls-function <var>function</var></code></dt> <dd>
+<p>Function of one argument (the response to <var>capability-command</var>), which returns either <code>nil</code>, or the command to activate <acronym>STARTTLS</acronym> if supported. </p> </dd> <dt><code>:success <var>regexp</var></code></dt> <dd>
+<p>Regular expression matching a successful <acronym>STARTTLS</acronym> negotiation. </p> </dd> <dt><code>:use-starttls-if-possible <var>boolean</var></code></dt> <dd>
+<p>If non-<code>nil</code>, do opportunistic <acronym>STARTTLS</acronym> upgrades even if Emacs doesn’t have built-in <acronym>TLS</acronym> support. </p> </dd> <dt><code>:warn-unless-encrypted <var>boolean</var></code></dt> <dd>
+<p>If non-<code>nil</code>, and <code>:return-value</code> is also non-<code>nil</code>, Emacs will warn if the connection isn’t encrypted. This is useful for protocols like <acronym>IMAP</acronym> and the like, where most users would expect the network traffic to be encrypted. </p>  </dd> <dt><code>:client-certificate <var>list-or-t</var></code></dt> <dd>
+<p>Either a list of the form <code>(<var>key-file</var> <var>cert-file</var>)</code>, naming the certificate key file and certificate file itself, or <code>t</code>, meaning to query <code>auth-source</code> for this information (see <a href="https://www.gnu.org/software/emacs/manual/html_node/auth/Help-for-users.html#Help-for-users">auth-source</a> in <cite>Emacs auth-source Library</cite>). Only used for <acronym>TLS</acronym> or <acronym>STARTTLS</acronym>. To enable automatic queries of <code>auth-source</code> when <code>:client-certificate</code> is not specified customize <code>network-stream-use-client-certificates</code> to t. </p> </dd> <dt><code>:return-list <var>cons-or-nil</var></code></dt> <dd>
+<p>The return value of this function. If omitted or <code>nil</code>, return a process object. Otherwise, a cons of the form <code>(<var>process-object</var>
+. <var>plist</var>)</code>, where <var>plist</var> has keywords: </p> <dl compact> <dt><code>:greeting <var>string-or-nil</var></code></dt> <dd><p>If non-<code>nil</code>, the greeting string returned by the host. </p></dd> <dt><code>:capabilities <var>string-or-nil</var></code></dt> <dd><p>If non-<code>nil</code>, the host’s capability string. </p></dd> <dt><code>:type <var>symbol</var></code></dt> <dd><p>The connection type: ‘<samp>plain</samp>’ or ‘<samp>tls</samp>’. </p></dd> </dl> </dd> <dt><code>:shell-command <var>string-or-nil</var></code></dt> <dd>
+<p>If the connection <code>type</code> is <code>shell</code>, this parameter will be interpreted as a format-spec string that will be executed to make the connection. The specs available are ‘<samp>%s</samp>’ for the host name and ‘<samp>%p</samp>’ for the port number. For instance, if you want to first ssh to ‘<samp>gateway</samp>’ before making a plain connection, then this parameter could be something like ‘<samp>ssh gateway nc %s %p</samp>’. </p> </dd> </dl> </dd>
+</dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Network.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Network.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

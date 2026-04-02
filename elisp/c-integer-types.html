@@ -1,0 +1,132 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>C Integer Types - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="Here are some guidelines for use of integer types in the Emacs C source code. These guidelines sometimes give competing advice; common sense is &hellip;">
+  <meta name="keywords" content="c, integer, types, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/c-integer-types.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h3 class="section"> C Integer Types</h3>  <p>Here are some guidelines for use of integer types in the Emacs C source code. These guidelines sometimes give competing advice; common sense is advised. </p> <ul> <li> Avoid arbitrary limits. For example, avoid <code>int len = strlen
+(s);</code> unless the length of <code>s</code> is required for other reasons to fit in <code>int</code> range. </li>
+<li> Do not assume that signed integer arithmetic wraps around on overflow. This is no longer true of Emacs porting targets: signed integer overflow has undefined behavior in practice, and can dump core or even cause earlier or later code to behave illogically. Unsigned overflow does wrap around reliably, modulo a power of two. </li>
+<li> Prefer signed types to unsigned, as code gets confusing when signed and unsigned types are combined. Many other guidelines assume that types are signed; in the rarer cases where unsigned types are needed, similar advice may apply to the unsigned counterparts (e.g., <code>size_t</code> instead of <code>ptrdiff_t</code>, or <code>uintptr_t</code> instead of <code>intptr_t</code>). </li>
+<li> Prefer <code>int</code> for Emacs character codes, in the range 0 .. 0x3FFFFF. More generally, prefer <code>int</code> for integers known to be in <code>int</code> range, e.g., screen column counts. </li>
+<li> Prefer <code>ptrdiff_t</code> for sizes, i.e., for integers bounded by the maximum size of any individual C object or by the maximum number of elements in any C array. This is part of Emacs’s general preference for signed types. Using <code>ptrdiff_t</code> limits objects to <code>PTRDIFF_MAX</code> bytes, but larger objects would cause trouble anyway since they would break pointer subtraction, so this does not impose an arbitrary limit. </li>
+<li> Avoid <code>ssize_t</code> except when communicating to low-level APIs that have <code>ssize_t</code>-related limitations. Although it’s equivalent to <code>ptrdiff_t</code> on typical platforms, <code>ssize_t</code> is occasionally narrower, so using it for size-related calculations could overflow. Also, <code>ptrdiff_t</code> is more ubiquitous and better-standardized, has standard <code>printf</code> formats, and is the basis for Emacs’s internal size-overflow checking. When using <code>ssize_t</code>, please note that POSIX requires support only for values in the range -1 .. <code>SSIZE_MAX</code>. </li>
+<li> Normally, prefer <code>intptr_t</code> for internal representations of pointers, or for integers bounded only by the number of objects that can exist at any given time or by the total number of bytes that can be allocated. However, prefer <code>uintptr_t</code> to represent pointer arithmetic that could cross page boundaries. For example, on a machine with a 32-bit address space an array could cross the 0x7fffffff/0x80000000 boundary, which would cause an integer overflow when adding 1 to <code>(intptr_t) 0x7fffffff</code>. </li>
+<li> Prefer the Emacs-defined type <code>EMACS_INT</code> for representing values converted to or from Emacs Lisp fixnums, as fixnum arithmetic is based on <code>EMACS_INT</code>. </li>
+<li> When representing a system value (such as a file size or a count of seconds since the Epoch), prefer the corresponding system type (e.g., <code>off_t</code>, <code>time_t</code>). Do not assume that a system type is signed, unless this assumption is known to be safe. For example, although <code>off_t</code> is always signed, <code>time_t</code> need not be. </li>
+<li> Prefer <code>intmax_t</code> for representing values that might be any signed integer value. A <code>printf</code>-family function can print such a value via a format like <code>"%"PRIdMAX</code>. </li>
+<li> Prefer <code>bool</code>, <code>false</code> and <code>true</code> for booleans. Using <code>bool</code> can make programs easier to read and a bit faster than using <code>int</code>. Although it is also OK to use <code>int</code>, <code>0</code> and <code>1</code>, this older style is gradually being phased out. When using <code>bool</code>, respect the limitations of the replacement implementation of <code>bool</code>, as documented in the source file <samp>lib/stdbool.in.h</samp>. In particular, boolean bitfields should be of type <code>bool_bf</code>, not <code>bool</code>, so that they work correctly even when compiling Objective C with standard GCC. </li>
+<li> In bitfields, prefer <code>unsigned int</code> or <code>signed int</code> to <code>int</code>, as <code>int</code> is less portable: it might be signed, and might not be. Single-bit bit fields should be <code>unsigned int</code> or <code>bool_bf</code> so that their values are 0 or 1. </li>
+</ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/C-Integer-Types.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/C-Integer-Types.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

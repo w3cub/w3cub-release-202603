@@ -1,0 +1,146 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Receiving Output From Processes - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="The output that an asynchronous subprocess writes to its standard output stream is passed to a function called the filter function. The default &hellip;">
+  <meta name="keywords" content="receiving, output, from, processes, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/output-from-processes.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h3 class="section">Receiving Output from Processes</h3>   <p>The output that an asynchronous subprocess writes to its standard output stream is passed to a function called the <em>filter function</em>. The default filter function simply inserts the output into a buffer, which is called the associated buffer of the process (see <a href="process-buffers">Process Buffers</a>). If the process has no buffer then the default filter discards the output. </p> <p>If the subprocess writes to its standard error stream, by default the error output is also passed to the process filter function. If Emacs uses a pseudo-TTY (pty) for communication with the subprocess, then it is impossible to separate the standard output and standard error streams of the subprocess, because a pseudo-TTY has only one output channel. In that case, if you want to keep the output to those streams separate, you should redirect one of them to a file—for example, by using an appropriate shell command via <code>start-process-shell-command</code> or a similar function. </p> <p>Alternatively, you could use the <code>:stderr</code> parameter with a non-<code>nil</code> value in a call to <code>make-process</code> (see <a href="asynchronous-processes">make-process</a>) to make the destination of the error output separate from the standard output; in that case, Emacs will use pipes for communicating with the subprocess. </p> <p>When a subprocess terminates, Emacs reads any pending output, then stops reading output from that subprocess. Therefore, if the subprocess has children that are still live and still producing output, Emacs won’t receive that output. </p> <p>Output from a subprocess can arrive only while Emacs is waiting: when reading terminal input (see the function <code>waiting-for-user-input-p</code>), in <code>sit-for</code> and <code>sleep-for</code> (see <a href="waiting">Waiting</a>), in <code>accept-process-output</code> (see <a href="accepting-output">Accepting Output</a>), and in functions which send data to processes (see <a href="input-to-processes">Input to Processes</a>). This minimizes the problem of timing errors that usually plague parallel programming. For example, you can safely create a process and only then specify its buffer or filter function; no output can arrive before you finish, if the code in between does not call any primitive that waits. </p> <dl> <dt id="process-adaptive-read-buffering">Variable: <strong>process-adaptive-read-buffering</strong>
+</dt> <dd><p>On some systems, when Emacs reads the output from a subprocess, the output data is read in very small blocks, potentially resulting in very poor performance. This behavior can be remedied to some extent by setting the variable <code>process-adaptive-read-buffering</code> to a non-<code>nil</code> value (the default), as it will automatically delay reading from such processes, thus allowing them to produce more output before Emacs tries to read it. </p></dd>
+</dl> <table class="menu" border="0" cellspacing="0"> <tr>
+<td align="left" valign="top">• <a href="process-buffers" accesskey="1">Process Buffers</a>
+</td>
+<td> </td>
+<td align="left" valign="top">By default, output is put in a buffer. </td>
+</tr> <tr>
+<td align="left" valign="top">• <a href="filter-functions" accesskey="2">Filter Functions</a>
+</td>
+<td> </td>
+<td align="left" valign="top">Filter functions accept output from the process. </td>
+</tr> <tr>
+<td align="left" valign="top">• <a href="decoding-output" accesskey="3">Decoding Output</a>
+</td>
+<td> </td>
+<td align="left" valign="top">Filters can get unibyte or multibyte strings. </td>
+</tr> <tr>
+<td align="left" valign="top">• <a href="accepting-output" accesskey="4">Accepting Output</a>
+</td>
+<td> </td>
+<td align="left" valign="top">How to wait until process output arrives. </td>
+</tr> <tr>
+<td align="left" valign="top">• <a href="processes-and-threads" accesskey="5">Processes and Threads</a>
+</td>
+<td> </td>
+<td align="left" valign="top">How processes and threads interact. </td>
+</tr> </table>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Output-from-Processes.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Output-from-Processes.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

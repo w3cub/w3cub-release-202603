@@ -1,0 +1,129 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Piecemeal Specification - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="In contrast to the round-trip specification described in the previous subsection (see Format Conversion Round-Trip), you can use the variables after &hellip;">
+  <meta name="keywords" content="piecemeal, specification, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/format-conversion-piecemeal.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h4 class="subsection">Piecemeal Specification</h4> <p>In contrast to the round-trip specification described in the previous subsection (see <a href="format-conversion-round_002dtrip">Format Conversion Round-Trip</a>), you can use the variables <code>after-insert-file-functions</code> and <code>write-region-annotate-functions</code> to separately control the respective reading and writing conversions. </p> <p>Conversion starts with one representation and produces another representation. When there is only one conversion to do, there is no conflict about what to start with. However, when there are multiple conversions involved, conflict may arise when two conversions need to start with the same data. </p> <p>This situation is best understood in the context of converting text properties during <code>write-region</code>. For example, the character at position 42 in a buffer is ‘<samp>X</samp>’ with a text property <code>foo</code>. If the conversion for <code>foo</code> is done by inserting into the buffer, say, ‘<samp>FOO:</samp>’, then that changes the character at position 42 from ‘<samp>X</samp>’ to ‘<samp>F</samp>’. The next conversion will start with the wrong data straight away. </p> <p>To avoid conflict, cooperative conversions do not modify the buffer, but instead specify <em>annotations</em>, a list of elements of the form <code>(<var>position</var> . <var>string</var>)</code>, sorted in order of increasing <var>position</var>. </p> <p>If there is more than one conversion, <code>write-region</code> merges their annotations destructively into one sorted list. Later, when the text from the buffer is actually written to the file, it intermixes the specified annotations at the corresponding positions. All this takes place without modifying the buffer. </p> <p>In contrast, when reading, the annotations intermixed with the text are handled immediately. <code>insert-file-contents</code> sets point to the beginning of some text to be converted, then calls the conversion functions with the length of that text. These functions should always return with point at the beginning of the inserted text. This approach makes sense for reading because annotations removed by the first converter can’t be mistakenly processed by a later converter. Each conversion function should scan for the annotations it recognizes, remove the annotation, modify the buffer text (to set a text property, for example), and return the updated length of the text, as it stands after those changes. The value returned by one function becomes the argument to the next function. </p> <dl> <dt id="write-region-annotate-functions">Variable: <strong>write-region-annotate-functions</strong>
+</dt> <dd>
+<p>A list of functions for <code>write-region</code> to call. Each function in the list is called with two arguments: the start and end of the region to be written. These functions should not alter the contents of the buffer. Instead, they should return annotations. </p> <p>As a special case, a function may return with a different buffer current. Emacs takes this to mean that the current buffer contains altered text to be output. It therefore changes the <var>start</var> and <var>end</var> arguments of the <code>write-region</code> call, giving them the values of <code>point-min</code> and <code>point-max</code> in the new buffer, respectively. It also discards all previous annotations, because they should have been dealt with by this function. </p>
+</dd>
+</dl> <dl> <dt id="write-region-post-annotation-function">Variable: <strong>write-region-post-annotation-function</strong>
+</dt> <dd>
+<p>The value of this variable, if non-<code>nil</code>, should be a function. This function is called, with no arguments, after <code>write-region</code> has completed. </p> <p>If any function in <code>write-region-annotate-functions</code> returns with a different buffer current, Emacs calls <code>write-region-post-annotation-function</code> more than once. Emacs calls it with the last buffer that was current, and again with the buffer before that, and so on back to the original buffer. </p> <p>Thus, a function in <code>write-region-annotate-functions</code> can create a buffer, give this variable the local value of <code>kill-buffer</code> in that buffer, set up the buffer with altered text, and make the buffer current. The buffer will be killed after <code>write-region</code> is done. </p>
+</dd>
+</dl> <dl> <dt id="after-insert-file-functions">Variable: <strong>after-insert-file-functions</strong>
+</dt> <dd><p>Each function in this list is called by <code>insert-file-contents</code> with one argument, the number of characters inserted, and with point at the beginning of the inserted text. Each function should leave point unchanged, and return the new character count describing the inserted text as modified by the function. </p></dd>
+</dl> <p>We invite users to write Lisp programs to store and retrieve text properties in files, using these hooks, and thus to experiment with various data formats and find good ones. Eventually we hope users will produce good, general extensions we can install in Emacs. </p> <p>We suggest not trying to handle arbitrary Lisp objects as text property names or values—because a program that general is probably difficult to write, and slow. Instead, choose a set of possible data types that are reasonably flexible, and not too hard to encode. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Format-Conversion-Piecemeal.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Format-Conversion-Piecemeal.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

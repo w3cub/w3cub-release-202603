@@ -1,0 +1,138 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Quitting Windows - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="After a command uses display-buffer to put a buffer on the screen, the user may decide to hide it and return to the previous configuration of the &hellip;">
+  <meta name="keywords" content="quitting, windows, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/quitting-windows.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h3 class="section">Quitting Windows</h3>  <p>After a command uses <code>display-buffer</code> to put a buffer on the screen, the user may decide to hide it and return to the previous configuration of the Emacs display. We call that <em>quitting the window</em>. The way to do this is to call <code>quit-window</code> while the window used by <code>display-buffer</code> is the selected window. </p> <p>The right way to restore the previous configuration of the display depends on what was done to the window where the buffer now appears. It might be right to delete that window, or delete its frame, or just display another buffer in that window. One complication is that the user may have changed the window configuration since the act of displaying that buffer, and it would be undesirable to undo the user’s explicitly requested changes. </p> <p>To enable <code>quit-window</code> to do the right thing, <code>display-buffer</code> saves information about what it did in the window’s <code>quit-restore</code> parameter (see <a href="window-parameters">Window Parameters</a>). </p> <dl> <dt id="quit-window">Command: <strong>quit-window</strong> <em>&amp;optional kill window</em>
+</dt> <dd>
+<p>This command quits <var>window</var> and buries its buffer. The argument <var>window</var> must be a live window and defaults to the selected one. With prefix argument <var>kill</var> non-<code>nil</code>, it kills the buffer instead of burying it. </p>  <p>The function <code>quit-window</code> first runs <code>quit-window-hook</code>. Then it calls the function <code>quit-restore-window</code>, described next, which does the hard work. </p>
+</dd>
+</dl> <p>You can get more control by calling <code>quit-restore-window</code> instead. </p> <dl> <dt id="quit-restore-window">Function: <strong>quit-restore-window</strong> <em>&amp;optional window bury-or-kill</em>
+</dt> <dd>
+<p>This function handles <var>window</var> and its buffer after quitting. The optional argument <var>window</var> must be a live window and defaults to the selected one. The function takes account of the <var>window</var>’s <code>quit-restore</code> parameter. </p> <p>The optional argument <var>bury-or-kill</var> specifies how to deal with <var>window</var>’s buffer. The following values are meaningful: </p> <dl compact> <dt><code>nil</code></dt> <dd>
+<p>This means to not deal with the buffer in any particular way. As a consequence, if <var>window</var> is not deleted, invoking <code>switch-to-prev-buffer</code> will usually show the buffer again. </p> </dd> <dt><code>append</code></dt> <dd>
+<p>This means that if <var>window</var> is not deleted, its buffer is moved to the end of <var>window</var>’s list of previous buffers (see <a href="window-history">Window History</a>), so it’s less likely that future invocations of <code>switch-to-prev-buffer</code> will switch to it. Also, it moves the buffer to the end of the frame’s buffer list (see <a href="buffer-list">Buffer List</a>). </p> </dd> <dt><code>bury</code></dt> <dd>
+<p>This means that if <var>window</var> is not deleted, its buffer is removed from <var>window</var>’s list of previous buffers. Also, it moves the buffer to the end of the frame’s buffer list. This is the most reliable way to prevent <code>switch-to-prev-buffer</code> from switching to this buffer again, short of killing the buffer. </p> </dd> <dt><code>kill</code></dt> <dd><p>This means to kill <var>window</var>’s buffer. </p></dd> </dl> <p>The argument <var>bury-or-kill</var> also specifies what to do with <var>window</var>’s frame when <var>window</var> should be deleted, if it is the only window on its frame, and there are other frames on that frame’s terminal. If <var>bury-or-kill</var> equals <code>kill</code>, it means to delete the frame. Otherwise, the fate of the frame is determined by calling <code>frame-auto-hide-function</code> (see below) with that frame as sole argument. </p> <p>This function always sets <var>window</var>’s <code>quit-restore</code> parameter to <code>nil</code> unless it deletes the window. </p>
+</dd>
+</dl> <p>The window <var>window</var>’s <code>quit-restore</code> parameter (see <a href="window-parameters">Window Parameters</a>) should be <code>nil</code> or a list of four elements: </p> <div class="lisp"> <pre class="lisp">(<var>method</var> <var>obuffer</var> <var>owindow</var> <var>this-buffer</var>)
+</pre>
+</div> <p>The first element, <var>method</var>, is one of the four symbols <code>window</code>, <code>frame</code>, <code>same</code> and <code>other</code>. <code>frame</code> and <code>window</code> control how to delete <var>window</var>, while <code>same</code> and <code>other</code> control displaying some other buffer in it. </p> <p>Specifically, <code>window</code> means that the window has been specially created by <code>display-buffer</code>; <code>frame</code> means that a separate frame has been created; <code>same</code>, that the window has only ever displayed this buffer; <code>other</code>, that the window showed another buffer before. </p> <p>The second element, <var>obuffer</var>, is either one of the symbols <code>window</code> or <code>frame</code>, or a list of the form </p> <div class="lisp"> <pre class="lisp">(<var>prev-buffer</var> <var>prev-window-start</var> <var>prev-window-point</var> <var>height</var>)
+</pre>
+</div> <p>which says which buffer was shown in <var>window</var> before, that buffer’s window start (see <a href="window-start-and-end">Window Start and End</a>) and window point (see <a href="window-point">Window Point</a>) positions at that time, and <var>window</var>’s height at that time. If <var>prev-buffer</var> is still live when quitting <var>window</var>, quitting the window may reuse <var>window</var> to display <var>prev-buffer</var>. </p> <p>The third element, <var>owindow</var>, is the window that was selected just before the displaying was done. If quitting deletes <var>window</var>, it tries to select <var>owindow</var>. </p> <p>The fourth element, <var>this-buffer</var>, is the buffer whose displaying set the <code>quit-restore</code> parameter. Quitting <var>window</var> may delete that window only if it still shows that buffer. </p> <p>Quitting <var>window</var> tries to delete it if and only if (1) <var>method</var> is either <code>window</code> or <code>frame</code>, (2) the window has no history of previously-displayed buffers and (3) <var>this-buffer</var> equals the buffer currently displayed in <var>window</var>. If <var>window</var> is part of an atomic window (see <a href="atomic-windows">Atomic Windows</a>), quitting will try to delete the root of that atomic window instead. In either case, it tries to avoid signaling an error when <var>window</var> cannot be deleted. </p> <p>If <var>obuffer</var> is a list, and <var>prev-buffer</var> is still live, quitting displays <var>prev-buffer</var> in <var>window</var> according to the rest of the elements of <var>obuffer</var>. This includes resizing the window to <var>height</var> if it was temporarily resized to display <var>this-buffer</var>. </p> <p>Otherwise, if <var>window</var> was previously used for displaying other buffers (see <a href="window-history">Window History</a>), the most recent buffer in that history will be displayed. </p> <p>The following option specifies a function to do the right thing with a frame containing one window when quitting that window. </p> <dl> <dt id="frame-auto-hide-function">User Option: <strong>frame-auto-hide-function</strong>
+</dt> <dd>
+<p>The function specified by this option is called to automatically hide frames. This function is called with one argument—a frame. </p> <p>The function specified here is called by <code>bury-buffer</code> (see <a href="buffer-list">Buffer List</a>) when the selected window is dedicated and shows the buffer to bury. It is also called by <code>quit-restore-window</code> (see above) when the frame of the window to quit has been specially created for displaying that window’s buffer and the buffer is not killed. </p> <p>The default is to call <code>iconify-frame</code> (see <a href="visibility-of-frames">Visibility of Frames</a>). Alternatively, you may specify either <code>delete-frame</code> (see <a href="deleting-frames">Deleting Frames</a>) to remove the frame from its display, <code>make-frame-invisible</code> to make the frame invisible, <code>ignore</code> to leave the frame unchanged, or any other function that can take a frame as its sole argument. </p> <p>Note that the function specified by this option is called only if the specified frame contains just one live window and there is at least one other frame on the same terminal. </p> <p>For a particular frame, the value specified here may be overridden by that frame’s <code>auto-hide-function</code> frame parameter (see <a href="frame-interaction-parameters">Frame Interaction Parameters</a>). </p>
+</dd>
+</dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Quitting-Windows.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Quitting-Windows.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Security Considerations - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="Like any application, Emacs can be run in a secure environment, where the operating system enforces rules about access and the like. With some care &hellip;">
+  <meta name="keywords" content="security, considerations, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/security-considerations.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h3 class="section">Security Considerations</h3>   <p>Like any application, Emacs can be run in a secure environment, where the operating system enforces rules about access and the like. With some care, Emacs-based applications can also be part of a security perimeter that checks such rules. Although the default settings for Emacs work well for a typical software development environment, they may require adjustment in environments containing untrusted users that may include attackers. Here is a compendium of security issues that may be helpful if you are developing such applications. It is by no means complete; it is intended to give you an idea of the security issues involved, rather than to be a security checklist. </p> <dl compact> <dt>File local variables</dt> <dd>
+ <p>A file that Emacs visits can contain variable settings that affect the buffer visiting that file; See <a href="file-local-variables">File Local Variables</a>. Similarly, a directory can specify local variable values common to all files in that directory; see <a href="directory-local-variables">Directory Local Variables</a>. Although Emacs takes some effort to protect against misuse of these variables, a security hole can be created merely by a package setting <code>safe-local-variable</code> too optimistically, a problem that is all too common. To disable this feature for both files and directories, set <code>enable-local-variables</code> to <code>nil</code>. </p> </dd> <dt>Access control</dt> <dd>
+<p>Although Emacs normally respects access permissions of the underlying operating system, in some cases it handles accesses specially. For example, file names can have handlers that treat the files specially, with their own access checking. See <a href="magic-file-names">Magic File Names</a>. Also, a buffer can be read-only even if the corresponding file is writable, and vice versa, which can result in messages such as ‘<samp>File passwd is write-protected; try to save anyway? (yes or no)</samp>’. See <a href="read-only-buffers">Read Only Buffers</a>. </p> </dd> <dt>Authentication</dt> <dd>
+<p>Emacs has several functions that deal with passwords, e.g., <code>read-passwd</code>. See <a href="reading-a-password">Reading a Password</a>. Although these functions do not attempt to broadcast passwords to the world, their implementations are not proof against determined attackers with access to Emacs internals. For example, even if Elisp code uses <code>clear-string</code> to scrub a password from its memory after using it, remnants of the password may still reside in the garbage-collected free list. See <a href="modifying-strings">Modifying Strings</a>. </p> </dd> <dt>Code injection</dt> <dd>
+<p>Emacs can send commands to many other applications, and applications should take care that strings sent as operands of these commands are not misinterpreted as directives. For example, when using a shell command to rename a file <var>a</var> to <var>b</var>, do not simply use the string <code>mv <var>a</var> <var>b</var></code>, because either file name might start with ‘<samp>-</samp>’, or might contain shell metacharacters like ‘<samp>;</samp>’. Although functions like <code>shell-quote-argument</code> can help avoid this sort of problem, they are not panaceas; for example, on a POSIX platform <code>shell-quote-argument</code> quotes shell metacharacters but not leading ‘<samp>-</samp>’. On MS-Windows, quoting for ‘<samp>%</samp>’ assumes none of the environment variables have ‘<samp>^</samp>’ in their name. See <a href="shell-arguments">Shell Arguments</a>. Typically it is safer to use <code>call-process</code> than a subshell. See <a href="synchronous-processes">Synchronous Processes</a>. And it is safer yet to use builtin Emacs functions; for example, use <code>(rename-file "<var>a</var>" "<var>b</var>" t)</code> instead of invoking <code>mv</code>. See <a href="changing-files">Changing Files</a>. </p> </dd> <dt>Coding systems</dt> <dd>
+<p>Emacs attempts to infer the coding systems of the files and network connections it accesses. See <a href="coding-systems">Coding Systems</a>. If Emacs infers incorrectly, or if the other parties to the network connection disagree with Emacs’s inferences, the resulting system could be unreliable. Also, even when it infers correctly, Emacs often can use bytes that other programs cannot. For example, although to Emacs the null byte is just a character like any other, many other applications treat it as a string terminator and mishandle strings or files containing null bytes. </p> </dd> <dt>Environment and configuration variables</dt> <dd>
+<p>POSIX specifies several environment variables that can affect how Emacs behaves. Any environment variable whose name consists entirely of uppercase ASCII letters, digits, and the underscore may affect the internal behavior of Emacs. Emacs uses several such variables, e.g., <code>EMACSLOADPATH</code>. See <a href="library-search">Library Search</a>. On some platforms some environment variables (e.g., <code>PATH</code>, <code>POSIXLY_CORRECT</code>, <code>SHELL</code>, <code>TMPDIR</code>) need to have properly-configured values in order to get standard behavior for any utility Emacs might invoke. Even seemingly-benign variables like <code>TZ</code> may have security implications. See <a href="system-environment">System Environment</a>. </p> <p>Emacs has customization and other variables with similar considerations. For example, if the variable <code>shell-file-name</code> specifies a shell with nonstandard behavior, an Emacs-based application may misbehave. </p> </dd> <dt>Installation</dt> <dd>
+<p>When Emacs is installed, if the installation directory hierarchy can be modified by untrusted users, the application cannot be trusted. This applies also to the directory hierarchies of the programs that Emacs uses, and of the files that Emacs reads and writes. </p> </dd> <dt>Network access</dt> <dd>
+<p>Emacs often accesses the network, and you may want to configure it to avoid network accesses that it would normally do. For example, unless you set <code>tramp-mode</code> to <code>nil</code>, file names using a certain syntax are interpreted as being network files, and are retrieved across the network. See <a href="https://www.gnu.org/software/emacs/manual/html_node/tramp/index.html#Top">The Tramp Manual</a> in <cite>The Tramp Manual</cite>. </p> </dd> <dt>Race conditions</dt> <dd>
+<p>Emacs applications have the same sort of race-condition issues that other applications do. For example, even when <code>(file-readable-p "foo.txt")</code> returns <code>t</code>, it could be that <samp>foo.txt</samp> is unreadable because some other program changed the file’s permissions between the call to <code>file-readable-p</code> and now. See <a href="testing-accessibility">Testing Accessibility</a>. </p> </dd> <dt>Resource limits</dt> <dd><p>When Emacs exhausts memory or other operating system resources, its behavior can be less reliable, in that computations that ordinarily run to completion may abort back to the top level. This may cause Emacs to neglect operations that it normally would have done. </p></dd> </dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Security-Considerations.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Security-Considerations.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

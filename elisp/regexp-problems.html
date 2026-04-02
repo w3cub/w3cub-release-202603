@@ -1,0 +1,125 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Problems With Regular Expressions - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content="The Emacs regexp implementation, like many of its kind, is generally robust but occasionally causes trouble in either of two ways&#58; matching may &hellip;">
+  <meta name="keywords" content="problems, with, regular, expressions, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/regexp-problems.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h4 class="subsection">Problems with Regular Expressions</h4>    <p>The Emacs regexp implementation, like many of its kind, is generally robust but occasionally causes trouble in either of two ways: matching may run out of internal stack space and signal an error, and it can take a long time to complete. The advice below will make these symptoms less likely and help alleviate problems that do arise. </p> <ul> <li> Anchor regexps at the beginning of a line, string or buffer using zero-width assertions (‘<samp>^</samp>’ and <code>\`</code>). This takes advantage of fast paths in the implementation and can avoid futile matching attempts. Other zero-width assertions may also bring benefits by causing a match to fail early. </li>
+<li> Avoid or-patterns in favor of character alternatives: write ‘<samp>[ab]</samp>’ instead of ‘<samp>a\|b</samp>’. Recall that ‘<samp>\s-</samp>’ and ‘<samp>\sw</samp>’ are equivalent to ‘<samp>[[:space:]]</samp>’ and ‘<samp>[[:word:]]</samp>’, respectively. </li>
+<li> Since the last branch of an or-pattern does not add a backtrack point on the stack, consider putting the most likely matched pattern last. For example, ‘<samp>^\(?:a\|.b\)*c</samp>’ will run out of stack if trying to match a very long string of ‘<samp>a</samp>’s, but the equivalent ‘<samp>^\(?:.b\|a\)*c</samp>’ will not. <p>(It is a trade-off: successfully matched or-patterns run faster with the most frequently matched pattern first.) </p> </li>
+<li> Try to ensure that any part of the text can only match in a single way. For example, ‘<samp>a*a*</samp>’ will match the same set of strings as ‘<samp>a*</samp>’, but the former can do so in many ways and will therefore cause slow backtracking if the match fails later on. Make or-pattern branches mutually exclusive if possible, so that matching will not go far into more than one branch before failing. <p>Be especially careful with nested repetitions: they can easily result in very slow matching in the presence of ambiguities. For example, ‘<samp>\(?:a*b*\)+c</samp>’ will take a long time attempting to match even a moderately long string of ‘<samp>a</samp>’s before failing. The equivalent ‘<samp>\(?:a\|b\)*c</samp>’ is much faster, and ‘<samp>[ab]*c</samp>’ better still. </p> </li>
+<li> Don’t use capturing groups unless they are really needed; that is, use ‘<samp>\(?:…\)</samp>’ instead of ‘<samp>\(…\)</samp>’ for bracketing purposes. </li>
+<li> Consider using <code>rx</code> (see <a href="rx-notation">Rx Notation</a>); it can optimize some or-patterns automatically and will never introduce capturing groups unless explicitly requested. </li>
+</ul> <p>If you run into regexp stack overflow despite following the above advice, don’t be afraid of performing the matching in multiple function calls, each using a simpler regexp where backtracking can more easily be contained. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Regexp-Problems.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Regexp-Problems.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

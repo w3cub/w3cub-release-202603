@@ -1,0 +1,131 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Advising Named Functions - Elisp - W3cubDocs</title>
+  
+  <meta name="description" content=" A common use of advice is for named functions and macros. You could just use add-function as in&#58; ">
+  <meta name="keywords" content="advising, named, functions, elisp">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elisp/advising-named-functions.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elisp.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elisp/" class="_nav-link" title="" style="margin-left:0;">Elisp</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elisp">
+				
+				
+<h4 class="subsection">Advising Named Functions</h4>  <p>A common use of advice is for named functions and macros. You could just use <code>add-function</code> as in: </p> <div class="example"> <pre class="example">(add-function :around (symbol-function '<var>fun</var>) #'his-tracing-function)
+</pre>
+</div> <p>But you should use <code>advice-add</code> and <code>advice-remove</code> for that instead. This separate set of functions to manipulate pieces of advice applied to named functions, offers the following extra features compared to <code>add-function</code>: they know how to deal with macros and autoloaded functions, they let <code>describe-function</code> preserve the original docstring as well as document the added advice, and they let you add and remove advice before a function is even defined. </p> <p><code>advice-add</code> can be useful for altering the behavior of existing calls to an existing function without having to redefine the whole function. However, it can be a source of bugs, since existing callers to the function may assume the old behavior, and work incorrectly when the behavior is changed by advice. Advice can also cause confusion in debugging, if the person doing the debugging does not notice or remember that the function has been modified by advice. </p> <p>For these reasons, advice should be reserved for the cases where you cannot modify a function’s behavior in any other way. If it is possible to do the same thing via a hook, that is preferable (see <a href="hooks">Hooks</a>). If you simply want to change what a particular key does, it may be better to write a new command, and remap the old command’s key bindings to the new one (see <a href="remapping-commands">Remapping Commands</a>). </p> <p>If you are writing code for release, for others to use, try to avoid including advice in it. If the function you want to advise has no hook to do the job, please talk with the Emacs developers about adding a suitable hook. Especially, Emacs’s own source files should not put advice on functions in Emacs. (There are currently a few exceptions to this convention, but we aim to correct them.) It is generally cleaner to create a new hook in <code>foo</code>, and make <code>bar</code> use the hook, than to have <code>bar</code> put advice in <code>foo</code>. </p> <p>Special forms (see <a href="special-forms">Special Forms</a>) cannot be advised, however macros can be advised, in much the same way as functions. Of course, this will not affect code that has already been macro-expanded, so you need to make sure the advice is installed before the macro is expanded. </p> <p>It is possible to advise a primitive (see <a href="what-is-a-function">What Is a Function</a>), but one should typically <em>not</em> do so, for two reasons. Firstly, some primitives are used by the advice mechanism, and advising them could cause an infinite recursion. Secondly, many primitives are called directly from C, and such calls ignore advice; hence, one ends up in a confusing situation where some calls (occurring from Lisp code) obey the advice and other calls (from C code) do not. </p> <dl> <dt id="define-advice">Macro: <strong>define-advice</strong> <em>symbol (where lambda-list &amp;optional name depth) &amp;rest body</em>
+</dt> <dd><p>This macro defines a piece of advice and adds it to the function named <var>symbol</var>. The advice is an anonymous function if <var>name</var> is <code>nil</code> or a function named <code>symbol@name</code>. See <code>advice-add</code> for explanation of other arguments. </p></dd>
+</dl> <dl> <dt id="advice-add">Function: <strong>advice-add</strong> <em>symbol where function &amp;optional props</em>
+</dt> <dd><p>Add the advice <var>function</var> to the named function <var>symbol</var>. <var>where</var> and <var>props</var> have the same meaning as for <code>add-function</code> (see <a href="core-advising-primitives">Core Advising Primitives</a>). </p></dd>
+</dl> <dl> <dt id="advice-remove">Function: <strong>advice-remove</strong> <em>symbol function</em>
+</dt> <dd><p>Remove the advice <var>function</var> from the named function <var>symbol</var>. <var>function</var> can also be the <code>name</code> of a piece of advice. </p></dd>
+</dl> <dl> <dt id="advice-member-p">Function: <strong>advice-member-p</strong> <em>function symbol</em>
+</dt> <dd><p>Return non-<code>nil</code> if the advice <var>function</var> is already in the named function <var>symbol</var>. <var>function</var> can also be the <code>name</code> of a piece of advice. </p></dd>
+</dl> <dl> <dt id="advice-mapc">Function: <strong>advice-mapc</strong> <em>function symbol</em>
+</dt> <dd><p>Call <var>function</var> for every piece of advice that was added to the named function <var>symbol</var>. <var>function</var> is called with two arguments: the advice function and its properties. </p></dd>
+</dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1990-1996, 1998-2022 Free Software Foundation, Inc. <br>Licensed under the GNU GPL license.<br>
+    <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Named-Functions.html" class="_attribution-link">https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Named-Functions.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
