@@ -1,0 +1,223 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Ngx_mgmt_module - Nginx - W3cubDocs</title>
+  
+  <meta name="description" content="The ngx_mgmt_module module enables NGINX Plus license verification and usage reporting. This is mandatory for each nginx&#47;1.27.2 (nginx-plus-r33 &hellip;">
+  <meta name="keywords" content="module, ngx, mgmt, nginx">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/nginx/ngx_mgmt_module.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/nginx.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/nginx/" class="_nav-link" title="" style="margin-left:0;">nginx</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _nginx">
+				
+				
+<h1>Module ngx_mgmt_module</h1>
+<ul>
+<li><a href="#example">Example Configuration</a></li>
+<li><a href="#directives">Directives</a></li>
+<li><a href="#mgmt">mgmt</a></li>
+<li><a href="#enforce_initial_report">enforce_initial_report</a></li>
+<li><a href="#license_token">license_token</a></li>
+<li><a href="#proxy">proxy</a></li>
+<li><a href="#proxy_username">proxy_username</a></li>
+<li><a href="#proxy_password">proxy_password</a></li>
+<li><a href="#resolver">resolver</a></li>
+<li><a href="#ssl_crl">ssl_crl</a></li>
+<li><a href="#ssl_trusted_certificate">ssl_trusted_certificate</a></li>
+<li><a href="#ssl_verify">ssl_verify</a></li>
+<li><a href="#state_path">state_path</a></li>
+<li><a href="#usage_report">usage_report</a></li>
+</ul> <p id="summary"> The <code>ngx_mgmt_module</code> module enables NGINX Plus license verification and usage reporting. This is mandatory for each <a href="https://docs.nginx.com/nginx/releases/#nginxplusrelease-33-r33"><code>nginx/1.27.2
+(nginx-plus-r33)</code></a> instance. </p>
+<p> A JWT license file named <code>license.jwt</code> should be located at <code>/etc/nginx/</code> for Linux or <code>/usr/local/etc/nginx/</code> for FreeBSD or at the path specified by the <a href="#license_token">license_token</a> directive. The license file is available from <a href="https://my.f5.com">MyF5</a>. </p>
+<p> Usage report is sent directly or via <a href="#proxy">proxy</a> to F5 licensing endpoint <a href="#usage_report">every hour</a> using the <a href="#ssl_verify">secure</a> connection. Optionally, in network-restricted environments reporting can be <a href="#usage_report">configured</a> to <a href="https://docs.nginx.com/nginx-management-suite/about/">F5 NGINX Instance Manager</a> from which the report can be sent to F5 licensing endpoint. </p>
+<p> By default, if the <a href="#enforce_initial_report">initial usage report</a> is not received by F5 licensing endpoint, nginx will stop processing traffic. </p>
+ <blockquote class="note"> This module is available as part of our <a href="https://www.f5.com/products/nginx">commercial subscription</a>. </blockquote>
+ <h4 id="example">Example Configuration</h4>
+ <pre data-language="nginx">
+mgmt {
+    # in case if custom path is required
+    license_token custom/file/path/license.jwt;
+
+    # in case of reporting to NGINX Instance Manager
+    usage_report endpoint=NIM_FQDN;
+}
+</pre>
+ <h4 id="directives">Directives</h4>
+<div class="directive" id="mgmt"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>mgmt</strong> { ... }</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>main</code><br> </td> </tr> </table></div>
+<p> Provides the configuration file context in which usage reporting and license management directives are specified. </p>
+<div class="directive" id="enforce_initial_report">
+<table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>enforce_initial_report</strong> on | off;</code><br> </td> </tr> <tr> <th> Default: </th> <td> <code>enforce_initial_report on;</code> </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table>
+<p>This directive appeared in version 1.27.2. </p>
+</div>
+<p> Enables or disables the 180-day grace period for sending the initial usage report. </p>
+<p> The initial usage report is sent immediately upon nginx first start after installation. By default, if the initial report is not received by F5 licensing endpoint, nginx stops processing traffic until the report is successfully delivered. Setting the directive value to <code>off</code> enables the 180-day grace period during which the initial usage report must be received by F5 licensing endpoint. </p>
+<div class="directive" id="license_token">
+<table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>license_token</strong> <i>file</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> <code>license_token license.jwt;</code> </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table>
+<p>This directive appeared in version 1.27.2. </p>
+</div>
+<p> Specifies a JWT license <code><i>file</i></code>. By default, the <code><i>license.jwt</i></code> file is expected to be at <code>/etc/nginx/</code> for Linux or at <code>/usr/local/etc/nginx/</code> for FreeBSD. </p>
+<div class="directive" id="proxy">
+<table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>proxy</strong> <i>host</i>:<i>port</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table>
+<p>This directive appeared in version 1.27.4. </p>
+</div>
+<p> Sets the HTTP CONNECT proxy used for sending the usage report. </p>
+<div class="directive" id="proxy_username">
+<table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>proxy_username</strong> <i>string</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table>
+<p>This directive appeared in version 1.27.4. </p>
+</div>
+<p> Sets the user name used for authentication on the <a href="#proxy">proxy</a>. </p>
+<div class="directive" id="proxy_password">
+<table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>proxy_password</strong> <i>string</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table>
+<p>This directive appeared in version 1.27.4. </p>
+</div>
+<p> Sets the password used for authentication on the <a href="#proxy">proxy</a>. </p>
+<p> The password is sent unencrypted by default. If the proxy supports TLS, the connection to the proxy can be protected with the <a href="stream/ngx_stream_proxy_module">stream</a> module: </p> <pre data-language="nginx">
+mgmt {
+    proxy          127.0.0.1:8080;
+    proxy_username &lt;name&gt;;
+    proxy_password &lt;password&gt;;
+}
+
+stream {
+    server {
+        listen 127.0.0.1:8080;
+        
+        proxy_ssl                     on;
+        proxy_ssl_verify              on;
+        proxy_ssl_trusted_certificate &lt;proxy_ca_file&gt;;
+
+        proxy_pass &lt;proxy_host&gt;:&lt;proxy_port&gt;;
+    }
+}
+</pre>
+
+<div class="directive" id="resolver"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>resolver</strong> 
+    <i>address</i> ...
+    [valid=<i>time</i>]
+    [ipv4=on|off]
+    [ipv6=on|off]
+    [status_zone=<i>zone</i>];</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table></div>
+<p> Configures name servers used to resolve usage reporting endpoint name. By default, the system resolver is used. </p>
+<p> See <a href="http/ngx_http_core_module#resolver">resolver</a> for details. </p>
+<div class="directive" id="ssl_crl"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>ssl_crl</strong> <i>file</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table></div>
+<p> Specifies a <code><i>file</i></code> with revoked certificates (CRL) in the PEM format used to <a href="#ssl_verify">verify</a> the certificate of the usage reporting endpoint. </p>
+<div class="directive" id="ssl_trusted_certificate"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>ssl_trusted_certificate</strong> <i>file</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> <code>ssl_trusted_certificate system CA bundle;</code> </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table></div>
+<p> Specifies a <code><i>file</i></code> with trusted CA certificates in the PEM format used to <a href="#ssl_verify">verify</a> the certificate of the usage reporting endpoint. </p>
+<div class="directive" id="ssl_verify"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>ssl_verify</strong> on | off;</code><br> </td> </tr> <tr> <th> Default: </th> <td> <code>ssl_verify on;</code> </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table></div>
+<p> Enables or disables verification of the usage reporting endpoint certificate. </p>
+ <blockquote class="note"> Before 1.27.2, the default value was <code>off</code>. </blockquote>
+
+<div class="directive" id="state_path">
+<table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>state_path</strong> <i>path</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table>
+<p>This directive appeared in version 1.27.2. </p>
+</div>
+<p> Defines a directory for storing state files (<code>nginx-mgmt-*</code>) created by the <code>ngx_mgmt_module</code> module. The default directory for Linux is <code>/var/lib/nginx/state</code>, for FreeBSD is <code>/var/db/nginx/state</code>. </p>
+<div class="directive" id="usage_report"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>usage_report</strong>  [endpoint=<i>address</i>]
+         [interval=<i>time</i>];</code><br> </td> </tr> <tr> <th> Default: </th> <td> <code>usage_report endpoint=product.connect.nginx.com interval=1h;</code> </td> </tr> <tr> <th> Context: </th> <td> <code>mgmt</code><br> </td> </tr> </table></div>
+<p> Sets the <code><i>address</i></code> and <code><i>port</i></code> of the usage reporting endpoint. The <code>interval</code> parameter sets an interval between two consecutive reports. </p> <blockquote class="note"> Before 1.27.2, the default values were <code>nginx-mgmt.local</code> and <code>30m</code>. </blockquote>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002-2021 Igor Sysoev<br>© 2011-2025 Nginx, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://nginx.org/en/docs/ngx_mgmt_module.html" class="_attribution-link">https://nginx.org/en/docs/ngx_mgmt_module.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

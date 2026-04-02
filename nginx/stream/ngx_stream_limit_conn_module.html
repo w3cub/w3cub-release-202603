@@ -1,0 +1,177 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Ngx_stream_limit_conn_module - Nginx - W3cubDocs</title>
+  
+  <meta name="description" content="The ngx_stream_limit_conn_module module (1.9.3) is used to limit the number of connections per the defined key, in particular, the number of &hellip;">
+  <meta name="keywords" content="module, ngx, stream, limit, conn, nginx">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/nginx/stream/ngx_stream_limit_conn_module.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/nginx.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/nginx/" class="_nav-link" title="" style="margin-left:0;">nginx</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _nginx">
+				
+				
+<h1>Module ngx_stream_limit_conn_module</h1>
+<ul>
+<li><a href="#example">Example Configuration</a></li>
+<li><a href="#directives">Directives</a></li>
+<li><a href="#limit_conn">limit_conn</a></li>
+<li><a href="#limit_conn_dry_run">limit_conn_dry_run</a></li>
+<li><a href="#limit_conn_log_level">limit_conn_log_level</a></li>
+<li><a href="#limit_conn_zone">limit_conn_zone</a></li>
+<li><a href="#variables">Embedded Variables</a></li>
+</ul> <p id="summary"> The <code>ngx_stream_limit_conn_module</code> module (1.9.3) is used to limit the number of connections per the defined key, in particular, the number of connections from a single IP address. </p> <h4 id="example">Example Configuration</h4>
+ <pre data-language="nginx">
+stream {
+    limit_conn_zone $binary_remote_addr zone=addr:10m;
+
+    ...
+
+    server {
+
+        ...
+
+        limit_conn           addr 1;
+        limit_conn_log_level error;
+    }
+}
+</pre>
+ <h4 id="directives">Directives</h4>
+<div class="directive" id="limit_conn"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>limit_conn</strong> <i>zone</i> <i>number</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>stream</code>, <code>server</code><br> </td> </tr> </table></div>
+<p> Sets the shared memory zone and the maximum allowed number of connections for a given key value. When this limit is exceeded, the server will close the connection. For example, the directives </p> <pre data-language="nginx">
+limit_conn_zone $binary_remote_addr zone=addr:10m;
+
+server {
+    ...
+    limit_conn addr 1;
+}
+</pre>
+<p> allow only one connection per an IP address at a time. </p>
+<p> When several <code>limit_conn</code> directives are specified, any configured limit will apply. </p>
+<p> These directives are inherited from the previous configuration level if and only if there are no <code>limit_conn</code> directives defined on the current level. </p>
+<div class="directive" id="limit_conn_dry_run">
+<table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>limit_conn_dry_run</strong> on | off;</code><br> </td> </tr> <tr> <th> Default: </th> <td> <code>limit_conn_dry_run off;</code> </td> </tr> <tr> <th> Context: </th> <td> <code>stream</code>, <code>server</code><br> </td> </tr> </table>
+<p>This directive appeared in version 1.17.6. </p>
+</div>
+<p> Enables the dry run mode. In this mode, the number of connections is not limited, however, in the shared memory zone, the number of excessive connections is accounted as usual. </p>
+<div class="directive" id="limit_conn_log_level"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>limit_conn_log_level</strong> 
+info |
+notice |
+warn |
+error;</code><br> </td> </tr> <tr> <th> Default: </th> <td> <code>limit_conn_log_level error;</code> </td> </tr> <tr> <th> Context: </th> <td> <code>stream</code>, <code>server</code><br> </td> </tr> </table></div>
+<p> Sets the desired logging level for cases when the server limits the number of connections. </p>
+<div class="directive" id="limit_conn_zone"><table cellspacing="0"> <tr> <th> Syntax: </th> <td> <code><strong>limit_conn_zone</strong> 
+    <i>key</i>
+    zone=<i>name</i>:<i>size</i>;</code><br> </td> </tr> <tr> <th> Default: </th> <td> — </td> </tr> <tr> <th> Context: </th> <td> <code>stream</code><br> </td> </tr> </table></div>
+<p> Sets parameters for a shared memory zone that will keep states for various keys. In particular, the state includes the current number of connections. The <code><i>key</i></code> can contain text, variables, and their combinations (1.11.2). Connections with an empty key value are not accounted. Usage example: </p> <pre data-language="nginx">
+limit_conn_zone $binary_remote_addr zone=addr:10m;
+</pre>
+<p> Here, the key is a client IP address set by the <code>$binary_remote_addr</code> variable. The size of <code>$binary_remote_addr</code> is 4 bytes for IPv4 addresses or 16 bytes for IPv6 addresses. The stored state always occupies 32 or 64 bytes on 32-bit platforms and 64 bytes on 64-bit platforms. One megabyte zone can keep about 32 thousand 32-byte states or about 16 thousand 64-byte states. If the zone storage is exhausted, the server will close the connection. </p>
+ <blockquote class="note"> Additionally, as part of our <a href="https://www.f5.com/products/nginx">commercial subscription</a>, the <a href="../http/ngx_http_api_module#stream_limit_conns_">status information</a> for each such shared memory zone can be <a href="../http/ngx_http_api_module#getStreamLimitConnZone">obtained</a> or <a href="../http/ngx_http_api_module#deleteStreamLimitConnZoneStat">reset</a> with the <a href="../http/ngx_http_api_module">API</a> since 1.17.7. </blockquote>
+ <h4 id="variables">Embedded Variables</h4>
+ <dl class="compact"> <dt id="var_limit_conn_status"><code>$limit_conn_status</code></dt> <dd> keeps the result of limiting the number of connections (1.17.6): <code>PASSED</code>, <code>REJECTED</code>, or <code>REJECTED_DRY_RUN</code> </dd> </dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002-2021 Igor Sysoev<br>© 2011-2025 Nginx, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://nginx.org/en/docs/stream/ngx_stream_limit_conn_module.html" class="_attribution-link">https://nginx.org/en/docs/stream/ngx_stream_limit_conn_module.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
