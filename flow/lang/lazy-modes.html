@@ -1,0 +1,123 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Lazy Modes - Flow - W3cubDocs</title>
+  
+  <meta name="description" content="By default, the Flow server will typecheck all your code. This way it can answer questions like “are there any Flow errors anywhere in my code”. &hellip;">
+  <meta name="keywords" content="lazy, modes, flow">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/flow/lang/lazy-modes.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/flow.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/flow/" class="_nav-link" title="" style="margin-left:0;">Flow</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Lazy Modes</h1> <p>By default, the Flow server will typecheck all your code. This way it can answer questions like “are there any Flow errors anywhere in my code”. This is very useful for tooling, like a continuous integration hook which prevents code changes which introduce Flow errors.</p> <p>However, sometimes a Flow user might not care about all the code. If they are editing a file <code>foo.js</code>, they might only want Flow to typecheck the subset of the repository needed to answer questions about <code>foo.js</code>. Since Flow would only check a smaller number of files, this would be faster. This is the motivation behind Flow’s lazy mode.</p> <h2 id="toc-classifying-files">Classifying Files </h2> <p>Lazy mode classifes your code into four categories:</p> <ol> <li>
+<strong>Focused files</strong>. These are the files which the user cares about.</li> <li>
+<strong>Dependent files</strong>. These are the files which depend on the focused files. Changes to the focused files might cause type errors in the dependent files.</li> <li>
+<strong>Dependency files</strong>. These are the files which are needed in order to typecheck the focused or dependent files.</li> <li>
+<strong>Unchecked files</strong>. All other files.</li> </ol> <p>Lazy mode will still find all the JavaScript files and parse them. But it won’t typecheck the unchecked files.</p> <h2 id="toc-choosing-focused-files">Choosing Focused Files </h2> <p>Focused files are all of the files that have changed in one of the following ways.</p> <p>Flow will focus files when they change on disk, using Flow’s built-in file watcher (“dfind”) or Watchman.</p> <p>So, all files that change while Flow is running will be focused. But what about files that change when Flow is not running? If you’re using Git or Mercurial, Flow will ask it for all of the files that have changed since the mergebase with “master” (the common ancestor of the current commit and the master branch).</p> <p>If you’re not using “master” (e.g. “main” instead), you can change this with the <code>file_watcher.mergebase_with</code> config. If you’re working from a clone, you might want to set this to “origin/master” (for Git), which will focus all files that have changed locally, even if you commit to your local “master” branch.</p> <p>The net result is that Flow will find the same errors in lazy mode as in a full check, so long as there are no errors upstream. For example, if your CI ensures that there are no errors in “master,” then it’s redundant for Flow to check all of the unchanged files for errors that can’t exist.</p> <h2 id="toc-using-lazy-mode">Using Lazy Mode </h2> <p>To enable lazy mode, set <code>lazy_mode=true</code> in the <code>.flowconfig</code>.</p> <p>To start a Flow server in lazy mode manually, run</p> <pre data-language="bash">flow server --lazy-mode true</pre> <h2 id="toc-forcing-flow-to-treat-a-file-as-focused">Forcing Flow to Treat a File as Focused </h2> <p>You can force Flow to treat one or more files as focused from the CLI.</p> <pre data-language="bash">flow force-recheck --focus ./path/to/A.js /path/to/B.js</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2013–present Facebook Inc.<br>Licensed under the MIT License.<br>
+    <a href="https://flow.org/en/docs/lang/lazy-modes" class="_attribution-link">https://flow.org/en/docs/lang/lazy-modes</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
