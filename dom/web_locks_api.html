@@ -1,0 +1,294 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Web Locks API - Web APIs - W3cubDocs</title>
+  
+  <meta name="description" content=" Secure context&#58; This feature is available only in secure contexts (HTTPS), in some or all supporting browsers. ">
+  <meta name="keywords" content="web, locks, api, apis, dom">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/dom/web_locks_api.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/dom.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/dom/" class="_nav-link" title="" style="margin-left:0;">Web APIs</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _mdn">
+				
+				
+<h1>Web Locks API</h1>    <div class="notecard secure"><p><strong>Secure context:</strong> This feature is available only in <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts">secure contexts</a> (HTTPS), in some or all <a href="#browser_compatibility">supporting browsers</a>.</p></div> <div class="notecard note"><p><strong>Note:</strong> This feature is available in <a href="web_workers_api">Web Workers</a>.</p></div> <p>The <strong>Web Locks API</strong> allows scripts running in one tab or worker to asynchronously acquire a lock, hold it while work is performed, then release it. While held, no other script executing in the same origin can acquire the same lock, which allows a web app running in multiple tabs or workers to coordinate work and the use of resources.</p>     <mdn-survey></mdn-survey>  <h2 id="concepts_and_usage" class="heading">Concepts and Usage</h2> <p>A lock is an abstract concept representing some potentially shared resource, identified by a name chosen by the web app. For example, if a web app running in multiple tabs wants to ensure that only one tab is syncing data between the network and Indexed DB, each tab could try to acquire a "my_net_db_sync" lock, but only one tab will succeed (the <a href="https://en.wikipedia.org/wiki/Leader_election" target="_blank">leader election pattern</a>.)</p> <p>The API is used as follows:</p> <ol> <li>The lock is requested.</li> <li>Work is done while holding the lock in an asynchronous task.</li> <li>The lock is automatically released when the task completes.</li> </ol> <div class="code-example"><pre data-language="js">navigator.locks.request("my_resource", async (lock) =&gt; {
+  // The lock has been acquired.
+  await do_something();
+  await do_something_else();
+  // Now the lock will be released.
+});
+</pre></div> <p>While a lock is held, requests for the same lock from this execution context, or from other tabs/workers, will be queued. The first queued request will be granted only when the lock is released.</p> <p>The API provides optional functionality that may be used as needed, including:</p> <ul> <li>returning values from the asynchronous task</li> <li>shared and exclusive lock modes</li> <li>conditional acquisition</li> <li>diagnostics to query the state of locks in an origin</li> <li>an escape hatch to protect against deadlocks</li> </ul> <p>Locks are scoped to origins; the locks acquired by a tab from <code>https://example.com</code> have no effect on the locks acquired by a tab from <code>https://example.org:8080</code> as they are separate origins.</p> <p>The main entry point is <a href="lockmanager/request"><code>navigator.locks.request()</code></a> which requests a lock. It takes a lock name, an optional set of options, and a callback. The callback is invoked when the lock is granted. The lock is automatically released when the callback returns, so usually the callback is an <em>async function</em>, which causes the lock to be released only when the async function has completely finished.</p> <p>The <code>request()</code> method itself returns a promise which resolves once the lock has been released; within an async function, a script can <code>await</code> the call to make the asynchronous code flow linearly. For example:</p> <div class="code-example"><pre data-language="js">await do_something_without_lock();
+
+// Request the lock.
+await navigator.locks.request("my_resource", async (lock) =&gt; {
+  // The lock has been acquired.
+  await do_something_with_lock();
+  await do_something_else_with_lock();
+  // Now the lock will be released.
+});
+// The lock has been released.
+
+await do_something_else_without_lock();
+</pre></div>  <h3 id="options" class="heading">Options</h3> <p>Several options can be passed when requesting a lock:</p> <ul> <li>
+<code>mode</code>: The default mode is "exclusive", but "shared" can be specified. There can be only one "exclusive" holder of a lock, but multiple "shared" requests can be granted at the same time. This can be used to implement the <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock" target="_blank">readers-writer pattern</a>.</li> <li>
+<code>ifAvailable</code>: If specified, the lock request will fail if the lock cannot be granted immediately without waiting. The callback is invoked with <code>null</code>.</li> <li>
+<code>steal</code>: If specified, then any held locks with the same name will be released, and the request will be granted, preempting any queued requests for it.</li> <li>
+<code>signal</code>: An <a href="abortsignal"><code>AbortSignal</code></a> can be passed in, allowing a lock request to be aborted. This can be used to implement a timeout on requests.</li> </ul>  <h3 id="monitoring" class="heading">Monitoring</h3> <p>The <a href="lockmanager/query"><code>navigator.locks.query()</code></a> method can be used by scripts to introspect the state of the lock manager for the origin. This can be useful when debugging, for example, identifying why a lock could not be acquired. The results are a snapshot of the lock manager state, which identifies held and requested locks and some additional data (e.g., mode) about each, at the time the snapshot was taken.</p>  <h3 id="advanced_use" class="heading">Advanced use</h3> <p>For more complicated cases, such as holding the lock for an arbitrary amount of time, the callback can return a promise explicitly resolved by the script:</p> <div class="code-example"><pre data-language="js">// Capture promise control functions:
+const { promise, resolve, reject } = Promise.withResolvers();
+
+// Request the lock:
+navigator.locks.request(
+  "my_resource",
+  // Lock is acquired.
+  (lock) =&gt; promise, // Now lock will be held until either resolve() or reject() is called.
+);
+</pre></div>  <h3 id="deadlocks" class="heading">Deadlocks</h3> <p>A deadlock occurs when a process can no longer make progress because each part is waiting on a request that cannot be satisfied. This can occur with this API in complex use-cases, for example, if multiple locks are requested out-of-order. If tab 1 holds lock A and tab 2 holds lock B, then tab 1 attempts to also acquire lock B and tab 2 attempts to also acquire lock A, neither request can be granted. Web applications can avoid this through several strategies, such as ensuring lock requests are not nested, or are always well ordered, or have timeouts. Note that such deadlocks only affect the locks themselves and code depending on them; the browser, other tabs, and other script in the page is not affected.</p>  <h2 id="interfaces" class="heading">Interfaces</h2> <dl> <dt id="lock"><a href="lock"><code>Lock</code></a></dt> <dd> <p>Provides the name and mode of a previously requested lock, which is received in the callback to <a href="lockmanager/request"><code>LockManager.request()</code></a>.</p> </dd> <dt id="lockmanager"><a href="lockmanager"><code>LockManager</code></a></dt> <dd> <p>Provides methods for requesting a new <a href="lock"><code>Lock</code></a> object and querying for an existing <a href="lock"><code>Lock</code></a> object. To get an instance of <a href="lockmanager"><code>LockManager</code></a>, call <a href="navigator/locks"><code>navigator.locks</code></a>.</p> </dd> </dl>  <h3 id="extensions_to_other_interfaces" class="heading">Extensions to other interfaces</h3> <dl> <dt id="navigator.locks">
+<a href="navigator/locks"><code>Navigator.locks</code></a> <span class="badge inline readonly">Read only</span>
+</dt> <dd> <p>Returns a <a href="lockmanager"><code>LockManager</code></a> object that provides methods for requesting a new <a href="lock"><code>Lock</code></a> object and querying for an existing <a href="lock"><code>Lock</code></a> object.</p> </dd> <dt id="workernavigator.locks">
+<a href="workernavigator/locks"><code>WorkerNavigator.locks</code></a> <span class="badge inline readonly">Read only</span>
+</dt> <dd> <p>Returns a <a href="lockmanager"><code>LockManager</code></a> object which provides methods for requesting a new <a href="lock"><code>Lock</code></a> object and querying for an existing <a href="lock"><code>Lock</code></a> object.</p> </dd> </dl>  <h2 id="specifications" class="heading">Specifications</h2> <div class="_table"><table> <thead> <tr> <th scope="col">Specification</th> </tr> </thead> <tbody> <tr> <td><a href="https://w3c.github.io/web-locks/" rel="noopener" target="_blank">Web Locks API&gt;</a></td> </tr> </tbody> </table></div>  <h2 id="browser_compatibility" class="heading">Browser compatibility</h2> &gt;  <h3 id="api.LockManager" class="heading">api.LockManager</h3> <div class="_table"><table>
+<thead>
+<tr id="bct-browser-type">
+<th></th>
+<th colspan="5">Desktop</th>
+<th colspan="7">Mobile</th>
+</tr>
+<tr id="bct-browsers">
+<th></th>
+<th>Chrome</th>
+<th>Edge</th>
+<th>Firefox</th>
+<th>Opera</th>
+<th>Safari</th>
+<th>Chrome Android</th>
+<th>Firefox for Android</th>
+<th>Opera Android</th>
+<th>Safari on IOS</th>
+<th>Samsung Internet</th>
+<th>WebView Android</th>
+<th>WebView on iOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th><code>Web_Locks_API</code></th>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">79</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">56</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">48</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">10.0</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">15.4</td>
+</tr>
+<tr>
+<th><code>query</code></th>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">79</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">56</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">48</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">10.0</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">15.4</td>
+</tr>
+<tr>
+<th><code>request</code></th>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">79</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">56</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">48</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">10.0</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">15.4</td>
+</tr>
+</tbody>
+</table></div>  <h3 id="api.Lock" class="heading">api.Lock</h3> <div class="_table"><table>
+<thead>
+<tr id="bct-browser-type">
+<th></th>
+<th colspan="5">Desktop</th>
+<th colspan="7">Mobile</th>
+</tr>
+<tr id="bct-browsers">
+<th></th>
+<th>Chrome</th>
+<th>Edge</th>
+<th>Firefox</th>
+<th>Opera</th>
+<th>Safari</th>
+<th>Chrome Android</th>
+<th>Firefox for Android</th>
+<th>Opera Android</th>
+<th>Safari on IOS</th>
+<th>Samsung Internet</th>
+<th>WebView Android</th>
+<th>WebView on iOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th><code>Web_Locks_API</code></th>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">79</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">56</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">48</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">10.0</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">15.4</td>
+</tr>
+<tr>
+<th><code>mode</code></th>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">79</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">56</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">48</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">10.0</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">15.4</td>
+</tr>
+<tr>
+<th><code>name</code></th>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">79</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">56</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">96</td>
+<td class="bc-supports-yes">48</td>
+<td class="bc-supports-yes">15.4</td>
+<td class="bc-supports-yes">10.0</td>
+<td class="bc-supports-yes">69</td>
+<td class="bc-supports-yes">15.4</td>
+</tr>
+</tbody>
+</table></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2025 MDN contributors.<br>Licensed under the Creative Commons Attribution-ShareAlike License v2.5 or later.<br>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API" class="_attribution-link">https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

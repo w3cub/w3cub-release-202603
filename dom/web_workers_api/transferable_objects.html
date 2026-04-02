@@ -1,0 +1,144 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Web Workers API&#58; Transferable Objects - Web APIs - W3cubDocs</title>
+  
+  <meta name="description" content="Transferable objects are objects that own resources that can be transferred from one context to another, ensuring that the resources are only &hellip;">
+  <meta name="keywords" content="transferable, objects, web, workers, api, apis, dom">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/dom/web_workers_api/transferable_objects.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/dom.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/dom/" class="_nav-link" title="" style="margin-left:0;">Web APIs</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _mdn">
+				
+				
+<h1>Transferable objects</h1>    <p><strong>Transferable objects</strong> are objects that own resources that can be <em>transferred</em> from one context to another, ensuring that the resources are only available in one context at a time. Following a transfer, the original object is no longer usable; it no longer points to the transferred resource, and any attempt to read or write the object will throw an exception.</p> <p><em>Transferable objects</em> are commonly used to share resources that can only be safely exposed to a single JavaScript thread at a time. For example, an <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer"><code>ArrayBuffer</code></a> is a transferable object that owns a block of memory. When such a buffer is transferred between threads, the associated memory resource is detached from the original buffer and attached to the buffer object created in the new thread. The buffer object in the original thread is no longer usable because it no longer owns a memory resource.</p> <p>Transferring may also be used when creating deep copies of objects with <a href="../workerglobalscope/structuredclone"><code>structuredClone()</code></a>. Following the cloning operation, the transferred resources are moved rather than copied to the cloned object.</p> <p>For both <code>postMessage()</code> and <code>structuredClone()</code>, transferred resources have to be attached to the data object, otherwise they would not be available on the receiving end, because the transferable array only indicates how certain resources should be sent, but does not actually send them (although they would always be detached).</p> <p>The mechanism used to transfer an object's resources depends on the object. For example, when an <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer"><code>ArrayBuffer</code></a> is transferred between threads, the memory resource that it points to is <em>literally</em> moved between contexts in a fast and efficient zero-copy operation. Other objects may be transferred by copying the associated resource and then deleting it from the old context.</p> <p>Not all objects are transferable. A list of transferable objects is <a href="#supported_objects">provided below</a>.</p>     <mdn-survey></mdn-survey>  <h2 id="transferring_objects_between_threads" class="heading">Transferring objects between threads</h2> <p>The code below demonstrates how transferring works when sending a message from a main thread to a <a href="../web_workers_api">web worker thread</a>. The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array"><code>Uint8Array</code></a> is copied (duplicated) in the worker while its buffer is transferred. After transfer any attempt to read or write <code>uInt8Array</code> from the main thread will throw, but you can still check the <code>byteLength</code> to confirm it is now zero.</p> <div class="code-example"><pre data-language="js">// Create an 8MB "file" and fill it. 8MB = 1024 * 1024 * 8 B
+const uInt8Array = new Uint8Array(1024 * 1024 * 8).map((v, i) =&gt; i);
+console.log(uInt8Array.byteLength); // 8388608
+
+// Transfer the underlying buffer to a worker
+worker.postMessage(uInt8Array, [uInt8Array.buffer]);
+console.log(uInt8Array.byteLength); // 0
+</pre></div> <div class="notecard note"> <p><strong>Note:</strong> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">Typed arrays</a> like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array"><code>Int32Array</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array"><code>Uint8Array</code></a>, are <a href="https://developer.mozilla.org/en-US/docs/Glossary/Serializable_object">serializable</a>, but not transferable. However their underlying buffer is an <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer"><code>ArrayBuffer</code></a>, which is a transferable object. We could have sent <code>uInt8Array.buffer</code> in the data parameter, but not <code>uInt8Array</code> in the transfer array.</p> </div>  <h2 id="transferring_during_a_cloning_operation" class="heading">Transferring during a cloning operation</h2> <p>The code below shows a <code>structuredClone()</code> operation where the underlying buffer is copied from the original object to the clone.</p> <div class="code-example"><pre data-language="js">const original = new Uint8Array(1024);
+const clone = structuredClone(original);
+console.log(original.byteLength); // 1024
+console.log(clone.byteLength); // 1024
+
+original[0] = 1;
+console.log(clone[0]); // 0
+
+// Transferring the Uint8Array would throw an exception as it is not a transferable object
+// const transferred = structuredClone(original, {transfer: [original]});
+
+// We can transfer Uint8Array.buffer.
+const transferred = structuredClone(original, { transfer: [original.buffer] });
+console.log(transferred.byteLength); // 1024
+console.log(transferred[0]); // 1
+
+// After transferring Uint8Array.buffer cannot be used.
+console.log(original.byteLength); // 0
+</pre></div>  <h2 id="supported_objects" class="heading">Supported objects</h2> <p>Interfaces that can be transferred should include this information in their introduction.</p> <p>Some of the items that various specifications indicate can be <em>transferred</em> are listed below (this list may not be exhaustive!):</p> <ul> <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer"><code>ArrayBuffer</code></a></li> <li><a href="../messageport"><code>MessagePort</code></a></li> <li><a href="../readablestream"><code>ReadableStream</code></a></li> <li><a href="../writablestream"><code>WritableStream</code></a></li> <li><a href="../transformstream"><code>TransformStream</code></a></li> <li><a href="../webtransportreceivestream"><code>WebTransportReceiveStream</code></a></li> <li><a href="../webtransportsendstream"><code>WebTransportSendStream</code></a></li> <li><a href="../audiodata"><code>AudioData</code></a></li> <li><a href="../imagebitmap"><code>ImageBitmap</code></a></li> <li><a href="../videoframe"><code>VideoFrame</code></a></li> <li><a href="../offscreencanvas"><code>OffscreenCanvas</code></a></li> <li><a href="../rtcdatachannel"><code>RTCDataChannel</code></a></li> <li><a href="../mediasourcehandle"><code>MediaSourceHandle</code></a></li> <li><a href="../midiaccess"><code>MIDIAccess</code></a></li> <li><a href="../mediastreamtrack"><code>MediaStreamTrack</code></a></li> </ul> <div class="notecard note"> <p><strong>Note:</strong> Transferable objects are marked up in <a href="https://github.com/w3c/webref/tree/main/ed/idl" target="_blank">Web IDL files</a> with the attribute <code>[Transferable]</code>. Browser support may be indicated in the respective object's compatibility information by the <code>transferable</code> subfeature (see <a href="../rtcdatachannel#browser_compatibility"><code>RTCDataChannel</code></a> for an example).</p> </div>  <h2 id="see_also" class="heading">See also</h2> <ul> <li><a href="https://developer.chrome.com/blog/transferable-objects-lightning-fast/" target="_blank">Transferable Objects: Lightning Fast!</a></li> <li><a href="using_web_workers">Using Web Workers</a></li> <li><a href="https://html.spec.whatwg.org/multipage/structured-data.html#transferable-objects" target="_blank">Transferable objects in the HTML specification</a></li> <li><a href="../dedicatedworkerglobalscope/postmessage"><code>DedicatedWorkerGlobalScope.postMessage()</code></a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2025 MDN contributors.<br>Licensed under the Creative Commons Attribution-ShareAlike License v2.5 or later.<br>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects" class="_attribution-link">https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

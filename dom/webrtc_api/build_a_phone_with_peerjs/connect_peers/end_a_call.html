@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WebRTC API&#58; Build a Phone With peerjs.Connect peers.End a Call - Web APIs - W3cubDocs</title>
+  
+  <meta name="description" content="The last thing you want to do is ensure your callers have a way of ending a call. The most graceful way of doing this is to close the connection &hellip;">
+  <meta name="keywords" content="ending, call, webrtc, api, build, phone, with, peerjs, connect, peers, end, web, apis, dom">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/dom/webrtc_api/build_a_phone_with_peerjs/connect_peers/end_a_call.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/dom.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/dom/" class="_nav-link" title="" style="margin-left:0;">Web APIs</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _mdn">
+				
+				
+<h1>Ending a call</h1>    <ul class="prev-next">
+<li class="prev"><a class="button secondary" href="answer_a_call"><span class="button-wrap"> Previous </span></a></li>
+<li class="menu"><a class="button secondary" href="../../build_a_phone_with_peerjs"><span class="button-wrap"> Overview: Building an Internet-Connected Phone with PeerJS</span></a></li>
+</ul> <p>The last thing you want to do is ensure your callers have a way of ending a call. The most graceful way of doing this is to close the connection using the <code>close()</code> function, which you can do in an event listener for the hang up button.</p> <ol> <li> <p>Add the following to the bottom of your <code>script.js</code> file:</p> <div class="code-example"><pre data-language="js">const hangUpBtn = document.querySelector(".hangup-btn");
+hangUpBtn.addEventListener("click", () =&gt; {
+  conn.close();
+  showCallContent();
+});
+</pre></div> </li> <li> <p>When the connection has been closed, you also want to display the correct HTML content so you can just call your <code>showCallContent()</code> function. Within the <code>call</code> event, you also want to ensure the remote browser is updated. To achieve this, add another event listener within the <code>peer.on('call', (stream) =&gt; { }</code> event listener, within the conditional block.</p> <div class="code-example"><pre data-language="js">conn.on("close", () =&gt; {
+  showCallContent();
+});
+</pre></div> <p>This way, if the person who initiated the call clicks "Hang up" first, both browsers are still updated with the new state.</p> </li> <li> <p>Test out your app again, and try closing a call.</p> </li> </ol> <div class="notecard note"> <p><strong>Note:</strong> The <code>on('close')</code> event that is called on the <code>conn</code> variable isn't available in Firefox yet; this just means that in Firefox each caller will have to hang up individually.</p> </div> <div class="notecard warning"> <p><strong>Warning:</strong> The way we've currently coded things means that when a connection is closed, both browsers will be updated <strong>only</strong> if the person who started the call presses "Hang up" first. If the person who answered the call clicks "Hang up" first, the other caller will also have to click "Hang up" to see the correct HTML.</p> </div> <p>Now we're finished with the project! Next, you could <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs/deployment">deploy it to a hosting provider that supports Node.js projects</a>.</p>     <mdn-survey></mdn-survey>  <h2 id="see_also" class="heading">See also</h2> <ul> <li><a href="https://peerjs.com/" target="_blank">PeerJS</a></li> <li><a href="../../../webrtc_api">WebRTC</a></li> <li><a href="https://github.com/peers/peerjs-server" target="_blank">PeerJS Server</a></li> <li><a href="https://www.youtube.com/watch?v=OOrBcpwelPY" target="_blank">A similar video tutorial with video</a></li> <li><a href="https://github.com/SamsungInternet/WebPhone/tree/master/tutorial" target="_blank">The code tutorial</a></li> </ul> <ul class="prev-next">
+<li class="prev"><a class="button secondary" href="answer_a_call"><span class="button-wrap"> Previous </span></a></li>
+<li class="menu"><a class="button secondary" href="../../build_a_phone_with_peerjs"><span class="button-wrap"> Overview: Building an Internet-Connected Phone with PeerJS</span></a></li>
+</ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2025 MDN contributors.<br>Licensed under the Creative Commons Attribution-ShareAlike License v2.5 or later.<br>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Build_a_phone_with_peerjs/Connect_peers/End_a_call" class="_attribution-link">https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Build_a_phone_with_peerjs/Connect_peers/End_a_call</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

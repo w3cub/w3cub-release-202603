@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WebXR Device API&#58; Permissions and Security - Web APIs - W3cubDocs</title>
+  
+  <meta name="description" content="The WebXR Device API has several areas of security to contend with, from establishing Permissions Policy to ensuring the user intends to use the &hellip;">
+  <meta name="keywords" content="webxr, permissions, and, security, device, api, web, apis, dom">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/dom/webxr_device_api/permissions_and_security.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/dom.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/dom/" class="_nav-link" title="" style="margin-left:0;">Web APIs</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _mdn">
+				
+				
+<h1>WebXR permissions and security</h1>    <p>The <a href="../webxr_device_api">WebXR Device API</a> has several areas of security to contend with, from establishing <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Permissions_Policy">Permissions Policy</a> to ensuring the user intends to use the mixed reality presentation before activating it. Among other things, you need to confirm access to device features such as the microphone and/or camera, get permission to use immersive VR mode (if applicable), and so forth. The variety of hardware and software involved in XR brings multiple APIs and technologies into play. In this guide, we'll cover how to ensure your app has the permissions it needs to provide a secure and private XR experience.</p> <p>The WebXR Device API is subject to a number of permission and security controls. While not onerous, they are worth being aware of. These mostly revolve around the fully-immersive <code>immersive-vr</code> session mode, but there are things to be aware of when setting up an AR session, as well.</p>     <mdn-survey></mdn-survey>  <h2 id="immersive_presentation_of_vr" class="heading">Immersive presentation of VR</h2> <p>First, any requests to activate the <code>immersive-vr</code> mode are rejected if the domain issuing the request does not have permission to enable an immersive session. This permission comes from the <code>xr-spatial-tracking</code> <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Permissions_Policy">Permissions Policy</a>.</p> <p>Once that check is passed, the request to enter <code>immersive-vr</code> mode is allowed if all of the following are true:</p> <ul> <li>The <code>requestSession()</code> call was issued by code executing within the handler for a user event, or the from the startup code for a user-launched <a href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps">web application</a>.</li> <li>The document is considered trustworthy, in that it is responsible and is both currently active and has focus.</li> <li>The user's intent to enter immersive VR mode is well understood; see <a href="#user_intent">User intent</a> below for details.</li> </ul> <p>If all of that is true, the promise returned by <code>requestSession()</code> is resolved, and the new <a href="../xrsession"><code>XRSession</code></a> object is passed into the fulfillment handler. Otherwise, an appropriate exception is thrown, such as <code>SecurityError</code> if the document doesn't have permission to enter immersive mode.</p>  <h2 id="inline_presentation" class="heading">Inline presentation</h2> <p>When you request an <a href="../xrsession"><code>XRSession</code></a> with the mode set to <code>inline</code>, and any features are required or requested, the browser will only allow the session to be created if the call to <a href="../xrsystem/requestsession"><code>requestSession()</code></a> was made by code which is executing expressly due to <strong>user intent</strong>.</p> <p>Specifically:</p> <ul> <li>If the <code>requestSession()</code> call isn't coming from within the handler executed in response to a user event, and is not being issued while launching a web application, the request is denied and <code>false</code> is delivered to the promise's fulfillment handler.</li> <li>If the document making the request isn't the one which is responsible for the script, the request is denied.</li> <li>If the document making the request isn't trustworthy, the request is denied and <code>false</code> is returned through the promise's fulfillment routine. A trustworthy document is one which is both responsible and active, and which currently has focus.</li> <li>If the user's intent to open an inline XR presentation is not well understood, the request is denied. Understanding of the <a href="#user_intent">user's intent</a> may be either implicit or explicit.</li> </ul> <div class="notecard note"> <p><strong>Note:</strong> Additional requirements may be put into effect due to the specific features requested by the options object when calling <code>requestSession()</code>.</p> </div>  <h2 id="user_intent" class="heading">User intent</h2> <p><strong>User intent</strong> is the concept of whether or not an action being performed by code is being performed because of something the user intends to do or not. There are two kinds of user intent: <strong>implicit</strong> and <strong>explicit</strong>.</p> <p><strong>Explicit user intent</strong> (explicit user consent) is granted when the user has specifically and expressly been asked for permission to perform an action.</p> <p><strong>Implicit user intent</strong> (implicit user consent) is assumed if either of the following scenarios is the case:</p> <ul> <li>The user has interacted with the document in some way which has in turn caused your request to occur. For example, if you have an "Enter XR mode" button, and the user clicks it, calling <code>requestSession()</code> from the button's <a href="../element/click_event"><code>click</code></a> event handler will permitted.</li> <li>If your code is executing during the launch of a web application, the runtime may consider the act of launching your web application to qualify as user intent.</li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2025 MDN contributors.<br>Licensed under the Creative Commons Attribution-ShareAlike License v2.5 or later.<br>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API/Permissions_and_security" class="_attribution-link">https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API/Permissions_and_security</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

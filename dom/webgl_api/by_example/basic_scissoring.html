@@ -1,0 +1,173 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WebGL API&#58; by example.Basic Scissoring - Web APIs - W3cubDocs</title>
+  
+  <meta name="description" content="In this example, we see how to draw rectangles and squares using WebGL scissoring operations. Scissoring establishes a clipping region outside which &hellip;">
+  <meta name="keywords" content="basic, scissoring, webgl, api, example, web, apis, dom">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/dom/webgl_api/by_example/basic_scissoring.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/dom.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/dom/" class="_nav-link" title="" style="margin-left:0;">Web APIs</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _mdn">
+				
+				
+<h1>Basic scissoring</h1>    <ul class="prev-next">
+<li class="prev"><a class="button secondary" href="color_masking"><span class="button-wrap"> Previous </span></a></li>
+<li class="next"><a class="button secondary" href="canvas_size_and_webgl"><span class="button-wrap"> Next </span></a></li>
+</ul> <p>In this example, we see how to draw rectangles and squares using WebGL scissoring operations. Scissoring establishes a clipping region outside which drawing will not occur.</p>     <mdn-survey></mdn-survey>  <h2 id="clearing_the_drawing_buffer_when_scissoring_applies" class="heading">Clearing the drawing buffer when scissoring applies</h2> <div class="code-example"><iframe class="sample-code-frame" title="Clearing the drawing buffer when scissoring applies sample" id="frame_clearing_the_drawing_buffer_when_scissoring_applies" width="660" height="425" src="about:blank" data-live-path="/en-US/docs/Web/API/WebGL_API/By_example/Basic_scissoring/" data-live-id="clearing_the_drawing_buffer_when_scissoring_applies" sandbox="allow-same-origin allow-scripts" loading="lazy"></iframe></div> <p>This is a demonstration of a rendering with <a href="../../webglrenderingcontext/scissor"><code>scissor()</code></a>.</p> <p>Although the <a href="../../webglrenderingcontext/clear"><code>clear()</code></a> drawing command writes the clear color (set by <a href="../../webglrenderingcontext/clearcolor"><code>clearColor()</code></a>) to all pixels in the drawing buffer, <a href="../../webglrenderingcontext/scissor"><code>scissor()</code></a> defines a mask that only allows pixels inside the specified rectangular area to be updated.</p> <p>This is a good opportunity to talk about the difference between pixels and <em>fragments</em>. A pixel is a picture element (in practice, a point) on the screen, or a single element of the drawing buffer, that area in memory that holds your pixel data (such as <a href="https://developer.mozilla.org/en-US/docs/Glossary/RGB">RGB</a> color components). A <em>fragment</em> refers to the pixel while it is being handled by the <a href="https://developer.mozilla.org/en-US/docs/Glossary/WebGL">WebGL</a> pipeline.</p> <p>The reason for this distinction is that fragment color (and other fragment values, such as depth) may be manipulated and changed several times during graphics operations before finally being written to the screen. We have already seen how fragment color changes during graphics operations, by applying <a href="../../webglrenderingcontext/colormask">color masking</a>. In other cases, the fragments may be discarded altogether (so the pixel value is not updated), or it may interact with the already existing pixel value (such as when doing color blending for non-opaque elements in the scene).</p> <p>Here we see another example of the distinction between fragments and pixels. Scissoring is a distinct stage in the <a href="https://developer.mozilla.org/en-US/docs/Glossary/WebGL">WebGL</a>/<a href="https://developer.mozilla.org/en-US/docs/Glossary/OpenGL">OpenGL</a> graphics pipeline (it occurs after color clearing, but before color masking). Before the actual pixels are updated, fragments must go through the scissor test. If the fragments pass the scissor test, they continue down the graphics pipeline, and the corresponding pixels are updated on the screen. If they fail the test, they are immediately discarded, no further processing occurs, and pixels are not updated. Because only fragments within the specified rectangular area successfully pass the scissor test, only pixels inside that area are updated, and we get a rectangle on the screen.</p> <p>The scissoring stage of the pipeline is disabled by default. We enable it here using the <a href="../../webglrenderingcontext/enable"><code>enable()</code></a> method (you will also use <code>enable()</code> to activate many other features of WebGL; hence, the use of the <code>SCISSOR_TEST</code> constant as an argument in this case). This again demonstrates the typical order of commands in <a href="https://developer.mozilla.org/en-US/docs/Glossary/WebGL">WebGL</a>. We first tweak WebGL state. In this case, enabling the scissor test and establishing a rectangular mask. Only when the WebGL state has been satisfactorily tweaked, we execute the drawing command (in this case, <code>clear()</code>) that starts the processing of fragments down the graphics pipeline.</p> <div class="code-example"><pre data-language="html">&lt;p&gt;Result of scissoring.&lt;/p&gt;
+&lt;canvas&gt;Your browser does not seem to support HTML canvas.&lt;/canvas&gt;
+</pre></div> <div class="code-example"><pre data-language="css">body {
+  text-align: center;
+}
+canvas {
+  display: block;
+  width: 280px;
+  height: 210px;
+  margin: auto;
+  padding: 0;
+  border: none;
+  background-color: black;
+}
+</pre></div> <div class="code-example"><pre data-language="js">window.addEventListener(
+  "load",
+  function setupWebGL(evt) {
+    "use strict";
+    window.removeEventListener(evt.type, setupWebGL, false);
+    const paragraph = document.querySelector("p");
+    const canvas = document.querySelector("canvas");
+
+    // The following two lines set the size (in CSS pixels) of
+    // the drawing buffer to be identical to the size of the
+    // canvas HTML element, as determined by CSS.
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+
+    const gl =
+      canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    if (!gl) {
+      paragraph.textContent =
+        "Failed to get WebGL context. Your browser or device may not support WebGL.";
+      return;
+    }
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+
+    // Enable scissoring operation and define the position and
+    // size of the scissoring area.
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(40, 20, 60, 130);
+
+    // Clear the drawing buffer solid yellow.
+    gl.clearColor(1.0, 1.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  },
+  false,
+);
+</pre></div> <p>The source code of this example is also available on <a href="https://github.com/idofilin/webgl-by-example/tree/master/basic-scissoring" target="_blank">GitHub</a>.</p> <ul class="prev-next">
+<li class="prev"><a class="button secondary" href="color_masking"><span class="button-wrap"> Previous </span></a></li>
+<li class="next"><a class="button secondary" href="canvas_size_and_webgl"><span class="button-wrap"> Next </span></a></li>
+</ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2025 MDN contributors.<br>Licensed under the Creative Commons Attribution-ShareAlike License v2.5 or later.<br>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/By_example/Basic_scissoring" class="_attribution-link">https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/By_example/Basic_scissoring</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
