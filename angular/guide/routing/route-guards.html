@@ -1,0 +1,232 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Control Route Access With Guards - Angular - W3cubDocs</title>
+  
+  <meta name="description" content="CRITICAL&#58; Never rely on client-side guards as the sole source of access control. All JavaScript that runs in a web browser can be modified by &hellip;">
+  <meta name="keywords" content="control, route, access, with, guards, angular">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/angular/guide/routing/route-guards.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/angular.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/angular/" class="_nav-link" title="" style="margin-left:0;">Angular</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _angular">
+				
+				
+<h1 tabindex="-1">Control route access with guards</h1> <header class="docs-header"> <docs-breadcrumb ng-version="21.2.0+sha-6d7446b" _nghost-ng-c3945279308 ngh="8"></docs-breadcrumb>   </header> 
+<div class="docs-alert docs-alert-critical"> <p><strong>CRITICAL:</strong> Never rely on client-side guards as the sole source of access control. All JavaScript that runs in a web browser can be modified by the user running the browser. Always enforce user authorization server-side, in addition to any client-side guards.</p> </div>  <p>Route guards are functions that control whether a user can navigate to or leave a particular route. They are like checkpoints that manage whether a user can access specific routes. Common examples of using route guards include authentication and access control.</p> <h2 id="creating-a-route-guard"> Creating a route guard </h2> <p>You can generate a route guard using the Angular CLI:</p> <pre data-language="ts">ng generate guard CUSTOM_NAME</pre>
+<p>This will prompt you to select which <a href="#types-of-route-guards">type of route guard</a> to use and then create the corresponding <code>CUSTOM_NAME-guard.ts</code> file.</p> 
+<div class="docs-alert docs-alert-tip"> <p><strong>TIP:</strong> You can also create a route guard manually by creating a separate TypeScript file in your Angular project. Developers typically add a suffix of <code>-guard.ts</code> in the filename to distinguish it from other files.</p> </div>  <h2 id="route-guard-return-types"> Route guard return types </h2> <p>All route guards share the same possible return types. This gives you flexibility in how you control navigation:</p> <div class="docs-table docs-scroll-track-transparent"> <table> <thead> <tr> <th>Return types</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>boolean</code></td> <td>
+<code>true</code> allows navigation, <code>false</code> blocks it (see note for <a href="../../api/router/canmatch"><code>CanMatch</code></a> route guard)</td> </tr> <tr> <td>
+<a href="../../api/router/urltree"><code>UrlTree</code></a> or <a href="../../api/router/redirectcommand"><code>RedirectCommand</code></a>
+</td> <td>Redirects to another route instead of blocking</td> </tr> <tr> <td>
+<code>Promise&lt;T&gt;</code> or <code>Observable&lt;T&gt;</code>
+</td> <td>Router uses the first emitted value and then unsubscribes</td> </tr> </tbody> </table> </div> 
+<div class="docs-alert docs-alert-note"> <p><strong>NOTE:</strong> <a href="../../api/router/canmatch"><code>CanMatch</code></a> behaves differently— when it returns <code>false</code>, Angular tries other matching routes instead of completely blocking navigation.</p> </div>  <h2 id="types-of-route-guards"> Types of route guards </h2> <p>Angular provides four types of route guards, each serving different purposes:</p> <nav class="docs-pill-row"> <a class="docs-pill" href="#canactivate"> CanActivate </a> <a class="docs-pill" href="#canactivatechild"> CanActivateChild </a> <a class="docs-pill" href="#candeactivate"> CanDeactivate </a> <a class="docs-pill" href="#canmatch"> CanMatch </a> </nav> <p>All the guards have access to <a href="../di/defining-dependency-providers#route-providers">services provided at the route level</a> as well as route-specific information via the <code>route</code> argument.</p> <h3 id="canactivate"> CanActivate </h3> <p>The <a href="../../api/router/canactivate"><code>CanActivate</code></a> guard determines whether a user can access a route. It is most commonly used for authentication and authorization.</p> <p>It has access to the following default arguments:</p> <ul class="docs-list"> <li>
+<code>route</code>: <a href="../../api/router/activatedroutesnapshot"><code>ActivatedRouteSnapshot</code></a> - Contains information about the route being activated</li> <li>
+<code>state</code>: <a href="../../api/router/routerstatesnapshot"><code>RouterStateSnapshot</code></a> - Contains the router's current state</li> </ul> <p>It can return the <a href="#route-guard-return-types">standard return guard types</a>.</p> <pre data-language="ts">export const authGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot,
+) =&gt; {
+  const authService = inject(AuthService);
+  return authService.isAuthenticated();
+};</pre>
+<p>Tip: If you need to redirect the user, return a <a href="../../api/router/urltree"><code>URLTree</code></a> or <a href="../../api/router/redirectcommand"><code>RedirectCommand</code></a>. Do <strong>not</strong> return <code>false</code> and then programmatically <code>navigate</code> the user.</p> <p>For more information, check out the <a href="../../api/router/canactivatefn">API docs for CanActivateFn</a>.</p> <h3 id="canactivatechild"> CanActivateChild </h3> <p>The <a href="../../api/router/canactivatechild"><code>CanActivateChild</code></a> guard determines whether a user can access child routes of a particular parent route. This is useful when you want to protect an entire section of nested routes. In other words, <code>canActivateChild</code> runs for <em>all</em> children. If there is a child component with another child component underneath of it, <code>canActivateChild</code> will run once for both components.</p> <p>It has access to the following default arguments:</p> <ul class="docs-list"> <li>
+<code>childRoute</code>: <a href="../../api/router/activatedroutesnapshot"><code>ActivatedRouteSnapshot</code></a> - Contains information about the "future" snapshot (i.e., state the router is attempting to navigate to) of the child route being activated</li> <li>
+<code>state</code>: <a href="../../api/router/routerstatesnapshot"><code>RouterStateSnapshot</code></a> - Contains the router's current state</li> </ul> <p>It can return the <a href="#route-guard-return-types">standard return guard types</a>.</p> <pre data-language="ts">export const adminChildGuard: CanActivateChildFn = (
+  childRoute: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot,
+) =&gt; {
+  const authService = inject(AuthService);
+  return authService.hasRole('admin');
+};</pre>
+<p>For more information, check out the <a href="../../api/router/canactivatechildfn">API docs for CanActivateChildFn</a>.</p> <h3 id="candeactivate"> CanDeactivate </h3> <p>The <a href="../../api/router/candeactivate"><code>CanDeactivate</code></a> guard determines whether a user can leave a route. A common scenario is preventing navigation away from unsaved forms.</p> <p>It has access to the following default arguments:</p> <ul class="docs-list"> <li>
+<code>component</code>: <code>T</code> - The component instance being deactivated</li> <li>
+<code>currentRoute</code>: <a href="../../api/router/activatedroutesnapshot"><code>ActivatedRouteSnapshot</code></a> - Contains information about the current route</li> <li>
+<code>currentState</code>: <a href="../../api/router/routerstatesnapshot"><code>RouterStateSnapshot</code></a> - Contains the current router state</li> <li>
+<code>nextState</code>: <a href="../../api/router/routerstatesnapshot"><code>RouterStateSnapshot</code></a> - Contains the next router state being navigated to</li> </ul> <p>It can return the <a href="#route-guard-return-types">standard return guard types</a>.</p> <pre data-language="ts">export const unsavedChangesGuard: CanDeactivateFn&lt;Form&gt; = (
+  component: Form,
+  currentRoute: ActivatedRouteSnapshot,
+  currentState: RouterStateSnapshot,
+  nextState: RouterStateSnapshot,
+) =&gt; {
+  return component.hasUnsavedChanges()
+    ? confirm('You have unsaved changes. Are you sure you want to leave?')
+    : true;
+};</pre>
+<p>For more information, check out the <a href="../../api/router/candeactivatefn">API docs for CanDeactivateFn</a>.</p> <h3 id="canmatch"> CanMatch </h3> <p>The <a href="../../api/router/canmatch"><code>CanMatch</code></a> guard determines whether a route can be matched during path matching. Unlike other guards, rejection falls through to try other matching routes instead of blocking navigation entirely. This can be useful for feature flags, A/B testing, or conditional route loading.</p> <p>It has access to the following default arguments:</p> <ul class="docs-list"> <li>
+<code>route</code>: <a href="../../api/router/route"><code>Route</code></a> - The route configuration being evaluated</li> <li>
+<code>segments</code>: <code>UrlSegment[]</code> - The URL segments that have not been consumed by previous parent route evaluations</li> </ul> <p>It can return the <a href="#route-guard-return-types">standard return guard types</a>, but when it returns <code>false</code>, Angular tries other matching routes instead of completely blocking navigation.</p> <pre data-language="ts">export const featureToggleGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =&gt; {
+  const featureService = inject(FeatureService);
+  return featureService.isFeatureEnabled('newDashboard');
+};</pre>
+<p>It can also allow you to use different components for the same path.</p> <pre data-language="ts">// 📄 routes.ts
+const routes: Routes = [
+  {
+    path: 'dashboard',
+    component: AdminDashboard,
+    canMatch: [adminGuard],
+  },
+  {
+    path: 'dashboard',
+    component: UserDashboard,
+    canMatch: [userGuard],
+  },
+];</pre>
+<p>In this example, when the user visits <code>/dashboard</code>, the first one that matches the correct guard will be used.</p> <p>For more information, check out the <a href="../../api/router/canmatchfn">API docs for CanMatchFn</a>.</p> <h2 id="applying-guards-to-routes"> Applying guards to routes </h2> <p>Once you've created your route guards, you need to configure them in your route definitions.</p> <p>Guards are specified as arrays in the route configuration in order to allow you to apply multiple guards to a single route. They are executed in the order they appear in the array.</p> <pre data-language="ts">import {Routes} from '@angular/router';
+import {authGuard} from './guards/auth.guard';
+import {adminGuard} from './guards/admin.guard';
+import {canDeactivateGuard} from './guards/can-deactivate.guard';
+import {featureToggleGuard} from './guards/feature-toggle.guard';
+
+const routes: Routes = [
+  // Basic CanActivate - requires authentication
+  {
+    path: 'dashboard',
+    component: Dashboard,
+    canActivate: [authGuard],
+  },
+
+  // Multiple CanActivate guards - requires authentication AND admin role
+  {
+    path: 'admin',
+    component: Admin,
+    canActivate: [authGuard, adminGuard],
+  },
+
+  // CanActivate + CanDeactivate - protected route with unsaved changes check
+  {
+    path: 'profile',
+    component: Profile,
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
+  },
+
+  // CanActivateChild - protects all child routes
+  {
+    path: 'users', // /user - NOT protected
+    canActivateChild: [authGuard],
+    children: [
+      // /users/list - PROTECTED
+      {path: 'list', component: UserList},
+      // /users/detail/:id - PROTECTED
+      {path: 'detail/:id', component: UserDetail},
+    ],
+  },
+
+  // CanMatch - conditionally matches route based on feature flag
+  {
+    path: 'beta-feature',
+    component: BetaFeature,
+    canMatch: [featureToggleGuard],
+  },
+
+  // Fallback route if beta feature is disabled
+  {
+    path: 'beta-feature',
+    component: ComingSoon,
+  },
+];</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Super-powered by Google ©2010–2025.<br>Code licensed under an MIT-style License. Documentation licensed under CC BY 4.0.<br>
+    <a href="https://angular.dev/guide/routing/route-guards" class="_attribution-link">https://angular.dev/guide/routing/route-guards</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

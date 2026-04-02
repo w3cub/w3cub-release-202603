@@ -1,0 +1,5092 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Autocomplete - Angular - W3cubDocs</title>
+  
+  <meta name="description" content=" An accessible input field that filters and suggests options as users type, helping them find and select values from a list. ">
+  <meta name="keywords" content="autocomplete, angular">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/angular/guide/aria/autocomplete.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/angular.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/angular/" class="_nav-link" title="" style="margin-left:0;">Angular</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _angular">
+				
+				
+<h1 tabindex="-1">Autocomplete</h1> <div class="docs-decorative-header-container"> <div class="docs-decorative-header"> <div class="docs-header-content"> <docs-breadcrumb ng-version="21.2.0+sha-6d7446b" _nghost-ng-c3945279308 ngh="8"></docs-breadcrumb>    </div>  </div> </div> <h2 id="overview"> Overview </h2> <p>An accessible input field that filters and suggests options as users type, helping them find and select values from a list.</p> <div class="docs-tab-group" style="display: none;"> <div class="docs-tab" label="Basic"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/basic/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="auto-select"&gt;
+  &lt;div #origin class="autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+}
+
+.autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--hot-pink);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0.5rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0.5rem;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div>
+<div class="docs-tab" label="Material"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/basic/material/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="auto-select"&gt;
+  &lt;div #origin class="material-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+  --primary: var(--hot-pink);
+}
+
+.material-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 3rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--primary);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:focus-within [ngComboboxInput] {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 2rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 3rem;
+  border-radius: 3rem;
+}
+
+[ngOption]:hover,
+[ngOption][data-active='true'] {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--primary);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}</pre> </div> </div>
+<div class="docs-tab" label="Retro"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/basic/retro/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="auto-select"&gt;
+  &lt;div #origin class="retro-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-family: 'Press Start 2P';
+
+  --retro-button-color: #fff;
+  --retro-shadow-light: color-mix(in srgb, var(--retro-button-color) 90%, #fff);
+  --retro-shadow-dark: color-mix(in srgb, var(--retro-button-color) 90%, #000);
+  --retro-elevated-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-light),
+    inset -4px -4px 0px 0px var(--retro-shadow-dark), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-flat-shadow:
+    4px 0px 0px 0px var(--tertiary-contrast), 0px 4px 0px 0px var(--tertiary-contrast),
+    -4px 0px 0px 0px var(--tertiary-contrast), 0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-pressed-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-dark),
+    inset -4px -4px 0px 0px var(--retro-shadow-light), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast), 0px 0px 0px 0px var(--tertiary-contrast);
+}
+
+.retro-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: #000;
+  z-index: 1;
+}
+
+[ngComboboxInput] {
+  width: 15rem;
+  font-size: 0.6rem;
+  border-radius: 0;
+  font-family: 'Press Start 2P';
+  word-spacing: -5px;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: #000;
+  border: none;
+  box-shadow: var(--retro-flat-shadow);
+  background-color: var(--retro-button-color);
+}
+
+[ngComboboxInput]::placeholder {
+  color: #000;
+  opacity: 0.7;
+}
+
+[ngComboboxInput]:focus {
+  outline: none;
+  transform: translate(1px, 1px);
+  box-shadow: var(--retro-pressed-shadow);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 20px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0;
+  background-color: var(--septenary-contrast);
+  box-shadow: var(--retro-flat-shadow);
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px dashed var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div> </div> <h2 id="usage"> Usage </h2> <p>Autocomplete works best when users need to select from a large set of options where typing is faster than scrolling. Consider using autocomplete when:</p> <ul class="docs-list"> <li>
+<strong>The option list is long</strong> (more than 20 items) - Typing narrows down choices faster than scrolling through a dropdown</li> <li>
+<strong>Users know what they're looking for</strong> - They can type part of the expected value (like a state name, product, or username)</li> <li>
+<strong>Options follow predictable patterns</strong> - Users can guess partial matches (like country codes, email domains, or categories)</li> <li>
+<strong>Speed matters</strong> - Forms benefit from quick selection without extensive navigation</li> </ul> <p>Avoid autocomplete when:</p> <ul class="docs-list"> <li>The list has fewer than 10 options - A regular dropdown or radio group provides better visibility</li> <li>Users need to browse options - If discovery is important, show all options upfront</li> <li>Options are unfamiliar - Users can't type what they don't know exists in the list</li> </ul> <h2 id="features"> Features </h2> <p>Angular's autocomplete provides a fully accessible combobox implementation with:</p> <ul class="docs-list"> <li>
+<strong>Keyboard Navigation</strong> - Navigate options with arrow keys, select with Enter, close with Escape</li> <li>
+<strong>Screen Reader Support</strong> - Built-in ARIA attributes for assistive technologies</li> <li>
+<strong>Three Filter Modes</strong> - Choose between auto-select, manual selection, or highlighting behavior</li> <li>
+<strong>Signal-Based Reactivity</strong> - Reactive state management using Angular signals</li> <li>
+<strong>Popover API Integration</strong> - Leverages the native HTML Popover API for optimal positioning</li> <li>
+<strong>Bidirectional Text Support</strong> - Automatically handles right-to-left (RTL) languages</li> </ul> <h2 id="examples"> Examples </h2> <h3 id="auto-select-mode"> Auto-select mode </h3> <p>Users typing partial text expect immediate confirmation that their input matches an available option. Auto-select mode updates the input value to match the first filtered option as users type, reducing the number of keystrokes needed and providing instant feedback that their search is on the right track.</p> <div class="docs-tab-group" style="display: none;"> <div class="docs-tab" label="Basic"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/basic/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="auto-select"&gt;
+  &lt;div #origin class="autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+}
+
+.autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--hot-pink);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0.5rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0.5rem;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div>
+<div class="docs-tab" label="Material"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/basic/material/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="auto-select"&gt;
+  &lt;div #origin class="material-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+  --primary: var(--hot-pink);
+}
+
+.material-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 3rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--primary);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:focus-within [ngComboboxInput] {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 2rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 3rem;
+  border-radius: 3rem;
+}
+
+[ngOption]:hover,
+[ngOption][data-active='true'] {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--primary);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}</pre> </div> </div>
+<div class="docs-tab" label="Retro"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/basic/retro/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="auto-select"&gt;
+  &lt;div #origin class="retro-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-family: 'Press Start 2P';
+
+  --retro-button-color: #fff;
+  --retro-shadow-light: color-mix(in srgb, var(--retro-button-color) 90%, #fff);
+  --retro-shadow-dark: color-mix(in srgb, var(--retro-button-color) 90%, #000);
+  --retro-elevated-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-light),
+    inset -4px -4px 0px 0px var(--retro-shadow-dark), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-flat-shadow:
+    4px 0px 0px 0px var(--tertiary-contrast), 0px 4px 0px 0px var(--tertiary-contrast),
+    -4px 0px 0px 0px var(--tertiary-contrast), 0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-pressed-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-dark),
+    inset -4px -4px 0px 0px var(--retro-shadow-light), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast), 0px 0px 0px 0px var(--tertiary-contrast);
+}
+
+.retro-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: #000;
+  z-index: 1;
+}
+
+[ngComboboxInput] {
+  width: 15rem;
+  font-size: 0.6rem;
+  border-radius: 0;
+  font-family: 'Press Start 2P';
+  word-spacing: -5px;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: #000;
+  border: none;
+  box-shadow: var(--retro-flat-shadow);
+  background-color: var(--retro-button-color);
+}
+
+[ngComboboxInput]::placeholder {
+  color: #000;
+  opacity: 0.7;
+}
+
+[ngComboboxInput]:focus {
+  outline: none;
+  transform: translate(1px, 1px);
+  box-shadow: var(--retro-pressed-shadow);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 20px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0;
+  background-color: var(--septenary-contrast);
+  box-shadow: var(--retro-flat-shadow);
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px dashed var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div> </div> <h3 id="manual-selection-mode"> Manual selection mode </h3> <p>Manual selection mode keeps the typed text unchanged while users navigate the suggestion list, preventing confusion from automatic updates. The input only changes when users explicitly confirm their choice with Enter or a click.</p> <div class="docs-tab-group" style="display: none;"> <div class="docs-tab" label="Basic"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/manual/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox focusMode="manual"&gt;
+  &lt;div #origin class="autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+}
+
+.autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--hot-pink);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0.5rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0.5rem;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div>
+<div class="docs-tab" label="Material"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/manual/material/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox focusMode="manual"&gt;
+  &lt;div #origin class="material-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+  --primary: var(--hot-pink);
+}
+
+.material-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 3rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--primary);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:focus-within [ngComboboxInput] {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 2rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 3rem;
+  border-radius: 3rem;
+}
+
+[ngOption]:hover,
+[ngOption][data-active='true'] {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--primary);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}</pre> </div> </div>
+<div class="docs-tab" label="Retro"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/manual/retro/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox focusMode="manual"&gt;
+  &lt;div #origin class="retro-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-family: 'Press Start 2P';
+
+  --retro-button-color: #fff;
+  --retro-shadow-light: color-mix(in srgb, var(--retro-button-color) 90%, #fff);
+  --retro-shadow-dark: color-mix(in srgb, var(--retro-button-color) 90%, #000);
+  --retro-elevated-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-light),
+    inset -4px -4px 0px 0px var(--retro-shadow-dark), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-flat-shadow:
+    4px 0px 0px 0px var(--tertiary-contrast), 0px 4px 0px 0px var(--tertiary-contrast),
+    -4px 0px 0px 0px var(--tertiary-contrast), 0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-pressed-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-dark),
+    inset -4px -4px 0px 0px var(--retro-shadow-light), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast), 0px 0px 0px 0px var(--tertiary-contrast);
+}
+
+.retro-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: #000;
+  z-index: 1;
+}
+
+[ngComboboxInput] {
+  width: 15rem;
+  font-size: 0.6rem;
+  border-radius: 0;
+  font-family: 'Press Start 2P';
+  word-spacing: -5px;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: #000;
+  border: none;
+  box-shadow: var(--retro-flat-shadow);
+  background-color: var(--retro-button-color);
+}
+
+[ngComboboxInput]::placeholder {
+  color: #000;
+  opacity: 0.7;
+}
+
+[ngComboboxInput]:focus {
+  outline: none;
+  transform: translate(1px, 1px);
+  box-shadow: var(--retro-pressed-shadow);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 20px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0;
+  background-color: var(--septenary-contrast);
+  box-shadow: var(--retro-flat-shadow);
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px dashed var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div> </div> <h3 id="highlight-mode"> Highlight mode </h3> <p>Highlight mode allows the user to navigate options with arrow keys without changing the input value as they browse until they explicitly select a new option with Enter or click.</p> <div class="docs-tab-group" style="display: none;"> <div class="docs-tab" label="Basic"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/highlight/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="highlight"&gt;
+  &lt;div #origin class="autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+}
+
+.autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--hot-pink);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0.5rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0.5rem;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div>
+<div class="docs-tab" label="Material"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/highlight/material/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="highlight"&gt;
+  &lt;div #origin class="material-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-family: var(--inter-font);
+  --primary: var(--hot-pink);
+}
+
+.material-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: var(--quaternary-contrast);
+}
+
+[ngComboboxInput] {
+  width: 13rem;
+  font-size: 1rem;
+  border-radius: 3rem;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: var(--primary-contrast);
+  outline-color: var(--primary);
+  border: 1px solid var(--quinary-contrast);
+  background-color: var(--page-background);
+}
+
+[ngComboboxInput]::placeholder {
+  color: var(--quaternary-contrast);
+}
+
+[ngCombobox]:focus-within [ngComboboxInput] {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 2rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 3rem;
+  border-radius: 3rem;
+}
+
+[ngOption]:hover,
+[ngOption][data-active='true'] {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px solid var(--primary);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}</pre> </div> </div>
+<div class="docs-tab" label="Retro"> <div class="docs-code-multifile" style="display: none" path="adev/src/content/examples/aria/autocomplete/src/highlight/retro/app/app.ts" preview="true" hidecode="true"> <pre data-language="ts">import {Combobox, ComboboxInput, ComboboxPopupContainer} from '@angular/aria/combobox';
+import {Listbox, Option} from '@angular/aria/listbox';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
+  imports: [
+    Combobox,
+    ComboboxInput,
+    ComboboxPopupContainer,
+    Listbox,
+    Option,
+    OverlayModule,
+    FormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class App {
+  /** The combobox listbox popup. */
+  listbox = viewChild&lt;Listbox&lt;string&gt;&gt;(Listbox);
+
+  /** The options available in the listbox. */
+  options = viewChildren&lt;Option&lt;string&gt;&gt;(Option);
+
+  /** A reference to the ng aria combobox. */
+  combobox = viewChild&lt;Combobox&lt;string&gt;&gt;(Combobox);
+
+  /** The query string used to filter the list of countries. */
+  query = signal('');
+
+  /** The list of countries filtered by the query. */
+  countries = computed(() =&gt;
+    ALL_COUNTRIES.filter((country) =&gt; country.toLowerCase().startsWith(this.query().toLowerCase())),
+  );
+
+  constructor() {
+    // Scrolls to the active item when the active option changes.
+    // The slight delay here is to ensure animations are done before scrolling.
+    afterRenderEffect(() =&gt; {
+      const option = this.options().find((opt) =&gt; opt.active());
+      setTimeout(() =&gt; option?.element.scrollIntoView({block: 'nearest'}), 50);
+    });
+
+    // Resets the listbox scroll position when the combobox is closed.
+    afterRenderEffect(() =&gt; {
+      if (!this.combobox()?.expanded()) {
+        setTimeout(() =&gt; this.listbox()?.element.scrollTo(0, 0), 150);
+      }
+    });
+  }
+}
+
+const ALL_COUNTRIES = [
+  'Afghanistan',
+  'Albania',
+  'Algeria',
+  'Andorra',
+  'Angola',
+  'Antigua and Barbuda',
+  'Argentina',
+  'Armenia',
+  'Australia',
+  'Austria',
+  'Azerbaijan',
+  'Bahamas',
+  'Bahrain',
+  'Bangladesh',
+  'Barbados',
+  'Belarus',
+  'Belgium',
+  'Belize',
+  'Benin',
+  'Bhutan',
+  'Bolivia',
+  'Bosnia and Herzegovina',
+  'Botswana',
+  'Brazil',
+  'Brunei',
+  'Bulgaria',
+  'Burkina Faso',
+  'Burundi',
+  'Cabo Verde',
+  'Cambodia',
+  'Cameroon',
+  'Canada',
+  'Central African Republic',
+  'Chad',
+  'Chile',
+  'China',
+  'Colombia',
+  'Comoros',
+  'Congo (Congo-Brazzaville)',
+  'Costa Rica',
+  "Côte d'Ivoire",
+  'Croatia',
+  'Cuba',
+  'Cyprus',
+  'Czechia (Czech Republic)',
+  'Democratic Republic of the Congo',
+  'Denmark',
+  'Djibouti',
+  'Dominica',
+  'Dominican Republic',
+  'Ecuador',
+  'Egypt',
+  'El Salvador',
+  'Equatorial Guinea',
+  'Eritrea',
+  'Estonia',
+  'Eswatini (fmr. ""Swaziland"")',
+  'Ethiopia',
+  'Fiji',
+  'Finland',
+  'France',
+  'Gabon',
+  'Gambia',
+  'Georgia',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Grenada',
+  'Guatemala',
+  'Guinea',
+  'Guinea-Bissau',
+  'Guyana',
+  'Haiti',
+  'Holy See',
+  'Honduras',
+  'Hungary',
+  'Iceland',
+  'India',
+  'Indonesia',
+  'Iran',
+  'Iraq',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Jamaica',
+  'Japan',
+  'Jordan',
+  'Kazakhstan',
+  'Kenya',
+  'Kiribati',
+  'Kuwait',
+  'Kyrgyzstan',
+  'Laos',
+  'Latvia',
+  'Lebanon',
+  'Lesotho',
+  'Liberia',
+  'Libya',
+  'Liechtenstein',
+  'Lithuania',
+  'Luxembourg',
+  'Madagascar',
+  'Malawi',
+  'Malaysia',
+  'Maldives',
+  'Mali',
+  'Malta',
+  'Marshall Islands',
+  'Mauritania',
+  'Mauritius',
+  'Mexico',
+  'Micronesia',
+  'Moldova',
+  'Monaco',
+  'Mongolia',
+  'Montenegro',
+  'Morocco',
+  'Mozambique',
+  'Myanmar (formerly Burma)',
+  'Namibia',
+  'Nauru',
+  'Nepal',
+  'Netherlands',
+  'New Zealand',
+  'Nicaragua',
+  'Niger',
+  'Nigeria',
+  'North Korea',
+  'North Macedonia',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Palau',
+  'Palestine State',
+  'Panama',
+  'Papua New Guinea',
+  'Paraguay',
+  'Peru',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Russia',
+  'Rwanda',
+  'Saint Kitts and Nevis',
+  'Saint Lucia',
+  'Saint Vincent and the Grenadines',
+  'Samoa',
+  'San Marino',
+  'Sao Tome and Principe',
+  'Saudi Arabia',
+  'Senegal',
+  'Serbia',
+  'Seychelles',
+  'Sierra Leone',
+  'Singapore',
+  'Slovakia',
+  'Slovenia',
+  'Solomon Islands',
+  'Somalia',
+  'South Africa',
+  'South Korea',
+  'South Sudan',
+  'Spain',
+  'Sri Lanka',
+  'Sudan',
+  'Suriname',
+  'Sweden',
+  'Switzerland',
+  'Syria',
+  'Tajikistan',
+  'Tanzania',
+  'Thailand',
+  'Timor-Leste',
+  'Togo',
+  'Tonga',
+  'Trinidad and Tobago',
+  'Tunisia',
+  'Turkey',
+  'Turkmenistan',
+  'Tuvalu',
+  'Uganda',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States of America',
+  'Uruguay',
+  'Uzbekistan',
+  'Vanuatu',
+  'Venezuela',
+  'Vietnam',
+  'Yemen',
+  'Zambia',
+  'Zimbabwe',
+];
+</pre>
+<pre data-language="ts">&lt;div ngCombobox filterMode="highlight"&gt;
+  &lt;div #origin class="retro-autocomplete"&gt;
+    &lt;span class="search-icon material-symbols-outlined" translate="no" aria-hidden="true"
+      &gt;search&lt;/span
+    &gt;
+    &lt;input
+      aria-label="Label dropdown"
+      placeholder="Select a country"
+      [(ngModel)]="query"
+      ngComboboxInput
+    /&gt;
+  &lt;/div&gt;
+
+  &lt;ng-template ngComboboxPopupContainer&gt;
+    &lt;ng-template
+      [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true"
+    &gt;
+      &lt;div class="popup"&gt;
+        @if (countries().length === 0) {
+          &lt;div class="no-results"&gt;No results found&lt;/div&gt;
+        }
+
+        &lt;div ngListbox&gt;
+          @for (country of countries(); track country) {
+            &lt;div ngOption [value]="country" [label]="country"&gt;
+              &lt;span class="option-label"&gt;{{ country }}&lt;/span&gt;
+              &lt;span class="check-icon material-symbols-outlined" translate="no" aria-hidden="true"
+                &gt;check&lt;/span
+              &gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ng-template&gt;
+  &lt;/ng-template&gt;
+&lt;/div&gt;
+</pre>
+<pre data-language="ts">@import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+
+:host {
+  display: flex;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-family: 'Press Start 2P';
+
+  --retro-button-color: #fff;
+  --retro-shadow-light: color-mix(in srgb, var(--retro-button-color) 90%, #fff);
+  --retro-shadow-dark: color-mix(in srgb, var(--retro-button-color) 90%, #000);
+  --retro-elevated-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-light),
+    inset -4px -4px 0px 0px var(--retro-shadow-dark), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-flat-shadow:
+    4px 0px 0px 0px var(--tertiary-contrast), 0px 4px 0px 0px var(--tertiary-contrast),
+    -4px 0px 0px 0px var(--tertiary-contrast), 0px -4px 0px 0px var(--tertiary-contrast);
+  --retro-pressed-shadow:
+    inset 4px 4px 0px 0px var(--retro-shadow-dark),
+    inset -4px -4px 0px 0px var(--retro-shadow-light), 4px 0px 0px 0px var(--tertiary-contrast),
+    0px 4px 0px 0px var(--tertiary-contrast), -4px 0px 0px 0px var(--tertiary-contrast),
+    0px -4px 0px 0px var(--tertiary-contrast), 0px 0px 0px 0px var(--tertiary-contrast);
+}
+
+.retro-autocomplete {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-icon {
+  left: 0.75rem;
+  position: absolute;
+  color: #000;
+  z-index: 1;
+}
+
+[ngComboboxInput] {
+  width: 15rem;
+  font-size: 0.6rem;
+  border-radius: 0;
+  font-family: 'Press Start 2P';
+  word-spacing: -5px;
+  padding: 0.75rem 0.5rem 0.75rem 2.5rem;
+  color: #000;
+  border: none;
+  box-shadow: var(--retro-flat-shadow);
+  background-color: var(--retro-button-color);
+}
+
+[ngComboboxInput]::placeholder {
+  color: #000;
+  opacity: 0.7;
+}
+
+[ngComboboxInput]:focus {
+  outline: none;
+  transform: translate(1px, 1px);
+  box-shadow: var(--retro-pressed-shadow);
+}
+
+[ngCombobox]:has([aria-expanded='false']) .popup {
+  display: none;
+}
+
+.popup {
+  width: 100%;
+  margin-top: 20px;
+  padding: 0.5rem;
+  max-height: 11rem;
+  border-radius: 0;
+  background-color: var(--septenary-contrast);
+  box-shadow: var(--retro-flat-shadow);
+}
+
+.no-results {
+  padding: 1rem;
+}
+
+[ngListbox] {
+  gap: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin: 1px;
+  padding: 0 1rem;
+  min-height: 2.25rem;
+  border-radius: 0;
+}
+
+[ngOption]:hover {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active='true'] {
+  outline-offset: -2px;
+  outline: 2px dashed var(--hot-pink);
+}
+
+[ngOption][aria-selected='true'] {
+  color: var(--hot-pink);
+  background-color: color-mix(in srgb, var(--hot-pink) 5%, transparent);
+}
+
+[ngOption]:not([aria-selected='true']) .check-icon {
+  display: none;
+}
+
+.option-label {
+  flex: 1;
+}
+
+.check-icon {
+  font-size: 0.9rem;
+}
+</pre> </div> </div> </div> <h2 id="apis"> APIs </h2> <h3 id="combobox-directive"> Combobox Directive </h3> <p>The <code>ngCombobox</code> directive provides the container for autocomplete functionality.</p> <h4 id="inputs"> Inputs </h4> <div class="docs-table docs-scroll-track-transparent"> <table> <thead> <tr> <th>Property</th> <th>Type</th> <th>Default</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>filterMode</code></td> <td>
+<code>'auto-select'</code> | <code>'manual'</code> | <code>'highlight'</code>
+</td> <td><code>'manual'</code></td> <td>Controls selection behavior</td> </tr> <tr> <td><code>disabled</code></td> <td><code>boolean</code></td> <td><code>false</code></td> <td>Disables the combobox</td> </tr> <tr> <td><code>firstMatch</code></td> <td><code>string</code></td> <td>-</td> <td>The value of the first matching item in the popup</td> </tr> </tbody> </table> </div> <h4 id="outputs"> Outputs </h4> <div class="docs-table docs-scroll-track-transparent"> <table> <thead> <tr> <th>Property</th> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>expanded</code></td> <td><code>Signal&lt;boolean&gt;</code></td> <td>Signal indicating whether the popup is currently open</td> </tr> </tbody> </table> </div> <h3 id="comboboxinput-directive"> ComboboxInput Directive </h3> <p>The <a href="../../api/aria/combobox/comboboxinput"><code>ngComboboxInput</code></a> directive connects an input element to the combobox.</p> <h4 id="model"> Model </h4> <div class="docs-table docs-scroll-track-transparent"> <table> <thead> <tr> <th>Property</th> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>value</code></td> <td><code>string</code></td> <td>Two-way bindable string value of the input using <code>[(value)]</code>
+</td> </tr> </tbody> </table> </div> <h3 id="comboboxpopupcontainer-directive"> ComboboxPopupContainer Directive </h3> <p>The <code>ngComboboxPopupContainer</code> directive wraps the popup content and manages its display.</p> <p>Must be used with <code>&lt;ng-template&gt;</code> inside a popover element.</p> <h3 id="related-components"> Related components </h3> <p>Autocomplete uses <a href="../../api/aria/listbox/listbox">Listbox</a> and <a href="../../api/aria/listbox/option">Option</a> directives to render the suggestion list. See the <a href="listbox">Listbox documentation</a> for additional customization options.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Super-powered by Google ©2010–2025.<br>Code licensed under an MIT-style License. Documentation licensed under CC BY 4.0.<br>
+    <a href="https://angular.dev/guide/aria/autocomplete" class="_attribution-link">https://angular.dev/guide/aria/autocomplete</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

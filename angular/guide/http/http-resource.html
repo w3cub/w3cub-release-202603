@@ -1,0 +1,187 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Reactive Data Fetching With httpResource - Angular - W3cubDocs</title>
+  
+  <meta name="description" content=" IMPORTANT&#58; httpResource is experimental. It&#39;s ready for you to try, but it might change before it is stable. ">
+  <meta name="keywords" content="reactive, data, fetching, with, httpresource, angular">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/angular/guide/http/http-resource.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/angular.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/angular/" class="_nav-link" title="" style="margin-left:0;">Angular</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _angular">
+				
+				
+<h1 tabindex="-1">Reactive data fetching with <code>httpResource</code>
+</h1> <header class="docs-header"> <docs-breadcrumb ng-version="21.2.0+sha-6d7446b" _nghost-ng-c3945279308 ngh="8"></docs-breadcrumb>   </header> 
+<div class="docs-alert docs-alert-important"> <p><strong>IMPORTANT:</strong> <a href="../../api/common/http/httpresource"><code>httpResource</code></a> is <a href="https://angular.dev/reference/releases#experimental">experimental</a>. It's ready for you to try, but it might change before it is stable.</p> </div>  <p><a href="../../api/common/http/httpresource"><code>httpResource</code></a> is a reactive wrapper around <a href="../../api/common/http/httpclient"><code>HttpClient</code></a> that gives you the request status and response as signals. You can thus use these signals with <a href="../../api/core/computed"><code>computed</code></a>, <a href="../../api/core/effect"><code>effect</code></a>, <a href="../../api/core/linkedsignal"><code>linkedSignal</code></a>, or any other reactive API. Because it's built on top of <a href="../../api/common/http/httpclient"><code>HttpClient</code></a>, <a href="../../api/common/http/httpresource"><code>httpResource</code></a> supports all the same features, such as interceptors.</p> <p>For more about Angular's <a href="../../api/core/resource"><code>resource</code></a> pattern, see <a href="../signals/resource">Async reactivity with </a><a href="../../api/core/resource"><code>resource</code></a>.</p> <h2 id="using-httpresource"> Using httpResource </h2> 
+<div class="docs-alert docs-alert-tip"> <p><strong>TIP:</strong> Make sure to include <a href="../../api/common/http/providehttpclient"><code>provideHttpClient</code></a> in your application providers. See <a href="setup">Setting up HttpClient</a> for details.</p> </div>  <p>You can define an HTTP resource by returning a url:</p> <pre data-language="ts">userId = input.required&lt;string&gt;();
+
+user = httpResource(() =&gt; `/api/user/${userId()}`); // A reactive function as argument</pre>
+<p><a href="../../api/common/http/httpresource"><code>httpResource</code></a> is reactive, meaning that whenever one of the signal it depends on changes (like <code>userId</code>), the resource will emit a new http request. If a request is already pending, the resource cancels the outstanding request before issuing a new one.</p> 
+<div class="docs-alert docs-alert-helpful"> <p><strong>HELPFUL:</strong> <a href="../../api/common/http/httpresource"><code>httpResource</code></a> differs from the <a href="../../api/common/http/httpclient"><code>HttpClient</code></a> as it initiates the request <em>eagerly</em>. In contrast, the <a href="../../api/common/http/httpclient"><code>HttpClient</code></a> only initiates requests upon subscription to the returned <code>Observable</code>.</p> </div>  <p>For more advanced requests, you can define a request object similar to the request taken by <a href="../../api/common/http/httpclient"><code>HttpClient</code></a>. Each property of the request object that should be reactive should be composed by a signal.</p> <pre data-language="ts">user = httpResource(() =&gt; ({
+  url: `/api/user/${userId()}`,
+  method: 'GET',
+  headers: {
+    'X-Special': 'true',
+  },
+  params: {
+    'fast': 'yes',
+  },
+  reportProgress: true,
+  transferCache: true,
+  keepalive: true,
+  mode: 'cors',
+  redirect: 'error',
+  priority: 'high',
+  cache: 'force-cache',
+  credentials: 'include',
+  referrer: 'no-referrer',
+  integrity: 'sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GhEXAMPLEKEY=',
+  referrerPolicy: 'no-referrer',
+}));</pre>
+
+<div class="docs-alert docs-alert-tip"> <p><strong>TIP:</strong> Avoid using <a href="../../api/common/http/httpresource"><code>httpResource</code></a> for <em>mutations</em> like <code>POST</code> or <code>PUT</code>. Instead, prefer directly using the underlying <a href="../../api/common/http/httpclient"><code>HttpClient</code></a> APIs.</p> </div>  <p>The signals of the <a href="../../api/common/http/httpresource"><code>httpResource</code></a> can be used in the template to control which elements should be displayed.</p> <pre data-language="ts">@if(user.hasValue()) {
+  &lt;user-details [user]="user.value()"&gt;
+} @else if (user.error()) {
+  &lt;div&gt;Could not load user information&lt;/div&gt;
+} @else if (user.isLoading()) {
+  &lt;div&gt;Loading user info...&lt;/div&gt;
+}</pre>
+
+<div class="docs-alert docs-alert-helpful"> <p><strong>HELPFUL:</strong> Reading the <code>value</code> signal on a <a href="../../api/core/resource"><code>resource</code></a> that is in error state throws at runtime. It is recommended to guard <code>value</code> reads with <code>hasValue()</code>.</p> </div>  <h3 id="response-types"> Response types </h3> <p>By default, <a href="../../api/common/http/httpresource"><code>httpResource</code></a> returns and parses the response as JSON. However, you can specify alternate return with additional functions on <a href="../../api/common/http/httpresource"><code>httpResource</code></a>:</p> <pre data-language="ts">httpResource.text(() =&gt; ({ … })); // returns a string in value()
+
+httpResource.blob(() =&gt; ({ … })); // returns a Blob object in value()
+
+httpResource.arrayBuffer(() =&gt; ({ … })); // returns an ArrayBuffer in value()</pre> <h2 id="response-parsing-and-validation"> Response parsing and validation </h2> <p>When fetching data, you may want to validate responses against a predefined schema, often using popular open-source libraries like <a href="https://zod.dev" target="_blank">Zod</a> or <a href="https://valibot.dev" target="_blank">Valibot</a>. You can integrate validation libraries like this with <a href="../../api/common/http/httpresource"><code>httpResource</code></a> by specifying a <code>parse</code> option. The return type of the <code>parse</code> function determines the type of the resource's <code>value</code>.</p> <p>The following example uses Zod to parse and validate the response from the <a href="https://swapi.info/" target="_blank">StarWars API</a>. The resource is then typed the same as the output type of Zod’s parsing.</p> <pre data-language="ts">const starWarsPersonSchema = z.object({
+  name: z.string(),
+  height: z.number({coerce: true}),
+  edited: z.string().datetime(),
+  films: z.array(z.string()),
+});
+
+export class CharacterViewer {
+  id = signal(1);
+
+  swPersonResource = httpResource(() =&gt; `https://swapi.info/api/people/${this.id()}`, {
+    parse: starWarsPersonSchema.parse,
+  });
+}</pre> <h2 id="testing-an-httpresource"> Testing an httpResource </h2> <p>Because <a href="../../api/common/http/httpresource"><code>httpResource</code></a> is a wrapper around <a href="../../api/common/http/httpclient"><code>HttpClient</code></a>, you can test <a href="../../api/common/http/httpresource"><code>httpResource</code></a> with the exact same APIs as <a href="../../api/common/http/httpclient"><code>HttpClient</code></a>. See <a href="testing">HttpClient Testing</a> for details.</p> <p>The following example shows a unit test for code using <a href="../../api/common/http/httpresource"><code>httpResource</code></a>.</p> <pre data-language="ts">TestBed.configureTestingModule({
+  providers: [provideHttpClient(), provideHttpClientTesting()],
+});
+
+const id = signal(0);
+const mockBackend = TestBed.inject(HttpTestingController);
+const response = httpResource(() =&gt; `/data/${id()}`, {injector: TestBed.inject(Injector)});
+TestBed.tick(); // Triggers the effect
+const firstRequest = mockBackend.expectOne('/data/0');
+firstRequest.flush(0);
+
+// Ensures the values are propagated to the httpResource
+await TestBed.inject(ApplicationRef).whenStable();
+
+expect(response.value()).toEqual(0);</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Super-powered by Google ©2010–2025.<br>Code licensed under an MIT-style License. Documentation licensed under CC BY 4.0.<br>
+    <a href="https://angular.dev/guide/http/http-resource" class="_attribution-link">https://angular.dev/guide/http/http-resource</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

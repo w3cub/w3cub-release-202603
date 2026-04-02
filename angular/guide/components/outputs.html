@@ -1,0 +1,187 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Custom Events With Outputs - Angular - W3cubDocs</title>
+  
+  <meta name="description" content=" TIP&#58; This guide assumes you&#39;ve already read the Essentials Guide. Read that first if you&#39;re new to Angular. ">
+  <meta name="keywords" content="custom, events, with, outputs, angular">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/angular/guide/components/outputs.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/angular.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/angular/" class="_nav-link" title="" style="margin-left:0;">Angular</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _angular">
+				
+				
+<h1 tabindex="-1">Custom events with outputs</h1> <header class="docs-header"> <docs-breadcrumb ng-version="21.2.0+sha-6d7446b" _nghost-ng-c3945279308 ngh="8"></docs-breadcrumb>   </header> 
+<div class="docs-alert docs-alert-tip"> <p><strong>TIP:</strong> This guide assumes you've already read the <a href="https://angular.dev/essentials">Essentials Guide</a>. Read that first if you're new to Angular.</p> </div>  <p>Angular components can define custom events by assigning a property to the <a href="../../api/core/output"><code>output</code></a> function:</p> <pre data-language="ts">@Component({
+  /*...*/
+})
+export class ExpandablePanel {
+  panelClosed = output&lt;void&gt;();
+}</pre>
+<pre data-language="ts">&lt;expandable-panel (panelClosed)="savePanelState()" /&gt;</pre>
+<p>The <a href="../../api/core/output"><code>output</code></a> function returns an <a href="../../api/core/outputemitterref"><code>OutputEmitterRef</code></a>. You can emit an event by calling the <code>emit</code> method on the <a href="../../api/core/outputemitterref"><code>OutputEmitterRef</code></a>:</p> <pre data-language="ts">this.panelClosed.emit();</pre>
+<p>Angular refers to properties initialized with the <a href="../../api/core/output"><code>output</code></a> function as <strong>outputs</strong>. You can use outputs to raise custom events, similar to native browser events like <code>click</code>.</p> <p><strong>Angular custom events do not bubble up the DOM</strong>.</p> <p><strong>Output names are case-sensitive.</strong></p> <p>When extending a component class, <strong>outputs are inherited by the child class.</strong></p> <p>The <a href="../../api/core/output"><code>output</code></a> function has special meaning to the Angular compiler. <strong>You can exclusively call <a href="../../api/core/output"><code>output</code></a> in component and directive property initializers.</strong></p> <h2 id="emitting-event-data"> Emitting event data </h2> <p>You can pass event data when calling <code>emit</code>:</p> <pre data-language="ts">// You can emit primitive values.
+this.valueChanged.emit(7);
+
+// You can emit custom event objects
+this.thumbDropped.emit({
+  pointerX: 123,
+  pointerY: 456,
+});</pre>
+<p>When defining an event listener in a template, you can access the event data from the <code>$event</code> variable:</p> <pre data-language="ts">&lt;custom-slider (valueChanged)="logValue($event)" /&gt;</pre>
+<p>Receive the event data in the parent component:</p> <pre data-language="ts">@Component({
+ /*...*/
+})
+export class App {
+  logValue(value: number) {
+    ...
+  }
+}</pre> <h2 id="customizing-output-names"> Customizing output names </h2> <p>The <a href="../../api/core/output"><code>output</code></a> function accepts a parameter that lets you specify a different name for the event in a template:</p> <pre data-language="ts">@Component({
+  /*...*/
+})
+export class CustomSlider {
+  changed = output({alias: 'valueChanged'});
+}</pre>
+<pre data-language="ts">&lt;custom-slider (valueChanged)="saveVolume()" /&gt;</pre>
+<p>This alias does not affect usage of the property in TypeScript code.</p> <p>While you should generally avoid aliasing outputs for components, this feature can be useful for renaming properties while preserving an alias for the original name or for avoiding collisions with the name of native DOM events.</p> <h2 id="subscribing-to-outputs-programmatically"> Subscribing to outputs programmatically </h2> <p>When creating a component dynamically, you can programmatically subscribe to output events from the component instance. The <a href="../../api/core/outputref"><code>OutputRef</code></a> type includes a <code>subscribe</code> method:</p> <pre data-language="ts">const someComponentRef: ComponentRef&lt;SomeComponent&gt; = viewContainerRef.createComponent(/*...*/);
+
+someComponentRef.instance.someEventProperty.subscribe((eventData) =&gt; {
+  console.log(eventData);
+});</pre>
+<p>Angular automatically cleans up event subscriptions when it destroys components with subscribers. Alternatively, you can manually unsubscribe from an event. The <code>subscribe</code> function returns an <a href="../../api/core/outputrefsubscription"><code>OutputRefSubscription</code></a> with an <code>unsubscribe</code> method:</p> <pre data-language="ts">const eventSubscription = someComponent.someEventProperty.subscribe((eventData) =&gt; {
+  console.log(eventData);
+});
+
+// ...
+
+eventSubscription.unsubscribe();</pre> <h2 id="choosing-event-names"> Choosing event names </h2> <p>Avoid choosing output names that collide with events on DOM elements like HTMLElement. Name collisions introduce confusion about whether the bound property belongs to the component or the DOM element.</p> <p>Avoid adding prefixes for component outputs like you would with component selectors. Since a given element can only host one component, any custom properties can be assumed to belong to the component.</p> <p>Always use <a href="https://en.wikipedia.org/wiki/Camel_case" target="_blank">camelCase</a> output names. Avoid prefixing output names with "on".</p> <h2 id="using-outputs-with-rxjs"> Using outputs with RxJS </h2> <p>See <a href="https://angular.dev/ecosystem/rxjs-interop/output-interop">RxJS interop with component and directive outputs</a> for details on interoperability between outputs and RxJS.</p> <h2 id="declaring-outputs-with-the-output-decorator"> Declaring outputs with the @Output decorator </h2> 
+<div class="docs-alert docs-alert-tip"> <p><strong>TIP:</strong> While the Angular team recommends using the <a href="../../api/core/output"><code>output</code></a> function for new projects, the original decorator-based <a href="../../api/core/output"><code>@Output</code></a> API remains fully supported.</p> </div>  <p>You can alternatively define custom events by assigning a property to a new <a href="../../api/core/eventemitter"><code>EventEmitter</code></a> and adding the <a href="../../api/core/output"><code>@Output</code></a> decorator:</p> <pre data-language="ts">@Component({
+  /*...*/
+})
+export class ExpandablePanel {
+  @Output() panelClosed = new EventEmitter&lt;void&gt;();
+}</pre>
+<p>You can emit an event by calling the <code>emit</code> method on the <a href="../../api/core/eventemitter"><code>EventEmitter</code></a>.</p> <h3 id="aliases-with-the-output-decorator"> Aliases with the @Output decorator </h3> <p>The <a href="../../api/core/output"><code>@Output</code></a> decorator accepts a parameter that lets you specify a different name for the event in a template:</p> <pre data-language="ts">@Component({
+  /*...*/
+})
+export class CustomSlider {
+  @Output('valueChanged') changed = new EventEmitter&lt;number&gt;();
+}</pre>
+<pre data-language="ts">&lt;custom-slider (valueChanged)="saveVolume()" /&gt;</pre>
+<p>This alias does not affect usage of the property in TypeScript code.</p> <h2 id="specify-outputs-in-the-component-decorator"> Specify outputs in the @Component decorator </h2> <p>In addition to the <a href="../../api/core/output"><code>@Output</code></a> decorator, you can also specify a component's outputs with the <code>outputs</code> property in the <a href="../../api/core/component"><code>@Component</code></a> decorator. This can be useful when a component inherits a property from a base class:</p> <pre data-language="ts">// `CustomSlider` inherits the `valueChanged` property from `BaseSlider`.
+@Component({
+  /*...*/
+  outputs: ['valueChanged'],
+})
+export class CustomSlider extends BaseSlider {}</pre>
+<p>You can additionally specify an output alias in the <code>outputs</code> list by putting the alias after a colon in the string:</p> <pre data-language="ts">// `CustomSlider` inherits the `valueChanged` property from `BaseSlider`.
+@Component({
+  /*...*/
+  outputs: ['valueChanged: volumeChanged'],
+})
+export class CustomSlider extends BaseSlider {}</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Super-powered by Google ©2010–2025.<br>Code licensed under an MIT-style License. Documentation licensed under CC BY 4.0.<br>
+    <a href="https://angular.dev/guide/components/outputs" class="_attribution-link">https://angular.dev/guide/components/outputs</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

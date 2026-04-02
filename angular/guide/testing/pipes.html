@@ -1,0 +1,159 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Testing Pipes - Angular - W3cubDocs</title>
+  
+  <meta name="description" content=" You can test pipes without the Angular testing utilities. ">
+  <meta name="keywords" content="testing, pipes, angular">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/angular/guide/testing/pipes.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/angular.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/angular/" class="_nav-link" title="" style="margin-left:0;">Angular</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _angular">
+				
+				
+<h1 tabindex="-1">Testing Pipes</h1> <header class="docs-header"> <docs-breadcrumb ng-version="21.2.0+sha-6d7446b" _nghost-ng-c3945279308 ngh="8"></docs-breadcrumb>   </header> <p>You can test <a href="../templates/pipes">pipes</a> without the Angular testing utilities.</p> <h2 id="testing-the-titlecasepipe"> Testing the TitleCasePipe </h2> <p>A pipe class has one method, <code>transform</code>, that manipulates the input value into a transformed output value. The <code>transform</code> implementation rarely interacts with the DOM. Most pipes have no dependence on Angular other than the <a href="../../api/core/pipe"><code>@Pipe</code></a> metadata and an interface.</p> <p>Consider a <a href="../../api/common/titlecasepipe"><code>TitleCasePipe</code></a> that capitalizes the first letter of each word. Here's an implementation with a regular expression.</p> <pre data-language="ts">import {Pipe, PipeTransform} from '@angular/core';
+
+@Pipe({name: 'titlecase', pure: true})
+/** Transform to Title Case: uppercase the first letter of the words in a string. */
+export class TitleCasePipe implements PipeTransform {
+  transform(input: string): string {
+    return input.length === 0
+      ? ''
+      : input.replace(/\w\S*/g, (txt) =&gt; txt[0].toUpperCase() + txt.slice(1).toLowerCase());
+  }
+}</pre>
+<p>Anything that uses a regular expression is worth testing thoroughly. You can use standard unit testing techniques to explore the expected cases and the edge cases.</p> <pre data-language="ts">describe('TitleCasePipe', () =&gt; {
+  // This pipe is a pure, stateless function so no need for BeforeEach
+  const pipe = new TitleCasePipe();
+
+  it('transforms "abc" to "Abc"', () =&gt; {
+    expect(pipe.transform('abc')).toBe('Abc');
+  });
+
+  it('transforms "abc def" to "Abc Def"', () =&gt; {
+    expect(pipe.transform('abc def')).toBe('Abc Def');
+  });
+
+  // ... more tests ...
+});</pre> <h2 id="writing-dom-tests-to-support-a-pipe-test"> Writing DOM tests to support a pipe test </h2> <p>These are tests of the pipe <em>in isolation</em>. They can't tell if the <a href="../../api/common/titlecasepipe"><code>TitleCasePipe</code></a> is working properly as applied in the application components.</p> <p>Consider adding component tests such as this one:</p> <pre data-language="ts">it('should convert hero name to Title Case', async () =&gt; {
+  // get the name's input and display elements from the DOM
+  const hostElement: HTMLElement = harness.routeNativeElement!;
+  const nameInput: HTMLInputElement = hostElement.querySelector('input')!;
+  const nameDisplay: HTMLElement = hostElement.querySelector('span')!;
+
+  // simulate user entering a new name into the input box
+  nameInput.value = 'quick BROWN  fOx';
+
+  // Dispatch a DOM event so that Angular learns of input value change.
+  nameInput.dispatchEvent(new Event('input'));
+
+  // Wait for Angular to update the display binding through the title pipe
+  await harness.fixture.whenStable();
+
+  expect(nameDisplay.textContent).toBe('Quick Brown  Fox');
+});</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Super-powered by Google ©2010–2025.<br>Code licensed under an MIT-style License. Documentation licensed under CC BY 4.0.<br>
+    <a href="https://angular.dev/guide/testing/pipes" class="_attribution-link">https://angular.dev/guide/testing/pipes</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
