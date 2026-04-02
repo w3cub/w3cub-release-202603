@@ -1,0 +1,194 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Calling External Code From Oct-Files ¶ - Octave 10 - W3cubDocs</title>
+  
+  <meta name="description" content=" Next&#58; Allocating Local Memory in Oct-Files, Previous&#58; Calling Octave Functions from Oct-Files, Up&#58; Oct-Files [Contents][Index] ">
+  <meta name="keywords" content="calling, external, code, from, oct-files, ¶, octave, octave~10">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/octave~10/calling-external-code-from-oct_002dfiles.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/octave~10.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/octave~10/" class="_nav-link" title="" style="margin-left:0;">Octave 10</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _octave">
+				
+				
+<div class="subsection-level-extent" id="Calling-External-Code-from-Oct_002dFiles"> <div class="nav-panel"> <p> Next: <a href="allocating-local-memory-in-oct_002dfiles" accesskey="n" rel="next">Allocating Local Memory in Oct-Files</a>, Previous: <a href="calling-octave-functions-from-oct_002dfiles" accesskey="p" rel="prev">Calling Octave Functions from Oct-Files</a>, Up: <a href="oct_002dfiles" accesskey="u" rel="up">Oct-Files</a> [<a href="index#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="concept-index" title="Index" rel="index">Index</a>]</p> </div>  <h1 class="subsection" id="Calling-External-Code-from-Oct_002dFiles-1"><span>A.1.9 Calling External Code from Oct-Files<a class="copiable-link" href="#Calling-External-Code-from-Oct_002dFiles-1"> ¶</a></span></h1> <p>Linking external C code to Octave is relatively simple, as the C functions can easily be called directly from C++. One possible issue is that the declarations of the external C functions may need to be explicitly defined as C functions to the compiler. If the declarations of the external C functions are in the header <samp class="file">foo.h</samp>, then the tactic to ensure that the C++ compiler treats these declarations as C code is </p> <pre class="example" data-language="matlab">#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include "foo.h"
+#ifdef __cplusplus
+}  /* end extern "C" */
+#endif</pre> <p>When calling functions that are implemented in Fortran code, some peculiarities have to be taken into account. Symbol names in Fortran are case-insensitive, and depending on the used Fortran compiler, function names are either exported with all lowercase or with all uppercase characters. Additionally, some compilers append none, one or two underscores "<code class="code">_</code>" at the end of exported function names. This is called "name-mangling". </p> <p>Octave supplies macros that allow writing code that automatically handles the name-mangling for a number of different Fortran compilers. These macros are <code class="env">F77_FUNC</code> and <code class="env">F77_FUNC_</code>. The former should be used for Fortran functions that do not contain any underscores in their name. The latter should be used for Fortran functions with underscores in their names. Both macros take two arguments: The first is the Fortran function name in all lowercase characters. The second is the same Fortran function name in all uppercase characters. </p> <p>Additionally to the name-mangling, different compilers are using different calling conventions for some types. Octave defines the following preprocessor macros to allow writing code that can be used with different Fortran calling conventions. </p> <p>Note that we don’t attempt to handle Fortran functions, we always use subroutine wrappers for them and pass the return value as an extra argument. </p> <p>Use the following macros to pass character strings from C to Fortran: </p> <pre class="example" data-language="matlab">F77_CHAR_ARG(x)
+  F77_CONST_CHAR_ARG(x)
+  F77_CXX_STRING_ARG(x)
+  F77_CHAR_ARG_LEN(l)
+  F77_CHAR_ARG_DECL
+  F77_CONST_CHAR_ARG_DECL
+  F77_CHAR_ARG_LEN_DECL</pre> <p>Use the following macros to write C-language functions that accept Fortran-style character strings: </p> <pre class="example" data-language="matlab">F77_CHAR_ARG_DEF(s, len)
+  F77_CONST_CHAR_ARG_DEF(s, len)
+  F77_CHAR_ARG_LEN_DEF(len)
+  F77_CHAR_ARG_USE(s)
+  F77_CHAR_ARG_LEN_USE(s, len)</pre> <p>Use the following macros for Fortran types in C++ code: </p> <dl class="table"> <dt><code class="code">F77_INT4</code></dt> <dd>
+<p>Equivalent to Fortran <code class="code">INTEGER*4</code> type </p> </dd> <dt><code class="code">F77_DBLE</code></dt> <dd>
+<p>Equivalent to Fortran <code class="code">DOUBLE PRECISION</code> type </p> </dd> <dt><code class="code">F77_REAL</code></dt> <dd>
+<p>Equivalent to Fortran <code class="code">REAL</code> type </p> </dd> <dt><code class="code">F77_CMPLX</code></dt> <dd>
+<p>Equivalent to Fortran <code class="code">COMPLEX</code> type </p> </dd> <dt><code class="code">F77_DBLE_CMPLX</code></dt> <dd>
+<p>Equivalent to Fortran <code class="code">DOUBLE COMPLEX</code> type </p> </dd> <dt><code class="code">F77_LOGICAL</code></dt> <dd>
+<p>Equivalent to Fortran <code class="code">LOGICAL</code> type </p> </dd> <dt><code class="code">F77_RET_T</code></dt> <dd><p>Return type of a C++ function that acts like a Fortran subroutine. </p></dd> </dl> <p>Use the following macros to return from C-language functions that are supposed to act like Fortran subroutines. <code class="env">F77_NORETURN</code> is intended to be used as the last statement of such a function that has been tagged with a <code class="code">"noreturn"</code> attribute. </p> <pre class="example" data-language="matlab">F77_RETURN(retval)
+  F77_NORETURN(retval)</pre> <p>The underlying Fortran code should use the <code class="code">XSTOPX</code> function to replace the Fortran <code class="code">STOP</code> function. <code class="code">XSTOPX</code> uses the Octave exception handler to treat failing cases in the Fortran code explicitly. Note that Octave supplies its own replacement <small class="sc">BLAS</small> <code class="code">XERBLA</code> function, which uses <code class="code">XSTOPX</code>. </p> <p>The following example shows the inclusion of a Fortran function in an oct-file, where the C++ wrapper is </p> <pre class="example" data-language="matlab">#include &lt;octave/oct.h&gt;
+#include &lt;octave/f77-fcn.h&gt;
+
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (fortransub, FORTRANSUB)
+    (const F77_INT&amp;, F77_DBLE*, F77_CHAR_ARG_DECL F77_CHAR_ARG_LEN_DECL);
+}
+
+DEFUN_DLD (fortrandemo, args, , "Fortran Demo")
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  NDArray a = args(0).array_value ();
+
+  double *av = a.rwdata ();
+  octave_idx_type na = a.numel ();
+
+  OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
+
+  F77_FUNC (fortransub, FORTRANSUB)
+            (na, av, ctmp F77_CHAR_ARG_LEN (128));
+
+  return ovl (a, std::string (ctmp));
+}</pre> <p>and the Fortran function is </p> <pre class="example" data-language="matlab">subroutine fortransub (n, a, s)
+      implicit none
+      character*(*) s
+      real*8 a(*)
+      integer*4 i, n, ioerr
+      do i = 1, n
+        if (a(i) .eq. 0d0) then
+          call xstopx ('fortransub: divide by zero')
+        else
+          a(i) = 1d0 / a(i)
+        endif
+      enddo
+      write (unit = s, fmt = '(a,i3,a,a)', iostat = ioerr)
+     $       'There are ', n,
+     $       ' values in the input vector', char(0)
+      if (ioerr .ne. 0) then
+        call xstopx ('fortransub: error writing string')
+      endif
+      return
+      end</pre> <p>This example demonstrates most of the features needed to link to an external Fortran function, including passing arrays and strings, as well as exception handling. Both the Fortran and C++ files need to be compiled in order for the example to work. </p> <pre class="example" data-language="matlab">mkoctfile fortrandemo.cc fortransub.f
+[b, s] = fortrandemo (1:3)
+⇒
+  b = 1.00000   0.50000   0.33333
+  s = There are   3 values in the input vector
+[b, s] = fortrandemo (0:3)
+error: fortrandemo: fortransub: divide by zero</pre> </div>  <div class="nav-panel"> <p> Next: <a href="allocating-local-memory-in-oct_002dfiles">Allocating Local Memory in Oct-Files</a>, Previous: <a href="calling-octave-functions-from-oct_002dfiles">Calling Octave Functions from Oct-Files</a>, Up: <a href="oct_002dfiles">Oct-Files</a> [<a href="index#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="concept-index" title="Index" rel="index">Index</a>]</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2025 The Octave Project Developers<br>Permission is granted to make and distribute verbatim copies of this manual provided the copyright notice and this permission notice are preserved on all copies.<br>Permission is granted to copy and distribute modified versions of this manual under the conditions for verbatim copying, provided that the entire resulting derived work is distributed under the terms of a permission notice identical to this one.Permission is granted to copy and distribute translations of this manual into another language, under the above conditions for modified versions.<br>
+    <a href="https://docs.octave.org/v10.1.0/Calling-External-Code-from-Oct_002dFiles.html" class="_attribution-link">https://docs.octave.org/v10.1.0/Calling-External-Code-from-Oct_002dFiles.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

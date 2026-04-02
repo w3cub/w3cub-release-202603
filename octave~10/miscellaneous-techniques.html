@@ -1,0 +1,147 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Miscellaneous Techniques ¶ - Octave 10 - W3cubDocs</title>
+  
+  <meta name="description" content=" Next&#58; Examples, Previous&#58; Memoization, Up&#58; Vectorization and Faster Code Execution [Contents][Index] ">
+  <meta name="keywords" content="miscellaneous, techniques, ¶, octave, octave~10">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/octave~10/miscellaneous-techniques.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/octave~10.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/octave~10/" class="_nav-link" title="" style="margin-left:0;">Octave 10</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _octave">
+				
+				
+<div class="section-level-extent" id="Miscellaneous-Techniques"> <div class="nav-panel"> <p> Next: <a href="examples" accesskey="n" rel="next">Examples</a>, Previous: <a href="memoization" accesskey="p" rel="prev">Memoization</a>, Up: <a href="vectorization-and-faster-code-execution" accesskey="u" rel="up">Vectorization and Faster Code Execution</a> [<a href="index#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="concept-index" title="Index" rel="index">Index</a>]</p> </div>  <h1 class="section" id="Miscellaneous-Techniques-1"><span>19.6 Miscellaneous Techniques<a class="copiable-link" href="#Miscellaneous-Techniques-1"> ¶</a></span></h1>    <p>Here are some other ways of improving the execution speed of Octave programs. </p> <ul class="itemize mark-bullet"> <li>Avoid computing costly intermediate results multiple times. Octave currently does not eliminate common subexpressions. Also, certain internal computation results are cached for variables. For instance, if a matrix variable is used multiple times as an index, checking the indices (and internal conversion to integers) is only done once. </li>
+<li>Be aware of lazy copies (copy-on-write).    When a copy of an object is created, the data is not immediately copied, but rather shared. The actual copying is postponed until the copied data needs to be modified. For example: <pre class="example" data-language="matlab">a = zeros (1000); # create a 1000x1000 matrix
+b = a; # no copying done here
+b(1) = 1; # copying done here</pre> <p>Lazy copying applies to whole Octave objects such as matrices, cells, struct, and also individual cell or struct elements (not array elements). </p> <p>Additionally, index expressions also use lazy copying when Octave can determine that the indexed portion is contiguous in memory. For example: </p> <pre class="example" data-language="matlab">a = zeros (1000); # create a 1000x1000 matrix
+b = a(:,10:100);  # no copying done here
+b = a(10:100,:);  # copying done here</pre> <p>This applies to arrays (matrices), cell arrays, and structs indexed using ‘<samp class="samp">()</samp>’. Index expressions generating comma-separated lists can also benefit from shallow copying in some cases. In particular, when <var class="var">a</var> is a struct array, expressions like <code class="code">{a.x}, {a(:,2).x}</code> will use lazy copying, so that data can be shared between a struct array and a cell array. </p> <p>Most indexing expressions do not live longer than their parent objects. In rare cases, however, a lazily copied slice outlasts its parent, in which case it becomes orphaned, still occupying unnecessarily more memory than needed. To provide a remedy working in most real cases, Octave checks for orphaned lazy slices at certain situations, when a value is stored into a "permanent" location, such as a named variable or cell or struct element, and possibly economizes them. For example: </p> <pre class="example" data-language="matlab">a = zeros (1000); # create a 1000x1000 matrix
+b = a(:,10:100);  # lazy slice
+a = []; # the original "a" array is still allocated
+c{1} = b; # b is reallocated at this point</pre> </li>
+<li>Avoid deep recursion. Function calls to m-file functions carry a relatively significant overhead, so rewriting a recursion as a loop often helps. Also, note that the maximum level of recursion is limited. </li>
+<li>Avoid resizing matrices unnecessarily. When building a single result matrix from a series of calculations, set the size of the result matrix first, then insert values into it. Write <pre class="example" data-language="matlab">result = zeros (big_n, big_m)
+for i = over:and_over
+  ridx = ...
+  cidx = ...
+  result(ridx, cidx) = new_value ();
+endfor</pre> <p>instead of </p> <pre class="example" data-language="matlab">result = [];
+for i = ever:and_ever
+  result = [ result, new_value() ];
+endfor</pre> <p>Sometimes the number of items can not be computed in advance, and stack-like operations are needed. When elements are being repeatedly inserted or removed from the end of an array, Octave detects it as stack usage and attempts to use a smarter memory management strategy by pre-allocating the array in bigger chunks. This strategy is also applied to cell and struct arrays. </p> <pre class="example" data-language="matlab">a = [];
+while (condition)
+  ...
+  a(end+1) = value; # "push" operation
+  ...
+  a(end) = []; # "pop" operation
+  ...
+endwhile</pre> </li>
+<li>Avoid calling <code class="code">eval</code> or <code class="code">feval</code> excessively. Parsing input or looking up the name of a function in the symbol table are relatively expensive operations. <p>If you are using <code class="code">eval</code> merely as an exception handling mechanism, and not because you need to execute some arbitrary text, use the <code class="code">try</code> statement instead. See <a class="xref" href="the-try-statement">The try Statement</a>. </p> </li>
+<li>Use <code class="code">ignore_function_time_stamp</code> when appropriate. If you are calling lots of functions, and none of them will need to change during your run, set the variable <code class="code">ignore_function_time_stamp</code> to <code class="code">"all"</code>. This will stop Octave from checking the time stamp of a function file to see if it has been updated while the program is being run. </li>
+</ul> </div>  <div class="nav-panel"> <p> Next: <a href="examples">Examples</a>, Previous: <a href="memoization">Memoization</a>, Up: <a href="vectorization-and-faster-code-execution">Vectorization and Faster Code Execution</a> [<a href="index#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="concept-index" title="Index" rel="index">Index</a>]</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2025 The Octave Project Developers<br>Permission is granted to make and distribute verbatim copies of this manual provided the copyright notice and this permission notice are preserved on all copies.<br>Permission is granted to copy and distribute modified versions of this manual under the conditions for verbatim copying, provided that the entire resulting derived work is distributed under the terms of a permission notice identical to this one.Permission is granted to copy and distribute translations of this manual into another language, under the above conditions for modified versions.<br>
+    <a href="https://docs.octave.org/v10.1.0/Miscellaneous-Techniques.html" class="_attribution-link">https://docs.octave.org/v10.1.0/Miscellaneous-Techniques.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

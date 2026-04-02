@@ -1,0 +1,147 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Memoization ¶ - Octave 10 - W3cubDocs</title>
+  
+  <meta name="description" content=" Next&#58; Miscellaneous Techniques, Previous&#58; Accumulation, Up&#58; Vectorization and Faster Code Execution [Contents][Index] ">
+  <meta name="keywords" content="memoization, ¶, octave, octave~10">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/octave~10/memoization.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/octave~10.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/octave~10/" class="_nav-link" title="" style="margin-left:0;">Octave 10</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _octave">
+				
+				
+<div class="section-level-extent" id="Memoization"> <div class="nav-panel"> <p> Next: <a href="miscellaneous-techniques" accesskey="n" rel="next">Miscellaneous Techniques</a>, Previous: <a href="accumulation" accesskey="p" rel="prev">Accumulation</a>, Up: <a href="vectorization-and-faster-code-execution" accesskey="u" rel="up">Vectorization and Faster Code Execution</a> [<a href="index#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="concept-index" title="Index" rel="index">Index</a>]</p> </div>  <h1 class="section" id="Memoization-1"><span>19.5 Memoization<a class="copiable-link" href="#Memoization-1"> ¶</a></span></h1> <p>Memoization is a technique to cache the results of slow function calls and return the cached value when the function is called with the same inputs again, instead of reevaluating it. It is very common to replace function calls with lookup tables if the same inputs are happening over and over again in a known, predictable way. Memoization is, at its core, an extension of this practice where the lookup table is extended even during runtime for new arguments not seen previously. A basic theoretical background can be found on Wikipedia or any undergraduate-level computer science textbook. </p> <p>Octave’s <code class="code">memoize</code> function provides drop-in memoization functionality for any user function or Octave function, including compiled functions. </p>  <dl class="first-deftypefn"> <dt class="deftypefn" id="index-memoize">
+<span class="category-def">: </span><span><code class="def-type"><var class="var">mem_fcn_handle</var> =</code> <strong class="def-name">memoize</strong> <code class="def-code-arguments">(<var class="var">fcn_handle</var>)</code><a class="copiable-link" href="#index-memoize"> ¶</a></span>
+</dt> <dd> <p>Create a memoized version <var class="var">mem_fcn_handle</var> of function <var class="var">fcn_handle</var>. </p> <p>Each call to the memoized version <var class="var">mem_fcn_handle</var> checks the inputs against an internally maintained table, and if the inputs have occurred previously, then the result of the function call is returned from the table itself instead of evaluating the full function again. This speeds up the execution of functions that are called with the same inputs multiple times. </p> <p>For example, here we take a slow user-written function named <code class="code">slow_fcn</code> and memoize it to a new handle <code class="code">cyc</code>. The first executions of both versions take the same time, but the subsequent executions of the memoized version returns the previously computed value, thus reducing 2.4 seconds of runtime to only 2.4 milliseconds. The final check verifies that the same result was returned from both versions. </p> <pre class="example" data-language="matlab">&gt;&gt; tic; p = slow_fcn (5040); toc
+Elapsed time is 2.41244 seconds.
+&gt;&gt; tic; p = slow_fcn (5040); toc
+Elapsed time is 2.41542 seconds.
+
+&gt;&gt; cyc = memoize (@slow_fcn);
+&gt;&gt; tic; r = cyc (5040); toc
+Elapsed time is 2.42609 seconds.
+&gt;&gt; tic; r = cyc (5040); toc
+Elapsed time is 0.00236511 seconds.
+
+&gt;&gt; all (p == r)
+ans = 1</pre> <p><strong class="strong">See also:</strong> <a class="ref" href="#XREFclearAllMemoizedCaches">clearAllMemoizedCaches</a>. </p>
+</dd>
+</dl> <p>To memoize a function <code class="code">z = foo(x, y)</code>, use this general pattern: </p> <pre class="example" data-language="matlab">foo2 = memoize (@(x, y) foo(x, y));
+z = foo2 (x, y);</pre> <p>In the above example, the first line creates a memoized version <code class="code">foo2</code> of the function <code class="code">foo</code>. For simple functions with only trivial wrapping, this line can also be shortened to: </p> <pre class="example" data-language="matlab">foo2 = memoize (@foo);</pre> <p>The second line <code class="code">z = foo2 (x, y);</code> calls that memoized version <code class="code">foo2</code> instead of the original function, allowing <code class="code">memoize</code> to intercept the call and replace it with a looked-up value from a table if the inputs have occurred before, instead of evaluating the original function again. </p> <p>Note that this will not accelerate the <em class="emph">first</em> call to the function but only subsequent calls. </p> <p>Note that due to the overhead incurred by <code class="code">memoize</code> to create and manage the lookup tables for each function, this technique is useful only for functions that take at least a couple of seconds to execute. Such functions can be replaced by table lookups taking only a millisecond or so, but if the original function itself was taking only milliseconds, memoizing it will not speed it up. </p> <p>Recursive functions can be memoized as well, using a pattern like: </p> <pre class="example" data-language="matlab">function z = foo (x, y)
+  persistent foo2 = memoize (@foo);
+  foo2.CacheSize = 1e6;
+
+  ## Call the memoized version when recursing
+  z = foo2 (x, y);
+endfunction</pre> <p>The <code class="code">CacheSize</code> can be optionally increased in anticipation of a large number of function calls, such as from inside a recursive function. If <code class="code">CacheSize</code> is exceeded, the memoization tables are resized, causing a slowdown. Increasing the <code class="code">CacheSize</code> thus works like preallocation to speed up execution. </p> <p>The function <code class="code">clearAllMemoizedCaches</code> clears the memoization tables when they are no longer needed. </p>  <dl class="first-deftypefn"> <dt class="deftypefn" id="index-clearAllMemoizedCaches">
+<span class="category-def">: </span><span><strong class="def-name">clearAllMemoizedCaches</strong> <code class="def-code-arguments">()</code><a class="copiable-link" href="#index-clearAllMemoizedCaches"> ¶</a></span>
+</dt> <dd>
+<p>Clear all memoized caches. </p> <p>Memoization maintains internal tables of which functions have been called with which inputs. This function clears those tables to free memory, or for a fresh start. </p> <p><strong class="strong">See also:</strong> <a class="ref" href="#XREFmemoize">memoize</a>. </p>
+</dd>
+</dl> </div>  <div class="nav-panel"> <p> Next: <a href="miscellaneous-techniques">Miscellaneous Techniques</a>, Previous: <a href="accumulation">Accumulation</a>, Up: <a href="vectorization-and-faster-code-execution">Vectorization and Faster Code Execution</a> [<a href="index#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="concept-index" title="Index" rel="index">Index</a>]</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2025 The Octave Project Developers<br>Permission is granted to make and distribute verbatim copies of this manual provided the copyright notice and this permission notice are preserved on all copies.<br>Permission is granted to copy and distribute modified versions of this manual under the conditions for verbatim copying, provided that the entire resulting derived work is distributed under the terms of a permission notice identical to this one.Permission is granted to copy and distribute translations of this manual into another language, under the above conditions for modified versions.<br>
+    <a href="https://docs.octave.org/v10.1.0/Memoization.html" class="_attribution-link">https://docs.octave.org/v10.1.0/Memoization.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
