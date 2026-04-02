@@ -1,0 +1,157 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Jobs - RethinkDB Python - W3cubDocs</title>
+  
+  <meta name="description" content="The jobs table is one of the system tables added in version 1.16 of RethinkDB. It provides information about tasks running within the RethinkDB &hellip;">
+  <meta name="keywords" content="system, jobs, table, rethinkdb, python, rethinkdb~python">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rethinkdb~python/docs/system-jobs/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rethinkdb~python.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rethinkdb~python/" class="_nav-link" title="" style="margin-left:0;">RethinkDB python</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rethinkdb">
+				
+				
+<h1 class="title">System jobs table</h1> <div class="alg-content">
+<p>The jobs table is one of the <a href="../system-tables/index">system tables</a> added in version 1.16 of RethinkDB. It provides information about tasks running within the RethinkDB cluster, including queries, disk compaction, and index construction, and allows you to kill query jobs by deleting them from the table.</p> <h2 id="querying-the-jobs-table">Querying the jobs table</h2> <p><strong>Note:</strong> as with other system tables, the jobs table can only be accessed by the <code class="language-plaintext highlighter-rouge">admin</code> user account.</p> <p>The table’s primary key is the <code class="language-plaintext highlighter-rouge">id</code> field, and the keys are always arrays. The first element in the array is always a string indicating the type of job (e.g., <code class="language-plaintext highlighter-rouge">"query"</code>, <code class="language-plaintext highlighter-rouge">"disk_compaction"</code>, etc.); the second element is the UUID of the job. The type of job is also given in the <code class="language-plaintext highlighter-rouge">type</code> field.</p> <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight" data-language="">// get a list all currently running jobs
+r.db("rethinkdb").table("jobs").run(conn, callback);
+
+// get a list of currently running queries
+r.db("rethinkdb").table("jobs").filter({type: 'query'}).run(conn, callback);
+
+// delete a specific query
+r.db("rethinkdb").table("jobs").get(
+    ["query", "72789a11-b2e1-4b45-a3ab-af996dcaf484"]
+).delete().run(conn, callback);
+</pre></div></div> <h2 id="document-schema">Document schema</h2> <p>There are four kinds of jobs. The document schema is consistent between them, with job-specific data appearing in the <code class="language-plaintext highlighter-rouge">info</code> field.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight" data-language="">{
+    "duration_sec": &lt;number&gt; or null,
+    "id": [ &lt;type string&gt;, &lt;uuid&gt; ],
+    "info": { &lt;metadata },
+    "servers": [ "server1", "server2", ... ],
+    "type": &lt;type string&gt;
+}
+</pre></div></div> <h3 id="query">query</h3> <p>These entries represent queries issued by a specific client.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight" data-language="">info: {
+    "client_address": &lt;IP address string&gt;,
+    "client_port": &lt;number&gt;,
+    "query": &lt;query string&gt;,
+    "user": &lt;string&gt;
+}
+</pre></div></div> <h3 id="disk_compaction">disk_compaction</h3> <p>This is an ongoing task on each server, compacting RethinkDB’s storage space in the background. The <code class="language-plaintext highlighter-rouge">duration_sec</code> field will always be <code class="language-plaintext highlighter-rouge">null</code>, and there is no extra information metadata.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight" data-language="">info: { }
+</pre></div></div> <h3 id="index_construction">index_construction</h3> <p>These tasks construct secondary indexes in the background. The <code class="language-plaintext highlighter-rouge">progress</code> field is a number between 0 and 1 indicating how far along the index construction task is.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight" data-language="">info: {
+    "db": &lt;database name&gt;,
+    "index": &lt;index name&gt;,
+    "progress": &lt;number&gt;,
+    "table": &lt;table name&gt;
+}
+</pre></div></div> <h3 id="backfill">backfill</h3> <p>Backfill tasks bring out of date shards up to date by transferring data between servers. As above, the <code class="language-plaintext highlighter-rouge">progress</code> field is a number between 0 and 1 indicating how far along the backfill task is.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight" data-language="">info: {
+    "db": &lt;database name&gt;,
+    "destination server": &lt;server being copied to&gt;,
+    "source_server": &lt;server being copied from&gt;,
+    "table": &lt;table name&gt;,
+    "progress": &lt;number&gt;
+}
+</pre></div></div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © RethinkDB contributors<br>Licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License.<br>
+    <a href="https://rethinkdb.com/docs/system-jobs/" class="_attribution-link">https://rethinkdb.com/docs/system-jobs/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
