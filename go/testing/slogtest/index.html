@@ -1,0 +1,155 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Testing&#47;slogtest - Go - W3cubDocs</title>
+  
+  <meta name="description" content=" Package slogtest implements support for testing implementations of log&#47;slog.Handler. ">
+  <meta name="keywords" content="package, slogtest, testing, go">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/go/testing/slogtest/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/go.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/go/" class="_nav-link" title="" style="margin-left:0;">Go</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _go">
+				
+				
+<h1> Package slogtest  </h1>     <ul id="short-nav">
+<li><code>import "testing/slogtest"</code></li>
+<li><a href="#pkg-overview" class="overviewLink">Overview</a></li>
+<li><a href="#pkg-index" class="indexLink">Index</a></li>
+<li><a href="#pkg-examples" class="examplesLink">Examples</a></li>
+</ul>     <h2 id="pkg-overview">Overview </h2> <p>Package slogtest implements support for testing implementations of log/slog.Handler. </p>   <h4 id="example__parsing"> <span class="text">Example (Parsing)</span>
+</h4> <p>This example demonstrates one technique for testing a handler with this package. The handler is given a [bytes.Buffer] to write to, and each line of the resulting output is parsed. For JSON output, [encoding/json.Unmarshal] produces a result in the desired format when given a pointer to a map[string]any. </p> <p>Code:</p> <pre class="code" data-language="go">var buf bytes.Buffer
+h := slog.NewJSONHandler(&amp;buf, nil)
+
+results := func() []map[string]any {
+    var ms []map[string]any
+    for line := range bytes.SplitSeq(buf.Bytes(), []byte{'\n'}) {
+        if len(line) == 0 {
+            continue
+        }
+        var m map[string]any
+        if err := json.Unmarshal(line, &amp;m); err != nil {
+            panic(err) // In a real test, use t.Fatal.
+        }
+        ms = append(ms, m)
+    }
+    return ms
+}
+err := slogtest.TestHandler(h, results)
+if err != nil {
+    log.Fatal(err)
+}
+
+</pre>        <h2 id="pkg-index">Index </h2>  <ul id="manual-nav">
+<li><a href="#Run">func Run(t *testing.T, newHandler func(*testing.T) slog.Handler, result func(*testing.T) map[string]any)</a></li>
+<li><a href="#TestHandler">func TestHandler(h slog.Handler, results func() []map[string]any) error</a></li>
+</ul> <div id="pkg-examples"> <h3>Examples</h3>  <dl> <dd><a class="exampleLink" href="#example__parsing">Package (Parsing)</a></dd> </dl> </div> <h3>Package files</h3> <p>  <span>slogtest.go</span>  </p>   <h2 id="Run">func <span>Run</span>  <span title="Added in Go 1.22">1.22</span> </h2> <pre data-language="go">func Run(t *testing.T, newHandler func(*testing.T) slog.Handler, result func(*testing.T) map[string]any)</pre> <p>Run exercises a <span>slog.Handler</span> on the same test cases as <a href="#TestHandler">TestHandler</a>, but runs each case in a subtest. For each test case, it first calls newHandler to get an instance of the handler under test, then runs the test case, then calls result to get the result. If the test case fails, it calls t.Error. </p>
+<h2 id="TestHandler">func <span>TestHandler</span>  <span title="Added in Go 1.21">1.21</span> </h2> <pre data-language="go">func TestHandler(h slog.Handler, results func() []map[string]any) error</pre> <p>TestHandler tests a <span>slog.Handler</span>. If TestHandler finds any misbehaviors, it returns an error for each, combined into a single error with <span>errors.Join</span>. </p>
+<p>TestHandler installs the given Handler in a <span>slog.Logger</span> and makes several calls to the Logger's output methods. The Handler should be enabled for levels Info and above. </p>
+<p>The results function is invoked after all such calls. It should return a slice of map[string]any, one for each call to a Logger output method. The keys and values of the map should correspond to the keys and values of the Handler's output. Each group in the output should be represented as its own nested map[string]any. The standard keys <span>slog.TimeKey</span>, <span>slog.LevelKey</span> and <span>slog.MessageKey</span> should be used. </p>
+<p>If the Handler outputs JSON, then calling <span>encoding/json.Unmarshal</span> with a `map[string]any` will create the right data structure. </p>
+<p>If a Handler intentionally drops an attribute that is checked by a test, then the results function should check for its absence and add it to the map it returns. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Google, Inc.<br>Licensed under the Creative Commons Attribution License 3.0.<br>
+    <a href="http://golang.org/pkg/testing/slogtest/" class="_attribution-link">http://golang.org/pkg/testing/slogtest/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
