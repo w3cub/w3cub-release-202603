@@ -1,0 +1,130 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Reproducible Builds - Homebrew - W3cubDocs</title>
+  
+  <meta name="description" content="The Homebrew build environment is designed with reproducible builds as a goal where possible. Some convenience tools are also available to formula &hellip;">
+  <meta name="keywords" content="reproducible, builds, homebrew">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/homebrew/reproducible-builds.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/homebrew.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/homebrew/" class="_nav-link" title="" style="margin-left:0;">Homebrew</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="reproducible-builds">Reproducible Builds</h1> <p>The Homebrew build environment is designed with <a href="https://reproducible-builds.org/">reproducible builds</a> as a goal where possible. Some convenience tools are also available to formula authors to help achieve deterministic builds.</p> <h2 id="build-time">Build time</h2> <p>Some build tools embed or record the time at which the build occurs. This can cause build artifacts to differ between repeated builds of the same sources. To avoid this issue, the Homebrew build environment sets the <a href="https://reproducible-builds.org/docs/source-date-epoch/"><code class="language-plaintext highlighter-rouge">SOURCE_DATE_EPOCH</code> environment variable</a> to the modification time of the source code for tools that consume it.</p> <p>In cases where a build time must be manually set, <code class="language-plaintext highlighter-rouge">time</code> is a Ruby <code class="language-plaintext highlighter-rouge">DateTime</code> object containing the same timestamp as the <code class="language-plaintext highlighter-rouge">SOURCE_DATE_EPOCH</code> environment variable. Methods provided by Ruby on <code class="language-plaintext highlighter-rouge">DateTime</code> objects can then be used to format this time into the desired format.</p> <pre data-language="ruby">def install
+  system "make", "install",
+         "VERSION=#{version}",
+         "DATE=#{time.iso8601}",
+         "PREFIX=#{prefix}"
+end</pre> <p>See the <a href="https://github.com/Homebrew/homebrew-core/blob/442f9cc511ce6dfe75b96b2c83749d90dde914d2/Formula/k/kustomize.rb#L32"><code class="language-plaintext highlighter-rouge">kustomize</code></a> formula for an example of using <code class="language-plaintext highlighter-rouge">time.iso8601</code> or the <a href="https://github.com/Homebrew/homebrew-core/blob/442f9cc511ce6dfe75b96b2c83749d90dde914d2/Formula/g/git-town.rb#L25"><code class="language-plaintext highlighter-rouge">git-town</code></a> formula for an example of using <code class="language-plaintext highlighter-rouge">time.strftime</code> with custom format specifiers.</p> <h2 id="reproducible-gzip-compression">Reproducible gzip compression</h2> <p>Some formulae may create gzip-compressed files during their build process (for example, compressing manpages or other data files). Build machines may provide different implementations of the <code class="language-plaintext highlighter-rouge">gzip</code> utility, and by default <code class="language-plaintext highlighter-rouge">gzip</code> will record the modification time of the file being compressed, which usually varies depending on the build time. Thus, relying on the build machine’s <code class="language-plaintext highlighter-rouge">gzip</code> utility will usually result in non-reproducible outputs being part of the build.</p> <p>To avoid this issue, Homebrew provides the <code class="language-plaintext highlighter-rouge">Utils::Gzip.compress</code> helper function for situations where reproducible <code class="language-plaintext highlighter-rouge">gzip</code> compression is needed. This function accepts one or more paths to be compressed and places the compressed files next to the original with a <code class="language-plaintext highlighter-rouge">.gz</code> suffix, just like the <code class="language-plaintext highlighter-rouge">gzip</code> utility does. It also returns an array of <code class="language-plaintext highlighter-rouge">Pathname</code> objects which can be consumed by other methods.</p> <pre data-language="ruby">def install
+  system "make", "install"
+  man1.install Utils::Gzip.compress("mycommand.1")
+end</pre> <pre data-language="ruby">def install
+  system "make", "install"
+  (pkgshare/"data").install Utils::Gzip.compress(*Dir["#{buildpath}/path/to/some/folder/contents/*"])
+end</pre> <p>See the <a href="https://github.com/Homebrew/homebrew-core/blob/442f9cc511ce6dfe75b96b2c83749d90dde914d2/Formula/p/par.rb#L30"><code class="language-plaintext highlighter-rouge">par</code> formula</a> for an example with a single file or the <a href="https://github.com/Homebrew/homebrew-core/blob/442f9cc511ce6dfe75b96b2c83749d90dde914d2/Formula/p/pari-elldata.rb#L28"><code class="language-plaintext highlighter-rouge">pari-elldata</code> formula</a> for an example with multiple files.</p> <h2 id="relocatability">Relocatability</h2> <p>Some formulae or build tools record paths specific to the build environment in configuration files or in binaries. When building redistributable bottles, Homebrew searches through the built files and replaces paths to common Homebrew locations, such as the Homebrew prefix and the Cellar, with a placeholder like <code class="language-plaintext highlighter-rouge">@@HOMEBREW_PREFIX@@</code> or <code class="language-plaintext highlighter-rouge">@@HOMEBREW_CELLAR@@</code>. When bottles are installed, Homebrew expands these placeholders to the respective paths on the end user’s machine.</p> <p>This allows for some bottles to be used by users that may have Homebrew installed in a non-default prefix. It also results in bit-for-bit identical bottles between platforms where the location of Homebrew is the only difference.</p> <p>This search and replace process occurs automatically and does not require any additional action from formula authors to use it.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–present Homebrew contributors<br>Licensed under the BSD 2-Clause License.<br>
+    <a href="https://docs.brew.sh/Reproducible-Builds" class="_attribution-link">https://docs.brew.sh/Reproducible-Builds</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
