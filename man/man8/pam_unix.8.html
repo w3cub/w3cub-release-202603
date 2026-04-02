@@ -1,0 +1,356 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Pam_unix (8) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; passwd(5), unix_chkpwd(8), unix_update(8) ">
+  <meta name="keywords" content="pam, unix, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man8/pam_unix.8.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>pam_unix(8) — Linux manual page</h1>   <pre>
+<span class="headline"><i>PAM_UNIX</i>(8)                 Linux-PAM Manual                 <i>PAM_UNIX</i>(8)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       pam_unix - Module for traditional password authentication
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+
+       <b>pam_unix.so </b>[...]
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       This is the standard Unix authentication module. It uses standard
+       calls from the system's libraries to retrieve and set account
+       information as well as authentication. Usually this is obtained
+       from the /etc/passwd and the /etc/shadow file as well if shadow
+       is enabled.
+
+       The account component performs the task of establishing the
+       status of the user's account and password based on the following
+       <i>shadow</i> elements: expire, last_change, max_change, min_change,
+       warn_change. In the case of the latter, it may offer advice to
+       the user on changing their password or, through the
+       <b>PAM_AUTHTOKEN_REQD </b>return, delay giving service to the user until
+       they have established a new password. The entries listed above
+       are documented in the <a href="../man5/shadow.5">shadow(5)</a> manual page. Should the user's
+       record not contain one or more of these entries, the
+       corresponding <i>shadow</i> check is not performed.
+
+       The authentication component performs the task of checking the
+       users credentials (password). The default action of this module
+       is to not permit the user access to a service if their official
+       password is blank.
+
+       A helper binary, <a href="unix_chkpwd.8">unix_chkpwd(8)</a>, is provided to check the user's
+       password when it is stored in a read protected database. This
+       binary is very simple and will only check the password of the
+       user invoking it. It is called transparently on behalf of the
+       user by the authenticating component of this module. In this way
+       it is possible for applications like <b>xlock</b>(1) to work without
+       being setuid-root. The module, by default, will temporarily turn
+       off SIGCHLD handling for the duration of execution of the helper
+       binary. This is generally the right thing to do, as many
+       applications are not prepared to handle this signal from a child
+       they didn't know was <b>fork()</b>d. The <b>noreap </b>module argument can be
+       used to suppress this temporary shielding and may be needed for
+       use with certain applications.
+
+       The maximum length of a password supported by the pam_unix module
+       via the helper binary is <i>PAM_MAX_RESP_SIZE</i> - currently 512 bytes.
+       The rest of the password provided by the conversation function to
+       the module will be ignored.
+
+       The password component of this module performs the task of
+       updating the user's password. The default encryption hash is
+       taken from the <b>ENCRYPT_METHOD </b>variable from <i>/etc/login.defs</i>
+
+       The session component of this module logs when a user logins or
+       leave the system.
+
+       Remaining arguments, supported by others functions of this
+       module, are silently ignored. Other arguments are logged as
+       errors through <a href="../man3/syslog.3">syslog(3)</a>.
+</pre> <h2>
+OPTIONS </h2>
+<pre>
+       <b>debug</b>
+           Turns on debugging via <a href="../man3/syslog.3">syslog(3)</a>.
+
+       <b>audit</b>
+           A little more extreme than debug.
+
+       <b>quiet</b>
+           Turns off informational messages namely messages about
+           session open and close via <a href="../man3/syslog.3">syslog(3)</a>.
+
+       <b>nullok</b>
+           The default action of this module is to not permit the user
+           access to a service if their official password is blank. The
+           <b>nullok </b>argument overrides this default.
+
+       <b>nullresetok</b>
+           Allow users to authenticate with blank password if password
+           reset is enforced even if <b>nullok </b>is not set. If password
+           reset is not required and <b>nullok </b>is not set the
+           authentication with blank password will be denied.
+
+       <b>try_first_pass</b>
+           Before prompting the user for their password, the module
+           first tries the previous stacked module's password in case
+           that satisfies this module as well.
+
+       <b>use_first_pass</b>
+           The argument <b>use_first_pass </b>forces the module to use a
+           previous stacked modules password and will never prompt the
+           user - if no password is available or the password is not
+           appropriate, the user will be denied access.
+
+       <b>nodelay</b>
+           This argument can be used to discourage the authentication
+           component from requesting a delay should the authentication
+           as a whole fail. The default action is for the module to
+           request a delay-on-failure of the order of two second.
+
+       <b>use_authtok</b>
+           When password changing enforce the module to set the new
+           password to the one provided by a previously stacked <b>password</b>
+           module (this is used in the example of the stacking of the
+           <b>pam_passwdqc </b>module documented below).
+
+       <b>authtok_type=</b><i>type</i>
+           This argument can be used to modify the password prompt when
+           changing passwords to include the type of the password. Empty
+           by default.
+
+       <b>nis</b>
+           NIS RPC is used for setting new passwords.
+
+       <b>remember=</b><i>n</i>
+           The last <i>n</i> passwords for each user are saved in
+           /etc/security/opasswd in order to force password change
+           history and keep the user from alternating between the same
+           password too frequently. The MD5 password hash algorithm is
+           used for storing the old passwords. Instead of this option
+           the <b>pam_pwhistory </b>module should be used.
+
+       <b>shadow</b>
+           Try to maintain a shadow based system.
+
+       <b>md5</b>
+           When a user changes their password next, encrypt it with the
+           MD5 algorithm.
+
+       <b>bigcrypt</b>
+           When a user changes their password next, encrypt it with the
+           DEC C2 algorithm.
+
+       <b>sha256</b>
+           When a user changes their password next, encrypt it with the
+           SHA256 algorithm. The SHA256 algorithm must be supported by
+           the <a href="../man3/crypt.3">crypt(3)</a> function.
+
+       <b>sha512</b>
+           When a user changes their password next, encrypt it with the
+           SHA512 algorithm. The SHA512 algorithm must be supported by
+           the <a href="../man3/crypt.3">crypt(3)</a> function.
+
+       <b>blowfish</b>
+           When a user changes their password next, encrypt it with the
+           blowfish algorithm. The blowfish algorithm must be supported
+           by the <a href="../man3/crypt.3">crypt(3)</a> function.
+
+       <b>gost_yescrypt</b>
+           When a user changes their password next, encrypt it with the
+           gost-yescrypt algorithm. The gost-yescrypt algorithm must be
+           supported by the <a href="../man3/crypt.3">crypt(3)</a> function.
+
+       <b>yescrypt</b>
+           When a user changes their password next, encrypt it with the
+           yescrypt algorithm. The yescrypt algorithm must be supported
+           by the <a href="../man3/crypt.3">crypt(3)</a> function.
+
+       <b>rounds=</b><i>n</i>
+           Set the optional number of rounds of the SHA256, SHA512,
+           blowfish, gost-yescrypt, and yescrypt password hashing
+           algorithms to <i>n</i>.
+
+       <b>broken_shadow</b>
+           Ignore errors reading shadow information for users in the
+           account management module.
+
+       <b>minlen=</b><i>n</i>
+           Set a minimum password length of <i>n</i> characters. The max. for
+           DES crypt based passwords are 8 characters.
+
+       <b>no_pass_expiry</b>
+           When set ignore password expiration as defined by the <i>shadow</i>
+           entry of the user. The option has an effect only in case
+           <i>pam_unix</i> was not used for the authentication or it returned
+           authentication failure meaning that other authentication
+           source or method succeeded. The example can be public key
+           authentication in <i>sshd</i>. The module will return <b>PAM_SUCCESS</b>
+           instead of eventual <b>PAM_NEW_AUTHTOK_REQD </b>or
+           <b>PAM_AUTHTOK_EXPIRED</b>.
+
+       Invalid arguments are logged with <a href="../man3/syslog.3">syslog(3)</a>.
+</pre> <h2>
+MODULE TYPES PROVIDED </h2>
+<pre>
+       All module types (<b>account</b>, <b>auth</b>, <b>password </b>and <b>session</b>) are
+       provided.
+</pre> <h2>
+RETURN VALUES </h2>
+<pre>
+       PAM_IGNORE
+           Ignore this module.
+</pre> <h2>
+EXAMPLES </h2>
+<pre>
+       An example usage for /etc/pam.d/login would be:
+
+           # Authenticate the user
+           auth       required   pam_unix.so
+           # Ensure users account and password are still active
+           account    required   pam_unix.so
+           # Change the user's password, but at first check the strength
+           # with pam_passwdqc(8)
+           password   required   pam_passwdqc.so config=/etc/passwdqc.conf
+           password   required   pam_unix.so use_authtok nullok yescrypt
+           session    required   pam_unix.so
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man5/login.defs.5">login.defs(5)</a>, <a href="../man5/pam.conf.5">pam.conf(5)</a>, <a href="../man5/pam.d.5">pam.d(5)</a>, <a href="pam.8">pam(8)</a>
+</pre> <h2>
+AUTHOR </h2>
+<pre>
+       pam_unix was written by various people.
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>linux-pam</i> (Pluggable Authentication
+       Modules for Linux) project.  Information about the project can be
+       found at ⟨<a href="http://www.linux-pam.org/">http://www.linux-pam.org/</a>⟩.  If you have a bug report
+       for this manual page, see ⟨//www.linux-pam.org/⟩.  This page was
+       obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/linux-pam/linux-pam.git">https://github.com/linux-pam/linux-pam.git</a>⟩ on 2023-12-22.  (At
+       that time, the date of the most recent commit that was found in
+       the repository was 2023-12-18.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux-PAM Manual               12/22/2023                    <i>PAM_UNIX</i>(8)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man5/passwd.5">passwd(5)</a>, <a href="unix_chkpwd.8">unix_chkpwd(8)</a>, <a href="unix_update.8">unix_update(8)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man8/pam_unix.8.html" class="_attribution-link">https://man7.org/linux/man-pages/man8/pam_unix.8.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

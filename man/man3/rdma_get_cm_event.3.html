@@ -1,0 +1,387 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rdma_get_cm_event (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content="Pages that refer to this page&#58; rdma_accept(3), rdma_ack_cm_event(3), rdma_connect(3), rdma_create_event_channel(3), rdma_destroy_event_channel(3 &hellip;">
+  <meta name="keywords" content="rdma, get, cm, event, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/rdma_get_cm_event.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>rdma_get_cm_event(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>RDMA_GET_CM_EVENT</i>(3)  Librdmacm Programmer's Manual <i>RDMA_GET_CM_EVENT</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       rdma_get_cm_event - Retrieves the next pending communication
+       event.
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;rdma/rdma_cma.h&gt;</b>
+
+       <b>int rdma_get_cm_event (struct rdma_event_channel *</b><i>channel</i><b>, struct</b>
+       <b>rdma_cm_event **</b><i>event</i><b>);</b>
+</pre> <h2>
+ARGUMENTS </h2>
+<pre>
+       channel     Event channel to check for events.
+
+       event       Allocated information about the next communication
+                   event.
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       Retrieves a communication event.  If no events are pending, by
+       default, the call will block until an event is received.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       Returns 0 on success, or -1 on error.  If an error occurs, errno
+       will be set to indicate the failure reason.
+</pre> <h2>
+NOTES </h2>
+<pre>
+       The default synchronous behavior of this routine can be changed
+       by modifying the file descriptor associated with the given
+       channel.  All events that are reported must be acknowledged by
+       calling rdma_ack_cm_event.  Destruction of an rdma_cm_id will
+       block until related events have been acknowledged.
+</pre> <h2>
+EVENT DATA </h2>
+<pre>
+       Communication event details are returned in the rdma_cm_event
+       structure.  This structure is allocated by the rdma_cm and
+       released by the rdma_ack_cm_event routine.  Details of the
+       rdma_cm_event structure are given below.
+
+       id          The rdma_cm identifier associated with the event.  If
+                   the event type is RDMA_CM_EVENT_CONNECT_REQUEST, then
+                   this references a new id for that communication.
+
+       listen_id   For RDMA_CM_EVENT_CONNECT_REQUEST event types, this
+                   references the corresponding listening request
+                   identifier.
+
+       event       Specifies the type of communication event which
+                   occurred.  See EVENT TYPES below.
+
+       status      Returns any asynchronous error information associated
+                   with an event.  The status is zero if the operation
+                   was successful, otherwise the status value is non-
+                   zero and is either set to a negative errno or a
+                   transport specific value.  For details on transport
+                   specific status values, see the event type
+                   information below.
+
+       param       Provides additional details based on the type of
+                   event.  Users should select the conn or ud subfields
+                   based on the rdma_port_space of the rdma_cm_id
+                   associated with the event.  See UD EVENT DATA and
+                   CONN EVENT DATA below.
+</pre> <h2>
+UD EVENT DATA </h2>
+<pre>
+       Event parameters related to unreliable datagram (UD) services:
+       RDMA_PS_UDP and RDMA_PS_IPOIB.  The UD event data is valid for
+       RDMA_CM_EVENT_ESTABLISHED and RDMA_CM_EVENT_MULTICAST_JOIN
+       events, unless stated otherwise.
+
+       private_data
+                   References any user-specified data associated with
+                   RDMA_CM_EVENT_CONNECT_REQUEST or
+                   RDMA_CM_EVENT_ESTABLISHED events.  The data
+                   referenced by this field matches that specified by
+                   the remote side when calling rdma_connect or
+                   rdma_accept.  This field is NULL if the event does
+                   not include private data.  The buffer referenced by
+                   this pointer is deallocated when calling
+                   rdma_ack_cm_event.
+
+       private_data_len
+                   The size of the private data buffer.  Users should
+                   note that the size of the private data buffer may be
+                   larger than the amount of private data sent by the
+                   remote side.  Any additional space in the buffer will
+                   be zeroed out.
+
+       ah_attr     Address information needed to send data to the remote
+                   endpoint(s).  Users should use this structure when
+                   allocating their address handle.
+
+       qp_num      QP number of the remote endpoint or multicast group.
+
+       qkey        QKey needed to send data to the remote endpoint(s).
+</pre> <h2>
+CONN EVENT DATA </h2>
+<pre>
+       Event parameters related to connected QP services: RDMA_PS_TCP.
+       The connection related event data is valid for
+       RDMA_CM_EVENT_CONNECT_REQUEST and RDMA_CM_EVENT_ESTABLISHED
+       events, unless stated otherwise.
+
+       private_data
+                   References any user-specified data associated with
+                   the event.  The data referenced by this field matches
+                   that specified by the remote side when calling
+                   rdma_connect or rdma_accept.  This field is NULL if
+                   the event does not include private data.  The buffer
+                   referenced by this pointer is deallocated when
+                   calling rdma_ack_cm_event.
+
+       private_data_len
+                   The size of the private data buffer.  Users should
+                   note that the size of the private data buffer may be
+                   larger than the amount of private data sent by the
+                   remote side.  Any additional space in the buffer will
+                   be zeroed out.
+
+       responder_resources
+                   The number of responder resources requested of the
+                   recipient.  This field matches the initiator depth
+                   specified by the remote node when calling
+                   rdma_connect and rdma_accept.
+
+       initiator_depth
+                   The maximum number of outstanding RDMA read/atomic
+                   operations that the recipient may have outstanding.
+                   This field matches the responder resources specified
+                   by the remote node when calling rdma_connect and
+                   rdma_accept.
+
+       flow_control
+                   Indicates if hardware level flow control is provided
+                   by the sender.
+
+       retry_count For RDMA_CM_EVENT_CONNECT_REQUEST events only,
+                   indicates the number of times that the recipient
+                   should retry send operations.
+
+       rnr_retry_count
+                   The number of times that the recipient should retry
+                   receiver not ready (RNR) NACK errors.
+
+       srq         Specifies if the sender is using a shared-receive
+                   queue.
+
+       qp_num      Indicates the remote QP number for the connection.
+</pre> <h2>
+EVENT TYPES </h2>
+<pre>
+       The following types of communication events may be reported.
+
+       RDMA_CM_EVENT_ADDR_RESOLVED
+              Address resolution (rdma_resolve_addr) completed
+              successfully.
+
+       RDMA_CM_EVENT_ADDR_ERROR
+              Address resolution (rdma_resolve_addr) failed.
+
+       RDMA_CM_EVENT_ROUTE_RESOLVED
+              Route resolution (rdma_resolve_route) completed
+              successfully.
+
+       RDMA_CM_EVENT_ROUTE_ERROR
+              Route resolution (rdma_resolve_route) failed.
+
+       RDMA_CM_EVENT_CONNECT_REQUEST
+              Generated on the passive side to notify the user of a new
+              connection request.
+
+       RDMA_CM_EVENT_CONNECT_RESPONSE
+              Generated on the active side to notify the user of a
+              successful response to a connection request.  It is only
+              generated on rdma_cm_id's that do not have a QP associated
+              with them.
+
+       RDMA_CM_EVENT_CONNECT_ERROR
+              Indicates that an error has occurred trying to establish
+              or a connection.  May be generated on the active or
+              passive side of a connection.
+
+       RDMA_CM_EVENT_UNREACHABLE
+              Generated on the active side to notify the user that the
+              remote server is not reachable or unable to respond to a
+              connection request.  If this event is generated in
+              response to a UD QP resolution request over InfiniBand,
+              the event status field will contain an errno, if negative,
+              or the status result carried in the IB CM SIDR REP
+              message.
+
+       RDMA_CM_EVENT_REJECTED
+              Indicates that a connection request or response was
+              rejected by the remote end point.  The event status field
+              will contain the transport specific reject reason if
+              available.  Under InfiniBand, this is the reject reason
+              carried in the IB CM REJ message.
+
+       RDMA_CM_EVENT_ESTABLISHED
+              Indicates that a connection has been established with the
+              remote end point.
+
+       RDMA_CM_EVENT_DISCONNECTED
+              The connection has been disconnected.
+
+       RDMA_CM_EVENT_DEVICE_REMOVAL
+              The local RDMA device associated with the rdma_cm_id has
+              been removed.  Upon receiving this event, the user must
+              destroy the related rdma_cm_id.
+
+       RDMA_CM_EVENT_MULTICAST_JOIN
+              The multicast join operation (rdma_join_multicast)
+              completed successfully.
+
+       RDMA_CM_EVENT_MULTICAST_ERROR
+              An error either occurred joining a multicast group, or, if
+              the group had already been joined, on an existing group.
+              The specified multicast group is no longer accessible and
+              should be rejoined, if desired.
+
+       RDMA_CM_EVENT_ADDR_CHANGE
+              The network device associated with this ID through address
+              resolution changed its HW address, eg following of bonding
+              failover. This event can serve as a hint for applications
+              who want the links used for their RDMA sessions to align
+              with the network stack.
+
+       RDMA_CM_EVENT_TIMEWAIT_EXIT
+              The QP associated with a connection has exited its
+              timewait state and is now ready to be re-used.  After a QP
+              has been disconnected, it is maintained in a timewait
+              state to allow any in flight packets to exit the network.
+              After the timewait state has completed, the rdma_cm will
+              report this event.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="rdma_ack_cm_event.3">rdma_ack_cm_event(3)</a>, <a href="rdma_create_event_channel.3">rdma_create_event_channel(3)</a>,
+       <a href="rdma_resolve_addr.3">rdma_resolve_addr(3)</a>, <a href="rdma_resolve_route.3">rdma_resolve_route(3)</a>, <a href="rdma_connect.3">rdma_connect(3)</a>,
+       <a href="rdma_listen.3">rdma_listen(3)</a>, <a href="rdma_join_multicast.3">rdma_join_multicast(3)</a>, <a href="rdma_destroy_id.3">rdma_destroy_id(3)</a>,
+       <a href="rdma_event_str.3">rdma_event_str(3)</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>rdma-core</i> (RDMA Core Userspace Libraries
+       and Daemons) project.  Information about the project can be found
+       at ⟨<a href="https://github.com/linux-rdma/rdma-core">https://github.com/linux-rdma/rdma-core</a>⟩.  If you have a bug
+       report for this manual page, send it to
+       linux-rdma@vger.kernel.org.  This page was obtained from the
+       project's upstream Git repository
+       ⟨<a href="https://github.com/linux-rdma/rdma-core.git">https://github.com/linux-rdma/rdma-core.git</a>⟩ on 2024-06-14.  (At
+       that time, the date of the most recent commit that was found in
+       the repository was 2024-06-10.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">librdmacm                      2007-10-31           <i>RDMA_GET_CM_EVENT</i>(3)</span>
+</pre>  <p>Pages that refer to this page: <a href="rdma_accept.3">rdma_accept(3)</a>, <a href="rdma_ack_cm_event.3">rdma_ack_cm_event(3)</a>, <a href="rdma_connect.3">rdma_connect(3)</a>, <a href="rdma_create_event_channel.3">rdma_create_event_channel(3)</a>, <a href="rdma_destroy_event_channel.3">rdma_destroy_event_channel(3)</a>, <a href="rdma_disconnect.3">rdma_disconnect(3)</a>, <a href="rdma_event_str.3">rdma_event_str(3)</a>, <a href="rdma_get_dst_port.3">rdma_get_dst_port(3)</a>, <a href="rdma_get_request.3">rdma_get_request(3)</a>, <a href="rdma_join_multicast.3">rdma_join_multicast(3)</a>, <a href="rdma_join_multicast_ex.3">rdma_join_multicast_ex(3)</a>, <a href="rdma_listen.3">rdma_listen(3)</a>, <a href="rdma_migrate_id.3">rdma_migrate_id(3)</a>, <a href="rdma_reject.3">rdma_reject(3)</a>, <a href="rdma_resolve_addr.3">rdma_resolve_addr(3)</a>, <a href="rdma_resolve_route.3">rdma_resolve_route(3)</a>, <a href="../man7/rdma_cm.7">rdma_cm(7)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/rdma_get_cm_event.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/rdma_get_cm_event.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

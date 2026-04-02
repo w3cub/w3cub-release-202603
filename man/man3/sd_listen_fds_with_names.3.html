@@ -1,0 +1,333 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Sd_listen_fds_with_names (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content="Pages that refer to this page&#58; systemd(1), systemd-socket-activate(1), systemd-stdio-bridge(1), systemd-vmspawn(1), sd-daemon(3), sd_is_fifo(3 &hellip;">
+  <meta name="keywords" content="sd, listen, fds, —, linux, manual, page, with, names, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/sd_listen_fds_with_names.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>sd_listen_fds(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>SD_LISTEN_FDS</i>(3)              sd_listen_fds             <i>SD_LISTEN_FDS</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       sd_listen_fds, sd_listen_fds_with_names, SD_LISTEN_FDS_START -
+       Check for file descriptors passed by the system manager
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;systemd/sd-daemon.h&gt;</b>
+
+       <b>#define SD_LISTEN_FDS_START 3</b>
+
+       <b>int sd_listen_fds(int </b><i>unset_environment</i><b>);</b>
+
+       <b>int sd_listen_fds_with_names(int </b><i>unset_environment</i><b>,</b>
+                                    <b>char*** </b><i>names</i><b>);</b>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       <b>sd_listen_fds() </b>may be invoked by a daemon to check for file
+       descriptors passed by the service manager as part of the
+       socket-based activation and file descriptor store logic. It
+       returns the number of received file descriptors. If no file
+       descriptors have been received, zero is returned. The first file
+       descriptor may be found at file descriptor number 3 (i.e.
+       <b>SD_LISTEN_FDS_START</b>), the remaining descriptors follow at 4, 5,
+       6, ..., if any.
+
+       The file descriptors passed this way may be closed at will by the
+       processes receiving them: it's up to the processes themselves to
+       close them after use or whether to leave them open until the
+       process exits (in which case the kernel closes them
+       automatically). Note that the file descriptors received by
+       daemons are duplicates of the file descriptors the service
+       manager originally allocated and bound and of which it
+       continuously keeps a copy (except if <i>Accept=yes</i> is used). This
+       means any socket option changes and other changes made to the
+       sockets will be visible to the service manager too. Most
+       importantly this means it's generally not a good idea to invoke
+       <a href="../man2/shutdown.2">shutdown(2)</a> on such sockets, since it will shut down
+       communication on the file descriptor the service manager holds
+       for the same socket too. Also note that if a daemon is restarted
+       (and its associated sockets are not) it will receive file
+       descriptors to the very same sockets as the earlier invocations,
+       thus all socket options applied then will still apply.
+
+       If a daemon receives more than one file descriptor, they will be
+       passed in the same order as configured in the systemd socket unit
+       file (see <a href="../man5/systemd.socket.5">systemd.socket(5)</a> for details) — if there's only one
+       such file (see below). Nonetheless, it is recommended to verify
+       the correct socket types before using them. To simplify this
+       checking, the functions <a href="sd_is_fifo.3">sd_is_fifo(3)</a>, <a href="sd_is_socket.3">sd_is_socket(3)</a>,
+       <a href="sd_is_socket_inet.3">sd_is_socket_inet(3)</a>, <a href="sd_is_socket_unix.3">sd_is_socket_unix(3)</a> are provided. In order
+       to maximize flexibility, it is recommended to make these checks
+       as loose as possible without allowing incorrect setups. i.e.
+       often, the actual port number a socket is bound to matters little
+       for the service to work, hence it should not be verified. On the
+       other hand, whether a socket is a datagram or stream socket
+       matters a lot for the most common program logics and should be
+       checked.
+
+       This function call will set the <b>FD_CLOEXEC </b>flag for all passed
+       file descriptors to avoid further inheritance to children of the
+       calling process.
+
+       If multiple socket units activate the same service, the order of
+       the file descriptors passed to its main process is undefined. If
+       additional file descriptors have been passed to the service
+       manager using <a href="sd_pid_notify_with_fds.3">sd_pid_notify_with_fds(3)</a>'s "FDSTORE=1" messages,
+       these file descriptors are passed last, in arbitrary order, and
+       with duplicates removed.
+
+       If the <i>unset_environment</i> parameter is non-zero, <b>sd_listen_fds()</b>
+       will unset the <i>$LISTEN_FDS</i>, <i>$LISTEN_PID</i> and <i>$LISTEN_FDNAMES</i>
+       environment variables before returning (regardless of whether the
+       function call itself succeeded or not). Further calls to
+       <b>sd_listen_fds() </b>will then return zero, but the variables are no
+       longer inherited by child processes.
+
+       <b>sd_listen_fds_with_names() </b>is like <b>sd_listen_fds()</b>, but
+       optionally also returns an array of strings with identification
+       names for the passed file descriptors, if that is available and
+       the <i>names</i> parameter is non-<b>NULL</b>. This information is read from
+       the <i>$LISTEN_FDNAMES</i> variable, which may contain a colon-separated
+       list of names. For socket-activated services, these names may be
+       configured with the <i>FileDescriptorName=</i> setting in socket unit
+       files, see <a href="../man5/systemd.socket.5">systemd.socket(5)</a> for details. For file descriptors
+       pushed into the file descriptor store (see above), the name is
+       set via the <i>FDNAME=</i> field transmitted via
+       <b>sd_pid_notify_with_fds()</b>. The primary use case for these names
+       are services which accept a variety of file descriptors which are
+       not recognizable with functions like <b>sd_is_socket() </b>alone, and
+       thus require identification via a name. It is recommended to rely
+       on named file descriptors only if identification via
+       <b>sd_is_socket() </b>and related calls is not sufficient. Note that the
+       names used are not unique in any way. The returned array of
+       strings has as many entries as file descriptors have been
+       received, plus a final <b>NULL </b>pointer terminating the array. The
+       caller needs to free the array itself and each of its elements
+       with libc's <b>free() </b>call after use. If the <i>names</i> parameter is
+       <b>NULL</b>, the call is entirely equivalent to <b>sd_listen_fds()</b>.
+
+       Under specific conditions, the following automatic file
+       descriptor names are returned:
+
+       <b>Table 1.  Special names</b>
+       ┌──────────────┬──────────────────────────┐
+       │ <b>Name         </b>│ <b>Description              </b>│
+       ├──────────────┼──────────────────────────┤
+       │ "unknown"    │ The process received no  │
+       │              │ name for the specific    │
+       │              │ file descriptor from the │
+       │              │ service manager.         │
+       ├──────────────┼──────────────────────────┤
+       │ "stored"     │ The file descriptor      │
+       │              │ originates in the        │
+       │              │ service manager's        │
+       │              │ per-service file         │
+       │              │ descriptor store, and    │
+       │              │ the <i>FDNAME=</i> field was    │
+       │              │ absent when the file     │
+       │              │ descriptor was submitted │
+       │              │ to the service manager.  │
+       ├──────────────┼──────────────────────────┤
+       │ "connection" │ The service was          │
+       │              │ activated in             │
+       │              │ per-connection style     │
+       │              │ using <i>Accept=yes</i> in the  │
+       │              │ socket unit file, and    │
+       │              │ the file descriptor is   │
+       │              │ the connection socket.   │
+       └──────────────┴──────────────────────────┘
+
+       For further information on the file descriptor store see the <b>File</b>
+       <b>Descriptor Store</b>[1] overview.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       On failure, these calls returns a negative errno-style error
+       code. If <i>$LISTEN_FDS</i>/<i>$LISTEN_PID</i> was not set or was not correctly
+       set for this daemon and hence no file descriptors were received,
+       0 is returned. Otherwise, the number of file descriptors passed
+       is returned. The application may find them starting with file
+       descriptor SD_LISTEN_FDS_START, i.e. file descriptor 3.
+</pre> <h2>
+NOTES </h2>
+<pre>
+       Functions described here are available as a shared library, which
+       can be compiled against and linked to with the
+       <b>libsystemd pkg-config</b>(1) file.
+
+       The code described here uses <a href="getenv.3">getenv(3)</a>, which is declared to be
+       not multi-thread-safe. This means that the code calling the
+       functions described here must not call <a href="setenv.3">setenv(3)</a> from a parallel
+       thread. It is recommended to only do calls to <b>setenv() </b>from an
+       early phase of the program when no other threads have been
+       started.
+
+       Internally, <b>sd_listen_fds() </b>checks whether the <i>$LISTEN_PID</i>
+       environment variable equals the daemon PID. If not, it returns
+       immediately. Otherwise, it parses the number passed in the
+       <i>$LISTEN_FDS</i> environment variable, then sets the FD_CLOEXEC flag
+       for the parsed number of file descriptors starting from
+       SD_LISTEN_FDS_START. Finally, it returns the parsed number.
+       <b>sd_listen_fds_with_names() </b>does the same but also parses
+       <i>$LISTEN_FDNAMES</i> if set.
+
+       These functions are not designed for services that specify
+       <i>StandardInput=socket</i> as the <i>$LISTEN_FDS</i> variable is not set in
+       their environment.
+</pre> <h2>
+ENVIRONMENT </h2>
+<pre>
+       <i>$LISTEN_PID</i>, <i>$LISTEN_FDS</i>, <i>$LISTEN_FDNAMES</i>
+           Set by the service manager for supervised processes that use
+           socket-based activation. This environment variable specifies
+           the data <b>sd_listen_fds() </b>and <b>sd_listen_fds_with_names()</b>
+           parses. See above for details.
+</pre> <h2>
+HISTORY </h2>
+<pre>
+       <b>sd_listen_fds_with_names() </b>was added in version 227.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man1/systemd.1">systemd(1)</a>, <a href="sd-daemon.3">sd-daemon(3)</a>, <a href="sd_is_fifo.3">sd_is_fifo(3)</a>, <a href="sd_is_socket.3">sd_is_socket(3)</a>,
+       <a href="sd_is_socket_inet.3">sd_is_socket_inet(3)</a>, <a href="sd_is_socket_unix.3">sd_is_socket_unix(3)</a>,
+       <a href="sd_pid_notify_with_fds.3">sd_pid_notify_with_fds(3)</a>, <a href="../man7/daemon.7">daemon(7)</a>, <a href="../man5/systemd.service.5">systemd.service(5)</a>,
+       <a href="../man5/systemd.socket.5">systemd.socket(5)</a>
+</pre> <h2>
+NOTES </h2>
+<pre>
+        1. File Descriptor Store
+           <a href="https://systemd.io/FILE_DESCRIPTOR_STORE">https://systemd.io/FILE_DESCRIPTOR_STORE</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>systemd</i> (systemd system and service
+       manager) project.  Information about the project can be found at
+       ⟨<a href="http://www.freedesktop.org/wiki/Software/systemd">http://www.freedesktop.org/wiki/Software/systemd</a>⟩.  If you have
+       a bug report for this manual page, see
+       ⟨<a href="http://www.freedesktop.org/wiki/Software/systemd/#bugreports">http://www.freedesktop.org/wiki/Software/systemd/#bugreports</a>⟩.
+       This page was obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/systemd/systemd.git">https://github.com/systemd/systemd.git</a>⟩ on 2024-06-14.  (At that
+       time, the date of the most recent commit that was found in the
+       repository was 2024-06-13.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">systemd 257~devel                                       <i>SD_LISTEN_FDS</i>(3)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man1/systemd.1">systemd(1)</a>, <a href="../man1/systemd-socket-activate.1">systemd-socket-activate(1)</a>, <a href="../man1/systemd-stdio-bridge.1">systemd-stdio-bridge(1)</a>, <a href="../man1/systemd-vmspawn.1">systemd-vmspawn(1)</a>, <a href="sd-daemon.3">sd-daemon(3)</a>, <a href="sd_is_fifo.3">sd_is_fifo(3)</a>, <a href="sd_notify.3">sd_notify(3)</a>, <a href="../man5/systemd.exec.5">systemd.exec(5)</a>, <a href="../man5/systemd.service.5">systemd.service(5)</a>, <a href="../man5/systemd.socket.5">systemd.socket(5)</a>, <a href="../man7/daemon.7">daemon(7)</a>, <a href="../man7/systemd.directives.7">systemd.directives(7)</a>, <a href="../man7/systemd.index.7">systemd.index(7)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/sd_listen_fds_with_names.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/sd_listen_fds_with_names.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

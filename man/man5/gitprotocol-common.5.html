@@ -1,0 +1,244 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Gitprotocol-common (5) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; git(1), gitformat-bundle(5), gitprotocol-pack(5), gitprotocol-v2(5) ">
+  <meta name="keywords" content="gitprotocol-common, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man5/gitprotocol-common.5.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>gitprotocol-common(5) — Linux manual page</h1>   <pre>
+<span class="headline"><i>GITPROTOCOL-COMMON</i>(5)          Git Manual          <i>GITPROTOCOL-COMMON</i>(5)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       gitprotocol-common - Things common to various protocols
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       &lt;over-the-wire-protocol&gt;
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       This document defines things common to various over-the-wire
+       protocols and file formats used in Git.
+</pre> <h2>
+ABNF NOTATION </h2>
+<pre>
+       ABNF notation as described by RFC 5234 is used within the
+       protocol documents, except the following replacement core rules
+       are used:
+
+             HEXDIG    =  DIGIT / "a" / "b" / "c" / "d" / "e" / "f"
+
+       We also define the following common rules:
+
+             NUL       =  %x00
+             zero-id   =  40*"0"
+             obj-id    =  40*(HEXDIGIT)
+
+             refname  =  "HEAD"
+             refname /=  "refs/" &lt;see discussion below&gt;
+
+       A refname is a hierarchical octet string beginning with "refs/"
+       and not violating the <i>git-check-ref-format</i> command’s validation
+       rules. More specifically, they:
+
+        1. They can include slash <b>/ </b>for hierarchical (directory)
+           grouping, but no slash-separated component can begin with a
+           dot <b>.</b>.
+
+        2. They must contain at least one <b>/</b>. This enforces the presence
+           of a category like <b>heads/</b>, <b>tags/ </b>etc. but the actual names
+           are not restricted.
+
+        3. They cannot have two consecutive dots <b>..  </b>anywhere.
+
+        4. They cannot have ASCII control characters (i.e. bytes whose
+           values are lower than \040, or \177 <b>DEL</b>), space, tilde <b>~</b>,
+           caret <b>^</b>, colon <b>:</b>, question-mark <b>?</b>, asterisk <b>*</b>, or open
+           bracket <b>[ </b>anywhere.
+
+        5. They cannot end with a slash <b>/ </b>or a dot <b>.</b>.
+
+        6. They cannot end with the sequence <b>.lock</b>.
+
+        7. They cannot contain a sequence <b>@{</b>.
+
+        8. They cannot contain a <b>\\</b>.
+</pre> <h2>
+PKT-LINE FORMAT </h2>
+<pre>
+       Much (but not all) of the payload is described around pkt-lines.
+
+       A pkt-line is a variable length binary string. The first four
+       bytes of the line, the pkt-len, indicates the total length of the
+       line, in hexadecimal. The pkt-len includes the 4 bytes used to
+       contain the length’s hexadecimal representation.
+
+       A pkt-line MAY contain binary data, so implementors MUST ensure
+       pkt-line parsing/formatting routines are 8-bit clean.
+
+       A non-binary line SHOULD BE terminated by an LF, which if present
+       MUST be included in the total length. Receivers MUST treat
+       pkt-lines with non-binary data the same whether or not they
+       contain the trailing LF (stripping the LF if present, and not
+       complaining when it is missing).
+
+       The maximum length of a pkt-line’s data component is 65516 bytes.
+       Implementations MUST NOT send pkt-line whose length exceeds 65520
+       (65516 bytes of payload + 4 bytes of length data).
+
+       Implementations SHOULD NOT send an empty pkt-line ("0004").
+
+       A pkt-line with a length field of 0 ("0000"), called a flush-pkt,
+       is a special case and MUST be handled differently than an empty
+       pkt-line ("0004").
+
+             pkt-line     =  data-pkt / flush-pkt
+
+             data-pkt     =  pkt-len pkt-payload
+             pkt-len      =  4*(HEXDIG)
+             pkt-payload  =  (pkt-len - 4)*(OCTET)
+
+             flush-pkt    = "0000"
+
+       Examples (as C-style strings):
+
+             pkt-line          actual value
+             ---------------------------------
+             "0006a\n"         "a\n"
+             "0005a"           "a"
+             "000bfoobar\n"    "foobar\n"
+             "0004"            ""
+</pre> <h2>
+GIT </h2>
+<pre>
+       Part of the <a href="../man1/git.1">git(1)</a> suite
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>git</i> (Git distributed version control
+       system) project.  Information about the project can be found at
+       ⟨<a href="http://git-scm.com/">http://git-scm.com/</a>⟩.  If you have a bug report for this manual
+       page, see ⟨<a href="http://git-scm.com/community">http://git-scm.com/community</a>⟩.  This page was obtained
+       from the project's upstream Git repository
+       ⟨<a href="https://github.com/git/git.git">https://github.com/git/git.git</a>⟩ on 2024-06-14.  (At that time,
+       the date of the most recent commit that was found in the
+       repository was 2024-06-12.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Git 2.45.2.492.gd63586         2024-06-12          <i>GITPROTOCOL-COMMON</i>(5)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man1/git.1">git(1)</a>, <a href="gitformat-bundle.5">gitformat-bundle(5)</a>, <a href="gitprotocol-pack.5">gitprotocol-pack(5)</a>, <a href="gitprotocol-v2.5">gitprotocol-v2(5)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man5/gitprotocol-common.5.html" class="_attribution-link">https://man7.org/linux/man-pages/man5/gitprotocol-common.5.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

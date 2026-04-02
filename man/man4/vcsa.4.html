@@ -1,0 +1,262 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Vcsa (4) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; ioctl_console(2), tty(4) ">
+  <meta name="keywords" content="vcs, —, linux, manual, page, vcsa, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man4/vcsa.4.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>vcs(4) — Linux manual page</h1>   <pre>
+<span class="headline"><i>vcs</i>(4)                  Kernel Interfaces Manual                  <i>vcs</i>(4)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       vcs, vcsa - virtual console memory
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       <i>/dev/vcs0</i> is a character device with major number 7 and minor
+       number 0, usually with mode 0644 and ownership root:tty.  It
+       refers to the memory of the currently displayed virtual console
+       terminal.
+
+       <i>/dev/vcs[1-63]</i> are character devices for virtual console
+       terminals, they have major number 7 and minor number 1 to 63,
+       usually mode 0644 and ownership root:tty.  <i>/dev/vcsa[0-63]</i> are
+       the same, but using <i>unsigned short</i>s (in host byte order) that
+       include attributes, and prefixed with four bytes giving the
+       screen dimensions and cursor position: <i>lines</i>, <i>columns</i>, <i>x</i>, <i>y</i>.  (<i>x</i>
+       = <i>y</i> = 0 at the top left corner of the screen.)
+
+       When a 512-character font is loaded, the 9th bit position can be
+       fetched by applying the <a href="../man2/ioctl.2">ioctl(2)</a> <b>VT_GETHIFONTMASK </b>operation
+       (available since Linux 2.6.18) on <i>/dev/tty[1-63]</i>; the value is
+       returned in the <i>unsigned short</i> pointed to by the third <a href="../man2/ioctl.2">ioctl(2)</a>
+       argument.
+
+       These devices replace the screendump <a href="../man2/ioctl.2">ioctl(2)</a> operations of
+       <a href="../man2/ioctl_console.2">ioctl_console(2)</a>, so the system administrator can control access
+       using filesystem permissions.
+
+       The devices for the first eight virtual consoles may be created
+       by:
+
+           for x in 0 1 2 3 4 5 6 7 8; do
+               mknod -m 644 /dev/vcs$x c 7 $x;
+               mknod -m 644 /dev/vcsa$x c 7 $[$x+128];
+           done
+           chown root:tty /dev/vcs*
+
+       No <a href="../man2/ioctl.2">ioctl(2)</a> requests are supported.
+</pre> <h2>
+FILES </h2>
+<pre>
+       <i>/dev/vcs[0-63]</i>
+       <i>/dev/vcsa[0-63]</i>
+</pre> <h2>
+VERSIONS </h2>
+<pre>
+       Introduced with Linux 1.1.92.
+</pre> <h2>
+EXAMPLES </h2>
+<pre>
+       You may do a screendump on vt3 by switching to vt1 and typing
+
+           cat /dev/vcs3 &gt;foo
+
+       Note that the output does not contain newline characters, so some
+       processing may be required, like in
+
+           fold -w 81 /dev/vcs3 | lpr
+
+       or (horrors)
+
+           setterm -dump 3 -file /proc/self/fd/1
+
+       The <i>/dev/vcsa0</i> device is used for Braille support.
+
+       This program displays the character and screen attributes under
+       the cursor of the second virtual console, then changes the
+       background color there:
+
+       #include &lt;unistd.h&gt;
+       #include &lt;stdlib.h&gt;
+       #include &lt;stdio.h&gt;
+       #include &lt;fcntl.h&gt;
+       #include &lt;sys/ioctl.h&gt;
+       #include &lt;linux/vt.h&gt;
+
+       int
+       main(void)
+       {
+           int fd;
+           char *device = "/dev/vcsa2";
+           char *console = "/dev/tty2";
+           struct {unsigned char lines, cols, x, y;} scrn;
+           unsigned short s;
+           unsigned short mask;
+           unsigned char attrib;
+           int ch;
+
+           fd = open(console, O_RDWR);
+           if (fd &lt; 0) {
+               perror(console);
+               exit(EXIT_FAILURE);
+           }
+           if (ioctl(fd, VT_GETHIFONTMASK, &amp;mask) &lt; 0) {
+               perror("VT_GETHIFONTMASK");
+               exit(EXIT_FAILURE);
+           }
+           (void) close(fd);
+           fd = open(device, O_RDWR);
+           if (fd &lt; 0) {
+               perror(device);
+               exit(EXIT_FAILURE);
+           }
+           (void) read(fd, &amp;scrn, 4);
+           (void) lseek(fd, 4 + 2*(scrn.y*scrn.cols + scrn.x), SEEK_SET);
+           (void) read(fd, &amp;s, 2);
+           ch = s &amp; 0xff;
+           if (s &amp; mask)
+               ch |= 0x100;
+           attrib = ((s &amp; ~mask) &gt;&gt; 8);
+           printf("ch=%#03x attrib=%#02x\n", ch, attrib);
+           s ^= 0x1000;
+           (void) lseek(fd, -2, SEEK_CUR);
+           (void) write(fd, &amp;s, 2);
+           exit(EXIT_SUCCESS);
+       }
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man2/ioctl_console.2">ioctl_console(2)</a>, <a href="tty.4">tty(4)</a>, <a href="ttys.4">ttyS(4)</a>, <b>gpm</b>(8)
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>man-pages</i> (Linux kernel and C library
+       user-space interface documentation) project.  Information about
+       the project can be found at 
+       ⟨<a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>⟩.  If you have a bug report
+       for this manual page, see
+       ⟨<a href="https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING">https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING</a>⟩.
+       This page was obtained from the tarball man-pages-6.9.1.tar.gz
+       fetched from
+       ⟨<a href="https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/">https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/</a>⟩ on
+       2024-06-26.  If you discover any rendering problems in this HTML
+       version of the page, or you believe there is a better or more up-
+       to-date source for the page, or you have corrections or
+       improvements to the information in this COLOPHON (which is <i>not</i>
+       part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux man-pages 6.9.1          2024-06-15                         <i>vcs</i>(4)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man2/ioctl_console.2">ioctl_console(2)</a>, <a href="tty.4">tty(4)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man4/vcsa.4.html" class="_attribution-link">https://man7.org/linux/man-pages/man4/vcsa.4.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

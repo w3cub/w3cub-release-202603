@@ -1,0 +1,327 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Spu_run (2) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; spu_create(2), syscalls(2), spufs(7) ">
+  <meta name="keywords" content="spu, run, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man2/spu_run.2.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>spu_run(2) — Linux manual page</h1>   <pre>
+<span class="headline"><i>spu_run</i>(2)                 System Calls Manual                <i>spu_run</i>(2)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       spu_run - execute an SPU context
+</pre> <h2>
+LIBRARY </h2>
+<pre>
+       Standard C library (<i>libc</i>, <i>-lc</i>)
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;sys/spu.h&gt;          </b>/* Definition of <b>SPU_* </b>constants */
+       <b>#include &lt;sys/syscall.h&gt;      </b>/* Definition of <b>SYS_* </b>constants */
+       <b>#include &lt;unistd.h&gt;</b>
+
+       <b>int syscall(SYS_spu_run, int </b><i>fd</i><b>, uint32_t *</b><i>npc</i><b>, uint32_t *</b><i>event</i><b>);</b>
+
+       <i>Note</i>: glibc provides no wrapper for <b>spu_run</b>(), necessitating the
+       use of <a href="syscall.2">syscall(2)</a>.
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       The <b>spu_run</b>() system call is used on PowerPC machines that
+       implement the Cell Broadband Engine Architecture in order to
+       access Synergistic Processor Units (SPUs).  The <i>fd</i> argument is a
+       file descriptor returned by <a href="spu_create.2">spu_create(2)</a> that refers to a
+       specific SPU context.  When the context gets scheduled to a
+       physical SPU, it starts execution at the instruction pointer
+       passed in <i>npc</i>.
+
+       Execution of SPU code happens synchronously, meaning that
+       <b>spu_run</b>() blocks while the SPU is still running.  If there is a
+       need to execute SPU code in parallel with other code on either
+       the main CPU or other SPUs, a new thread of execution must be
+       created first (e.g., using <a href="../man3/pthread_create.3">pthread_create(3)</a>).
+
+       When <b>spu_run</b>() returns, the current value of the SPU program
+       counter is written to <i>npc</i>, so successive calls to <b>spu_run</b>() can
+       use the same <i>npc</i> pointer.
+
+       The <i>event</i> argument provides a buffer for an extended status code.
+       If the SPU context was created with the <b>SPU_CREATE_EVENTS_ENABLED</b>
+       flag, then this buffer is populated by the Linux kernel before
+       <b>spu_run</b>() returns.
+
+       The status code may be one (or more) of the following constants:
+
+       <b>SPE_EVENT_DMA_ALIGNMENT</b>
+              A DMA alignment error occurred.
+
+       <b>SPE_EVENT_INVALID_DMA</b>
+              An invalid MFC DMA command was attempted.
+
+       <b>SPE_EVENT_SPE_DATA_STORAGE</b>
+              A DMA storage error occurred.
+
+       <b>SPE_EVENT_SPE_ERROR</b>
+              An illegal instruction was executed.
+
+       NULL is a valid value for the <i>event</i> argument.  In this case, the
+       events will not be reported to the calling process.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       On success, <b>spu_run</b>() returns the value of the <i>spu_status</i>
+       register.  On failure, it returns -1 and sets <i><a href="../man3/errno.3">errno</a></i> is set to
+       indicate the error.
+
+       The <i>spu_status</i> register value is a bit mask of status codes and
+       optionally a 14-bit code returned from the <b>stop-and-signal</b>
+       instruction on the SPU.  The bit masks for the status codes are:
+
+       <b>0x02   </b>SPU was stopped by a <b>stop-and-signal </b>instruction.
+
+       <b>0x04   </b>SPU was stopped by a <b>halt </b>instruction.
+
+       <b>0x08   </b>SPU is waiting for a channel.
+
+       <b>0x10   </b>SPU is in single-step mode.
+
+       <b>0x20   </b>SPU has tried to execute an invalid instruction.
+
+       <b>0x40   </b>SPU has tried to access an invalid channel.
+
+       <b>0x3fff0000</b>
+              The bits masked with this value contain the code returned
+              from a <b>stop-and-signal </b>instruction.  These bits are valid
+              only if the 0x02 bit is set.
+
+       If <b>spu_run</b>() has not returned an error, one or more bits among
+       the lower eight ones are always set.
+</pre> <h2>
+ERRORS </h2>
+<pre>
+       <b>EBADF  </b><i>fd</i> is not a valid file descriptor.
+
+       <b>EFAULT </b><i>npc</i> is not a valid pointer, or <i>event</i> is non-NULL and an
+              invalid pointer.
+
+       <b>EINTR  </b>A signal occurred while <b>spu_run</b>() was in progress; see
+              <a href="../man7/signal.7">signal(7)</a>.  The <i>npc</i> value has been updated to the new
+              program counter value if necessary.
+
+       <b>EINVAL </b><i>fd</i> is not a valid file descriptor returned from
+              <a href="spu_create.2">spu_create(2)</a>.
+
+       <b>ENOMEM </b>There was not enough memory available to handle a page
+              fault resulting from a Memory Flow Controller (MFC) direct
+              memory access.
+
+       <b>ENOSYS </b>The functionality is not provided by the current system,
+              because either the hardware does not provide SPUs or the
+              spufs module is not loaded.
+</pre> <h2>
+STANDARDS </h2>
+<pre>
+       Linux on PowerPC.
+</pre> <h2>
+HISTORY </h2>
+<pre>
+       Linux 2.6.16.
+</pre> <h2>
+NOTES </h2>
+<pre>
+       <b>spu_run</b>() is meant to be used from libraries that implement a
+       more abstract interface to SPUs, not to be used from regular
+       applications.  See 
+       ⟨<a href="http://www.bsc.es/projects/deepcomputing/linuxoncell/">http://www.bsc.es/projects/deepcomputing/linuxoncell/</a>⟩ for the
+       recommended libraries.
+</pre> <h2>
+EXAMPLES </h2>
+<pre>
+       The following is an example of running a simple, one-instruction
+       SPU program with the <b>spu_run</b>() system call.
+
+       #include &lt;err.h&gt;
+       #include &lt;fcntl.h&gt;
+       #include &lt;stdint.h&gt;
+       #include &lt;stdio.h&gt;
+       #include &lt;stdlib.h&gt;
+       #include &lt;sys/types.h&gt;
+       #include &lt;unistd.h&gt;
+
+       int main(void)
+       {
+           int       context, fd, spu_status;
+           uint32_t  instruction, npc;
+
+           context = syscall(SYS_spu_create, "/spu/example-context", 0, 0755);
+           if (context == -1)
+               err(EXIT_FAILURE, "spu_create");
+
+           /*
+            * Write a 'stop 0x1234' instruction to the SPU's
+            * local store memory.
+            */
+           instruction = 0x00001234;
+
+           fd = open("/spu/example-context/mem", O_RDWR);
+           if (fd == -1)
+               err(EXIT_FAILURE, "open");
+           write(fd, &amp;instruction, sizeof(instruction));
+
+           /*
+            * set npc to the starting instruction address of the
+            * SPU program. Since we wrote the instruction at the
+            * start of the mem file, the entry point will be 0x0.
+            */
+           npc = 0;
+
+           spu_status = syscall(SYS_spu_run, context, &amp;npc, NULL);
+           if (spu_status == -1)
+               err(EXIT_FAILURE, "open");
+
+           /*
+            * We should see a status code of 0x12340002:
+            *   0x00000002 (spu was stopped due to stop-and-signal)
+            * | 0x12340000 (the stop-and-signal code)
+            */
+           printf("SPU Status: %#08x\n", spu_status);
+
+           exit(EXIT_SUCCESS);
+       }
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="close.2">close(2)</a>, <a href="spu_create.2">spu_create(2)</a>, <a href="../man7/capabilities.7">capabilities(7)</a>, <a href="../man7/spufs.7">spufs(7)</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>man-pages</i> (Linux kernel and C library
+       user-space interface documentation) project.  Information about
+       the project can be found at 
+       ⟨<a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>⟩.  If you have a bug report
+       for this manual page, see
+       ⟨<a href="https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING">https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING</a>⟩.
+       This page was obtained from the tarball man-pages-6.9.1.tar.gz
+       fetched from
+       ⟨<a href="https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/">https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/</a>⟩ on
+       2024-06-26.  If you discover any rendering problems in this HTML
+       version of the page, or you believe there is a better or more up-
+       to-date source for the page, or you have corrections or
+       improvements to the information in this COLOPHON (which is <i>not</i>
+       part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux man-pages 6.9.1          2024-06-15                     <i>spu_run</i>(2)</span>
+</pre>  <p>Pages that refer to this page: <a href="spu_create.2">spu_create(2)</a>, <a href="syscalls.2">syscalls(2)</a>, <a href="../man7/spufs.7">spufs(7)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man2/spu_run.2.html" class="_attribution-link">https://man7.org/linux/man-pages/man2/spu_run.2.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

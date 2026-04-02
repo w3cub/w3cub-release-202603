@@ -1,0 +1,419 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Netdevice (7) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; getifaddrs(3), ip(7), ipv6(7), packet(7), rtnetlink(7) ">
+  <meta name="keywords" content="netdevice, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man7/netdevice.7.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>netdevice(7) — Linux manual page</h1>   <pre>
+<span class="headline"><i>netdevice</i>(7)        Miscellaneous Information Manual        <i>netdevice</i>(7)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       netdevice - low-level access to Linux network devices
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;sys/ioctl.h&gt;</b>
+       <b>#include &lt;net/if.h&gt;</b>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       This man page describes the sockets interface which is used to
+       configure network devices.
+
+       Linux supports some standard ioctls to configure network devices.
+       They can be used on any socket's file descriptor regardless of
+       the family or type.  Most of them pass an <i>ifreq</i> structure:
+
+           struct ifreq {
+               char ifr_name[IFNAMSIZ]; /* Interface name */
+               union {
+                   struct sockaddr ifr_addr;
+                   struct sockaddr ifr_dstaddr;
+                   struct sockaddr ifr_broadaddr;
+                   struct sockaddr ifr_netmask;
+                   struct sockaddr ifr_hwaddr;
+                   short           ifr_flags;
+                   int             ifr_ifindex;
+                   int             ifr_metric;
+                   int             ifr_mtu;
+                   struct ifmap    ifr_map;
+                   char            ifr_slave[IFNAMSIZ];
+                   char            ifr_newname[IFNAMSIZ];
+                   char           *ifr_data;
+               };
+           };
+
+       <b>AF_INET6 </b>is an exception.  It passes an <i>in6_ifreq</i> structure:
+
+           struct in6_ifreq {
+               struct in6_addr     ifr6_addr;
+               u32                 ifr6_prefixlen;
+               int                 ifr6_ifindex; /* Interface index */
+           };
+
+       Normally, the user specifies which device to affect by setting
+       <i>ifr_name</i> to the name of the interface or <i>ifr6_ifindex</i> to the
+       index of the interface.  All other members of the structure may
+       share memory.
+
+   <b>Ioctls</b>
+       If an ioctl is marked as privileged, then using it requires an
+       effective user ID of 0 or the <b>CAP_NET_ADMIN </b>capability.  If this
+       is not the case, <b>EPERM </b>will be returned.
+
+       <b>SIOCGIFNAME</b>
+              Given the <i>ifr_ifindex</i>, return the name of the interface in
+              <i>ifr_name</i>.  This is the only ioctl which returns its result
+              in <i>ifr_name</i>.
+
+       <b>SIOCGIFINDEX</b>
+              Retrieve the interface index of the interface into
+              <i>ifr_ifindex</i>.
+
+       <b>SIOCGIFFLAGS</b>
+       <b>SIOCSIFFLAGS</b>
+              Get or set the active flag word of the device.  <i>ifr_flags</i>
+              contains a bit mask of the following values:
+                                      Device flags
+              IFF_UP            Interface is running.
+              IFF_BROADCAST     Valid broadcast address set.
+              IFF_DEBUG         Internal debugging flag.
+              IFF_LOOPBACK      Interface is a loopback interface.
+              IFF_POINTOPOINT   Interface is a point-to-point link.
+              IFF_RUNNING       Resources allocated.
+              IFF_NOARP         No arp protocol, L2 destination address not
+                                set.
+              IFF_PROMISC       Interface is in promiscuous mode.
+              IFF_NOTRAILERS    Avoid use of trailers.
+              IFF_ALLMULTI      Receive all multicast packets.
+              IFF_MASTER        Master of a load balancing bundle.
+              IFF_SLAVE         Slave of a load balancing bundle.
+              IFF_MULTICAST     Supports multicast
+              IFF_PORTSEL       Is able to select media type via ifmap.
+              IFF_AUTOMEDIA     Auto media selection active.
+              IFF_DYNAMIC       The addresses are lost when the interface
+                                goes down.
+              IFF_LOWER_UP      Driver signals L1 up (since Linux 2.6.17)
+              IFF_DORMANT       Driver signals dormant (since Linux 2.6.17)
+              IFF_ECHO          Echo sent packets (since Linux 2.6.25)
+
+       Setting  the  active flag word is a privileged operation, but any
+       process may read it.
+
+       <b>SIOCGIFPFLAGS</b>
+       <b>SIOCSIFPFLAGS</b>
+              Get or set extended (private) flags for the device.
+              <i>ifr_flags</i> contains a bit mask of the following values:
+                                      Private flags
+              IFF_802_1Q_VLAN      Interface is 802.1Q VLAN device.
+              IFF_EBRIDGE          Interface is Ethernet bridging device.
+              IFF_SLAVE_INACTIVE   Interface is inactive bonding slave.
+              IFF_MASTER_8023AD    Interface is 802.3ad bonding master.
+              IFF_MASTER_ALB       Interface is balanced-alb bonding master.
+              IFF_BONDING          Interface is a bonding master or slave.
+              IFF_SLAVE_NEEDARP    Interface needs ARPs for validation.
+              IFF_ISATAP           Interface is RFC4214 ISATAP interface.
+
+       Setting the extended (private) interface flags is a privileged
+       operation.
+
+       <b>SIOCGIFADDR</b>
+       <b>SIOCSIFADDR</b>
+       <b>SIOCDIFADDR</b>
+              Get, set, or delete the address of the device using
+              <i>ifr_addr</i>, or <i>ifr6_addr</i> with <i>ifr6_prefixlen</i>.  Setting or
+              deleting the interface address is a privileged operation.
+              For compatibility, <b>SIOCGIFADDR </b>returns only <b>AF_INET</b>
+              addresses, <b>SIOCSIFADDR </b>accepts <b>AF_INET </b>and <b>AF_INET6</b>
+              addresses, and <b>SIOCDIFADDR </b>deletes only <b>AF_INET6</b>
+              addresses.  A <b>AF_INET </b>address can be deleted by setting it
+              to zero via <b>SIOCSIFADDR</b>.
+
+       <b>SIOCGIFDSTADDR</b>
+       <b>SIOCSIFDSTADDR</b>
+              Get or set the destination address of a point-to-point
+              device using <i>ifr_dstaddr</i>.  For compatibility, only <b>AF_INET</b>
+              addresses are accepted or returned.  Setting the
+              destination address is a privileged operation.
+
+       <b>SIOCGIFBRDADDR</b>
+       <b>SIOCSIFBRDADDR</b>
+              Get or set the broadcast address for a device using
+              <i>ifr_brdaddr</i>.  For compatibility, only <b>AF_INET </b>addresses
+              are accepted or returned.  Setting the broadcast address
+              is a privileged operation.
+
+       <b>SIOCGIFNETMASK</b>
+       <b>SIOCSIFNETMASK</b>
+              Get or set the network mask for a device using
+              <i>ifr_netmask</i>.  For compatibility, only <b>AF_INET </b>addresses
+              are accepted or returned.  Setting the network mask is a
+              privileged operation.
+
+       <b>SIOCGIFMETRIC</b>
+       <b>SIOCSIFMETRIC</b>
+              Get or set the metric of the device using <i>ifr_metric</i>.
+              This is currently not implemented; it sets <i>ifr_metric</i> to 0
+              if you attempt to read it and returns <b>EOPNOTSUPP </b>if you
+              attempt to set it.
+
+       <b>SIOCGIFMTU</b>
+       <b>SIOCSIFMTU</b>
+              Get or set the MTU (Maximum Transfer Unit) of a device
+              using <i>ifr_mtu</i>.  Setting the MTU is a privileged operation.
+              Setting the MTU to too small values may cause kernel
+              crashes.
+
+       <b>SIOCGIFHWADDR</b>
+       <b>SIOCSIFHWADDR</b>
+              Get or set the hardware address of a device using
+              <i>ifr_hwaddr</i>.  The hardware address is specified in a struct
+              <i>sockaddr</i>.  <i>sa_family</i> contains the ARPHRD_* device type,
+              <i>sa_data</i> the L2 hardware address starting from byte 0.
+              Setting the hardware address is a privileged operation.
+
+       <b>SIOCSIFHWBROADCAST</b>
+              Set the hardware broadcast address of a device from
+              <i>ifr_hwaddr</i>.  This is a privileged operation.
+
+       <b>SIOCGIFMAP</b>
+       <b>SIOCSIFMAP</b>
+              Get or set the interface's hardware parameters using
+              <i>ifr_map</i>.  Setting the parameters is a privileged
+              operation.
+
+                  struct ifmap {
+                      unsigned long   mem_start;
+                      unsigned long   mem_end;
+                      unsigned short  base_addr;
+                      unsigned char   irq;
+                      unsigned char   dma;
+                      unsigned char   port;
+                  };
+
+              The interpretation of the ifmap structure depends on the
+              device driver and the architecture.
+
+       <b>SIOCADDMULTI</b>
+       <b>SIOCDELMULTI</b>
+              Add an address to or delete an address from the device's
+              link layer multicast filters using <i>ifr_hwaddr</i>.  These are
+              privileged operations.  See also <a href="packet.7">packet(7)</a> for an
+              alternative.
+
+       <b>SIOCGIFTXQLEN</b>
+       <b>SIOCSIFTXQLEN</b>
+              Get or set the transmit queue length of a device using
+              <i>ifr_qlen</i>.  Setting the transmit queue length is a
+              privileged operation.
+
+       <b>SIOCSIFNAME</b>
+              Changes the name of the interface specified in <i>ifr_name</i> to
+              <i>ifr_newname</i>.  This is a privileged operation.  It is
+              allowed only when the interface is not up.
+
+       <b>SIOCGIFCONF</b>
+              Return a list of interface (network layer) addresses.
+              This currently means only addresses of the <b>AF_INET </b>(IPv4)
+              family for compatibility.  Unlike the others, this ioctl
+              passes an <i>ifconf</i> structure:
+
+                  struct ifconf {
+                      int               ifc_len; /* size of buffer */
+                      union {
+                          char         *ifc_buf; /* buffer address */
+                          struct ifreq *ifc_req; /* array of structures */
+                      };
+                  };
+
+              If <i>ifc_req</i> is NULL, <b>SIOCGIFCONF </b>returns the necessary
+              buffer size in bytes for receiving all available addresses
+              in <i>ifc_len</i>.  Otherwise, <i>ifc_req</i> contains a pointer to an
+              array of <i>ifreq</i> structures to be filled with all currently
+              active L3 interface addresses.  <i>ifc_len</i> contains the size
+              of the array in bytes.  Within each <i>ifreq</i> structure,
+              <i>ifr_name</i> will receive the interface name, and <i>ifr_addr</i> the
+              address.  The actual number of bytes transferred is
+              returned in <i>ifc_len</i>.
+
+              If the size specified by <i>ifc_len</i> is insufficient to store
+              all the addresses, the kernel will skip the exceeding ones
+              and return success.  There is no reliable way of detecting
+              this condition once it has occurred.  It is therefore
+              recommended to either determine the necessary buffer size
+              beforehand by calling <b>SIOCGIFCONF </b>with <i>ifc_req</i> set to
+              NULL, or to retry the call with a bigger buffer whenever
+              <i>ifc_len</i> upon return differs by less than <i>sizeof(struct</i>
+              <i>ifreq)</i> from its original value.
+
+              If an error occurs accessing the <i>ifconf</i> or <i>ifreq</i>
+              structures, <b>EFAULT </b>will be returned.
+
+       Most protocols support their own ioctls to configure protocol-
+       specific interface options.  See the protocol man pages for a
+       description.  For configuring IP addresses, see <a href="ip.7">ip(7)</a>.
+
+       In addition, some devices support private ioctls.  These are not
+       described here.
+</pre> <h2>
+NOTES </h2>
+<pre>
+       <b>SIOCGIFCONF </b>and the other ioctls that accept or return only
+       <b>AF_INET </b>socket addresses are IP-specific and perhaps should
+       rather be documented in <a href="ip.7">ip(7)</a>.
+
+       The names of interfaces with no addresses or that don't have the
+       <b>IFF_RUNNING </b>flag set can be found via <i>/proc/net/dev</i>.
+
+       <b>AF_INET6 </b>IPv6 addresses can be read from <i>/proc/net/if_inet6</i> or
+       via <a href="rtnetlink.7">rtnetlink(7)</a>.  Adding a new IPv6 address and deleting an
+       existing IPv6 address can be done via <b>SIOCSIFADDR </b>and <b>SIOCDIFADDR</b>
+       or via <a href="rtnetlink.7">rtnetlink(7)</a>.  Retrieving or changing destination IPv6
+       addresses of a point-to-point interface is possible only via
+       <a href="rtnetlink.7">rtnetlink(7)</a>.
+</pre> <h2>
+BUGS </h2>
+<pre>
+       glibc 2.1 is missing the <i>ifr_newname</i> macro in <i>&lt;net/if.h&gt;</i>.  Add
+       the following to your program as a workaround:
+
+           #ifndef ifr_newname
+           #define ifr_newname     ifr_ifru.ifru_slave
+           #endif
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man5/proc.5">proc(5)</a>, <a href="capabilities.7">capabilities(7)</a>, <a href="ip.7">ip(7)</a>, <a href="rtnetlink.7">rtnetlink(7)</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>man-pages</i> (Linux kernel and C library
+       user-space interface documentation) project.  Information about
+       the project can be found at 
+       ⟨<a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>⟩.  If you have a bug report
+       for this manual page, see
+       ⟨<a href="https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING">https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING</a>⟩.
+       This page was obtained from the tarball man-pages-6.9.1.tar.gz
+       fetched from
+       ⟨<a href="https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/">https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/</a>⟩ on
+       2024-06-26.  If you discover any rendering problems in this HTML
+       version of the page, or you believe there is a better or more up-
+       to-date source for the page, or you have corrections or
+       improvements to the information in this COLOPHON (which is <i>not</i>
+       part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux man-pages 6.9.1          2024-05-02                   <i>netdevice</i>(7)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man3/getifaddrs.3">getifaddrs(3)</a>, <a href="ip.7">ip(7)</a>, <a href="ipv6.7">ipv6(7)</a>, <a href="packet.7">packet(7)</a>, <a href="rtnetlink.7">rtnetlink(7)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man7/netdevice.7.html" class="_attribution-link">https://man7.org/linux/man-pages/man7/netdevice.7.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Auparse_feed (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content="Pages that refer to this page&#58; auparse_add_callback(3), auparse_feed_age_events(3), auparse_feed_has_data(3), auparse_flush_feed(3), &hellip;">
+  <meta name="keywords" content="auparse, feed, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/auparse_feed.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>auparse_feed(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>AUPARSE_FEED</i>(3)              Linux Audit API             <i>AUPARSE_FEED</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       auparse_feed - feed data into parser
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;auparse.h&gt;</b>
+
+       int auparse_feed(auparse_state_t *au, const char *data, size_t data_len);
+
+       <i>au</i>     The audit parse state
+
+       <i>data</i>   a buffer of data to feed into the parser, it is <i>data_len</i>
+              bytes long. The data is copied in the parser, upon return
+              the caller may free or reuse the data buffer.
+
+       <i>data_len</i>
+              number of bytes in <i>data</i>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       <i>auparse_feed</i> supplies new data for the parser to consume.
+       <i>auparse_init()</i> must have been called with a source type of
+       AUSOURCE_FEED and a NULL pointer.
+
+       The parser consumes as much data as it can invoking a user
+       supplied callback specified with <i>auparse_add_callback</i> with a
+       cb_event_type of <i>AUPARSE_CB_EVENT_READY</i> each time the parser
+       recognizes a complete event in the data stream. Data not fully
+       parsed will persist and be prepended to the next feed data. After
+       all data has been feed to the parser <i>auparse_flush_feed</i> should be
+       called to signal the end of input data and flush any pending
+       parse data through the parsing system.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       Returns -1 if an error occurs; otherwise, 0 for success.
+</pre> <h2>
+EXAMPLE </h2>
+<pre>
+       void
+       auparse_callback(auparse_state_t *au, auparse_cb_event_t cb_event_type,
+                        void *user_data)
+       {
+           int *event_cnt = (int *)user_data;
+
+           if (cb_event_type == AUPARSE_CB_EVENT_READY) {
+               if (auparse_first_record(au) &lt;= 0) return;
+               printf("event: %d\n", *event_cnt);
+               printf("records:%d\n", auparse_get_num_records(au));
+               do {
+                   printf("fields:%d\n", auparse_get_num_fields(au));
+                   printf("type=%d ", auparse_get_type(au));
+                   const au_event_t *e = auparse_get_timestamp(au);
+                   if (e == NULL) return;
+                   printf("event time: %lu.%u:%lu\n",
+                           (long unsigned)e-&gt;sec, e-&gt;milli, e-&gt;serial);
+                   auparse_first_field(au);
+                   do {
+                       printf("%s=%s (%s)\n", auparse_get_field_name(au),
+                              auparse_get_field_str(au),
+                              auparse_interpret_field(au));
+                   } while (auparse_next_field(au) &gt; 0);
+                   printf("\n");
+
+               } while(auparse_next_record(au) &gt; 0);
+               (*event_cnt)++;
+           }
+       }
+
+       main(int argc, char **argv)
+       {
+           char *filename = argv[1];
+           FILE *fp;
+           char buf[256];
+           size_t len;
+           int *event_cnt = malloc(sizeof(int));
+
+           au = auparse_init(AUSOURCE_FEED, 0);
+           auparse_set_eoe_timeout(2);
+
+           *event_cnt = 1;
+           auparse_add_callback(au, auparse_callback, event_cnt, free);
+
+           if ((fp = fopen(filename, "r")) == NULL) {
+               fprintf(stderr, "could not open '%s', %s\n", filename, strerror(errno));
+               return 1;
+           }
+
+           while ((len = fread(buf, 1, sizeof(buf), fp))) {
+               auparse_feed(au, buf, len);
+           }
+           auparse_flush_feed(au);
+           auparse_destroy(au);
+       }
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="auparse_add_callback.3">auparse_add_callback(3)</a>, <a href="auparse_flush_feed.3">auparse_flush_feed(3)</a>,
+       <a href="auparse_feed_age_events.3">auparse_feed_age_events(3)</a>, <a href="auparse_feed_has_data.3">auparse_feed_has_data(3)</a>,
+       <a href="auparse_metrics.3">auparse_metrics(3)</a>
+</pre> <h2>
+AUTHOR </h2>
+<pre>
+       John Dennis
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>audit</i> (Linux Audit) project.
+       Information about the project can be found at 
+       ⟨<a href="http://people.redhat.com/sgrubb/audit/">http://people.redhat.com/sgrubb/audit/</a>⟩.  If you have a bug
+       report for this manual page, send it to linux-audit@redhat.com.
+       This page was obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/linux-audit/audit-userspace.git">https://github.com/linux-audit/audit-userspace.git</a>⟩ on
+       2024-06-14.  (At that time, the date of the most recent commit
+       that was found in the repository was 2024-06-12.)  If you
+       discover any rendering problems in this HTML version of the page,
+       or you believe there is a better or more up-to-date source for
+       the page, or you have corrections or improvements to the
+       information in this COLOPHON (which is <i>not</i> part of the original
+       manual page), send a mail to man-pages@man7.org
+
+<span class="footline">Red Hat                         Sept 2023                <i>AUPARSE_FEED</i>(3)</span>
+</pre>  <p>Pages that refer to this page: <a href="auparse_add_callback.3">auparse_add_callback(3)</a>, <a href="auparse_feed_age_events.3">auparse_feed_age_events(3)</a>, <a href="auparse_feed_has_data.3">auparse_feed_has_data(3)</a>, <a href="auparse_flush_feed.3">auparse_flush_feed(3)</a>, <a href="auparse_init.3">auparse_init(3)</a>, <a href="auparse_metrics.3">auparse_metrics(3)</a>, <a href="../man5/auditd-plugins.5">auditd-plugins(5)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/auparse_feed.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/auparse_feed.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

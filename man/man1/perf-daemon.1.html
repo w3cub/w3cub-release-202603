@@ -1,0 +1,322 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Perf-daemon (1) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" ... https&#58;&#47;&#47;man7.org&#47;linux&#47;man-pages&#47;man1&#47;perf-daemon.1.html ">
+  <meta name="keywords" content="perf-daemon, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man1/perf-daemon.1.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>perf-daemon(1) — Linux manual page</h1>   <pre>
+<span class="headline"><i>PERF-DAEMON</i>(1)                 perf Manual                <i>PERF-DAEMON</i>(1)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       perf-daemon - Run record sessions on background
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <i>perf daemon</i>
+       <i>perf daemon</i> [&lt;options&gt;]
+       <i>perf daemon start</i>  [&lt;options&gt;]
+       <i>perf daemon stop</i>   [&lt;options&gt;]
+       <i>perf daemon signal</i> [&lt;options&gt;]
+       <i>perf daemon ping</i>   [&lt;options&gt;]
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       This command allows to run simple daemon process that starts and
+       monitors configured record sessions.
+
+       You can imagine <i>perf daemon</i> of background process with several
+       <i>perf record</i> child tasks, like:
+
+           # ps axjf
+           ...
+                1  916507 ... perf daemon start
+           916507  916508 ...  \_ perf record --control=fifo:control,ack -m 10M -e cycles --overwrite --switch-output -a
+           916507  916509 ...  \_ perf record --control=fifo:control,ack -m 20M -e sched:* --overwrite --switch-output -a
+
+       Not every <i>perf record</i> session is suitable for running under
+       daemon. User need perf session that either produces data on
+       query, like the flight recorder sessions in above example or
+       session that is configured to produce data periodically, like
+       with --switch-output configuration for time and size.
+
+       Each session is started with control setup (with perf record
+       --control options).
+
+       Sessions are configured through config file, see CONFIG FILE
+       section with EXAMPLES.
+</pre> <h2>
+OPTIONS </h2>
+<pre>
+       -v, --verbose
+           Be more verbose.
+
+       --config=&lt;PATH&gt;
+           Config file path. If not provided, perf will check system and
+           default locations (/etc/perfconfig, $HOME/.perfconfig).
+
+       --base=&lt;PATH&gt;
+           Base directory path. Each daemon instance is running on top
+           of base directory. Only one instance of server can run on top
+           of one directory at the time.
+
+       All generic options are available also under commands.
+</pre> <h2>
+START COMMAND </h2>
+<pre>
+       The start command creates the daemon process.
+
+       -f, --foreground
+           Do not put the process in background.
+</pre> <h2>
+STOP COMMAND </h2>
+<pre>
+       The stop command stops all the session and the daemon process.
+</pre> <h2>
+SIGNAL COMMAND </h2>
+<pre>
+       The signal command sends signal to configured sessions.
+
+       --session
+           Send signal to specific session.
+</pre> <h2>
+PING COMMAND </h2>
+<pre>
+       The ping command sends control ping to configured sessions.
+
+       --session
+           Send ping to specific session.
+</pre> <h2>
+CONFIG FILE </h2>
+<pre>
+       The daemon is configured within standard perf config file by
+       following new variables:
+
+       daemon.base: Base path for daemon data. All sessions data are
+       stored under this path.
+
+       session-&lt;NAME&gt;.run: Defines new record session. The value is
+       record’s command line without the <i>record</i> keyword.
+
+       Each perf record session is run in daemon.base/&lt;NAME&gt; directory.
+</pre> <h2>
+EXAMPLES </h2>
+<pre>
+       Example with 2 record sessions:
+
+           # cat ~/.perfconfig
+           [daemon]
+           base=/opt/perfdata
+
+           [session-cycles]
+           run = -m 10M -e cycles --overwrite --switch-output -a
+
+           [session-sched]
+           run = -m 20M -e sched:* --overwrite --switch-output -a
+
+       Starting the daemon:
+
+           # perf daemon start
+
+       Check sessions:
+
+           # perf daemon
+           [603349:daemon] base: /opt/perfdata
+           [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
+           [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
+
+       First line is daemon process info with configured daemon base.
+
+       Check sessions with more info:
+
+           # perf daemon -v
+           [603349:daemon] base: /opt/perfdata
+             output:  /opt/perfdata/output
+             lock:    /opt/perfdata/lock
+             up:      1 minutes
+           [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
+             base:    /opt/perfdata/session-cycles
+             output:  /opt/perfdata/session-cycles/output
+             control: /opt/perfdata/session-cycles/control
+             ack:     /opt/perfdata/session-cycles/ack
+             up:      1 minutes
+           [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
+             base:    /opt/perfdata/session-sched
+             output:  /opt/perfdata/session-sched/output
+             control: /opt/perfdata/session-sched/control
+             ack:     /opt/perfdata/session-sched/ack
+             up:      1 minutes
+
+       The <i>base</i> path is daemon/session base. The <i>lock</i> file is daemon’s
+       lock file guarding that no other daemon is running on top of the
+       base. The <i>output</i> file is perf record output for specific session.
+       The <i>control</i> and <i>ack</i> files are perf control files. The <i>up</i> number
+       shows minutes daemon/session is running.
+
+       Make sure control session is online:
+
+           # perf daemon ping
+           OK   cycles
+           OK   sched
+
+       Send USR2 signal to session <i>cycles</i> to generate perf.data file:
+
+           # perf daemon signal --session cycles
+           signal 12 sent to session 'cycles [603452]'
+
+           # tail -2  /opt/perfdata/session-cycles/output
+           [ perf record: dump data: Woken up 1 times ]
+           [ perf record: Dump perf.data.2020123017013149 ]
+
+       Send USR2 signal to all sessions:
+
+           # perf daemon signal
+           signal 12 sent to session 'cycles [603452]'
+           signal 12 sent to session 'sched [603453]'
+
+           # tail -2  /opt/perfdata/session-cycles/output
+           [ perf record: dump data: Woken up 1 times ]
+           [ perf record: Dump perf.data.2020123017024689 ]
+           # tail -2  /opt/perfdata/session-sched/output
+           [ perf record: dump data: Woken up 1 times ]
+           [ perf record: Dump perf.data.2020123017024713 ]
+
+       Stop daemon:
+
+           # perf daemon stop
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="perf-record.1">perf-record(1)</a>, <a href="perf-config.1">perf-config(1)</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>perf</i> (Performance analysis tools for
+       Linux (in Linux source tree)) project.  Information about the
+       project can be found at 
+       ⟨<a href="https://perf.wiki.kernel.org/index.php/Main_Page">https://perf.wiki.kernel.org/index.php/Main_Page</a>⟩.  If you have a
+       bug report for this manual page, send it to
+       linux-kernel@vger.kernel.org.  This page was obtained from the
+       project's upstream Git repository
+       ⟨<a href="http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git">http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git</a>⟩
+       on 2024-06-14.  (At that time, the date of the most recent commit
+       that was found in the repository was 2024-06-13.)  If you
+       discover any rendering problems in this HTML version of the page,
+       or you believe there is a better or more up-to-date source for
+       the page, or you have corrections or improvements to the
+       information in this COLOPHON (which is <i>not</i> part of the original
+       manual page), send a mail to man-pages@man7.org
+
+<span class="footline">perf                           2021-02-11                 <i>PERF-DAEMON</i>(1)</span>
+</pre>          <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man1/perf-daemon.1.html" class="_attribution-link">https://man7.org/linux/man-pages/man1/perf-daemon.1.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

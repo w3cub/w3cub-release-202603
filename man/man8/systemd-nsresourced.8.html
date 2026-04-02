@@ -1,0 +1,205 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Systemd-nsresourced (8) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; systemd-nspawn(1), systemd.directives(7), systemd.index(7), systemd-mountfsd.service(8) ">
+  <meta name="keywords" content="systemd-nsresourced, service, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man8/systemd-nsresourced.8.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>systemd-nsresourced.service(8) — Linux manual page</h1>   <pre>
+<span class="headline"><i>SYSTEMD-....SERVICE</i>(8) systemd-nsresourced.service<i>SYSTEMD-....SERVICE</i>(8)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       systemd-nsresourced.service, systemd-nsresourced - User Namespace
+       Resource Delegation Service
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       systemd-nsresourced.service
+
+       /usr/lib/systemd/systemd-nsresourced
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       <b>systemd-nsresourced </b>is a system service that permits transient
+       delegation of a a UID/GID range to a user namespace (see
+       <a href="../man7/user_namespaces.7">user_namespaces(7)</a>) allocated by a client, via a Varlink IPC API.
+
+       Unprivileged clients may allocate a user namespace, and then
+       request a UID/GID range to be assigned to it via this service.
+       The user namespace may then be used to run containers and other
+       sandboxes, and/or apply it to an id-mapped mount.
+
+       Allocations of UIDs/GIDs this way are transient: when a user
+       namespace goes away, its UID/GID range is returned to the pool of
+       available ranges. In order to ensure that clients cannot gain
+       persistency in their transient UID/GID range a BPF-LSM based
+       policy is enforced that ensures that user namespaces set up this
+       way can only write to file systems they allocate themselves or
+       that are explicitly allowlisted via <b>systemd-nsresourced</b>.
+
+       <b>systemd-nsresourced </b>automatically ensures that any registered UID
+       ranges show up in the system's NSS database via the <b>User/Group</b>
+       <b>Record Lookup API via Varlink</b>[1].
+
+       Currently, only UID/GID ranges consisting of either exactly 1 or
+       exactly 65536 UIDs/GIDs can be registered with this service.
+       Moreover, UIDs and GIDs are always allocated together, and
+       symmetrically.
+
+       The service provides API calls to allowlist mounts (referenced
+       via their mount file descriptors as per Linux <b>fsmount() </b>API), to
+       pass ownership of a cgroup subtree to the user namespace and to
+       delegate a virtual Ethernet device pair to the user namespace.
+       When used in combination this is sufficient to implement fully
+       unprivileged container environments, as implemented by
+       <a href="../man1/systemd-nspawn.1">systemd-nspawn(1)</a>, fully unprivileged <i>RootImage=</i> (see
+       <a href="../man5/systemd.exec.5">systemd.exec(5)</a>) or fully unprivileged disk image tools such as
+       <a href="../man1/systemd-dissect.1">systemd-dissect(1)</a>.
+
+       This service provides one <b>Varlink</b>[2] service:
+       <b>io.systemd.NamespaceResource </b>allows registering user namespaces,
+       and assign mounts, cgroups and network interfaces to it.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man1/systemd.1">systemd(1)</a>, <a href="systemd-mountfsd.service.8">systemd-mountfsd.service(8)</a>, <a href="../man1/systemd-nspawn.1">systemd-nspawn(1)</a>,
+       <a href="../man5/systemd.exec.5">systemd.exec(5)</a>, <a href="../man1/systemd-dissect.1">systemd-dissect(1)</a>, <a href="../man7/user_namespaces.7">user_namespaces(7)</a>
+</pre> <h2>
+NOTES </h2>
+<pre>
+        1. User/Group Record Lookup API via Varlink
+           <a href="https://systemd.io/USER_GROUP_API">https://systemd.io/USER_GROUP_API</a>
+
+        2. Varlink
+           <a href="https://varlink.org/">https://varlink.org/</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>systemd</i> (systemd system and service
+       manager) project.  Information about the project can be found at
+       ⟨<a href="http://www.freedesktop.org/wiki/Software/systemd">http://www.freedesktop.org/wiki/Software/systemd</a>⟩.  If you have
+       a bug report for this manual page, see
+       ⟨<a href="http://www.freedesktop.org/wiki/Software/systemd/#bugreports">http://www.freedesktop.org/wiki/Software/systemd/#bugreports</a>⟩.
+       This page was obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/systemd/systemd.git">https://github.com/systemd/systemd.git</a>⟩ on 2024-06-14.  (At that
+       time, the date of the most recent commit that was found in the
+       repository was 2024-06-13.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">systemd 257~devel                                 <i>SYSTEMD-....SERVICE</i>(8)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man1/systemd-nspawn.1">systemd-nspawn(1)</a>, <a href="../man7/systemd.directives.7">systemd.directives(7)</a>, <a href="../man7/systemd.index.7">systemd.index(7)</a>, <a href="systemd-mountfsd.service.8">systemd-mountfsd.service(8)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man8/systemd-nsresourced.8.html" class="_attribution-link">https://man7.org/linux/man-pages/man8/systemd-nsresourced.8.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Auditd-plugins (5) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; auditd.conf(5), auditd(8) ">
+  <meta name="keywords" content="auditd-plugins, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man5/auditd-plugins.5.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>auditd-plugins(5) — Linux manual page</h1>   <pre>
+<span class="headline"><i>AUDITD-PLUGINS</i>(5)    System Administration Utilities   <i>AUDITD-PLUGINS</i>(5)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       auditd-plugins - realtime event receivers
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       <b>auditd </b>can multiplex audit events in realtime. It takes audit
+       events and distributes them to child programs that want to
+       analyze events in realtime. When the audit daemon receives a
+       SIGTERM or SIGHUP, it passes that signal to its child processes
+       so that can reload the configuration or terminate.
+
+       The child programs install a configuration file in a plugins
+       directory which defaults to <i>/etc/audit/plugins.d</i>. This can be
+       controlled by a auditd.conf config option <b>plugin_dir </b>if the admin
+       wished to locate plugins somewhere else. But auditd will install
+       its plugins in the default location.
+
+       The plugin directory will be scanned and every plugin that is
+       active will be started. If the plugin has a problem and exits, it
+       will be started a maximum of <b>max_restarts </b>times as found in
+       auditd.conf.
+
+       Config file names are not allowed to have more than one '.' in
+       the name or it will be treated as a backup copy and skipped.
+       Config file options are given one per line with an equal sign
+       between the keyword and its value. The available options are as
+       follows:
+
+       <i>active</i> The options for this are <i>yes</i> or <i>no.</i>
+
+       <i>direction</i>
+              The option is dictated by the plugin.  <i>In</i> or <i>out</i> are the
+              only choices. You cannot make a plugin operate in a way it
+              wasn't designed just by changing this option. This option
+              is to give a clue to the event dispatcher about which
+              direction events flow. NOTE: inbound events are not
+              supported yet.
+
+       <i>path</i>   This is the absolute path to the plugin executable. In the
+              case of internal plugins, it would be the name of the
+              plugin.
+
+       <i>type</i>   This tells the dispatcher how the plugin wants to be run.
+              There is only one valid option, <i>always</i> , which means the
+              plugin is external and should always be run. The default
+              is always since there are no more builtin plugins.
+
+       <i>args</i>   This allows you to pass arguments to the child program.
+              Generally plugins do not take arguments and have their own
+              config file that instructs them how they should be
+              configured. At the moment, there is a limit of 2 args.
+
+       <i>format</i> The valid options for this are <i>binary</i> and <i>string.</i>  <i>Binary</i>
+              passes the data exactly as the audit event dispatcher gets
+              it from the audit daemon. The <i>string</i> option tells the
+              dispatcher to completely change the event into a string
+              suitable for parsing with the audit parsing library. The
+              default value is <i>string.</i>
+</pre> <h2>
+NOTE </h2>
+<pre>
+       auditd has an internal queue to hold events for plugins. (See the
+       <i>q_depth</i> setting in <i>auditd.conf</i>.) Plugins have to watch for and
+       dequeue events as fast as possible and queue them internally if
+       they can't be immediately processed. If the plugin is not able to
+       dequeue records, the auditd internal queue will get filled. At
+       any time, as root, you can run the following to check auditd's
+       metrics:
+
+       auditctl --signal cont ; sleep 1 ; cat /var/run/auditd.state
+
+       If auditd's internal queue fills, it cannot dequeue any events
+       from the kernel backlog. If the kernel's backlog fills, it looks
+       at the value of backlog_wait_time to delay all processes that
+       generate an event to see if there is eventually room to add the
+       event. This will likely be noticed as slowing down various
+       processes on the machine. The kernel's audit subsystem can be
+       checked by running:
+
+       auditctl -s
+
+       When tuning the audit system's performance, you'd want to check
+       both kernel and auditd metrics and adjust accordingly.
+</pre> <h2>
+NOTES FOR DEVELOPERS </h2>
+<pre>
+       When the audit daemon starts your plugin, you will be running as
+       root. If you do not need root privileges, you should change
+       uid/gid to lower chances of being a target for exploit. If you
+       need to retain capabilities, using <b>libcap-ng </b>is the simplest way.
+
+       Your environment is not going to be clean. You are inheriting
+       many attributes from auditd itself. You will need to adjust your
+       <b>signal mask</b>, <b>sigaction</b>, <b>umask</b>, and <b>environmental variables</b>. Look
+       at the auditd man page to see which signals auditd used. Plugins
+       are expected to handle <b>SIGTERM </b>and <b>SIGHUP</b>. You will also inherit
+       the resource limits of auditd. Note that some of these resource
+       limits, such as maximum number of open descriptors, are
+       controlled by systemd. You also inherit auditd's nice value. You
+       might want to adjust that to be sure to keep up with incoming
+       audit events.
+
+       Auditd will send events to the plugin on it's <b>stdin</b>. The plugin
+       has to keep this descriptor empty so that events don't back up.
+       If you do significant processing of each event, you should add an
+       internal queue to your design in order to keep events flowing.
+       The <b>auparse_feed </b>function is the preferred way to examine whole
+       events if you need to analyze the contents of the events.
+</pre> <h2>
+FILES </h2>
+<pre>
+       /etc/auditd/auditd.conf /etc/audit/plugins.d
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="auditd.conf.5">auditd.conf(5)</a>, <a href="../man8/auditd.8">auditd(8)</a>, <a href="../man2/execve.2">execve(2)</a>, <a href="../man3/auparse_feed.3">auparse_feed(3)</a>.
+</pre> <h2>
+AUTHOR </h2>
+<pre>
+       Steve Grubb
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>audit</i> (Linux Audit) project.
+       Information about the project can be found at 
+       ⟨<a href="http://people.redhat.com/sgrubb/audit/">http://people.redhat.com/sgrubb/audit/</a>⟩.  If you have a bug
+       report for this manual page, send it to linux-audit@redhat.com.
+       This page was obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/linux-audit/audit-userspace.git">https://github.com/linux-audit/audit-userspace.git</a>⟩ on
+       2024-06-14.  (At that time, the date of the most recent commit
+       that was found in the repository was 2024-06-12.)  If you
+       discover any rendering problems in this HTML version of the page,
+       or you believe there is a better or more up-to-date source for
+       the page, or you have corrections or improvements to the
+       information in this COLOPHON (which is <i>not</i> part of the original
+       manual page), send a mail to man-pages@man7.org
+
+<span class="footline">Red Hat                         Jan 2024               <i>AUDITD-PLUGINS</i>(5)</span>
+</pre>  <p>Pages that refer to this page: <a href="auditd.conf.5">auditd.conf(5)</a>, <a href="../man8/auditd.8">auditd(8)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man5/auditd-plugins.5.html" class="_attribution-link">https://man7.org/linux/man-pages/man5/auditd-plugins.5.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

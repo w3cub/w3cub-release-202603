@@ -1,0 +1,255 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Pam_fail_delay (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; pam_get_item(3), pam_set_item(3), pam_faildelay(8) ">
+  <meta name="keywords" content="pam, fail, delay, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/pam_fail_delay.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>pam_fail_delay(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>PAM_FAIL_DELAY</i>(3)           Linux-PAM Manual           <i>PAM_FAIL_DELAY</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       pam_fail_delay - request a delay on failure
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;security/pam_appl.h&gt;</b>
+
+       <b>int pam_fail_delay(pam_handle_t *</b><i>pamh</i><b>, unsigned int </b><i>usec</i><b>);</b>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       The <b>pam_fail_delay </b>function provides a mechanism by which an
+       application or module can suggest a minimum delay of <i>usec</i>
+       micro-seconds. The function keeps a record of the longest time
+       requested with this function. Should <a href="pam_authenticate.3">pam_authenticate(3)</a> fail,
+       the failing return to the application is delayed by an amount of
+       time randomly distributed (by up to 50%) about this longest
+       value.
+
+       Independent of success, the delay time is reset to its zero
+       default value when the PAM service module returns control to the
+       application. The delay occurs <i>after</i> all authentication modules
+       have been called, but <i>before</i> control is returned to the service
+       application.
+
+       When using this function the programmer should check if it is
+       available with:
+
+           #ifdef HAVE_PAM_FAIL_DELAY
+               ....
+           #endif /* HAVE_PAM_FAIL_DELAY */
+
+       For applications written with a single thread that are event
+       driven in nature, generating this delay may be undesirable.
+       Instead, the application may want to register the delay in some
+       other way. For example, in a single threaded server that serves
+       multiple authentication requests from a single event loop, the
+       application might want to simply mark a given connection as
+       blocked until an application timer expires. For this reason the
+       delay function can be changed with the <i>PAM_FAIL_DELAY</i> item. It
+       can be queried and set with <a href="pam_get_item.3">pam_get_item(3)</a> and <a href="pam_set_item.3">pam_set_item(3)</a>
+       respectively. The value used to set it should be a function
+       pointer of the following prototype:
+
+           void (*delay_fn)(int retval, unsigned usec_delay, void *appdata_ptr);
+
+       The arguments being the <i>retval</i> return code of the module stack,
+       the <i>usec_delay</i> micro-second delay that libpam is requesting and
+       the <i>appdata_ptr</i> that the application has associated with the
+       current <i>pamh</i>. This last value was set by the application when it
+       called <a href="pam_start.3">pam_start(3)</a> or explicitly with <a href="pam_set_item.3">pam_set_item(3)</a>.
+
+       Note that the PAM_FAIL_DELAY item is set to NULL by default. This
+       indicates that PAM should perform a random delay as described
+       above when authentication fails and a delay has been suggested.
+       If an application does not want the PAM library to perform any
+       delay on authentication failure, then the application must define
+       a custom delay function that executes no statements and set the
+       PAM_FAIL_DELAY item to point to this function.
+</pre> <h2>
+RATIONALE </h2>
+<pre>
+       It is often possible to attack an authentication scheme by
+       exploiting the time it takes the scheme to deny access to an
+       applicant user. In cases of <i>short</i> timeouts, it may prove possible
+       to attempt a <i>brute force</i> dictionary attack -- with an automated
+       process, the attacker tries all possible passwords to gain access
+       to the system. In other cases, where individual failures can take
+       measurable amounts of time (indicating the nature of the
+       failure), an attacker can obtain useful information about the
+       authentication process. These latter attacks make use of
+       procedural delays that constitute a <i>covert channel</i> of useful
+       information.
+
+       To minimize the effectiveness of such attacks, it is desirable to
+       introduce a random delay in a failed authentication process.
+       Preferable this value should be set by the application or a
+       special PAM module. Standard PAM modules should not modify the
+       delay unconditional.
+</pre> <h2>
+EXAMPLE </h2>
+<pre>
+       For example, a login application may require a failure delay of
+       roughly 3 seconds. It will contain the following code:
+
+               pam_fail_delay (pamh, 3000000 /* micro-seconds */ );
+               pam_authenticate (pamh, 0);
+
+       if the modules do not request a delay, the failure delay will be
+       between 1.5 and 4.5 seconds.
+
+       However, the modules, invoked in the authentication process, may
+       also request delays:
+
+           module #1:    pam_fail_delay (pamh, 2000000);
+           module #2:    pam_fail_delay (pamh, 4000000);
+
+       in this case, it is the largest requested value that is used to
+       compute the actual failed delay: here between 2 and 6 seconds.
+</pre> <h2>
+RETURN VALUES </h2>
+<pre>
+       PAM_SUCCESS
+           Delay was successful adjusted.
+
+       PAM_SYSTEM_ERR
+           A NULL pointer was submitted as PAM handle.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="pam_start.3">pam_start(3)</a>, <a href="pam_get_item.3">pam_get_item(3)</a>, <a href="pam_strerror.3">pam_strerror(3)</a>
+</pre> <h2>
+STANDARDS </h2>
+<pre>
+       The <b>pam_fail_delay </b>function is an Linux-PAM extension.
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>linux-pam</i> (Pluggable Authentication
+       Modules for Linux) project.  Information about the project can be
+       found at ⟨<a href="http://www.linux-pam.org/">http://www.linux-pam.org/</a>⟩.  If you have a bug report
+       for this manual page, see ⟨//www.linux-pam.org/⟩.  This page was
+       obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/linux-pam/linux-pam.git">https://github.com/linux-pam/linux-pam.git</a>⟩ on 2023-12-22.  (At
+       that time, the date of the most recent commit that was found in
+       the repository was 2023-12-18.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux-PAM Manual               12/22/2023              <i>PAM_FAIL_DELAY</i>(3)</span>
+</pre>  <p>Pages that refer to this page: <a href="pam_get_item.3">pam_get_item(3)</a>, <a href="pam_set_item.3">pam_set_item(3)</a>, <a href="../man8/pam_faildelay.8">pam_faildelay(8)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/pam_fail_delay.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/pam_fail_delay.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

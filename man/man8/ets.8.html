@@ -1,0 +1,315 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>ETS (8) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; tc(8) ">
+  <meta name="keywords" content="tc-ets, —, linux, manual, page, ets, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man8/ets.8.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>tc-ets(8) — Linux manual page</h1>   <pre>
+<span class="headline"><i>TC</i>(8)                             Linux                            <i>TC</i>(8)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       ETS - Enhanced Transmission Selection scheduler
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>tc qdisc ... ets [ bands </b>number <b>] [ strict </b>number <b>] [ quanta</b>
+       bytes bytes bytes...  <b>] [ priomap </b>band band band...  <b>]</b>
+
+       <b>tc class ... ets [ quantum </b>bytes <b>]</b>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       The Enhanced Transmission Selection scheduler is a classful
+       queuing discipline that merges functionality of PRIO and DRR
+       qdiscs in one scheduler. ETS makes it easy to configure a set of
+       strict and bandwidth-sharing bands to implement the transmission
+       selection described in 802.1Qaz.
+
+       On creation with 'tc qdisc add', a fixed number of bands is
+       created. Each band is a class, although it is not possible to
+       directly add and remove bands with 'tc class' commands. The
+       number of bands to be created must instead be specified on the
+       command line as the qdisc is added.
+
+       The minor number of classid to use when referring to a band is
+       the band number increased by one. Thus band 0 will have classid
+       of major:1, band 1 that of major:2, etc.
+
+       ETS bands are of two types: some number may be in strict mode,
+       the remaining ones are in bandwidth-sharing mode.
+</pre> <h2>
+ALGORITHM </h2>
+<pre>
+       When dequeuing, strict bands are tried first, if there are any.
+       Band 0 is tried first. If it did not deliver a packet, band 1 is
+       tried next, and so on until one of the bands delivers a packet,
+       or the strict bands are exhausted.
+
+       If no packet has been dequeued from any of the strict bands, if
+       there are any bandwidth-sharing bands, the dequeuing proceeds
+       according to the DRR algorithm. Each bandwidth-sharing band is
+       assigned a deficit counter, initialized to quantum assigned by a
+       <b>quanta </b>element. ETS maintains an (internal) ''active'' list of
+       bandwidth-sharing bands whose qdiscs are non-empty. This list is
+       used for dequeuing. A packet is dequeued from the band at the
+       head of the list if the packet size is smaller or equal to the
+       deficit counter. If the counter is too small, it is increased by
+       <b>quantum </b>and the scheduler moves on to the next band in the active
+       list.
+
+       Only qdiscs that own their queue should be added below the
+       bandwidth-sharing bands. Attaching to them non-work-conserving
+       qdiscs like TBF does not make sense -- other qdiscs in the active
+       list will be skipped until the dequeue operation succeeds. This
+       limitation does not exist with the strict bands.
+</pre> <h2>
+CLASSIFICATION </h2>
+<pre>
+       The ETS qdisc allows three ways to decide which band to enqueue a
+       packet to:
+
+       - Packet priority can be directly set to a class handle, in which
+       case that
+         is the queue where the packet will be put. For example, band
+       number 2 of
+         a qdisc with handle of 11: will have classid 11:3. To mark a
+       packet for
+         queuing to this band, the packet priority should be set to
+       0x110003.
+
+       - A tc filter attached to the qdisc can put the packet to a band
+       by using
+         the <b>flowid </b>keyword.
+
+       - As a last resort, the ETS qdisc consults its priomap (see
+       below), which
+         maps packets to bands based on packet priority.
+</pre> <h2>
+PARAMETERS </h2>
+<pre>
+       strict The number of bands that should be created in strict mode.
+              If not given, this value is 0.
+
+       quanta Each bandwidth-sharing band needs to know its quantum,
+              which is the amount of bytes a band is allowed to dequeue
+              before the scheduler moves to the next bandwidth-sharing
+              band. The <b>quanta </b>argument lists quanta for the individual
+              bandwidth-sharing bands.  The minimum value of each
+              quantum is 1. If <b>quanta </b>is not given, the default is no
+              bandwidth-sharing bands, but note that when specifying a
+              large number of <b>bands, </b>the extra ones are in bandwidth-
+              sharing mode by default.
+
+       bands  Number of bands given explicitly. This value has to be at
+              least large enough to cover the strict bands specified
+              through the <b>strict </b>keyword and bandwidth-sharing bands
+              specified in <b>quanta.  </b>If a larger value is given, any
+              extra bands are in bandwidth-sharing mode, and their
+              quanta are deduced from the interface MTU. If no value is
+              given, as many bands are created as necessary to cover all
+              bands implied by the <b>strict </b>and <b>quanta </b>keywords.
+
+       priomap
+              The priomap maps the priority of a packet to a band. The
+              argument is a list of numbers. The first number indicates
+              which band the packets with priority 0 should be put to,
+              the second is for priority 1, and so on.
+
+              There can be up to 16 numbers in the list. If there are
+              fewer, the default band that traffic with one of the
+              unmentioned priorities goes to is the last one.
+</pre> <h2>
+EXAMPLE &amp; USAGE </h2>
+<pre>
+       Add a qdisc with 8 bandwidth-sharing bands, using the interface
+       MTU as their quanta. Since all quanta are the same, this will
+       lead to equal distribution of bandwidth between the bands, each
+       will get about 12.5% of the link. The low 8 priorities go to
+       individual bands in a reverse 1:1 fashion (such that the highest
+       priority goes to the first band).
+
+       # tc qdisc add dev eth0 root handle 1: ets bands 8 priomap 7 6 5
+       4 3 2 1 0
+       # tc qdisc show dev eth0
+       qdisc ets 1: root refcnt 2 bands 8 quanta 1514 1514 1514 1514
+       1514 1514 1514 1514 priomap 7 6 5 4 3 2 1 0 7 7 7 7 7 7 7 7
+
+       Tweak the first band of the above qdisc to give it a quantum of
+       2650, which will give it about 20% of the link (and about 11.5%
+       to the remaining bands):
+
+       # tc class change dev eth0 classid 1:1 ets quantum 2650
+       # tc qdisc show dev eth0
+       qdisc ets 1: root refcnt 2 bands 8 quanta 2650 1514 1514 1514
+       1514 1514 1514 1514 priomap 7 6 5 4 3 2 1 0 7 7 7 7 7 7 7 7
+
+       Create a purely strict Qdisc with reverse 1:1 mapping between
+       priorities and bands:
+
+       # tc qdisc add dev eth0 root handle 1: ets strict 8 priomap 7 6 5
+       4 3 2 1 0
+       # tc qdisc sh dev eth0
+       qdisc ets 1: root refcnt 2 bands 8 strict 8 priomap 7 6 5 4 3 2 1
+       0 7 7 7 7 7 7 7 7
+
+       Add a Qdisc with 6 bands, 3 strict and 3 ETS with 35%-30%-25%
+       weights:
+
+       # tc qdisc add dev eth0 root handle 1: ets strict 3 quanta 3500
+       3000 2500 priomap 0 1 1 1 2 3 4 5
+       # tc qdisc sh dev eth0
+       qdisc ets 1: root refcnt 2 bands 6 strict 3 quanta 3500 3000 2500
+       priomap 0 1 1 1 2 3 4 5 5 5 5 5 5 5 5 5
+
+       Create a Qdisc such that traffic with priorities 2, 3 and 4 are
+       strictly prioritized over other traffic, and the rest goes into
+       bandwidth-sharing classes with equal weights:
+
+       # tc qdisc add dev eth0 root handle 1: ets bands 8 strict 3
+       priomap 3 4 0 1 2 5 6 7
+       # tc qdisc sh dev eth0
+       qdisc ets 1: root refcnt 2 bands 8 strict 3 quanta 1514 1514 1514
+       1514 1514 priomap 3 4 0 1 2 5 6 7 7 7 7 7 7 7 7 7
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="tc.8">tc(8)</a>, <a href="tc-prio.8">tc-prio(8)</a>, <a href="tc-drr.8">tc-drr(8)</a>
+</pre> <h2>
+AUTHOR </h2>
+<pre>
+       Parts of both this manual page and the code itself are taken from
+       PRIO and DRR qdiscs.
+       ETS qdisc itself was written by Petr Machata.
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>iproute2</i> (utilities for controlling
+       TCP/IP networking and traffic) project.  Information about the
+       project can be found at 
+       ⟨<a href="http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2">http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2</a>⟩.
+       If you have a bug report for this manual page, send it to
+       netdev@vger.kernel.org, shemminger@osdl.org.  This page was
+       obtained from the project's upstream Git repository
+       ⟨<a href="https://git.kernel.org/pub/scm/network/iproute2/iproute2.git">https://git.kernel.org/pub/scm/network/iproute2/iproute2.git</a>⟩ on
+       2024-06-14.  (At that time, the date of the most recent commit
+       that was found in the repository was 2024-06-11.)  If you
+       discover any rendering problems in this HTML version of the page,
+       or you believe there is a better or more up-to-date source for
+       the page, or you have corrections or improvements to the
+       information in this COLOPHON (which is <i>not</i> part of the original
+       manual page), send a mail to man-pages@man7.org
+
+<span class="footline">iproute2                      December 2019                        <i>TC</i>(8)</span>
+</pre>  <p>Pages that refer to this page: <a href="tc.8">tc(8)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man8/ETS.8.html" class="_attribution-link">https://man7.org/linux/man-pages/man8/ETS.8.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

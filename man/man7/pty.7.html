@@ -1,0 +1,251 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Pty (7) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content="Pages that refer to this page&#58; screen(1), intro(2), ioctl_tty(2), getpt(3), grantpt(3), openpty(3), posix_openpt(3), ptsname(3), unlockpt(3), &hellip;">
+  <meta name="keywords" content="pty, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man7/pty.7.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>pty(7) — Linux manual page</h1>   <pre>
+<span class="headline"><i>pty</i>(7)              Miscellaneous Information Manual              <i>pty</i>(7)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       pty - pseudoterminal interfaces
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       A pseudoterminal (sometimes abbreviated "pty") is a pair of
+       virtual character devices that provide a bidirectional
+       communication channel.  One end of the channel is called the
+       <i>master</i>; the other end is called the <i>slave</i>.
+
+       The slave end of the pseudoterminal provides an interface that
+       behaves exactly like a classical terminal.  A process that
+       expects to be connected to a terminal, can open the slave end of
+       a pseudoterminal and then be driven by a program that has opened
+       the master end.  Anything that is written on the master end is
+       provided to the process on the slave end as though it was input
+       typed on a terminal.  For example, writing the interrupt
+       character (usually control-C) to the master device would cause an
+       interrupt signal (<b>SIGINT</b>) to be generated for the foreground
+       process group that is connected to the slave.  Conversely,
+       anything that is written to the slave end of the pseudoterminal
+       can be read by the process that is connected to the master end.
+
+       Data flow between master and slave is handled asynchronously,
+       much like data flow with a physical terminal.  Data written to
+       the slave will be available at the master promptly, but may not
+       be available immediately.  Similarly, there may be a small
+       processing delay between a write to the master, and the effect
+       being visible at the slave.
+
+       Historically, two pseudoterminal APIs have evolved: BSD and
+       System V.  SUSv1 standardized a pseudoterminal API based on the
+       System V API, and this API should be employed in all new programs
+       that use pseudoterminals.
+
+       Linux provides both BSD-style and (standardized) System V-style
+       pseudoterminals.  System V-style terminals are commonly called
+       UNIX 98 pseudoterminals on Linux systems.
+
+       Since Linux 2.6.4, BSD-style pseudoterminals are considered
+       deprecated: support can be disabled when building the kernel by
+       disabling the <b>CONFIG_LEGACY_PTYS </b>option.  (Starting with Linux
+       2.6.30, that option is disabled by default in the mainline
+       kernel.)  UNIX 98 pseudoterminals should be used in new
+       applications.
+
+   <b>UNIX 98 pseudoterminals</b>
+       An unused UNIX 98 pseudoterminal master is opened by calling
+       <a href="../man3/posix_openpt.3">posix_openpt(3)</a>.  (This function opens the master clone device,
+       <i>/dev/ptmx</i>; see <a href="../man4/pts.4">pts(4)</a>.)  After performing any program-specific
+       initializations, changing the ownership and permissions of the
+       slave device using <a href="../man3/grantpt.3">grantpt(3)</a>, and unlocking the slave using
+       <a href="../man3/unlockpt.3">unlockpt(3)</a>), the corresponding slave device can be opened by
+       passing the name returned by <a href="../man3/ptsname.3">ptsname(3)</a> in a call to <a href="../man2/open.2">open(2)</a>.
+
+       The Linux kernel imposes a limit on the number of available UNIX
+       98 pseudoterminals.  Up to and including Linux 2.6.3, this limit
+       is configured at kernel compilation time (<b>CONFIG_UNIX98_PTYS</b>),
+       and the permitted number of pseudoterminals can be up to 2048,
+       with a default setting of 256.  Since Linux 2.6.4, the limit is
+       dynamically adjustable via <i>/proc/sys/kernel/pty/max</i>, and a
+       corresponding file, <i>/proc/sys/kernel/pty/nr</i>, indicates how many
+       pseudoterminals are currently in use.  For further details on
+       these two files, see <a href="../man5/proc.5">proc(5)</a>.
+
+   <b>BSD pseudoterminals</b>
+       BSD-style pseudoterminals are provided as precreated pairs, with
+       names of the form <i>/dev/ptyXY</i> (master) and <i>/dev/ttyXY</i> (slave),
+       where X is a letter from the 16-character set [p-za-e], and Y is
+       a letter from the 16-character set [0-9a-f].  (The precise range
+       of letters in these two sets varies across UNIX implementations.)
+       For example, <i>/dev/ptyp1</i> and <i>/dev/ttyp1</i> constitute a BSD
+       pseudoterminal pair.  A process finds an unused pseudoterminal
+       pair by trying to <a href="../man2/open.2">open(2)</a> each pseudoterminal master until an
+       open succeeds.  The corresponding pseudoterminal slave
+       (substitute "tty" for "pty" in the name of the master) can then
+       be opened.
+</pre> <h2>
+FILES </h2>
+<pre>
+       <i>/dev/ptmx</i>
+              UNIX 98 master clone device
+
+       <i>/dev/pts/*</i>
+              UNIX 98 slave devices
+
+       <i>/dev/pty[p-za-e][0-9a-f]</i>
+              BSD master devices
+
+       <i>/dev/tty[p-za-e][0-9a-f]</i>
+              BSD slave devices
+</pre> <h2>
+NOTES </h2>
+<pre>
+       Pseudoterminals are used by applications such as network login
+       services (<a href="../man1/ssh.1">ssh(1)</a>, <b>rlogin</b>(1), <b>telnet</b>(1)), terminal emulators such
+       as <b>xterm</b>(1), <a href="../man1/script.1">script(1)</a>, <a href="../man1/screen.1">screen(1)</a>, <a href="../man1/tmux.1">tmux(1)</a>, <b>unbuffer</b>(1), and
+       <a href="../man1/expect.1">expect(1)</a>.
+
+       A description of the <b>TIOCPKT ioctl</b>(2), which controls packet mode
+       operation, can be found in <a href="../man2/ioctl_tty.2">ioctl_tty(2)</a>.
+
+       The BSD <a href="../man2/ioctl.2">ioctl(2)</a> operations <b>TIOCSTOP</b>, <b>TIOCSTART</b>, <b>TIOCUCNTL</b>, and
+       <b>TIOCREMOTE </b>have not been implemented under Linux.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man2/ioctl_tty.2">ioctl_tty(2)</a>, <a href="../man2/select.2">select(2)</a>, <a href="../man2/setsid.2">setsid(2)</a>, <a href="../man3/forkpty.3">forkpty(3)</a>, <a href="../man3/openpty.3">openpty(3)</a>,
+       <a href="../man3/termios.3">termios(3)</a>, <a href="../man4/pts.4">pts(4)</a>, <a href="../man4/tty.4">tty(4)</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>man-pages</i> (Linux kernel and C library
+       user-space interface documentation) project.  Information about
+       the project can be found at 
+       ⟨<a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>⟩.  If you have a bug report
+       for this manual page, see
+       ⟨<a href="https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING">https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING</a>⟩.
+       This page was obtained from the tarball man-pages-6.9.1.tar.gz
+       fetched from
+       ⟨<a href="https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/">https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/</a>⟩ on
+       2024-06-26.  If you discover any rendering problems in this HTML
+       version of the page, or you believe there is a better or more up-
+       to-date source for the page, or you have corrections or
+       improvements to the information in this COLOPHON (which is <i>not</i>
+       part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux man-pages 6.9.1          2024-05-02                         <i>pty</i>(7)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man1/screen.1">screen(1)</a>, <a href="../man2/intro.2">intro(2)</a>, <a href="../man2/ioctl_tty.2">ioctl_tty(2)</a>, <a href="../man3/getpt.3">getpt(3)</a>, <a href="../man3/grantpt.3">grantpt(3)</a>, <a href="../man3/openpty.3">openpty(3)</a>, <a href="../man3/posix_openpt.3">posix_openpt(3)</a>, <a href="../man3/ptsname.3">ptsname(3)</a>, <a href="../man3/unlockpt.3">unlockpt(3)</a>, <a href="../man4/pts.4">pts(4)</a>, <a href="../man4/tty.4">tty(4)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man7/pty.7.html" class="_attribution-link">https://man7.org/linux/man-pages/man7/pty.7.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

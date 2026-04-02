@@ -1,0 +1,235 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Ibv_post_srq_ops (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" ... https&#58;&#47;&#47;man7.org&#47;linux&#47;man-pages&#47;man3&#47;ibv_post_srq_ops.3.html ">
+  <meta name="keywords" content="ibv, post, srq, ops, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/ibv_post_srq_ops.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>ibv_post_srq_ops(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>IBV_POST_SRQ_OPS</i>(3)  Libibverbs Programmer's Manual  <i>IBV_POST_SRQ_OPS</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       ibv_post_srq_ops - perform on a special shared receive queue
+       (SRQ) configuration manipulations
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;infiniband/verbs.h&gt;</b>
+
+       <b>int ibv_post_srq_ops(struct ibv_srq </b><i>*srq</i><b>, struct ibv_ops_wr </b><i>*wr</i><b>,</b>
+                            <b>struct ibv_ops_wr </b><i>**bad_wr</i><b>);</b>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       The <b>ibv_post_srq_ops() </b>performs series of offload configuration
+       manipulations on special types of SRQ <i>srq</i>. Currenlty it is used
+       to configure tag matching SRQ. Series of configuration operations
+       defined by linked lists of struct ibv_ops_wr elements starting
+       from <i>wr.</i>
+
+       struct ibv_ops_wr {
+               uint64_t                wr_id;   /* User defined WR ID */
+               /* Pointer to next WR in list, NULL if last WR */
+               struct ibv_ops_wr      *next;
+               enum ibv_ops_wr_opcode  opcode;  /* From enum ibv_ops_wr_opcode */
+               int                     flags;   /* From enum ibv_ops_flags */
+               struct {
+                       /* Number of unexpected messages
+                        * handled by SW */
+                       uint32_t unexpected_cnt;
+                       /* Input parameter for the DEL opcode
+                        * and output parameter for the ADD opcode */
+                       uint32_t handle;
+                       struct {
+                               uint64_t                recv_wr_id;   /* User defined WR ID for TM_RECV */
+                               struct ibv_sge         *sg_list; /* Pointer to the s/g array */
+                               int                     num_sge; /* Size of the s/g array */
+                               uint64_t                tag;
+                               uint64_t                mask;    /* Incoming message considered matching if
+                                                                   TMH.tag &amp; entry.mask == entry.tag */
+                       } add;
+               } tm;
+       };
+
+       First part of struct ibv_ops_wr retains ibv_send_wr notion.
+       Opcode defines operation to perform. Currently supported
+       IBV_WR_TAG_ADD, IBV_WR_TAG_DEL and IBV_WR_TAG_SYNC values. See
+       below for detailed description.
+
+       To allow reliable data delivery TM SRQ maintains special low
+       level synchronization primitive - phase synchronization. Receive
+       side message handling comprises two concurrent activities -
+       posting tagged buffers by SW and receiving incoming messages by
+       HW. This process considered coherent only if all unexpected
+       messages received by HW is completely processed in SW. To pass to
+       hardware number of processed unexpected messages unexpected_cnt
+       field should be used and IBV_OPS_TM_SYNC flag should be set.
+
+       To request WC for tag list operations IBV_OPS_SIGNALED flags
+       should be passed. In this case WC will be generated on TM SRQ's
+       CQ, provided wr_id will identify WC.
+
+       Opcode IBV_WR_TAG_ADD used to add tag entry to tag matching list.
+       Tag entry consists of SGE list, tag &amp; mask (matching parameters),
+       user specified opaque wr_id (passed via recv_wr_id field) and
+       uniquely identified by handle (returned by driver).  Size of tag
+       matching list is limited by max_num_tags.  SGE list size is
+       limited by max_sge.
+
+       Opcode IBV_WR_TAG_DEL removes previously added tag entry.  Field
+       handle should be set to value returned by previously performed
+       IBV_WR_TAG_ADD operation.  Operation may fail due to concurrent
+       tag consumption - in this case IBV_WC_TM_ERR status will be
+       returned in WC.
+
+       Opcode IBV_WR_TAG_SYNC may be used if no changes to matching list
+       required, just to updated unexpected messages counter.
+
+       IBV_WC_TM_SYNC_REQ flag returned in list operation WC shows that
+       counter synchronization required. This flag also may be returned
+       by unexpected receive WC, asking for IBV_WR_TAG_SYNC operation to
+       keep TM coherence consistency.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       <b>ibv_post_srq_ops() </b>returns 0 on success, or the value of errno on
+       failure (which indicates the failure reason).
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="ibv_create_srq_ex.3">ibv_create_srq_ex(3)</a>,
+</pre> <h2>
+AUTHORS </h2>
+<pre>
+       Artemy Kovalyov &lt;artemyko@mellanox.com&gt;
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>rdma-core</i> (RDMA Core Userspace Libraries
+       and Daemons) project.  Information about the project can be found
+       at ⟨<a href="https://github.com/linux-rdma/rdma-core">https://github.com/linux-rdma/rdma-core</a>⟩.  If you have a bug
+       report for this manual page, send it to
+       linux-rdma@vger.kernel.org.  This page was obtained from the
+       project's upstream Git repository
+       ⟨<a href="https://github.com/linux-rdma/rdma-core.git">https://github.com/linux-rdma/rdma-core.git</a>⟩ on 2024-06-14.  (At
+       that time, the date of the most recent commit that was found in
+       the repository was 2024-06-10.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">libibverbs                     2017-03-26            <i>IBV_POST_SRQ_OPS</i>(3)</span>
+</pre>          <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/ibv_post_srq_ops.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/ibv_post_srq_ops.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

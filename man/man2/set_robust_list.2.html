@@ -1,0 +1,246 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Set_robust_list (2) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content="Pages that refer to this page&#58; execve(2), futex(2), gettid(2), ptrace(2), syscalls(2), exit(3), pthread_mutexattr_setrobust(3), capabilities(7 &hellip;">
+  <meta name="keywords" content="get, robust, list, —, linux, manual, page, set, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man2/set_robust_list.2.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>get_robust_list(2) — Linux manual page</h1>   <pre>
+<span class="headline"><i>get_robust_list</i>(2)         System Calls Manual        <i>get_robust_list</i>(2)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       get_robust_list, set_robust_list - get/set list of robust futexes
+</pre> <h2>
+LIBRARY </h2>
+<pre>
+       Standard C library (<i>libc</i>, <i>-lc</i>)
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;linux/futex.h&gt;   </b>/* Definition of <b>struct robust_list_head </b>*/
+       <b>#include &lt;sys/syscall.h&gt;   </b>/* Definition of <b>SYS_* </b>constants */
+       <b>#include &lt;unistd.h&gt;</b>
+
+       <b>long syscall(SYS_get_robust_list, int </b><i>pid</i><b>,</b>
+                    <b>struct robust_list_head **</b><i>head_ptr</i><b>, size_t *</b><i>len_ptr</i><b>);</b>
+       <b>long syscall(SYS_set_robust_list,</b>
+                    <b>struct robust_list_head *</b><i>head</i><b>, size_t </b><i>len</i><b>);</b>
+
+       <i>Note</i>: glibc provides no wrappers for these system calls,
+       necessitating the use of <a href="syscall.2">syscall(2)</a>.
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       These system calls deal with per-thread robust futex lists.
+       These lists are managed in user space: the kernel knows only
+       about the location of the head of the list.  A thread can inform
+       the kernel of the location of its robust futex list using
+       <b>set_robust_list</b>().  The address of a thread's robust futex list
+       can be obtained using <b>get_robust_list</b>().
+
+       The purpose of the robust futex list is to ensure that if a
+       thread accidentally fails to unlock a futex before terminating or
+       calling <a href="execve.2">execve(2)</a>, another thread that is waiting on that futex
+       is notified that the former owner of the futex has died.  This
+       notification consists of two pieces: the <b>FUTEX_OWNER_DIED </b>bit is
+       set in the futex word, and the kernel performs a <a href="futex.2">futex(2)</a>
+       <b>FUTEX_WAKE </b>operation on one of the threads waiting on the futex.
+
+       The <b>get_robust_list</b>() system call returns the head of the robust
+       futex list of the thread whose thread ID is specified in <i>pid</i>.  If
+       <i>pid</i> is 0, the head of the list for the calling thread is
+       returned.  The list head is stored in the location pointed to by
+       <i>head_ptr</i>.  The size of the object pointed to by <i>**head_ptr</i> is
+       stored in <i>len_ptr</i>.
+
+       Permission to employ <b>get_robust_list</b>() is governed by a ptrace
+       access mode <b>PTRACE_MODE_READ_REALCREDS </b>check; see <a href="ptrace.2">ptrace(2)</a>.
+
+       The <b>set_robust_list</b>() system call requests the kernel to record
+       the head of the list of robust futexes owned by the calling
+       thread.  The <i>head</i> argument is the list head to record.  The <i>len</i>
+       argument should be <i>sizeof(*head)</i>.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       The <b>set_robust_list</b>() and <b>get_robust_list</b>() system calls return
+       zero when the operation is successful, an error code otherwise.
+</pre> <h2>
+ERRORS </h2>
+<pre>
+       The <b>set_robust_list</b>() system call can fail with the following
+       error:
+
+       <b>EINVAL </b><i>len</i> does not equal <i>sizeof(struct robust_list_head)</i>.
+
+       The <b>get_robust_list</b>() system call can fail with the following
+       errors:
+
+       <b>EFAULT </b>The head of the robust futex list can't be stored at the
+              location <i>head</i>.
+
+       <b>EPERM  </b>The calling process does not have permission to see the
+              robust futex list of the thread with the thread ID <i>pid</i>,
+              and does not have the <b>CAP_SYS_PTRACE </b>capability.
+
+       <b>ESRCH  </b>No thread with the thread ID <i>pid</i> could be found.
+</pre> <h2>
+VERSIONS </h2>
+<pre>
+       These system calls were added in Linux 2.6.17.
+</pre> <h2>
+NOTES </h2>
+<pre>
+       These system calls are not needed by normal applications.
+
+       A thread can have only one robust futex list; therefore
+       applications that wish to use this functionality should use the
+       robust mutexes provided by glibc.
+
+       In the initial implementation, a thread waiting on a futex was
+       notified that the owner had died only if the owner terminated.
+       Starting with Linux 2.6.28, notification was extended to include
+       the case where the owner performs an <a href="execve.2">execve(2)</a>.
+
+       The thread IDs mentioned in the main text are <i>kernel</i> thread IDs
+       of the kind returned by <a href="clone.2">clone(2)</a> and <a href="gettid.2">gettid(2)</a>.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="futex.2">futex(2)</a>, <a href="../man3/pthread_mutexattr_setrobust.3">pthread_mutexattr_setrobust(3)</a>
+
+       <i>Documentation/robust-futexes.txt</i> and
+       <i>Documentation/robust-futex-ABI.txt</i> in the Linux kernel source
+       tree
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>man-pages</i> (Linux kernel and C library
+       user-space interface documentation) project.  Information about
+       the project can be found at 
+       ⟨<a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>⟩.  If you have a bug report
+       for this manual page, see
+       ⟨<a href="https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING">https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING</a>⟩.
+       This page was obtained from the tarball man-pages-6.9.1.tar.gz
+       fetched from
+       ⟨<a href="https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/">https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/</a>⟩ on
+       2024-06-26.  If you discover any rendering problems in this HTML
+       version of the page, or you believe there is a better or more up-
+       to-date source for the page, or you have corrections or
+       improvements to the information in this COLOPHON (which is <i>not</i>
+       part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux man-pages 6.9.1          2024-05-02             <i>get_robust_list</i>(2)</span>
+</pre>  <p>Pages that refer to this page: <a href="execve.2">execve(2)</a>, <a href="futex.2">futex(2)</a>, <a href="gettid.2">gettid(2)</a>, <a href="ptrace.2">ptrace(2)</a>, <a href="syscalls.2">syscalls(2)</a>, <a href="../man3/exit.3">exit(3)</a>, <a href="../man3/pthread_mutexattr_setrobust.3">pthread_mutexattr_setrobust(3)</a>, <a href="../man7/capabilities.7">capabilities(7)</a>, <a href="../man7/futex.7">futex(7)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man2/set_robust_list.2.html" class="_attribution-link">https://man7.org/linux/man-pages/man2/set_robust_list.2.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Pthread_setspecific (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; pthread_cancel(3), pthreads(7) ">
+  <meta name="keywords" content="pthread, key, create, —, linux, manual, page, setspecific, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/pthread_setspecific.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>pthread_key_create(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>pthread_key_create</i>(3)   Library Functions Manual   <i>pthread_key_create</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       pthread_key_create, pthread_key_delete, pthread_setspecific,
+       pthread_getspecific - management of thread-specific data
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;pthread.h&gt;</b>
+
+       <b>int pthread_key_create(pthread_key_t *</b><i>key</i><b>,</b>
+                              <b>void (*</b><i>destr_function</i><b>) (void *));</b>
+       <b>int pthread_key_delete(pthread_key_t </b><i>key</i><b>);</b>
+       <b>int pthread_setspecific(pthread_key_t </b><i>key</i><b>, const void *</b><i>pointer</i><b>);</b>
+       <b>void * pthread_getspecific(pthread_key_t </b><i>key</i><b>);</b>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       Programs often need global or static variables that have
+       different values in different threads.  Since threads share one
+       memory space, this cannot be achieved with regular variables.
+       Thread-specific data is the POSIX threads answer to this need.
+
+       Each thread possesses a private memory block, the thread-specific
+       data area, or TSD area for short.  This area is indexed by TSD
+       keys.  The TSD area associates values of type <b>void * </b>to TSD keys.
+       TSD keys are common to all threads, but the value associated with
+       a given TSD key can be different in each thread.
+
+       For concreteness, the TSD areas can be viewed as arrays of <b>void *</b>
+       pointers, TSD keys as integer indices into these arrays, and the
+       value of a TSD key as the value of the corresponding array
+       element in the calling thread.
+
+       When a thread is created, its TSD area initially associates <b>NULL</b>
+       with all keys.
+
+       <b>pthread_key_create </b>allocates a new TSD key.  The key is stored in
+       the location pointed to by <i>key</i>.  There is a limit of
+       <b>PTHREAD_KEYS_MAX </b>on the number of keys allocated at a given time.
+       The value initially associated with the returned key is <b>NULL </b>in
+       all currently executing threads.
+
+       The <i>destr_function</i> argument, if not <b>NULL</b>, specifies a destructor
+       function associated with the key.  When a thread terminates via
+       <b>pthread_exit </b>or by cancelation, <i>destr_function</i> is called with
+       arguments the value associated with the key in that thread.  The
+       <i>destr_function</i> is not called if that value is <b>NULL</b>.  The order in
+       which destructor functions are called at thread termination time
+       is unspecified.
+
+       Before the destructor function is called, the <b>NULL </b>value is
+       associated with the key in the current thread.  A destructor
+       function might, however, re-associate non-<b>NULL </b>values to that key
+       or some other key.  To deal with this, if after all the
+       destructors have been called for all non-<b>NULL </b>values, there are
+       still some non-<b>NULL </b>values with associated destructors, then the
+       process is repeated.  The glibc implementation stops the process
+       after <b>PTHREAD_DESTRUCTOR_ITERATIONS </b>iterations, even if some non-
+       <b>NULL </b>values with associated descriptors remain.  Other
+       implementations may loop indefinitely.
+
+       <b>pthread_key_delete </b>deallocates a TSD key.  It does not check
+       whether non-<b>NULL </b>values are associated with that key in the
+       currently executing threads, nor call the destructor function
+       associated with the key.
+
+       <b>pthread_setspecific </b>changes the value associated with <i>key</i> in the
+       calling thread, storing the given <i>pointer</i> instead.
+
+       <b>pthread_getspecific </b>returns the value currently associated with
+       <i>key</i> in the calling thread.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       <b>pthread_key_create</b>, <b>pthread_key_delete</b>, and <b>pthread_setspecific</b>
+       return 0 on success and a non-zero error code on failure.  If
+       successful, <b>pthread_key_create </b>stores the newly allocated key in
+       the location pointed to by its <i>key</i> argument.
+
+       <b>pthread_getspecific </b>returns the value associated with <i>key</i> on
+       success, and <b>NULL </b>on error.
+</pre> <h2>
+ERRORS </h2>
+<pre>
+       <b>pthread_key_create </b>returns the following error code on error:
+
+              <b>EAGAIN PTHREAD_KEYS_MAX </b>keys are already allocated.
+
+       <b>pthread_key_delete </b>and <b>pthread_setspecific </b>return the following
+       error code on error:
+
+              <b>EINVAL </b><i>key</i> is not a valid, allocated TSD key.
+
+       <b>pthread_getspecific </b>returns <b>NULL </b>if <i>key</i> is not a valid, allocated
+       TSD key.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="pthread_create.3">pthread_create(3)</a>, <a href="pthread_exit.3">pthread_exit(3)</a>, <a href="pthread_testcancel.3">pthread_testcancel(3)</a>.
+</pre> <h2>
+EXAMPLE </h2>
+<pre>
+       The following code fragment allocates a thread-specific array of
+       100 characters, with automatic reclamation at thread exit:
+
+              <b>/* Key for the thread-specific buffer */</b>
+              <b>static pthread_key_t buffer_key;</b>
+
+              <b>/* Once-only initialisation of the key */</b>
+              <b>static pthread_once_t buffer_key_once = PTHREAD_ONCE_INIT;</b>
+
+              <b>/* Allocate the thread-specific buffer */</b>
+              <b>void buffer_alloc(void)</b>
+              <b>{</b>
+                <b>pthread_once(&amp;buffer_key_once, buffer_key_alloc);</b>
+                <b>pthread_setspecific(buffer_key, malloc(100));</b>
+              <b>}</b>
+
+              <b>/* Return the thread-specific buffer */</b>
+              <b>char * get_buffer(void)</b>
+              <b>{</b>
+                <b>return (char *) pthread_getspecific(buffer_key);</b>
+              <b>}</b>
+
+              <b>/* Allocate the key */</b>
+              <b>static void buffer_key_alloc()</b>
+              <b>{</b>
+                <b>pthread_key_create(&amp;buffer_key, buffer_destroy);</b>
+              <b>}</b>
+
+              <b>/* Free the thread-specific buffer */</b>
+              <b>static void buffer_destroy(void * buf)</b>
+              <b>{</b>
+                <b>free(buf);</b>
+              <b>}</b>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>man-pages</i> (Linux kernel and C library
+       user-space interface documentation) project.  Information about
+       the project can be found at 
+       ⟨<a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>⟩.  If you have a bug report
+       for this manual page, see
+       ⟨<a href="https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING">https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/CONTRIBUTING</a>⟩.
+       This page was obtained from the tarball man-pages-6.9.1.tar.gz
+       fetched from
+       ⟨<a href="https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/">https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/</a>⟩ on
+       2024-06-26.  If you discover any rendering problems in this HTML
+       version of the page, or you believe there is a better or more up-
+       to-date source for the page, or you have corrections or
+       improvements to the information in this COLOPHON (which is <i>not</i>
+       part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux man-pages 6.9.1          2024-06-16          <i>pthread_key_create</i>(3)</span>
+</pre>  <p>Pages that refer to this page: <a href="pthread_cancel.3">pthread_cancel(3)</a>, <a href="../man7/pthreads.7">pthreads(7)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/pthread_setspecific.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/pthread_setspecific.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

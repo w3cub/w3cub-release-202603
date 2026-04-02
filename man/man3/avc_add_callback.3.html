@@ -1,0 +1,270 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Avc_add_callback (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; avc_cache_stats(3), avc_context_to_sid(3), avc_has_perm(3), avc_open(3) ">
+  <meta name="keywords" content="avc, add, callback, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/avc_add_callback.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>avc_add_callback(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>avc_add_callback</i>(3)     SELinux API documentation    <i>avc_add_callback</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       avc_add_callback - additional event notification for SELinux
+       userspace object managers
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;selinux/selinux.h&gt;</b>
+       <b>#include &lt;selinux/avc.h&gt;</b>
+
+       <b>int avc_add_callback(int (*</b><i>callback</i><b>)(uint32_t </b><i>event</i><b>,</b>
+                                            <b>security_id_t </b><i>ssid</i><b>,</b>
+                                            <b>security_id_t </b><i>tsid</i><b>,</b>
+                                            <b>security_class_t </b><i>tclass</i><b>,</b>
+                                            <b>access_vector_t </b><i>perms</i><b>,</b>
+                                            <b>access_vector_t</b>
+                                            <b>*</b><i>out_retained</i><b>),</b>
+                            <b>uint32_t </b><i>events</i><b>, security_id_t </b><i>ssid</i><b>,</b>
+                            <b>security_id_t </b><i>tsid</i><b>, security_class_t </b><i>tclass</i><b>,</b>
+                            <b>access_vector_t </b><i>perms</i><b>);</b>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       <b>avc_add_callback</b>() is used to register callback functions on
+       security events.  The purpose of this functionality is to allow
+       userspace object managers to take additional action when a policy
+       change, usually a policy reload, causes permissions to be granted
+       or revoked.
+
+       <i>events</i> is the bitwise-<i>or</i> of security events on which to register
+       the callback; see <b>SECURITY EVENTS </b>below.
+
+       <i>ssid</i>, <i>tsid</i>, <i>tclass</i>, and <i>perms</i> specify the source and target
+       SID's, target class, and specific permissions that the callback
+       wishes to monitor.  The special symbol <b>SECSID_WILD </b>may be passed
+       as the <i>source</i> or <i>target</i> and will cause any SID to match.
+
+       <i>callback</i> is the callback function provided by the userspace
+       object manager.  The <i>event</i> argument indicates the security event
+       which occurred; the remaining arguments are interpreted according
+       to the event as described below.  The return value of the
+       callback should be zero on success, -1 on error with <i><a href="errno.3">errno</a></i> set
+       appropriately (but see <b>RETURN VALUE </b>below).
+</pre> <h2>
+SECURITY EVENTS </h2>
+<pre>
+       In all cases below, <i>ssid</i> and/or <i>tsid</i> may be set to <b>SECSID_WILD</b>,
+       indicating that the change applies to all source and/or target
+       SID's.  Unless otherwise indicated, the <i>out_retained</i> parameter is
+       unused.
+
+       <b>AVC_CALLBACK_GRANT</b>
+              Previously denied permissions are now granted for <i>ssid</i>,
+              <i>tsid</i> with respect to <i>tclass</i>.  <i>perms</i> indicates the
+              permissions to grant.
+
+       <b>AVC_CALLBACK_TRY_REVOKE</b>
+              Previously granted permissions are now conditionally
+              revoked for <i>ssid</i>, <i>tsid</i> with respect to <i>tclass</i>.  <i>perms</i>
+              indicates the permissions to revoke.  The callback should
+              set <i>out_retained</i> to the subset of <i>perms</i> which are retained
+              as migrated permissions.  Note that <i>out_retained</i> is
+              ignored if the callback returns -1.
+
+       <b>AVC_CALLBACK_REVOKE</b>
+              Previously granted permissions are now unconditionally
+              revoked for <i>ssid</i>, <i>tsid</i> with respect to <i>tclass</i>.  <i>perms</i>
+              indicates the permissions to revoke.
+
+       <b>AVC_CALLBACK_RESET</b>
+              Indicates that the cache was flushed.  The SID, class, and
+              permission arguments are unused and are set to NULL.
+
+       <b>AVC_CALLBACK_AUDITALLOW_ENABLE</b>
+              The permissions given by <i>perms</i> should now be audited when
+              granted for <i>ssid</i>, <i>tsid</i> with respect to <i>tclass</i>.
+
+       <b>AVC_CALLBACK_AUDITALLOW_DISABLE</b>
+              The permissions given by <i>perms</i> should no longer be audited
+              when granted for <i>ssid</i>, <i>tsid</i> with respect to <i>tclass</i>.
+
+       <b>AVC_CALLBACK_AUDITDENY_ENABLE</b>
+              The permissions given by <i>perms</i> should now be audited when
+              denied for <i>ssid</i>, <i>tsid</i> with respect to <i>tclass</i>.
+
+       <b>AVC_CALLBACK_AUDITDENY_DISABLE</b>
+              The permissions given by <i>perms</i> should no longer be audited
+              when denied for <i>ssid</i>, <i>tsid</i> with respect to <i>tclass</i>.
+</pre> <h2>
+RETURN VALUE </h2>
+<pre>
+       On success, <b>avc_add_callback</b>() returns zero.  On error, -1 is
+       returned and <i><a href="errno.3">errno</a></i> is set appropriately.
+
+       A return value of -1 from a callback is interpreted as a failed
+       policy operation.  If such a return value is encountered, all
+       remaining callbacks registered on the event are called.  In
+       threaded mode, the netlink handler thread may then terminate and
+       cause the userspace AVC to return <b>EINVAL </b>on all further
+       permission checks until <a href="avc_destroy.3">avc_destroy(3)</a> is called.  In non-
+       threaded mode, the permission check on which the error occurred
+       will return -1 and the value of <i><a href="errno.3">errno</a></i> encountered to the caller.
+       In both cases, a log message is produced and the kernel may be
+       notified of the error.
+</pre> <h2>
+ERRORS </h2>
+<pre>
+       <b>ENOMEM </b>An attempt to allocate memory failed.
+</pre> <h2>
+NOTES </h2>
+<pre>
+       If the userspace AVC is running in threaded mode, callbacks
+       registered via <b>avc_add_callback</b>() may be executed in the context
+       of the netlink handler thread.  This will likely introduce
+       synchronization issues requiring the use of locks.  See
+       <a href="avc_init.3">avc_init(3)</a>.
+
+       Support for dynamic revocation and retained permissions is mostly
+       unimplemented in the SELinux kernel module.  The only security
+       event that currently gets exercised is <b>AVC_CALLBACK_RESET</b>.
+</pre> <h2>
+AUTHOR </h2>
+<pre>
+       Eamon Walsh &lt;ewalsh@tycho.nsa.gov&gt;
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="avc_init.3">avc_init(3)</a>, <a href="avc_has_perm.3">avc_has_perm(3)</a>, <a href="avc_context_to_sid.3">avc_context_to_sid(3)</a>,
+       <a href="avc_cache_stats.3">avc_cache_stats(3)</a>, <a href="security_compute_av.3">security_compute_av(3)</a> <a href="../man8/selinux.8">selinux(8)</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>selinux</i> (Security-Enhanced Linux user-
+       space libraries and tools) project.  Information about the
+       project can be found at 
+       ⟨<a href="https://github.com/SELinuxProject/selinux/wiki">https://github.com/SELinuxProject/selinux/wiki</a>⟩.  If you have a
+       bug report for this manual page, see
+       ⟨<a href="https://github.com/SELinuxProject/selinux/wiki/Contributing">https://github.com/SELinuxProject/selinux/wiki/Contributing</a>⟩.
+       This page was obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/SELinuxProject/selinux">https://github.com/SELinuxProject/selinux</a>⟩ on 2024-06-14.  (At
+       that time, the date of the most recent commit that was found in
+       the repository was 2023-05-11.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">                               9 June 2004           <i>avc_add_callback</i>(3)</span>
+</pre>  <p>Pages that refer to this page: <a href="avc_cache_stats.3">avc_cache_stats(3)</a>, <a href="avc_context_to_sid.3">avc_context_to_sid(3)</a>, <a href="avc_has_perm.3">avc_has_perm(3)</a>, <a href="avc_open.3">avc_open(3)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/avc_add_callback.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/avc_add_callback.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

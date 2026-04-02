@@ -1,0 +1,270 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>nfs.systemd (7) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" ... https&#58;&#47;&#47;man7.org&#47;linux&#47;man-pages&#47;man7&#47;nfs.systemd.7.html ">
+  <meta name="keywords" content="nfs, systemd, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man7/nfs.systemd.7.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>nfs.systemd(7) — Linux manual page</h1>   <pre>
+<span class="headline"><i>NFS.SYSTEMD</i>(7)      Miscellaneous Information Manual      <i>NFS.SYSTEMD</i>(7)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       nfs.systemd - managing NFS services through systemd.
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       nfs-utils.service
+       nfs-server.service
+       nfs-client.target
+       <i>etc</i>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       The <i>nfs-utils</i> package provides a suite of <i>systemd</i> unit files
+       which allow the various services to be started and managed.
+       These unit files ensure that the services are started in the
+       correct order, and the prerequisites are active before dependant
+       services start.  As there are quite  few unit files, it is not
+       immediately obvious how best to achieve certain results.  The
+       following subsections attempt to cover the issues that are most
+       likely to come up.
+
+   <b>Configuration</b>
+       The standard systemd unit files do not provide any easy way to
+       pass any command line arguments to daemons so as to configure
+       their behavior.  In many case such configuration can be performed
+       by making changes to <i>/etc/nfs.conf</i> or other configuration files
+       (see <a href="../man5/nfs.conf.5">nfs.conf(5)</a>).  When that is not convenient, a distribution
+       might provide systemd "drop-in" files which replace the
+       <b>ExecStart= </b>setting to start the program with different arguments.
+       For example a drop-in file <b>systemd/system/nfs-</b>
+       <b>mountd.service.d/local.conf </b>containing
+              [Service]
+              EnvironmentFile=/etc/sysconfig/nfs
+              ExecStart=
+              ExecStart= /usr/sbin/rpc.mountd $RPCMOUNTDOPTS
+       would cause the <b>nfs-mountd.service </b>unit to run the <i>rpc.mountd</i>
+       program using, for arguments, the value given for <b>RPCMOUNTDOPTS</b>
+       in <i>/etc/sysconfig/nfs</i>.  This allows for seamless integration with
+       existing configuration tools.
+
+   <b>Enabling unit files</b>
+       There are three unit files which are designed to be manually
+       enabled.  All others are automatically run as required.  The
+       three are:
+
+       <b>nfs-client.target</b>
+              This should be enabled on any host which ever serves as an
+              NFS client.  There is little cost in transparently
+              enabling it whenever NFS client software is installed.
+
+       <b>nfs-server.service</b>
+              This must be enabled to provide NFS service to clients.
+              It starts and configures the required daemons in the
+              required order.
+
+       <b>nfs-blkmap.service</b>
+              The <b>blkmapd </b>daemon is only required on NFS clients which
+              are using pNFS (parallel NFS), and particularly using the
+              <b>blocklayout </b>layout protocol.  If you might use this
+              particular extension to NFS, the <b>nfs-blkmap.service </b>unit
+              should be enabled.
+
+       Several other units which might be considered to be optional,
+       such as <i>rpc-gssd.service</i> are careful to only start if the
+       required configuration file exists.  <i>rpc-gssd.service</i> will not
+       start if the <i>krb5.keytab</i> file does not exist (typically in <i>/etc</i>).
+
+   <b>Restarting NFS services</b>
+       Most NFS daemons can be restarted at any time.  They will reload
+       any state that they need, and continue servicing requests.  This
+       is rarely necessary though.
+
+       When configuration changesare make, it can be hard to know
+       exactly which services need to be restarted to ensure that the
+       configuration takes effect.  The simplest approach, which is
+       often the best, is to restart everything.  To help with this, the
+       <b>nfs-utils.service </b>unit is provided.  It declares appropriate
+       dependencies with other unit files so that
+              <b>systemctl restart nfs-utils</b>
+       will restart all NFS daemons that are running.  This will cause
+       all configuration changes to take effect <i>except</i> for changes to
+       mount options lists in <i>/etc/fstab</i> or <i>/etc/nfsmount.conf</i>.  Mount
+       options can only be changed by unmounting and remounting
+       filesystem.  This can be a disruptive operation so it should only
+       be done when the value justifies the cost.  The command
+              <b>umount -a -t nfs; mount -a -t nfs</b>
+       should unmount and remount all NFS filesystems.
+
+   <b>Masking unwanted services</b>
+       Rarely there may be a desire to prohibit some services from
+       running even though there are normally part of a working NFS
+       system.  This may be needed to reduce system load to an absolute
+       minimum, or to reduce attack surface by not running daemons that
+       are not absolutely required.
+
+       Three particular services which this can apply to are <i>rpcbind</i>,
+       <i>idmapd</i>, and <i>rpc-gssd</i>.  <i>rpcbind</i> is not part of the <i>nfs-utils</i>
+       package, but it used by several NFS services.  However it is <b>not</b>
+       needed when only NFSv4 is in use.  If a site will never use NFSv3
+       (or NFSv2) and does not want <i>rpcbind</i> to be running, the correct
+       approach is to run
+              <b>systemctl mask rpcbind</b>
+       This will disable <i>rpcbind</i>, and the various NFS services which
+       depend on it (and are only needed for NFSv3) will refuse to
+       start, without interfering with the operation of NFSv4 services.
+       In particular, <i>rpc.statd</i> will not run when <i>rpcbind</i> is masked.
+
+       <i>idmapd</i> is only needed for NFSv4, and even then is not needed when
+       the client and server agree to use user-ids rather than user-
+       names to identify the owners of files.  If <i>idmapd</i> is not needed
+       and not wanted, it can be masked with
+              <b>systemctl mask idmapd</b>
+       <i>rpc-gssd</i> is assumed to be needed if the <i>krb5.keytab</i> file is
+       present.  If a site needs this file present but does not want
+       <i>rpc-gssd</i> running, it can be masked with
+              <b>systemctl mask rpc-gssd</b>
+</pre> <h2>
+FILES </h2>
+<pre>
+       /etc/nfs.conf
+       /etc/nfsmount.conf
+       /etc/idmapd.conf
+
+       Also similar files in <b>/usr/etc </b>and in related <i>conf.d</i> drop-in
+       directories.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man5/systemd.unit.5">systemd.unit(5)</a>, <a href="../man5/nfs.conf.5">nfs.conf(5)</a>, <a href="../man5/nfsmount.conf.5">nfsmount.conf(5)</a>.
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>nfs-utils</i> (NFS utilities) project.
+       Information about the project can be found at 
+       ⟨<a href="http://linux-nfs.org/wiki/index.php/Main_Page">http://linux-nfs.org/wiki/index.php/Main_Page</a>⟩.  If you have a
+       bug report for this manual page, see
+       ⟨<a href="http://linux-nfs.org/wiki/index.php/Main_Page">http://linux-nfs.org/wiki/index.php/Main_Page</a>⟩.  This page was
+       obtained from the project's upstream Git repository
+       ⟨git://git.linux-nfs.org/projects/steved/nfs-utils.git⟩ on
+       2024-06-14.  (At that time, the date of the most recent commit
+       that was found in the repository was 2024-05-10.)  If you
+       discover any rendering problems in this HTML version of the page,
+       or you believe there is a better or more up-to-date source for
+       the page, or you have corrections or improvements to the
+       information in this COLOPHON (which is <i>not</i> part of the original
+       manual page), send a mail to man-pages@man7.org
+
+<span class="footline">                                                          <i>NFS.SYSTEMD</i>(7)</span>
+</pre>          <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man7/nfs.systemd.7.html" class="_attribution-link">https://man7.org/linux/man-pages/man7/nfs.systemd.7.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

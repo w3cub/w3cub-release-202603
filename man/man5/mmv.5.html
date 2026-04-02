@@ -1,0 +1,377 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mmv (5) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content="Pages that refer to this page&#58; pmdammv(1), mmv_inc_value(3), mmv_lookup_value_desc(3), mmv_set_value(3), mmv_stats_init(3), mmv_stats_registry(3 &hellip;">
+  <meta name="keywords" content="mmv, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man5/mmv.5.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>mmv(5) — Linux manual page</h1>   <pre>
+<span class="headline"><i>MMV</i>(5)                     File Formats Manual                    <i>MMV</i>(5)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       <b>mmv </b>- Memory Mapped Values for Performance Co-Pilot
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <i>$PCP_TMP_DIR/mmv/&lt;file&gt;</i>
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       The files in <i>$PCP_TMP_DIR/mmv</i> are generated either by the
+       <i>mmv_stats_init</i>(3) and <i>mmv_stats2_init</i>(3) functions from the
+       <b>libpcp_mmv </b>library, or by a native language module such as
+       Parfait (Java), Speed (Golang) or Hornet (Rust).
+
+       There could be multiple files in this directory, each file
+       representing a single source of the performance metrics.  The
+       metrics are harvested by <a href="../man1/pmdammv.1">pmdammv(1)</a> which exports them to the
+       rest of the Performance Co-Pilot infrastructure.
+</pre> <h2>
+FILE FORMAT </h2>
+<pre>
+       Each file starts with the following header:
+                ┌────────┬────────┬──────────────────────────┐
+                │ Offset │ Length │           Name           │
+                ├────────┼────────┼──────────────────────────┤
+                │    0   │   4    │ tag == "MMV\0"           │
+                ├────────┼────────┼──────────────────────────┤
+                │    4   │   4    │ Version (1 or 2)         │
+                ├────────┼────────┼──────────────────────────┤
+                │    8   │   8    │ Generation 1             │
+                ├────────┼────────┼──────────────────────────┤
+                │   16   │   8    │ Generation 2             │
+                ├────────┼────────┼──────────────────────────┤
+                │   24   │   4    │ Number of TOC entries    │
+                ├────────┼────────┼──────────────────────────┤
+                │   28   │   4    │ Flags                    │
+                ├────────┼────────┼──────────────────────────┤
+                │   32   │   4    │ Process identifier (PID) │
+                ├────────┼────────┼──────────────────────────┤
+                │   36   │   4    │ Cluster identifier       │
+                └────────┴────────┴──────────────────────────┘
+
+       The version number specifies which mapping layout format is in
+       use.  There are two, both are very similar, as described below.
+       The sole purpose of the MMV version 2 format is to allow the use
+       of longer metric and instance names.  If names longer than
+       MMV_NAMEMAX are not in use, it is best to use MMV version 1
+       format as this allows older versions of PCP to also consume the
+       data.  Support for v2 format was added in the pcp-3.11.4 release.
+
+       The generation numbers are timestamps at the time of file
+       creation, and must match for the file to be considered by the MMV
+       PMDA.
+
+       The flags can specify ways in which the client would like the MMV
+       PMDA to behave - e.g. the MMV_FLAG_PROCESS flag specifies that
+       only if the process identified by PID is currently running should
+       those values be exported.
+
+       Finally, if set, the cluster identifier is a hint to the MMV PMDA
+       as to what cluster should be used with this application when
+       forming the individual metric identifiers.  A performance metric
+       identifier (see <i>PMDA</i>(3)) consists of the PMDA domain number, the
+       cluster number, and the individual item numbers described in the
+       Metrics section.
+
+       The header is followed by at least 2 TOC sections: one section
+       for metrics and another for values.  The TOC section has the
+       following format:
+       ┌────────┬────────┬─────────────────────────────────────────────┐
+       │ Offset │ Length │                    Value                    │
+       ├────────┼────────┼─────────────────────────────────────────────┤
+       │   0    │   4    │ Section Type (see <i>mmv_stats.h</i>)              │
+       ├────────┼────────┼─────────────────────────────────────────────┤
+       │   4    │   4    │ Number of entries in the section            │
+       ├────────┼────────┼─────────────────────────────────────────────┤
+       │   8    │   8    │ Section's offset from the start of the file │
+       └────────┴────────┴─────────────────────────────────────────────┘
+
+       The section types are:
+
+              1: Indoms (instance domain definitions)
+
+              2: Instances
+
+              3: Metrics (metric definitions)
+
+              4: Values
+
+              5: String
+
+              6: Labels
+
+       The only mandatory sections are Metrics and Values.  Indoms and
+       Instances sections of either version only appear if there are
+       metrics with multiple instances.  String sections only appear if
+       there are metrics with string values, when Metrics or Indoms are
+       defined with help text, or in v2 MMV format where metric names
+       and instance names are stored in string sections (providing
+       significantly more space than v1 MMV format for these names).
+       Label sections only appear if there are metrics annotated with
+       labels (name/value pairs).  Labels are supported in v3 MMV
+       format.
+
+       The entries in the Indoms sections have the following format:
+         ┌────────┬────────┬───────────────────────────────────────┐
+         │ Offset │ Length │                 Value                 │
+         ├────────┼────────┼───────────────────────────────────────┤
+         │    0   │   4    │ Unique serial number for this domain  │
+         ├────────┼────────┼───────────────────────────────────────┤
+         │    4   │   4    │ Number of entries in the domain       │
+         ├────────┼────────┼───────────────────────────────────────┤
+         │    8   │   8    │ Offset to first Instance or Instance2 │
+         ├────────┼────────┼───────────────────────────────────────┤
+         │   16   │   8    │ Short help text offset                │
+         ├────────┼────────┼───────────────────────────────────────┤
+         │   24   │   8    │ Long help text offset                 │
+         └────────┴────────┴───────────────────────────────────────┘
+
+       The entries in the Instances (v1) section have the following
+       format:
+             ┌────────┬────────┬───────────────────────────────┐
+             │ Offset │ Length │             Value             │
+             ├────────┼────────┼───────────────────────────────┤
+             │    0   │    8   │ Offset into the indom section │
+             ├────────┼────────┼───────────────────────────────┤
+             │    8   │    4   │ Unused padding (zero filled)  │
+             ├────────┼────────┼───────────────────────────────┤
+             │   12   │    4   │ Internal instance identifier  │
+             ├────────┼────────┼───────────────────────────────┤
+             │   16   │   64   │ External instance identifier  │
+             └────────┴────────┴───────────────────────────────┘
+
+       The entries in the Instances (v2) section have the following
+       format:
+       ┌────────┬────────┬────────────────────────────────────────────┐
+       │ Offset │ Length │                   Value                    │
+       ├────────┼────────┼────────────────────────────────────────────┤
+       │    0   │   8    │ Offset into the indom section              │
+       ├────────┼────────┼────────────────────────────────────────────┤
+       │    8   │   4    │ Unused padding (zero filled)               │
+       ├────────┼────────┼────────────────────────────────────────────┤
+       │   12   │   4    │ Internal instance identifier               │
+       ├────────┼────────┼────────────────────────────────────────────┤
+       │   16   │   8    │ External instance identifier string offset │
+       └────────┴────────┴────────────────────────────────────────────┘
+
+       The entries in the Metrics (v1) section have the following
+       format:
+             ┌────────┬────────┬───────────────────────────────┐
+             │ Offset │ Length │             Value             │
+             ├────────┼────────┼───────────────────────────────┤
+             │    0   │   64   │ Metric Name                   │
+             ├────────┼────────┼───────────────────────────────┤
+             │   64   │    4   │ Metric Item (see <i>PMDA</i>(3))     │
+             ├────────┼────────┼───────────────────────────────┤
+             │   68   │    4   │ Metric Type (see <i>mmv_stats.h</i>) │
+             ├────────┼────────┼───────────────────────────────┤
+             │   72   │    4   │ Semantics (see <i>PMAPI</i>(3))      │
+             ├────────┼────────┼───────────────────────────────┤
+             │   76   │    4   │ Dimensions (see <i>PMAPI</i>(3))     │
+             ├────────┼────────┼───────────────────────────────┤
+             │   80   │    4   │ Instance Domain ID            │
+             ├────────┼────────┼───────────────────────────────┤
+             │   84   │    4   │ Unused padding (zero filled)  │
+             ├────────┼────────┼───────────────────────────────┤
+             │   88   │    8   │ Short help text offset        │
+             ├────────┼────────┼───────────────────────────────┤
+             │   96   │    8   │ Long help text offset         │
+             └────────┴────────┴───────────────────────────────┘
+
+       The entries in the Metrics (v2) section have the following
+       format:
+             ┌────────┬────────┬───────────────────────────────┐
+             │ Offset │ Length │             Value             │
+             ├────────┼────────┼───────────────────────────────┤
+             │    0   │   8    │ Metric Name string offset     │
+             ├────────┼────────┼───────────────────────────────┤
+             │    8   │   4    │ Metric Item (see <i>PMDA</i>(3))     │
+             ├────────┼────────┼───────────────────────────────┤
+             │   12   │   4    │ Metric Type (see <i>mmv_stats.h</i>) │
+             ├────────┼────────┼───────────────────────────────┤
+             │   16   │   4    │ Semantics (see <i>PMAPI</i>(3))      │
+             ├────────┼────────┼───────────────────────────────┤
+             │   20   │   4    │ Dimensions (see <i>PMAPI</i>(3))     │
+             ├────────┼────────┼───────────────────────────────┤
+             │   24   │   4    │ Instance Domain ID            │
+             ├────────┼────────┼───────────────────────────────┤
+             │   28   │   4    │ Unused padding (zero filled)  │
+             ├────────┼────────┼───────────────────────────────┤
+             │   32   │   8    │ Short help text offset        │
+             ├────────┼────────┼───────────────────────────────┤
+             │   40   │   8    │ Long help text offset         │
+             └────────┴────────┴───────────────────────────────┘
+
+       The entries in the Values section have the following format:
+           ┌────────┬────────┬────────────────────────────────────┐
+           │ Offset │ Length │               Value                │
+           ├────────┼────────┼────────────────────────────────────┤
+           │    0   │   8    │ <b>pmAtomValue </b>(see <i>PMAPI</i>(3))         │
+           ├────────┼────────┼────────────────────────────────────┤
+           │    8   │   8    │ Extra space for STRING and ELAPSED │
+           ├────────┼────────┼────────────────────────────────────┤
+           │   16   │   8    │ Offset into the Metrics section    │
+           ├────────┼────────┼────────────────────────────────────┤
+           │   24   │   8    │ Offset into the Instances section  │
+           └────────┴────────┴────────────────────────────────────┘
+
+       Each entry in the strings section is a 256 byte character array,
+       containing a single NULL-terminated character string.  So each
+       string has a maximum length of 256 bytes, which includes the
+       terminating NULL.
+
+       The entries in the Labels (v3) section have the following format:
+┌────────┬────────┬──────────────────────────────────────────────────────────┐
+│ Offset │ Length │                          Value                           │
+├────────┼────────┼──────────────────────────────────────────────────────────┤
+│    0   │    4   │ Flags (PM_LABEL_[CLUSTER|ITEM|INDOM|INSTANCES]|OPTIONAL) │
+├────────┼────────┼──────────────────────────────────────────────────────────┤
+│    4   │    4   │ Identifier for given type (indom, cluster or item)       │
+├────────┼────────┼──────────────────────────────────────────────────────────┤
+│    8   │    4   │ Internal Instance or PM_IN_NULL                          │
+├────────┼────────┼──────────────────────────────────────────────────────────┤
+│   12   │  244   │ Payload (Name and Value JSONB String)                    │
+└────────┴────────┴──────────────────────────────────────────────────────────┘
+
+       Each entry in the payload is a 244 byte (maximum) character
+       array, containing a single NULL-terminated <i>name</i>:<i>value</i> pair in
+       JSON format.  Insignificant whitespace must not be present.
+       Label names consist only of alphanumeric characters or
+       underscores, and must begin with an alphabetic.  Upper and lower
+       case characters are considered distinct.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="../man1/pcpintro.1">PCPIntro(1)</a>, <a href="../man1/pmdammv.1">pmdammv(1)</a>, <a href="../man3/pmapi.3">PMAPI(3)</a>, <a href="../man3/pmda.3">PMDA(3)</a>,
+       <a href="../man3/mmv_stats_registry.3">mmv_stats_registry(3)</a>, <a href="pcp.conf.5">pcp.conf(5)</a> and <a href="pcp.env.5">pcp.env(5)</a>.
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>PCP</i> (Performance Co-Pilot) project.
+       Information about the project can be found at 
+       ⟨<a href="http://www.pcp.io/">http://www.pcp.io/</a>⟩.  If you have a bug report for this manual
+       page, send it to pcp@groups.io.  This page was obtained from the
+       project's upstream Git repository
+       ⟨<a href="https://github.com/performancecopilot/pcp.git">https://github.com/performancecopilot/pcp.git</a>⟩ on 2024-06-14.
+       (At that time, the date of the most recent commit that was found
+       in the repository was 2024-06-14.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Performance Co-Pilot                                              <i>MMV</i>(5)</span>
+</pre>  <p>Pages that refer to this page: <a href="../man1/pmdammv.1">pmdammv(1)</a>, <a href="../man3/mmv_inc_value.3">mmv_inc_value(3)</a>, <a href="../man3/mmv_lookup_value_desc.3">mmv_lookup_value_desc(3)</a>, <a href="../man3/mmv_set_value.3">mmv_set_value(3)</a>, <a href="../man3/mmv_stats_init.3">mmv_stats_init(3)</a>, <a href="../man3/mmv_stats_registry.3">mmv_stats_registry(3)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man5/mmv.5.html" class="_attribution-link">https://man7.org/linux/man-pages/man5/mmv.5.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Pam_conv (3) - Linux Man Pages - W3cubDocs</title>
+  
+  <meta name="description" content=" Pages that refer to this page&#58; misc_conv(3), pam(3), pam_authenticate(3), pam_get_item(3), pam_get_user(3), pam_prompt(3), pam_set_item(3) ">
+  <meta name="keywords" content="pam, conv, —, linux, manual, page, man, pages">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/man/man3/pam_conv.3.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/man.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/man/" class="_nav-link" title="" style="margin-left:0;">Linux man pages</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>pam_conv(3) — Linux manual page</h1>   <pre>
+<span class="headline"><i>PAM_CONV</i>(3)                 Linux-PAM Manual                 <i>PAM_CONV</i>(3)</span>
+</pre> <h2>
+NAME </h2>
+<pre>
+       pam_conv - PAM conversation function
+</pre> <h2>
+SYNOPSIS </h2>
+<pre>
+       <b>#include &lt;security/pam_appl.h&gt;</b>
+
+       struct pam_message {
+           int msg_style;
+           const char *msg;
+       };
+
+       struct pam_response {
+           char *resp;
+           int resp_retcode;
+       };
+
+       struct pam_conv {
+           int (*conv)(int num_msg, const struct pam_message **msg,
+                       struct pam_response **resp, void *appdata_ptr);
+           void *appdata_ptr;
+       };
+</pre> <h2>
+DESCRIPTION </h2>
+<pre>
+       The PAM library uses an application-defined callback to allow a
+       direct communication between a loaded module and the application.
+       This callback is specified by the <i>struct pam_conv</i> passed to
+       <a href="pam_start.3">pam_start(3)</a> at the start of the transaction.
+
+       When a module calls the referenced conv() function, the argument
+       <i>appdata_ptr</i> is set to the second element of this structure.
+
+       The other arguments of a call to conv() concern the information
+       exchanged by module and application. That is to say, <i>num_msg</i>
+       holds the length of the array of pointers, <i>msg</i>. After a
+       successful return, the pointer <i>resp</i> points to an array of
+       pam_response structures, holding the application supplied text.
+       The <i>resp_retcode</i> member of this struct is unused and should be
+       set to zero. It is the caller's responsibility to release both,
+       this array and the responses themselves, using <a href="free.3">free(3)</a>. Note,
+       <i>*resp</i> is a <i>struct pam_response</i> array and not an array of
+       pointers.
+
+       The number of responses is always equal to the <i>num_msg</i>
+       conversation function argument. This does require that the
+       response array is <a href="free.3">free(3)</a>'d after every call to the conversation
+       function. The index of the responses corresponds directly to the
+       prompt index in the pam_message array.
+
+       On failure, the conversation function should release any
+       resources it has allocated, and return one of the predefined PAM
+       error codes.
+
+       Each message can have one of four types, specified by the
+       <i>msg_style</i> member of <i>struct pam_message</i>:
+
+       PAM_PROMPT_ECHO_OFF
+           Obtain a string without echoing any text.
+
+       PAM_PROMPT_ECHO_ON
+           Obtain a string whilst echoing text.
+
+       PAM_ERROR_MSG
+           Display an error message.
+
+       PAM_TEXT_INFO
+           Display some text.
+
+       The point of having an array of messages is that it becomes
+       possible to pass a number of things to the application in a
+       single call from the module. It can also be convenient for the
+       application that related things come at once: a windows based
+       application can then present a single form with many
+       messages/prompts on at once.
+
+       In passing, it is worth noting that there is a discrepancy
+       between the way Linux-PAM handles the const struct pam_message
+       **msg conversation function argument and the way that Solaris'
+       PAM (and derivatives, known to include HP/UX, are there others?)
+       does. Linux-PAM interprets the msg argument as entirely
+       equivalent to the following prototype const struct pam_message
+       *msg[] (which, in spirit, is consistent with the commonly used
+       prototypes for argv argument to the familiar main() function:
+       char **argv; and char *argv[]). Said another way Linux-PAM
+       interprets the msg argument as a pointer to an array of num_msg
+       read only 'struct pam_message' pointers. Solaris' PAM
+       implementation interprets this argument as a pointer to a pointer
+       to an array of num_msg pam_message structures. Fortunately,
+       perhaps, for most module/application developers when num_msg has
+       a value of one these two definitions are entirely equivalent.
+       Unfortunately, casually raising this number to two has led to
+       unanticipated compatibility problems.
+
+       For what its worth the two known module writer work-arounds for
+       trying to maintain source level compatibility with both PAM
+       implementations are:
+
+       •   never call the conversation function with num_msg greater
+           than one.
+
+       •   set up msg as doubly referenced so both types of conversation
+           function can find the messages. That is, make
+
+                      msg[n] = &amp; (( *msg )[n])
+</pre> <h2>
+RETURN VALUES </h2>
+<pre>
+       PAM_BUF_ERR
+           Memory buffer error.
+
+       PAM_CONV_ERR
+           Conversation failure. The application should not set <i>*resp</i>.
+
+       PAM_SUCCESS
+           Success.
+</pre> <h2>
+SEE ALSO </h2>
+<pre>
+       <a href="pam_start.3">pam_start(3)</a>, <a href="pam_set_item.3">pam_set_item(3)</a>, <a href="pam_get_item.3">pam_get_item(3)</a>, <a href="pam_strerror.3">pam_strerror(3)</a>,
+       <a href="../man8/pam.8">pam(8)</a>
+</pre> <h2>
+COLOPHON </h2>
+<pre>
+       This page is part of the <i>linux-pam</i> (Pluggable Authentication
+       Modules for Linux) project.  Information about the project can be
+       found at ⟨<a href="http://www.linux-pam.org/">http://www.linux-pam.org/</a>⟩.  If you have a bug report
+       for this manual page, see ⟨//www.linux-pam.org/⟩.  This page was
+       obtained from the project's upstream Git repository
+       ⟨<a href="https://github.com/linux-pam/linux-pam.git">https://github.com/linux-pam/linux-pam.git</a>⟩ on 2023-12-22.  (At
+       that time, the date of the most recent commit that was found in
+       the repository was 2023-12-18.)  If you discover any rendering
+       problems in this HTML version of the page, or you believe there
+       is a better or more up-to-date source for the page, or you have
+       corrections or improvements to the information in this COLOPHON
+       (which is <i>not</i> part of the original manual page), send a mail to
+       man-pages@man7.org
+
+<span class="footline">Linux-PAM Manual               12/22/2023                    <i>PAM_CONV</i>(3)</span>
+</pre>  <p>Pages that refer to this page: <a href="misc_conv.3">misc_conv(3)</a>, <a href="pam.3">pam(3)</a>, <a href="pam_authenticate.3">pam_authenticate(3)</a>, <a href="pam_get_item.3">pam_get_item(3)</a>, <a href="pam_get_user.3">pam_get_user(3)</a>, <a href="pam_prompt.3">pam_prompt(3)</a>, <a href="pam_set_item.3">pam_set_item(3)</a> </p> <hr>         <div class="_attribution">
+  <p class="_attribution-p">
+    ...<br>
+    <a href="https://man7.org/linux/man-pages/man3/pam_conv.3.html" class="_attribution-link">https://man7.org/linux/man-pages/man3/pam_conv.3.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
