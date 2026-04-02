@@ -1,0 +1,125 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Generated Columns - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="A generated column is a special column that is always computed from other columns. Thus, it is for columns what a view is for tables. There are two &hellip;">
+  <meta name="keywords" content="generated, columns, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/ddl-generated-columns.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>5.4. Generated Columns </h1>    <p>A generated column is a special column that is always computed from other columns. Thus, it is for columns what a view is for tables. There are two kinds of generated columns: stored and virtual. A stored generated column is computed when it is written (inserted or updated) and occupies storage as if it were a normal column. A virtual generated column occupies no storage and is computed when it is read. Thus, a virtual generated column is similar to a view and a stored generated column is similar to a materialized view (except that it is always updated automatically).</p> <p>To create a generated column, use the <code class="literal">GENERATED ALWAYS AS</code> clause in <code class="command">CREATE TABLE</code>, for example:</p> <pre data-language="sql">
+CREATE TABLE people (
+    ...,
+    height_cm numeric,
+    height_in numeric <strong>GENERATED ALWAYS AS (height_cm / 2.54)</strong>
+);
+</pre> <p>A generated column is by default of the virtual kind. Use the keywords <code class="literal">VIRTUAL</code> or <code class="literal">STORED</code> to make the choice explicit. See <a class="xref" href="sql-createtable" title="CREATE TABLE">CREATE TABLE</a> for more details.</p> <p>A generated column cannot be written to directly. In <code class="command">INSERT</code> or <code class="command">UPDATE</code> commands, a value cannot be specified for a generated column, but the keyword <code class="literal">DEFAULT</code> may be specified.</p> <p>Consider the differences between a column with a default and a generated column. The column default is evaluated once when the row is first inserted if no other value was provided; a generated column is updated whenever the row changes and cannot be overridden. A column default may not refer to other columns of the table; a generation expression would normally do so. A column default can use volatile functions, for example <code class="literal">random()</code> or functions referring to the current time; this is not allowed for generated columns.</p> <p>Several restrictions apply to the definition of generated columns and tables involving generated columns:</p>  <ul> <li> <p>The generation expression can only use immutable functions and cannot use subqueries or reference anything other than the current row in any way.</p> </li> <li> <p>A generation expression cannot reference another generated column.</p> </li> <li> <p>A generation expression cannot reference a system column, except <code class="varname">tableoid</code>.</p> </li> <li> <p>A virtual generated column cannot have a user-defined type, and the generation expression of a virtual generated column must not reference user-defined functions or types, that is, it can only use built-in functions or types. This applies also indirectly, such as for functions or types that underlie operators or casts. (This restriction does not exist for stored generated columns.)</p> </li> <li> <p>A generated column cannot have a column default or an identity definition.</p> </li> <li> <p>A generated column cannot be part of a partition key.</p> </li> <li> <p>Foreign tables can have generated columns. See <a class="xref" href="sql-createforeigntable" title="CREATE FOREIGN TABLE">CREATE FOREIGN TABLE</a> for details.</p> </li> <li> <p>For inheritance and partitioning:</p>  <ul> <li> <p>If a parent column is a generated column, its child column must also be a generated column of the same kind (stored or virtual); however, the child column can have a different generation expression.</p> <p>For stored generated columns, the generation expression that is actually applied during insert or update of a row is the one associated with the table that the row is physically in. (This is unlike the behavior for column defaults: for those, the default value associated with the table named in the query applies.) For virtual generated columns, the generation expression of the table named in the query applies when a table is read.</p> </li> <li> <p>If a parent column is not a generated column, its child column must not be generated either.</p> </li> <li> <p>For inherited tables, if you write a child column definition without any <code class="literal">GENERATED</code> clause in <code class="command">CREATE TABLE ... INHERITS</code>, then its <code class="literal">GENERATED</code> clause will automatically be copied from the parent. <code class="command">ALTER TABLE ... INHERIT</code> will insist that parent and child columns already match as to generation status, but it will not require their generation expressions to match.</p> </li> <li> <p>Similarly for partitioned tables, if you write a child column definition without any <code class="literal">GENERATED</code> clause in <code class="command">CREATE TABLE ... PARTITION OF</code>, then its <code class="literal">GENERATED</code> clause will automatically be copied from the parent. <code class="command">ALTER TABLE ... ATTACH PARTITION</code> will insist that parent and child columns already match as to generation status, but it will not require their generation expressions to match.</p> </li> <li> <p>In case of multiple inheritance, if one parent column is a generated column, then all parent columns must be generated columns. If they do not all have the same generation expression, then the desired expression for the child must be specified explicitly.</p> </li> </ul>  </li> </ul>  <p>Additional considerations apply to the use of generated columns.</p>  <ul> <li> <p>Generated columns maintain access privileges separately from their underlying base columns. So, it is possible to arrange it so that a particular role can read from a generated column but not from the underlying base columns.</p> <p>For virtual generated columns, this is only fully secure if the generation expression uses only leakproof functions (see <a class="xref" href="sql-createfunction" title="CREATE FUNCTION">CREATE FUNCTION</a>), but this is not enforced by the system.</p> </li> <li> <p>Privileges of functions used in generation expressions are checked when the expression is actually executed, on write or read respectively, as if the generation expression had been called directly from the query using the generated column. The user of a generated column must have permissions to call all functions used by the generation expression. Functions in the generation expression are executed with the privileges of the user executing the query or the function owner, depending on whether the functions are defined as <code class="literal">SECURITY INVOKER</code> or <code class="literal">SECURITY DEFINER</code>.</p> </li> <li> <p>Generated columns are, conceptually, updated after <code class="literal">BEFORE</code> triggers have run. Therefore, changes made to base columns in a <code class="literal">BEFORE</code> trigger will be reflected in generated columns. But conversely, it is not allowed to access generated columns in <code class="literal">BEFORE</code> triggers.</p> </li> <li> <p>Generated columns are allowed to be replicated during logical replication according to the <code class="command">CREATE PUBLICATION</code> parameter <a class="link" href="sql-createpublication#SQL-CREATEPUBLICATION-PARAMS-WITH-PUBLISH-GENERATED-COLUMNS"><code class="literal">publish_generated_columns</code></a> or by including them in the column list of the <code class="command">CREATE PUBLICATION</code> command. This is currently only supported for stored generated columns. See <a class="xref" href="logical-replication-gencols" title="29.6. Generated Column Replication">Section 29.6</a> for details.</p> </li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/ddl-generated-columns.html" class="_attribution-link">https://www.postgresql.org/docs/18/ddl-generated-columns.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

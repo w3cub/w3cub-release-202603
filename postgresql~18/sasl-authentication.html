@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>SASL Authentication - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="SASL is a framework for authentication in connection-oriented protocols. At the moment, PostgreSQL implements three SASL authentication mechanisms&# &hellip;">
+  <meta name="keywords" content="sasl, authentication, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/sasl-authentication.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>54.3. SASL Authentication </h1>    <div class="toc"> <dl class="toc"> <dt><a href="sasl-authentication#SASL-SCRAM-SHA-256">54.3.1. SCRAM-SHA-256 Authentication</a></dt> <dt><a href="sasl-authentication#SASL-OAUTHBEARER">54.3.2. OAUTHBEARER Authentication</a></dt> </dl> </div> <p><em class="firstterm">SASL</em> is a framework for authentication in connection-oriented protocols. At the moment, PostgreSQL implements three SASL authentication mechanisms: SCRAM-SHA-256, SCRAM-SHA-256-PLUS, and OAUTHBEARER. More might be added in the future. The below steps illustrate how SASL authentication is performed in general, while the next subsections give more details on particular mechanisms.</p> <div class="procedure" id="id-1.10.6.8.3"> <p class="title"><strong>SASL Authentication Message Flow</strong></p> <ol class="procedure" type="1"> <li id="SASL-AUTH-BEGIN"> <p>To begin a SASL authentication exchange, the server sends an AuthenticationSASL message. It includes a list of SASL authentication mechanisms that the server can accept, in the server's preferred order.</p> </li> <li id="SASL-AUTH-INITIAL-RESPONSE"> <p>The client selects one of the supported mechanisms from the list, and sends a SASLInitialResponse message to the server. The message includes the name of the selected mechanism, and an optional Initial Client Response, if the selected mechanism uses that.</p> </li> <li id="SASL-AUTH-CONTINUE"> <p>One or more server-challenge and client-response message will follow. Each server-challenge is sent in an AuthenticationSASLContinue message, followed by a response from client in a SASLResponse message. The particulars of the messages are mechanism specific.</p> </li> <li id="SASL-AUTH-END"> <p>Finally, when the authentication exchange is completed successfully, the server sends an optional AuthenticationSASLFinal message, followed immediately by an AuthenticationOk message. The AuthenticationSASLFinal contains additional server-to-client data, whose content is particular to the selected authentication mechanism. If the authentication mechanism doesn't use additional data that's sent at completion, the AuthenticationSASLFinal message is not sent.</p> </li> </ol> </div> <p>On error, the server can abort the authentication at any stage, and send an ErrorMessage.</p> <div class="sect2" id="SASL-SCRAM-SHA-256">    <h2 class="title">54.3.1. SCRAM-SHA-256 Authentication </h2>    <p><code class="literal">SCRAM-SHA-256</code>, and its variant with channel binding <code class="literal">SCRAM-SHA-256-PLUS</code>, are password-based authentication mechanisms. They are described in detail in <a class="ulink" href="https://datatracker.ietf.org/doc/html/rfc7677" target="_top">RFC 7677</a> and <a class="ulink" href="https://datatracker.ietf.org/doc/html/rfc5802" target="_top">RFC 5802</a>.</p> <p>When SCRAM-SHA-256 is used in PostgreSQL, the server will ignore the user name that the client sends in the <code class="structname">client-first-message</code>. The user name that was already sent in the startup message is used instead. PostgreSQL supports multiple character encodings, while SCRAM dictates UTF-8 to be used for the user name, so it might be impossible to represent the PostgreSQL user name in UTF-8.</p> <p>The SCRAM specification dictates that the password is also in UTF-8, and is processed with the <em class="firstterm">SASLprep</em> algorithm. PostgreSQL, however, does not require UTF-8 to be used for the password. When a user's password is set, it is processed with SASLprep as if it was in UTF-8, regardless of the actual encoding used. However, if it is not a legal UTF-8 byte sequence, or it contains UTF-8 byte sequences that are prohibited by the SASLprep algorithm, the raw password will be used without SASLprep processing, instead of throwing an error. This allows the password to be normalized when it is in UTF-8, but still allows a non-UTF-8 password to be used, and doesn't require the system to know which encoding the password is in.</p> <p><em class="firstterm">Channel binding</em> is supported in PostgreSQL builds with SSL support. The SASL mechanism name for SCRAM with channel binding is <code class="literal">SCRAM-SHA-256-PLUS</code>. The channel binding type used by PostgreSQL is <code class="literal">tls-server-end-point</code>.</p> <p>In SCRAM without channel binding, the server chooses a random number that is transmitted to the client to be mixed with the user-supplied password in the transmitted password hash. While this prevents the password hash from being successfully retransmitted in a later session, it does not prevent a fake server between the real server and client from passing through the server's random value and successfully authenticating.</p> <p>SCRAM with channel binding prevents such man-in-the-middle attacks by mixing the signature of the server's certificate into the transmitted password hash. While a fake server can retransmit the real server's certificate, it doesn't have access to the private key matching that certificate, and therefore cannot prove it is the owner, causing SSL connection failure.</p> <div class="procedure" id="id-1.10.6.8.5.8"> <p class="title"><strong>Example</strong></p> <ol class="procedure" type="1"> <li id="SCRAM-BEGIN"> <p>The server sends an AuthenticationSASL message. It includes a list of SASL authentication mechanisms that the server can accept. This will be <code class="literal">SCRAM-SHA-256-PLUS</code> and <code class="literal">SCRAM-SHA-256</code> if the server is built with SSL support, or else just the latter.</p> </li> <li id="SCRAM-CLIENT-FIRST"> <p>The client responds by sending a SASLInitialResponse message, which indicates the chosen mechanism, <code class="literal">SCRAM-SHA-256</code> or <code class="literal">SCRAM-SHA-256-PLUS</code>. (A client is free to choose either mechanism, but for better security it should choose the channel-binding variant if it can support it.) In the Initial Client response field, the message contains the SCRAM <code class="structname">client-first-message</code>. The <code class="structname">client-first-message</code> also contains the channel binding type chosen by the client.</p> </li> <li id="SCRAM-SERVER-FIRST"> <p>Server sends an AuthenticationSASLContinue message, with a SCRAM <code class="structname">server-first-message</code> as the content.</p> </li> <li id="SCRAM-CLIENT-FINAL"> <p>Client sends a SASLResponse message, with SCRAM <code class="structname">client-final-message</code> as the content.</p> </li> <li id="SCRAM-SERVER-FINAL"> <p>Server sends an AuthenticationSASLFinal message, with the SCRAM <code class="structname">server-final-message</code>, followed immediately by an AuthenticationOk message.</p> </li> </ol> </div> </div> <div class="sect2" id="SASL-OAUTHBEARER">    <h2 class="title">54.3.2. OAUTHBEARER Authentication </h2>    <p><code class="literal">OAUTHBEARER</code> is a token-based mechanism for federated authentication. It is described in detail in <a class="ulink" href="https://datatracker.ietf.org/doc/html/rfc7628" target="_top">RFC 7628</a>.</p> <p>A typical exchange differs depending on whether or not the client already has a bearer token cached for the current user. If it does not, the exchange will take place over two connections: the first "discovery" connection to obtain OAuth metadata from the server, and the second connection to send the token after the client has obtained it. (libpq does not currently implement a caching method as part of its builtin flow, so it uses the two-connection exchange.)</p> <p>This mechanism is client-initiated, like SCRAM. The client initial response consists of the standard "GS2" header used by SCRAM, followed by a list of <code class="literal">key=value</code> pairs. The only key currently supported by the server is <code class="literal">auth</code>, which contains the bearer token. <code class="literal">OAUTHBEARER</code> additionally specifies three optional components of the client initial response (the <code class="literal">authzid</code> of the GS2 header, and the <code class="structfield">host</code> and <code class="structfield">port</code> keys) which are currently ignored by the server.</p> <p><code class="literal">OAUTHBEARER</code> does not support channel binding, and there is no "OAUTHBEARER-PLUS" mechanism. This mechanism does not make use of server data during a successful authentication, so the AuthenticationSASLFinal message is not used in the exchange.</p> <div class="procedure" id="id-1.10.6.8.6.6"> <p class="title"><strong>Example</strong></p> <ol class="procedure" type="1"> <li> <p>During the first exchange, the server sends an AuthenticationSASL message with the <code class="literal">OAUTHBEARER</code> mechanism advertised.</p> </li> <li> <p>The client responds by sending a SASLInitialResponse message which indicates the <code class="literal">OAUTHBEARER</code> mechanism. Assuming the client does not already have a valid bearer token for the current user, the <code class="structfield">auth</code> field is empty, indicating a discovery connection.</p> </li> <li> <p>Server sends an AuthenticationSASLContinue message containing an error <code class="literal">status</code> alongside a well-known URI and scopes that the client should use to conduct an OAuth flow.</p> </li> <li> <p>Client sends a SASLResponse message containing the empty set (a single <code class="literal">0x01</code> byte) to finish its half of the discovery exchange.</p> </li> <li> <p>Server sends an ErrorMessage to fail the first exchange.</p> <p>At this point, the client conducts one of many possible OAuth flows to obtain a bearer token, using any metadata that it has been configured with in addition to that provided by the server. (This description is left deliberately vague; <code class="literal">OAUTHBEARER</code> does not specify or mandate any particular method for obtaining a token.)</p> <p>Once it has a token, the client reconnects to the server for the final exchange:</p> </li> <li> <p>The server once again sends an AuthenticationSASL message with the <code class="literal">OAUTHBEARER</code> mechanism advertised.</p> </li> <li> <p>The client responds by sending a SASLInitialResponse message, but this time the <code class="structfield">auth</code> field in the message contains the bearer token that was obtained during the client flow.</p> </li> <li> <p>The server validates the token according to the instructions of the token provider. If the client is authorized to connect, it sends an AuthenticationOk message to end the SASL exchange.</p> </li> </ol> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/sasl-authentication.html" class="_attribution-link">https://www.postgresql.org/docs/18/sasl-authentication.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

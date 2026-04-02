@@ -1,0 +1,205 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>ALTER DEFAULT PRIVILEGES - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content=" ALTER DEFAULT PRIVILEGES — define default access privileges ">
+  <meta name="keywords" content="alter, default, privileges, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/sql-alterdefaultprivileges.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>ALTER DEFAULT PRIVILEGES</h1> <p>ALTER DEFAULT PRIVILEGES — define default access privileges</p>   <h2>Synopsis</h2> <pre data-language="sql">
+ALTER DEFAULT PRIVILEGES
+    [ FOR { ROLE | USER } target_role [, ...] ]
+    [ IN SCHEMA schema_name [, ...] ]
+    abbreviated_grant_or_revoke
+
+where abbreviated_grant_or_revoke is one of:
+
+GRANT { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER | MAINTAIN }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON TABLES
+    TO { [ GROUP ] role_name | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+
+GRANT { { USAGE | SELECT | UPDATE }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON SEQUENCES
+    TO { [ GROUP ] role_name | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+
+GRANT { EXECUTE | ALL [ PRIVILEGES ] }
+    ON { FUNCTIONS | ROUTINES }
+    TO { [ GROUP ] role_name | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+
+GRANT { USAGE | ALL [ PRIVILEGES ] }
+    ON TYPES
+    TO { [ GROUP ] role_name | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+
+GRANT { { USAGE | CREATE }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON SCHEMAS
+    TO { [ GROUP ] role_name | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+
+GRANT { { SELECT | UPDATE }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON LARGE OBJECTS
+    TO { [ GROUP ] role_name | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER | MAINTAIN }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON TABLES
+    FROM { [ GROUP ] role_name | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { USAGE | SELECT | UPDATE }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON SEQUENCES
+    FROM { [ GROUP ] role_name | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { EXECUTE | ALL [ PRIVILEGES ] }
+    ON { FUNCTIONS | ROUTINES }
+    FROM { [ GROUP ] role_name | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { USAGE | ALL [ PRIVILEGES ] }
+    ON TYPES
+    FROM { [ GROUP ] role_name | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { USAGE | CREATE }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON SCHEMAS
+    FROM { [ GROUP ] role_name | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { SELECT | UPDATE }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON LARGE OBJECTS
+    FROM { [ GROUP ] role_name | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+</pre>  <div class="refsect1" id="SQL-ALTERDEFAULTPRIVILEGES-DESCRIPTION"> <h2>Description</h2> <p><code class="command">ALTER DEFAULT PRIVILEGES</code> allows you to set the privileges that will be applied to objects created in the future. (It does not affect privileges assigned to already-existing objects.) Privileges can be set globally (i.e., for all objects created in the current database), or just for objects created in specified schemas.</p> <p>While you can change your own default privileges and the defaults of roles that you are a member of, at object creation time, new object permissions are only affected by the default privileges of the current role, and are not inherited from any roles in which the current role is a member.</p> <p>As explained in <a class="xref" href="ddl-priv" title="5.8. Privileges">Section 5.8</a>, the default privileges for any object type normally grant all grantable permissions to the object owner, and may grant some privileges to <code class="literal">PUBLIC</code> as well. However, this behavior can be changed by altering the global default privileges with <code class="command">ALTER DEFAULT PRIVILEGES</code>.</p> <p>Currently, only the privileges for schemas, tables (including views and foreign tables), sequences, functions, types (including domains), and large objects can be altered. For this command, functions include aggregates and procedures. The words <code class="literal">FUNCTIONS</code> and <code class="literal">ROUTINES</code> are equivalent in this command. (<code class="literal">ROUTINES</code> is preferred going forward as the standard term for functions and procedures taken together. In earlier PostgreSQL releases, only the word <code class="literal">FUNCTIONS</code> was allowed. It is not possible to set default privileges for functions and procedures separately.)</p> <p>Default privileges that are specified per-schema are added to whatever the global default privileges are for the particular object type. This means you cannot revoke privileges per-schema if they are granted globally (either by default, or according to a previous <code class="command">ALTER DEFAULT PRIVILEGES</code> command that did not specify a schema). Per-schema <code class="literal">REVOKE</code> is only useful to reverse the effects of a previous per-schema <code class="literal">GRANT</code>.</p> <div class="refsect2" id="id-1.9.3.8.5.7"> <h3>Parameters</h3> <div class="variablelist"> <dl class="variablelist"> <dt><code>target_role</code></dt> <dd> <p>Change default privileges for objects created by the <code>target_role</code>, or the current role if unspecified.</p> </dd> <dt><code>schema_name</code></dt> <dd> <p>The name of an existing schema. If specified, the default privileges are altered for objects later created in that schema. If <code class="literal">IN SCHEMA</code> is omitted, the global default privileges are altered. <code class="literal">IN SCHEMA</code> is not allowed when setting privileges for schemas and large objects, since schemas can't be nested and large objects don't belong to a schema.</p> </dd> <dt><code>role_name</code></dt> <dd> <p>The name of an existing role to grant or revoke privileges for. This parameter, and all the other parameters in <code>abbreviated_grant_or_revoke</code>, act as described under <a class="xref" href="sql-grant" title="GRANT">GRANT</a> or <a class="xref" href="sql-revoke" title="REVOKE">REVOKE</a>, except that one is setting permissions for a whole class of objects rather than specific named objects.</p> </dd> </dl> </div> </div> </div> <div class="refsect1" id="SQL-ALTERDEFAULTPRIVILEGES-NOTES"> <h2>Notes</h2> <p>Use <a class="xref" href="app-psql" title="psql">psql</a>'s <code class="command">\ddp</code> command to obtain information about existing assignments of default privileges. The meaning of the privilege display is the same as explained for <code class="command">\dp</code> in <a class="xref" href="ddl-priv" title="5.8. Privileges">Section 5.8</a>.</p> <p>If you wish to drop a role for which the default privileges have been altered, it is necessary to reverse the changes in its default privileges or use <code class="command">DROP OWNED BY</code> to get rid of the default privileges entry for the role.</p> </div> <div class="refsect1" id="SQL-ALTERDEFAULTPRIVILEGES-EXAMPLES"> <h2>Examples</h2> <p>Grant SELECT privilege to everyone for all tables (and views) you subsequently create in schema <code class="literal">myschema</code>, and allow role <code class="literal">webuser</code> to INSERT into them too:</p> <pre data-language="sql">
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema GRANT SELECT ON TABLES TO PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema GRANT INSERT ON TABLES TO webuser;
+</pre> <p>Undo the above, so that subsequently-created tables won't have any more permissions than normal:</p> <pre data-language="sql">
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema REVOKE SELECT ON TABLES FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema REVOKE INSERT ON TABLES FROM webuser;
+</pre> <p>Remove the public EXECUTE permission that is normally granted on functions, for all functions subsequently created by role <code class="literal">admin</code>:</p> <pre data-language="sql">
+ALTER DEFAULT PRIVILEGES FOR ROLE admin REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+</pre> <p>Note however that you <span class="emphasis"><em>cannot</em></span> accomplish that effect with a command limited to a single schema. This command has no effect, unless it is undoing a matching <code class="literal">GRANT</code>:</p> <pre data-language="sql">
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+</pre> <p>That's because per-schema default privileges can only add privileges to the global setting, not remove privileges granted by it.</p> </div> <div class="refsect1" id="id-1.9.3.8.8"> <h2>Compatibility</h2> <p>There is no <code class="command">ALTER DEFAULT PRIVILEGES</code> statement in the SQL standard.</p> </div> <div class="refsect1" id="id-1.9.3.8.9"> <h2>See Also</h2>
+<span class="simplelist"><a class="xref" href="sql-grant" title="GRANT">GRANT</a>, <a class="xref" href="sql-revoke" title="REVOKE">REVOKE</a></span> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/sql-alterdefaultprivileges.html" class="_attribution-link">https://www.postgresql.org/docs/18/sql-alterdefaultprivileges.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Pg_overexplain — Allow EXPLAIN to Dump Even More Details - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="The pg_overexplain module extends EXPLAIN with new options that provide additional output. It is mostly intended to assist with debugging of and &hellip;">
+  <meta name="keywords" content="f, pg, overexplain, —, allow, explain, dump, even, more, details, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/pgoverexplain.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>F.29. pg_overexplain — allow EXPLAIN to dump even more details </h1>    <div class="toc"> <dl class="toc"> <dt><a href="pgoverexplain#PGOVEREXPLAIN-DEBUG">F.29.1. EXPLAIN (DEBUG)</a></dt> <dt><a href="pgoverexplain#PGOVEREXPLAIN-RANGE-TABLE">F.29.2. EXPLAIN (RANGE_TABLE)</a></dt> <dt><a href="pgoverexplain#PGOVEREXPLAIN-AUTHOR">F.29.3. Author</a></dt> </dl> </div> <p>The <code class="filename">pg_overexplain</code> module extends <code class="command">EXPLAIN</code> with new options that provide additional output. It is mostly intended to assist with debugging of and development of the planner, rather than for general use. Since this module displays internal details of planner data structures, it may be necessary to refer to the source code to make sense of the output. Furthermore, the output is likely to change whenever (and as often as) those data structures change.</p> <p>To use it, simply load it into the server. You can load it into an individual session:</p> <pre data-language="sql">
+LOAD 'pg_overexplain';
+</pre> <p>You can also preload it into some or all sessions by including <code class="literal">pg_overexplain</code> in <a class="xref" href="runtime-config-client#GUC-SESSION-PRELOAD-LIBRARIES">session_preload_libraries</a> or <a class="xref" href="runtime-config-client#GUC-SHARED-PRELOAD-LIBRARIES">shared_preload_libraries</a> in <code class="filename">postgresql.conf</code>.</p> <div class="sect2" id="PGOVEREXPLAIN-DEBUG">    <h2 class="title">F.29.1. EXPLAIN (DEBUG) </h2>    <p>The <code class="literal">DEBUG</code> option displays miscellaneous information from the plan tree that is not normally shown because it is not expected to be of general interest. For each individual plan node, it will display the following fields. See <code class="structname">Plan</code> in <code class="filename">nodes/plannodes.h</code> for additional documentation of these fields.</p>  <ul> <li> <p><code class="literal">Disabled Nodes</code>. Normal <code class="command">EXPLAIN</code> determines whether a node is disabled by checking whether the node's count of disabled nodes is larger than the sum of the counts for the underlying nodes. This option shows the raw counter value.</p> </li> <li> <p><code class="literal">Parallel Safe</code>. Indicates whether it would be safe for a plan tree node to appear beneath a <code class="literal">Gather</code> or <code class="literal">Gather Merge</code> node, regardless of whether it is actually below such a node.</p> </li> <li> <p><code class="literal">Plan Node ID</code>. An internal ID number that should be unique for every node in the plan tree. It is used to coordinate parallel query activity.</p> </li> <li> <p><code class="literal">extParam</code> and <code class="literal">allParam</code>. Information about which numbered parameters affect this plan node or its children. In text mode, these fields are only displayed if they are non-empty sets.</p> </li> </ul>  <p>Once per query, the <code class="literal">DEBUG</code> option will display the following fields. See <code class="structname">PlannedStmt</code> in <code class="filename">nodes/plannodes.h</code> for additional detail.</p>  <ul> <li> <p><code class="literal">Command Type</code>. For example, <code class="literal">select</code> or <code class="literal">update</code>.</p> </li> <li> <p><code class="literal">Flags</code>. A comma-separated list of Boolean structure member names from the <code class="structname">PlannedStmt</code> that are set to <code class="literal">true</code>. It covers the following structure members: <code class="literal">hasReturning</code>, <code class="literal">hasModifyingCTE</code>, <code class="literal">canSetTag</code>, <code class="literal">transientPlan</code>, <code class="literal">dependsOnRole</code>, <code class="literal">parallelModeNeeded</code>.</p> </li> <li> <p><code class="literal">Subplans Needing Rewind</code>. Integer IDs of subplans that may need to be rewound by the executor.</p> </li> <li> <p><code class="literal">Relation OIDs</code>. OIDs of relations upon which this plan depends.</p> </li> <li> <p><code class="literal">Executor Parameter Types</code>. Type OID for each executor parameter (e.g. when a nested loop is chosen and a parameter is used to pass a value down to an inner index scan). Does not include parameters supplied to a prepared statement by the user.</p> </li> <li> <p><code class="literal">Parse Location</code>. Location within the query string supplied to the planner where this query's text can be found. May be <code class="literal">Unknown</code> in some contexts. Otherwise, may be <code class="literal">NNN to end</code> for some integer <code class="literal">NNN</code> or <code class="literal">NNN for MMM bytes</code> for some integers <code class="literal">NNN</code> and <code class="literal">MMM</code>.</p> </li> </ul>  </div> <div class="sect2" id="PGOVEREXPLAIN-RANGE-TABLE">    <h2 class="title">F.29.2. EXPLAIN (RANGE_TABLE) </h2>    <p>The <code class="literal">RANGE_TABLE</code> option displays information from the plan tree specifically concerning the query's range table. Range table entries correspond roughly to items appearing in the query's <code class="literal">FROM</code> clause, but with numerous exceptions. For example, subqueries that are proved unnecessary may be deleted from the range table entirely, while inheritance expansion adds range table entries for child tables that are not named directly in the query.</p> <p>Range table entries are generally referenced within the query plan by a range table index, or RTI. Plan nodes that reference one or more RTIs will be labelled accordingly, using one of the following fields: <code class="literal">Scan RTI</code>, <code class="literal">Nominal RTI</code>, <code class="literal">Exclude Relation RTI</code>, <code class="literal">Append RTIs</code>.</p> <p>In addition, the query as a whole may maintain lists of range table indexes that are needed for various purposes. These lists will be displayed once per query, labelled as appropriate as <code class="literal">Unprunable RTIs</code> or <code class="literal">Result RTIs</code>. In text mode, these fields are only displayed if they are non-empty sets.</p> <p>Finally, but most importantly, the <code class="literal">RANGE_TABLE</code> option will display a dump of the query's entire range table. Each range table entry is labelled with the appropriate range table index, the kind of range table entry (e.g. <code class="literal">relation</code>, <code class="literal">subquery</code>, or <code class="literal">join</code>), followed by the contents of various range table entry fields that are not normally part of <code class="command">EXPLAIN</code> output. Some of these fields are only displayed for certain kinds of range table entries. For example, <code class="literal">Eref</code> is displayed for all types of range table entries, but <code class="literal">CTE Name</code> is displayed only for range table entries of type <code class="literal">cte</code>.</p> <p>For more information about range table entries, see the definition of <code class="structname">RangeTblEntry</code> in <code class="filename">nodes/parsenodes.h</code>.</p> </div> <div class="sect2" id="PGOVEREXPLAIN-AUTHOR">    <h2 class="title">F.29.3. Author </h2>    <p>Robert Haas <code class="email">&lt;<a class="email" href="mailto:rhaas@postgresql.org">rhaas@postgresql.org</a>&gt;</code></p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/pgoverexplain.html" class="_attribution-link">https://www.postgresql.org/docs/18/pgoverexplain.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

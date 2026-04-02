@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Publication - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="A publication can be defined on any physical replication primary. The node where a publication is defined is referred to as publisher. A publication &hellip;">
+  <meta name="keywords" content="publication, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/logical-replication-publication.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>29.1. Publication </h1>    <div class="toc"> <dl class="toc"> <dt><a href="logical-replication-publication#LOGICAL-REPLICATION-PUBLICATION-REPLICA-IDENTITY">29.1.1. Replica Identity</a></dt> </dl> </div> <p>A <em class="firstterm">publication</em> can be defined on any physical replication primary. The node where a publication is defined is referred to as <em class="firstterm">publisher</em>. A publication is a set of changes generated from a table or a group of tables, and might also be described as a change set or replication set. Each publication exists in only one database.</p> <p>Publications are different from schemas and do not affect how the table is accessed. Each table can be added to multiple publications if needed. Publications may currently only contain tables and all tables in schema. Objects must be added explicitly, except when a publication is created for <code class="literal">ALL TABLES</code>.</p> <p>Publications can choose to limit the changes they produce to any combination of <code class="command">INSERT</code>, <code class="command">UPDATE</code>, <code class="command">DELETE</code>, and <code class="command">TRUNCATE</code>, similar to how triggers are fired by particular event types. By default, all operation types are replicated. These publication specifications apply only for DML operations; they do not affect the initial data synchronization copy. (Row filters have no effect for <code class="command">TRUNCATE</code>. See <a class="xref" href="logical-replication-row-filter" title="29.4. Row Filters">Section 29.4</a>).</p> <p>Every publication can have multiple subscribers.</p> <p>A publication is created using the <a class="link" href="sql-createpublication" title="CREATE PUBLICATION"><code class="command">CREATE PUBLICATION</code></a> command and may later be altered or dropped using corresponding commands.</p> <p>The individual tables can be added and removed dynamically using <a class="link" href="sql-alterpublication" title="ALTER PUBLICATION"><code class="command">ALTER PUBLICATION</code></a>. Both the <code class="literal">ADD TABLE</code> and <code class="literal">DROP TABLE</code> operations are transactional, so the table will start or stop replicating at the correct snapshot once the transaction has committed.</p> <div class="sect2" id="LOGICAL-REPLICATION-PUBLICATION-REPLICA-IDENTITY">    <h2 class="title">29.1.1. Replica Identity </h2>    <p>A published table must have a <em class="firstterm">replica identity</em> configured in order to be able to replicate <code class="command">UPDATE</code> and <code class="command">DELETE</code> operations, so that appropriate rows to update or delete can be identified on the subscriber side.</p> <p>By default, this is the primary key, if there is one. Another unique index (with certain additional requirements) can also be set to be the replica identity. If the table does not have any suitable key, then it can be set to replica identity <code class="literal">FULL</code>, which means the entire row becomes the key. When replica identity <code class="literal">FULL</code> is specified, indexes can be used on the subscriber side for searching the rows. Candidate indexes must be btree or hash, non-partial, and the leftmost index field must be a column (not an expression) that references the published table column. These restrictions on the non-unique index properties adhere to some of the restrictions that are enforced for primary keys. If there are no such suitable indexes, the search on the subscriber side can be very inefficient, therefore replica identity <code class="literal">FULL</code> should only be used as a fallback if no other solution is possible.</p> <p>If a replica identity other than <code class="literal">FULL</code> is set on the publisher side, a replica identity comprising the same or fewer columns must also be set on the subscriber side.</p> <p>Tables with a replica identity defined as <code class="literal">NOTHING</code>, <code class="literal">DEFAULT</code> without a primary key, or <code class="literal">USING INDEX</code> with a dropped index, cannot support <code class="command">UPDATE</code> or <code class="command">DELETE</code> operations when included in a publication replicating these actions. Attempting such operations will result in an error on the publisher.</p> <p><code class="command">INSERT</code> operations can proceed regardless of any replica identity.</p> <p>See <a class="link" href="sql-altertable#SQL-ALTERTABLE-REPLICA-IDENTITY"><code class="literal">ALTER TABLE...REPLICA IDENTITY</code></a> for details on how to set the replica identity.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/logical-replication-publication.html" class="_attribution-link">https://www.postgresql.org/docs/18/logical-replication-publication.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

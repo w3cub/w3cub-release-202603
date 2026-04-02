@@ -1,0 +1,125 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Btree_gin — GIN Operator Classes With B-tree Behavior - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="btree_gin provides GIN operator classes that implement B-tree equivalent behavior for the data types int2, int4, int8, float4, float8, timestamp &hellip;">
+  <meta name="keywords" content="f, btree, gin, —, operator, classes, with, b-tree, behavior, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/btree-gin.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>F.7. btree_gin — GIN operator classes with B-tree behavior </h1>    <div class="toc"> <dl class="toc"> <dt><a href="btree-gin#BTREE-GIN-EXAMPLE-USAGE">F.7.1. Example Usage</a></dt> <dt><a href="btree-gin#BTREE-GIN-AUTHORS">F.7.2. Authors</a></dt> </dl> </div> <p><code class="filename">btree_gin</code> provides GIN operator classes that implement B-tree equivalent behavior for the data types <code class="type">int2</code>, <code class="type">int4</code>, <code class="type">int8</code>, <code class="type">float4</code>, <code class="type">float8</code>, <code class="type">timestamp with time zone</code>, <code class="type">timestamp without time zone</code>, <code class="type">time with time zone</code>, <code class="type">time without time zone</code>, <code class="type">date</code>, <code class="type">interval</code>, <code class="type">oid</code>, <code class="type">money</code>, <code class="type">"char"</code>, <code class="type">varchar</code>, <code class="type">text</code>, <code class="type">bytea</code>, <code class="type">bit</code>, <code class="type">varbit</code>, <code class="type">macaddr</code>, <code class="type">macaddr8</code>, <code class="type">inet</code>, <code class="type">cidr</code>, <code class="type">uuid</code>, <code class="type">name</code>, <code class="type">bool</code>, <code class="type">bpchar</code>, and all <code class="type">enum</code> types.</p> <p>In general, these operator classes will not outperform the equivalent standard B-tree index methods, and they lack one major feature of the standard B-tree code: the ability to enforce uniqueness. However, they are useful for GIN testing and as a base for developing other GIN operator classes. Also, for queries that test both a GIN-indexable column and a B-tree-indexable column, it might be more efficient to create a multicolumn GIN index that uses one of these operator classes than to create two separate indexes that would have to be combined via bitmap ANDing.</p> <p>This module is considered <span class="quote">“<span class="quote">trusted</span>”</span>, that is, it can be installed by non-superusers who have <code class="literal">CREATE</code> privilege on the current database.</p> <div class="sect2" id="BTREE-GIN-EXAMPLE-USAGE">    <h2 class="title">F.7.1. Example Usage </h2>    <pre data-language="sql">
+CREATE TABLE test (a int4);
+-- create index
+CREATE INDEX testidx ON test USING GIN (a);
+-- query
+SELECT * FROM test WHERE a &lt; 10;
+</pre> </div> <div class="sect2" id="BTREE-GIN-AUTHORS">    <h2 class="title">F.7.2. Authors </h2>    <p>Teodor Sigaev (<code class="email">&lt;<a class="email" href="mailto:teodor@stack.net">teodor@stack.net</a>&gt;</code>) and Oleg Bartunov (<code class="email">&lt;<a class="email" href="mailto:oleg@sai.msu.su">oleg@sai.msu.su</a>&gt;</code>). See <a class="ulink" href="http://www.sai.msu.su/~megera/oddmuse/index.cgi/Gin" target="_top">http://www.sai.msu.su/~megera/oddmuse/index.cgi/Gin</a> for additional information.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/btree-gin.html" class="_attribution-link">https://www.postgresql.org/docs/18/btree-gin.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

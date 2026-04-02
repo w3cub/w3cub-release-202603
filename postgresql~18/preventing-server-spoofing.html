@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Preventing Server Spoofing - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="While the server is running, it is not possible for a malicious user to take the place of the normal database server. However, when the server is &hellip;">
+  <meta name="keywords" content="preventing, server, spoofing, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/preventing-server-spoofing.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>18.7. Preventing Server Spoofing </h1>    <p>While the server is running, it is not possible for a malicious user to take the place of the normal database server. However, when the server is down, it is possible for a local user to spoof the normal server by starting their own server. The spoof server could read passwords and queries sent by clients, but could not return any data because the <code class="varname">PGDATA</code> directory would still be secure because of directory permissions. Spoofing is possible because any user can start a database server; a client cannot identify an invalid server unless it is specially configured.</p> <p>One way to prevent spoofing of <code class="literal">local</code> connections is to use a Unix domain socket directory (<a class="xref" href="https://www.postgresql.org/docs/18/runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES">unix_socket_directories</a>) that has write permission only for a trusted local user. This prevents a malicious user from creating their own socket file in that directory. If you are concerned that some applications might still reference <code class="filename">/tmp</code> for the socket file and hence be vulnerable to spoofing, during operating system startup create a symbolic link <code class="filename">/tmp/.s.PGSQL.5432</code> that points to the relocated socket file. You also might need to modify your <code class="filename">/tmp</code> cleanup script to prevent removal of the symbolic link.</p> <p>Another option for <code class="literal">local</code> connections is for clients to use <a class="link" href="https://www.postgresql.org/docs/18/libpq-connect.html#LIBPQ-CONNECT-REQUIREPEER"><code class="literal">requirepeer</code></a> to specify the required owner of the server process connected to the socket.</p> <p>To prevent spoofing on TCP connections, either use SSL certificates and make sure that clients check the server's certificate, or use GSSAPI encryption (or both, if they're on separate connections).</p> <p>To prevent spoofing with SSL, the server must be configured to accept only <code class="literal">hostssl</code> connections (<a class="xref" href="auth-pg-hba-conf" title="20.1. The pg_hba.conf File">Section 20.1</a>) and have SSL key and certificate files (<a class="xref" href="ssl-tcp" title="18.9. Secure TCP/IP Connections with SSL">Section 18.9</a>). The TCP client must connect using <code class="literal">sslmode=verify-ca</code> or <code class="literal">verify-full</code> and have the appropriate root certificate file installed (<a class="xref" href="https://www.postgresql.org/docs/18/libpq-ssl.html#LIBQ-SSL-CERTIFICATES" title="32.19.1. Client Verification of Server Certificates">Section 32.19.1</a>). Alternatively the <a class="link" href="https://www.postgresql.org/docs/18/libpq-connect.html#LIBPQ-CONNECT-SSLROOTCERT">system CA pool</a>, as defined by the SSL implementation, can be used using <code class="literal">sslrootcert=system</code>; in this case, <code class="literal">sslmode=verify-full</code> is forced for safety, since it is generally trivial to obtain certificates which are signed by a public CA.</p> <p>To prevent server spoofing from occurring when using <a class="link" href="auth-password" title="20.5. Password Authentication">scram-sha-256</a> password authentication over a network, you should ensure that you connect to the server using SSL and with one of the anti-spoofing methods described in the previous paragraph. Additionally, the SCRAM implementation in libpq cannot protect the entire authentication exchange, but using the <code class="literal">channel_binding=require</code> connection parameter provides a mitigation against server spoofing. An attacker that uses a rogue server to intercept a SCRAM exchange can use offline analysis to potentially determine the hashed password from the client.</p> <p>To prevent spoofing with GSSAPI, the server must be configured to accept only <code class="literal">hostgssenc</code> connections (<a class="xref" href="auth-pg-hba-conf" title="20.1. The pg_hba.conf File">Section 20.1</a>) and use <code class="literal">gss</code> authentication with them. The TCP client must connect using <code class="literal">gssencmode=require</code>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/preventing-server-spoofing.html" class="_attribution-link">https://www.postgresql.org/docs/18/preventing-server-spoofing.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

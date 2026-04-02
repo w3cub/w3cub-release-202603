@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>OAuth Validator Callbacks - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="OAuth validator modules implement their functionality by defining a set of callbacks. The server will call them as required to process the &hellip;">
+  <meta name="keywords" content="oauth, validator, callbacks, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/oauth-validator-callbacks.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>50.3. OAuth Validator Callbacks </h1>    <div class="toc"> <dl class="toc"> <dt><a href="oauth-validator-callbacks#OAUTH-VALIDATOR-CALLBACK-STARTUP">50.3.1. Startup Callback</a></dt> <dt><a href="oauth-validator-callbacks#OAUTH-VALIDATOR-CALLBACK-VALIDATE">50.3.2. Validate Callback</a></dt> <dt><a href="oauth-validator-callbacks#OAUTH-VALIDATOR-CALLBACK-SHUTDOWN">50.3.3. Shutdown Callback</a></dt> </dl> </div> <p>OAuth validator modules implement their functionality by defining a set of callbacks. The server will call them as required to process the authentication request from the user.</p> <div class="sect2" id="OAUTH-VALIDATOR-CALLBACK-STARTUP">    <h2 class="title">50.3.1. Startup Callback </h2>    <p>The <code class="function">startup_cb</code> callback is executed directly after loading the module. This callback can be used to set up local state and perform additional initialization if required. If the validator module has state it can use <code class="structfield">state-&gt;private_data</code> to store it.</p> <pre data-language="sql">
+typedef void (*ValidatorStartupCB) (ValidatorModuleState *state);
+</pre> </div> <div class="sect2" id="OAUTH-VALIDATOR-CALLBACK-VALIDATE">    <h2 class="title">50.3.2. Validate Callback </h2>    <p>The <code class="function">validate_cb</code> callback is executed during the OAuth exchange when a user attempts to authenticate using OAuth. Any state set in previous calls will be available in <code class="structfield">state-&gt;private_data</code>.</p> <pre data-language="sql">
+typedef bool (*ValidatorValidateCB) (const ValidatorModuleState *state,
+                                     const char *token, const char *role,
+                                     ValidatorModuleResult *result);
+</pre> <p><code>token</code> will contain the bearer token to validate. PostgreSQL has ensured that the token is well-formed syntactically, but no other validation has been performed. <code>role</code> will contain the role the user has requested to log in as. The callback must set output parameters in the <code class="literal">result</code> struct, which is defined as below:</p> <pre data-language="sql">
+typedef struct ValidatorModuleResult
+{
+    bool        authorized;
+    char       *authn_id;
+} ValidatorModuleResult;
+</pre> <p>The connection will only proceed if the module sets <code class="structfield">result-&gt;authorized</code> to <code class="literal">true</code>. To authenticate the user, the authenticated user name (as determined using the token) shall be palloc'd and returned in the <code class="structfield">result-&gt;authn_id</code> field. Alternatively, <code class="structfield">result-&gt;authn_id</code> may be set to NULL if the token is valid but the associated user identity cannot be determined.</p> <p>A validator may return <code class="literal">false</code> to signal an internal error, in which case any result parameters are ignored and the connection fails. Otherwise the validator should return <code class="literal">true</code> to indicate that it has processed the token and made an authorization decision.</p> <p>The behavior after <code class="function">validate_cb</code> returns depends on the specific HBA setup. Normally, the <code class="structfield">result-&gt;authn_id</code> user name must exactly match the role that the user is logging in as. (This behavior may be modified with a usermap.) But when authenticating against an HBA rule with <code class="literal">delegate_ident_mapping</code> turned on, PostgreSQL will not perform any checks on the value of <code class="structfield">result-&gt;authn_id</code> at all; in this case it is up to the validator to ensure that the token carries enough privileges for the user to log in under the indicated <code>role</code>.</p> </div> <div class="sect2" id="OAUTH-VALIDATOR-CALLBACK-SHUTDOWN">    <h2 class="title">50.3.3. Shutdown Callback </h2>    <p>The <code class="function">shutdown_cb</code> callback is executed when the backend process associated with the connection exits. If the validator module has any allocated state, this callback should free it to avoid resource leaks.</p> <pre data-language="sql">
+typedef void (*ValidatorShutdownCB) (ValidatorModuleState *state);
+</pre> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/oauth-validator-callbacks.html" class="_attribution-link">https://www.postgresql.org/docs/18/oauth-validator-callbacks.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

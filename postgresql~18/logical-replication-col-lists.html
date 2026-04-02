@@ -1,0 +1,170 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Column Lists - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="Each publication can optionally specify which columns of each table are replicated to subscribers. The table on the subscriber side must have at &hellip;">
+  <meta name="keywords" content="column, lists, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/logical-replication-col-lists.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>29.5. Column Lists </h1>    <div class="toc"> <dl class="toc"> <dt><a href="logical-replication-col-lists#LOGICAL-REPLICATION-COL-LIST-EXAMPLES">29.5.1. Examples</a></dt> </dl> </div> <p>Each publication can optionally specify which columns of each table are replicated to subscribers. The table on the subscriber side must have at least all the columns that are published. If no column list is specified, then all columns on the publisher are replicated. See <a class="xref" href="sql-createpublication" title="CREATE PUBLICATION">CREATE PUBLICATION</a> for details on the syntax.</p> <p>The choice of columns can be based on behavioral or performance reasons. However, do not rely on this feature for security: a malicious subscriber is able to obtain data from columns that are not specifically published. If security is a consideration, protections can be applied at the publisher side.</p> <p>If no column list is specified, any columns added to the table later are automatically replicated. This means that having a column list which names all columns is not the same as having no column list at all.</p> <p>A column list can contain only simple column references. The order of columns in the list is not preserved.</p> <p>Generated columns can also be specified in a column list. This allows generated columns to be published, regardless of the publication parameter <a class="link" href="sql-createpublication#SQL-CREATEPUBLICATION-PARAMS-WITH-PUBLISH-GENERATED-COLUMNS"><code class="literal">publish_generated_columns</code></a>. See <a class="xref" href="logical-replication-gencols" title="29.6. Generated Column Replication">Section 29.6</a> for details.</p> <p>Specifying a column list when the publication also publishes <a class="link" href="sql-createpublication#SQL-CREATEPUBLICATION-PARAMS-FOR-TABLES-IN-SCHEMA"><code class="literal">FOR TABLES IN SCHEMA</code></a> is not supported.</p> <p>For partitioned tables, the publication parameter <a class="link" href="sql-createpublication#SQL-CREATEPUBLICATION-PARAMS-WITH-PUBLISH-VIA-PARTITION-ROOT"><code class="literal">publish_via_partition_root</code></a> determines which column list is used. If <code class="literal">publish_via_partition_root</code> is <code class="literal">true</code>, the root partitioned table's column list is used. Otherwise, if <code class="literal">publish_via_partition_root</code> is <code class="literal">false</code> (the default), each partition's column list is used.</p> <p>If a publication publishes <code class="command">UPDATE</code> or <code class="command">DELETE</code> operations, any column list must include the table's replica identity columns (see <a class="xref" href="sql-altertable#SQL-ALTERTABLE-REPLICA-IDENTITY"><code class="literal">REPLICA IDENTITY</code></a>). If a publication publishes only <code class="command">INSERT</code> operations, then the column list may omit replica identity columns.</p> <p>Column lists have no effect for the <code class="literal">TRUNCATE</code> command.</p> <p>During initial data synchronization, only the published columns are copied. However, if the subscriber is from a release prior to 15, then all the columns in the table are copied during initial data synchronization, ignoring any column lists. If the subscriber is from a release prior to 18, then initial table synchronization won't copy generated columns even if they are defined in the publisher.</p> <div class="warning" id="LOGICAL-REPLICATION-COL-LIST-COMBINING"> <h3 class="title">Warning: Combining Column Lists from Multiple Publications</h3> <p>There's currently no support for subscriptions comprising several publications where the same table has been published with different column lists. <a class="xref" href="sql-createsubscription" title="CREATE SUBSCRIPTION">CREATE SUBSCRIPTION</a> disallows creating such subscriptions, but it is still possible to get into that situation by adding or altering column lists on the publication side after a subscription has been created.</p> <p>This means changing the column lists of tables on publications that are already subscribed could lead to errors being thrown on the subscriber side.</p> <p>If a subscription is affected by this problem, the only way to resume replication is to adjust one of the column lists on the publication side so that they all match; and then either recreate the subscription, or use <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-SETADDDROP-PUBLICATION"><code class="literal">ALTER SUBSCRIPTION ... DROP PUBLICATION</code></a> to remove one of the offending publications and add it again.</p> </div> <div class="sect2" id="LOGICAL-REPLICATION-COL-LIST-EXAMPLES">    <h2 class="title">29.5.1. Examples </h2>    <p>Create a table <code class="literal">t1</code> to be used in the following example.</p> <pre data-language="sql">
+/* pub # */ CREATE TABLE t1(id int, a text, b text, c text, d text, e text, PRIMARY KEY(id));
+</pre> <p>Create a publication <code class="literal">p1</code>. A column list is defined for table <code class="literal">t1</code> to reduce the number of columns that will be replicated. Notice that the order of column names in the column list does not matter.</p> <pre data-language="sql">
+/* pub # */ CREATE PUBLICATION p1 FOR TABLE t1 (id, b, a, d);
+</pre> <p><code class="literal">psql</code> can be used to show the column lists (if defined) for each publication.</p> <pre data-language="sql">
+/* pub # */ \dRp+
+                                         Publication p1
+  Owner   | All tables | Inserts | Updates | Deletes | Truncates | Generated columns | Via root
+----------+------------+---------+---------+---------+-----------+-------------------+----------
+ postgres | f          | t       | t       | t       | t         | none              | f
+Tables:
+    "public.t1" (id, a, b, d)
+</pre> <p><code class="literal">psql</code> can be used to show the column lists (if defined) for each table.</p> <pre data-language="sql">
+/* pub # */ \d t1
+                 Table "public.t1"
+ Column |  Type   | Collation | Nullable | Default
+--------+---------+-----------+----------+---------
+ id     | integer |           | not null |
+ a      | text    |           |          |
+ b      | text    |           |          |
+ c      | text    |           |          |
+ d      | text    |           |          |
+ e      | text    |           |          |
+Indexes:
+    "t1_pkey" PRIMARY KEY, btree (id)
+Publications:
+    "p1" (id, a, b, d)
+</pre> <p>On the subscriber node, create a table <code class="literal">t1</code> which now only needs a subset of the columns that were on the publisher table <code class="literal">t1</code>, and also create the subscription <code class="literal">s1</code> that subscribes to the publication <code class="literal">p1</code>.</p> <pre data-language="sql">
+/* sub # */ CREATE TABLE t1(id int, b text, a text, d text, PRIMARY KEY(id));
+/* sub # */ CREATE SUBSCRIPTION s1
+/* sub - */ CONNECTION 'host=localhost dbname=test_pub application_name=s1'
+/* sub - */ PUBLICATION p1;
+</pre> <p>On the publisher node, insert some rows to table <code class="literal">t1</code>.</p> <pre data-language="sql">
+/* pub # */ INSERT INTO t1 VALUES(1, 'a-1', 'b-1', 'c-1', 'd-1', 'e-1');
+/* pub # */ INSERT INTO t1 VALUES(2, 'a-2', 'b-2', 'c-2', 'd-2', 'e-2');
+/* pub # */ INSERT INTO t1 VALUES(3, 'a-3', 'b-3', 'c-3', 'd-3', 'e-3');
+/* pub # */ SELECT * FROM t1 ORDER BY id;
+ id |  a  |  b  |  c  |  d  |  e
+----+-----+-----+-----+-----+-----
+  1 | a-1 | b-1 | c-1 | d-1 | e-1
+  2 | a-2 | b-2 | c-2 | d-2 | e-2
+  3 | a-3 | b-3 | c-3 | d-3 | e-3
+(3 rows)
+</pre> <p>Only data from the column list of publication <code class="literal">p1</code> is replicated.</p> <pre data-language="sql">
+/* sub # */ SELECT * FROM t1 ORDER BY id;
+ id |  b  |  a  |  d
+----+-----+-----+-----
+  1 | b-1 | a-1 | d-1
+  2 | b-2 | a-2 | d-2
+  3 | b-3 | a-3 | d-3
+(3 rows)
+</pre> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/logical-replication-col-lists.html" class="_attribution-link">https://www.postgresql.org/docs/18/logical-replication-col-lists.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

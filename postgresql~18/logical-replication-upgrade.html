@@ -1,0 +1,229 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Upgrade - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content=" Migration of logical replication clusters is possible only when all the members of the old logical replication clusters are version 17.0 or later. ">
+  <meta name="keywords" content="upgrade, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/logical-replication-upgrade.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>29.13. Upgrade </h1>    <div class="toc"> <dl class="toc"> <dt><a href="logical-replication-upgrade#PREPARE-PUBLISHER-UPGRADES">29.13.1. Prepare for Publisher Upgrades</a></dt> <dt><a href="logical-replication-upgrade#PREPARE-SUBSCRIBER-UPGRADES">29.13.2. Prepare for Subscriber Upgrades</a></dt> <dt><a href="logical-replication-upgrade#UPGRADING-LOGICAL-REPLICATION-CLUSTERS">29.13.3. Upgrading Logical Replication Clusters</a></dt> </dl> </div> <p>Migration of <a class="glossterm" href="glossary#GLOSSARY-LOGICAL-REPLICATION-CLUSTER" title="Logical replication cluster">logical replication clusters</a> is possible only when all the members of the old logical replication clusters are version 17.0 or later.</p> <div class="sect2" id="PREPARE-PUBLISHER-UPGRADES">    <h2 class="title">29.13.1. Prepare for Publisher Upgrades </h2>    <p>pg_upgrade attempts to migrate logical slots. This helps avoid the need for manually defining the same logical slots on the new publisher. Migration of logical slots is only supported when the old cluster is version 17.0 or later. Logical slots on clusters before version 17.0 will silently be ignored.</p> <p>Before you start upgrading the publisher cluster, ensure that the subscription is temporarily disabled, by executing <a class="link" href="sql-altersubscription" title="ALTER SUBSCRIPTION"><code class="command">ALTER SUBSCRIPTION ... DISABLE</code></a>. Re-enable the subscription after the upgrade.</p> <p>There are some prerequisites for pg_upgrade to be able to upgrade the logical slots. If these are not met an error will be reported.</p>  <ul> <li> <p>The new cluster must have <a class="link" href="runtime-config-wal#GUC-WAL-LEVEL"><code class="varname">wal_level</code></a> as <code class="literal">logical</code>.</p> </li> <li> <p>The new cluster must have <a class="link" href="runtime-config-replication#GUC-MAX-REPLICATION-SLOTS"><code class="varname">max_replication_slots</code></a> configured to a value greater than or equal to the number of slots present in the old cluster.</p> </li> <li> <p>The output plugins referenced by the slots on the old cluster must be installed in the new PostgreSQL executable directory.</p> </li> <li> <p>The old cluster has replicated all the transactions and logical decoding messages to subscribers.</p> </li> <li> <p>All slots on the old cluster must be usable, i.e., there are no slots whose <a class="link" href="view-pg-replication-slots" title="53.20. pg_replication_slots">pg_replication_slots</a>.<code class="structfield">conflicting</code> is not <code class="literal">true</code>.</p> </li> <li> <p>The new cluster must not have permanent logical slots, i.e., there must be no slots where <a class="link" href="view-pg-replication-slots" title="53.20. pg_replication_slots">pg_replication_slots</a>.<code class="structfield">temporary</code> is <code class="literal">false</code>.</p> </li> </ul>  </div> <div class="sect2" id="PREPARE-SUBSCRIBER-UPGRADES">    <h2 class="title">29.13.2. Prepare for Subscriber Upgrades </h2>    <p>Setup the <a class="link" href="logical-replication-config#LOGICAL-REPLICATION-CONFIG-SUBSCRIBER" title="29.12.2. Subscribers">subscriber configurations</a> in the new subscriber. pg_upgrade attempts to migrate subscription dependencies which includes the subscription's table information present in <a class="link" href="catalog-pg-subscription-rel" title="52.55. pg_subscription_rel">pg_subscription_rel</a> system catalog and also the subscription's replication origin. This allows logical replication on the new subscriber to continue from where the old subscriber was up to. Migration of subscription dependencies is only supported when the old cluster is version 17.0 or later. Subscription dependencies on clusters before version 17.0 will silently be ignored.</p> <p>There are some prerequisites for pg_upgrade to be able to upgrade the subscriptions. If these are not met an error will be reported.</p>  <ul> <li> <p>All the subscription tables in the old subscriber should be in state <code class="literal">i</code> (initialize) or <code class="literal">r</code> (ready). This can be verified by checking <a class="link" href="catalog-pg-subscription-rel" title="52.55. pg_subscription_rel">pg_subscription_rel</a>.<code class="structfield">srsubstate</code>.</p> </li> <li> <p>The replication origin entry corresponding to each of the subscriptions should exist in the old cluster. This can be found by checking <a class="link" href="catalog-pg-subscription" title="52.54. pg_subscription">pg_subscription</a> and <a class="link" href="catalog-pg-replication-origin" title="52.44. pg_replication_origin">pg_replication_origin</a> system tables.</p> </li> <li> <p>The new cluster must have <a class="link" href="runtime-config-replication#GUC-MAX-ACTIVE-REPLICATION-ORIGINS"><code class="varname">max_active_replication_origins</code></a> configured to a value greater than or equal to the number of subscriptions present in the old cluster.</p> </li> </ul>  </div> <div class="sect2" id="UPGRADING-LOGICAL-REPLICATION-CLUSTERS">    <h2 class="title">29.13.3. Upgrading Logical Replication Clusters </h2>    <p>While upgrading a subscriber, write operations can be performed in the publisher. These changes will be replicated to the subscriber once the subscriber upgrade is completed.</p> <blockquote class="note"> <h3 class="title">Note</h3> <p>The logical replication restrictions apply to logical replication cluster upgrades also. See <a class="xref" href="logical-replication-restrictions" title="29.8. Restrictions">Section 29.8</a> for details.</p> <p>The prerequisites of publisher upgrade apply to logical replication cluster upgrades also. See <a class="xref" href="logical-replication-upgrade#PREPARE-PUBLISHER-UPGRADES" title="29.13.1. Prepare for Publisher Upgrades">Section 29.13.1</a> for details.</p> <p>The prerequisites of subscriber upgrade apply to logical replication cluster upgrades also. See <a class="xref" href="logical-replication-upgrade#PREPARE-SUBSCRIBER-UPGRADES" title="29.13.2. Prepare for Subscriber Upgrades">Section 29.13.2</a> for details.</p> </blockquote> <div class="warning"> <h3 class="title">Warning</h3> <p>Upgrading logical replication cluster requires multiple steps to be performed on various nodes. Because not all operations are transactional, the user is advised to take backups as described in <a class="xref" href="continuous-archiving#BACKUP-BASE-BACKUP" title="25.3.2. Making a Base Backup">Section 25.3.2</a>.</p> </div> <p>The steps to upgrade the following logical replication clusters are detailed below:</p>  <ul> <li> <p>Follow the steps specified in <a class="xref" href="logical-replication-upgrade#STEPS-TWO-NODE-LOGICAL-REPLICATION-CLUSTER" title="29.13.3.1. Steps to Upgrade a Two-node Logical Replication Cluster">Section 29.13.3.1</a> to upgrade a two-node logical replication cluster.</p> </li> <li> <p>Follow the steps specified in <a class="xref" href="logical-replication-upgrade#STEPS-CASCADED-LOGICAL-REPLICATION-CLUSTER" title="29.13.3.2. Steps to Upgrade a Cascaded Logical Replication Cluster">Section 29.13.3.2</a> to upgrade a cascaded logical replication cluster.</p> </li> <li> <p>Follow the steps specified in <a class="xref" href="logical-replication-upgrade#STEPS-TWO-NODE-CIRCULAR-LOGICAL-REPLICATION-CLUSTER" title="29.13.3.3. Steps to Upgrade a Two-node Circular Logical Replication Cluster">Section 29.13.3.3</a> to upgrade a two-node circular logical replication cluster.</p> </li> </ul>  <div class="sect3" id="STEPS-TWO-NODE-LOGICAL-REPLICATION-CLUSTER">    <h3 class="title">29.13.3.1. Steps to Upgrade a Two-node Logical Replication Cluster </h3>    <p>Let's say publisher is in <code class="literal">node1</code> and subscriber is in <code class="literal">node2</code>. The subscriber <code class="literal">node2</code> has a subscription <code class="literal">sub1_node1_node2</code> which is subscribing the changes from <code class="literal">node1</code>.</p> <div class="procedure"> <ol class="procedure" type="1"> <li id="TWO-NODE-CLUSTER-DISABLE-SUBSCRIPTIONS-NODE2"> <p>Disable all the subscriptions on <code class="literal">node2</code> that are subscribing the changes from <code class="literal">node1</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-DISABLE"><code class="command">ALTER SUBSCRIPTION ... DISABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 DISABLE;
+</pre> </li> <li> <p>Stop the publisher server in <code class="literal">node1</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data1 stop
+</pre> </li> <li> <p>Initialize <code class="literal">data1_upgraded</code> instance by using the required newer version.</p> </li> <li> <p>Upgrade the publisher <code class="literal">node1</code>'s server to the required newer version, e.g.:</p> <pre data-language="sql">
+pg_upgrade
+        --old-datadir "/opt/PostgreSQL/postgres/17/data1"
+        --new-datadir "/opt/PostgreSQL/postgres/18/data1_upgraded"
+        --old-bindir "/opt/PostgreSQL/postgres/17/bin"
+        --new-bindir "/opt/PostgreSQL/postgres/18/bin"
+</pre> </li> <li> <p>Start the upgraded publisher server in <code class="literal">node1</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data1_upgraded start -l logfile
+</pre> </li> <li> <p>Stop the subscriber server in <code class="literal">node2</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data2 stop
+</pre> </li> <li> <p>Initialize <code class="literal">data2_upgraded</code> instance by using the required newer version.</p> </li> <li> <p>Upgrade the subscriber <code class="literal">node2</code>'s server to the required new version, e.g.:</p> <pre data-language="sql">
+pg_upgrade
+       --old-datadir "/opt/PostgreSQL/postgres/17/data2"
+       --new-datadir "/opt/PostgreSQL/postgres/18/data2_upgraded"
+       --old-bindir "/opt/PostgreSQL/postgres/17/bin"
+       --new-bindir "/opt/PostgreSQL/postgres/18/bin"
+</pre> </li> <li> <p>Start the upgraded subscriber server in <code class="literal">node2</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data2_upgraded start -l logfile
+</pre> </li> <li> <p>On <code class="literal">node2</code>, create any tables that were created in the upgraded publisher <code class="literal">node1</code> server between <a class="xref" href="logical-replication-upgrade#TWO-NODE-CLUSTER-DISABLE-SUBSCRIPTIONS-NODE2" title="Step 1">Step 1</a> and now, e.g.:</p> <pre data-language="sql">
+/* node2 # */ CREATE TABLE distributors (did integer PRIMARY KEY, name varchar(40));
+</pre> </li> <li> <p>Enable all the subscriptions on <code class="literal">node2</code> that are subscribing the changes from <code class="literal">node1</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-ENABLE"><code class="command">ALTER SUBSCRIPTION ... ENABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 ENABLE;
+</pre> </li> <li> <p>Refresh the <code class="literal">node2</code> subscription's publications using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-REFRESH-PUBLICATION"><code class="command">ALTER SUBSCRIPTION ... REFRESH PUBLICATION</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 REFRESH PUBLICATION;
+</pre> </li> </ol> </div> <blockquote class="note"> <h3 class="title">Note</h3> <p>In the steps described above, the publisher is upgraded first, followed by the subscriber. Alternatively, the user can use similar steps to upgrade the subscriber first, followed by the publisher.</p> </blockquote> </div> <div class="sect3" id="STEPS-CASCADED-LOGICAL-REPLICATION-CLUSTER">    <h3 class="title">29.13.3.2. Steps to Upgrade a Cascaded Logical Replication Cluster </h3>    <p>Let's say we have a cascaded logical replication setup <code class="literal">node1</code>-&gt;<code class="literal">node2</code>-&gt;<code class="literal">node3</code>. Here <code class="literal">node2</code> is subscribing the changes from <code class="literal">node1</code> and <code class="literal">node3</code> is subscribing the changes from <code class="literal">node2</code>. The <code class="literal">node2</code> has a subscription <code class="literal">sub1_node1_node2</code> which is subscribing the changes from <code class="literal">node1</code>. The <code class="literal">node3</code> has a subscription <code class="literal">sub1_node2_node3</code> which is subscribing the changes from <code class="literal">node2</code>.</p> <div class="procedure"> <ol class="procedure" type="1"> <li id="CASCADED-CLUSTER-DISABLE-SUB-NODE1-NODE2"> <p>Disable all the subscriptions on <code class="literal">node2</code> that are subscribing the changes from <code class="literal">node1</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-DISABLE"><code class="command">ALTER SUBSCRIPTION ... DISABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 DISABLE;
+</pre> </li> <li> <p>Stop the server in <code class="literal">node1</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data1 stop
+</pre> </li> <li> <p>Initialize <code class="literal">data1_upgraded</code> instance by using the required newer version.</p> </li> <li> <p>Upgrade the <code class="literal">node1</code>'s server to the required newer version, e.g.:</p> <pre data-language="sql">
+pg_upgrade
+        --old-datadir "/opt/PostgreSQL/postgres/17/data1"
+        --new-datadir "/opt/PostgreSQL/postgres/18/data1_upgraded"
+        --old-bindir "/opt/PostgreSQL/postgres/17/bin"
+        --new-bindir "/opt/PostgreSQL/postgres/18/bin"
+</pre> </li> <li> <p>Start the upgraded server in <code class="literal">node1</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data1_upgraded start -l logfile
+</pre> </li> <li id="CASCADED-CLUSTER-DISABLE-SUB-NODE2-NODE3"> <p>Disable all the subscriptions on <code class="literal">node3</code> that are subscribing the changes from <code class="literal">node2</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-DISABLE"><code class="command">ALTER SUBSCRIPTION ... DISABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node3 # */ ALTER SUBSCRIPTION sub1_node2_node3 DISABLE;
+</pre> </li> <li> <p>Stop the server in <code class="literal">node2</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data2 stop
+</pre> </li> <li> <p>Initialize <code class="literal">data2_upgraded</code> instance by using the required newer version.</p> </li> <li> <p>Upgrade the <code class="literal">node2</code>'s server to the required new version, e.g.:</p> <pre data-language="sql">
+pg_upgrade
+        --old-datadir "/opt/PostgreSQL/postgres/17/data2"
+        --new-datadir "/opt/PostgreSQL/postgres/18/data2_upgraded"
+        --old-bindir "/opt/PostgreSQL/postgres/17/bin"
+        --new-bindir "/opt/PostgreSQL/postgres/18/bin"
+</pre> </li> <li> <p>Start the upgraded server in <code class="literal">node2</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data2_upgraded start -l logfile
+</pre> </li> <li> <p>On <code class="literal">node2</code>, create any tables that were created in the upgraded publisher <code class="literal">node1</code> server between <a class="xref" href="logical-replication-upgrade#CASCADED-CLUSTER-DISABLE-SUB-NODE1-NODE2" title="Step 1">Step 1</a> and now, e.g.:</p> <pre data-language="sql">
+/* node2 # */ CREATE TABLE distributors (did integer PRIMARY KEY, name varchar(40));
+</pre> </li> <li> <p>Enable all the subscriptions on <code class="literal">node2</code> that are subscribing the changes from <code class="literal">node1</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-ENABLE"><code class="command">ALTER SUBSCRIPTION ... ENABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 ENABLE;
+</pre> </li> <li> <p>Refresh the <code class="literal">node2</code> subscription's publications using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-REFRESH-PUBLICATION"><code class="command">ALTER SUBSCRIPTION ... REFRESH PUBLICATION</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 REFRESH PUBLICATION;
+</pre> </li> <li> <p>Stop the server in <code class="literal">node3</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data3 stop
+</pre> </li> <li> <p>Initialize <code class="literal">data3_upgraded</code> instance by using the required newer version.</p> </li> <li> <p>Upgrade the <code class="literal">node3</code>'s server to the required new version, e.g.:</p> <pre data-language="sql">
+pg_upgrade
+        --old-datadir "/opt/PostgreSQL/postgres/17/data3"
+        --new-datadir "/opt/PostgreSQL/postgres/18/data3_upgraded"
+        --old-bindir "/opt/PostgreSQL/postgres/17/bin"
+        --new-bindir "/opt/PostgreSQL/postgres/18/bin"
+</pre> </li> <li> <p>Start the upgraded server in <code class="literal">node3</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data3_upgraded start -l logfile
+</pre> </li> <li> <p>On <code class="literal">node3</code>, create any tables that were created in the upgraded <code class="literal">node2</code> between <a class="xref" href="logical-replication-upgrade#CASCADED-CLUSTER-DISABLE-SUB-NODE2-NODE3" title="Step 6">Step 6</a> and now, e.g.:</p> <pre data-language="sql">
+/* node3 # */ CREATE TABLE distributors (did integer PRIMARY KEY, name varchar(40));
+</pre> </li> <li> <p>Enable all the subscriptions on <code class="literal">node3</code> that are subscribing the changes from <code class="literal">node2</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-ENABLE"><code class="command">ALTER SUBSCRIPTION ... ENABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node3 # */ ALTER SUBSCRIPTION sub1_node2_node3 ENABLE;
+</pre> </li> <li> <p>Refresh the <code class="literal">node3</code> subscription's publications using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-REFRESH-PUBLICATION"><code class="command">ALTER SUBSCRIPTION ... REFRESH PUBLICATION</code></a>, e.g.:</p> <pre data-language="sql">
+/* node3 # */ ALTER SUBSCRIPTION sub1_node2_node3 REFRESH PUBLICATION;
+</pre> </li> </ol> </div> </div> <div class="sect3" id="STEPS-TWO-NODE-CIRCULAR-LOGICAL-REPLICATION-CLUSTER">    <h3 class="title">29.13.3.3. Steps to Upgrade a Two-node Circular Logical Replication Cluster </h3>    <p>Let's say we have a circular logical replication setup <code class="literal">node1</code>-&gt;<code class="literal">node2</code> and <code class="literal">node2</code>-&gt;<code class="literal">node1</code>. Here <code class="literal">node2</code> is subscribing the changes from <code class="literal">node1</code> and <code class="literal">node1</code> is subscribing the changes from <code class="literal">node2</code>. The <code class="literal">node1</code> has a subscription <code class="literal">sub1_node2_node1</code> which is subscribing the changes from <code class="literal">node2</code>. The <code class="literal">node2</code> has a subscription <code class="literal">sub1_node1_node2</code> which is subscribing the changes from <code class="literal">node1</code>.</p> <div class="procedure"> <ol class="procedure" type="1"> <li id="CIRCULAR-CLUSTER-DISABLE-SUB-NODE2"> <p>Disable all the subscriptions on <code class="literal">node2</code> that are subscribing the changes from <code class="literal">node1</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-DISABLE"><code class="command">ALTER SUBSCRIPTION ... DISABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 DISABLE;
+</pre> </li> <li> <p>Stop the server in <code class="literal">node1</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data1 stop
+</pre> </li> <li> <p>Initialize <code class="literal">data1_upgraded</code> instance by using the required newer version.</p> </li> <li> <p>Upgrade the <code class="literal">node1</code>'s server to the required newer version, e.g.:</p> <pre data-language="sql">
+pg_upgrade
+        --old-datadir "/opt/PostgreSQL/postgres/17/data1"
+        --new-datadir "/opt/PostgreSQL/postgres/18/data1_upgraded"
+        --old-bindir "/opt/PostgreSQL/postgres/17/bin"
+        --new-bindir "/opt/PostgreSQL/postgres/18/bin"
+</pre> </li> <li> <p>Start the upgraded server in <code class="literal">node1</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data1_upgraded start -l logfile
+</pre> </li> <li> <p>Enable all the subscriptions on <code class="literal">node2</code> that are subscribing the changes from <code class="literal">node1</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-ENABLE"><code class="command">ALTER SUBSCRIPTION ... ENABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 ENABLE;
+</pre> </li> <li> <p>On <code class="literal">node1</code>, create any tables that were created in <code class="literal">node2</code> between <a class="xref" href="logical-replication-upgrade#CIRCULAR-CLUSTER-DISABLE-SUB-NODE2" title="Step 1">Step 1</a> and now, e.g.:</p> <pre data-language="sql">
+/* node1 # */ CREATE TABLE distributors (did integer PRIMARY KEY, name varchar(40));
+</pre> </li> <li> <p>Refresh the <code class="literal">node1</code> subscription's publications to copy initial table data from <code class="literal">node2</code> using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-REFRESH-PUBLICATION"><code class="command">ALTER SUBSCRIPTION ... REFRESH PUBLICATION</code></a>, e.g.:</p> <pre data-language="sql">
+/* node1 # */ ALTER SUBSCRIPTION sub1_node2_node1 REFRESH PUBLICATION;
+</pre> </li> <li id="CIRCULAR-CLUSTER-DISABLE-SUB-NODE1"> <p>Disable all the subscriptions on <code class="literal">node1</code> that are subscribing the changes from <code class="literal">node2</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-DISABLE"><code class="command">ALTER SUBSCRIPTION ... DISABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node1 # */ ALTER SUBSCRIPTION sub1_node2_node1 DISABLE;
+</pre> </li> <li> <p>Stop the server in <code class="literal">node2</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data2 stop
+</pre> </li> <li> <p>Initialize <code class="literal">data2_upgraded</code> instance by using the required newer version.</p> </li> <li> <p>Upgrade the <code class="literal">node2</code>'s server to the required new version, e.g.:</p> <pre data-language="sql">
+pg_upgrade
+        --old-datadir "/opt/PostgreSQL/postgres/17/data2"
+        --new-datadir "/opt/PostgreSQL/postgres/18/data2_upgraded"
+        --old-bindir "/opt/PostgreSQL/postgres/17/bin"
+        --new-bindir "/opt/PostgreSQL/postgres/18/bin"
+</pre> </li> <li> <p>Start the upgraded server in <code class="literal">node2</code>, e.g.:</p> <pre data-language="sql">
+pg_ctl -D /opt/PostgreSQL/data2_upgraded start -l logfile
+</pre> </li> <li> <p>Enable all the subscriptions on <code class="literal">node1</code> that are subscribing the changes from <code class="literal">node2</code> by using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-ENABLE"><code class="command">ALTER SUBSCRIPTION ... ENABLE</code></a>, e.g.:</p> <pre data-language="sql">
+/* node1 # */ ALTER SUBSCRIPTION sub1_node2_node1 ENABLE;
+</pre> </li> <li> <p>On <code class="literal">node2</code>, create any tables that were created in the upgraded <code class="literal">node1</code> between <a class="xref" href="logical-replication-upgrade#CIRCULAR-CLUSTER-DISABLE-SUB-NODE1" title="Step 9">Step 9</a> and now, e.g.:</p> <pre data-language="sql">
+/* node2 # */ CREATE TABLE distributors (did integer PRIMARY KEY, name varchar(40));
+</pre> </li> <li> <p>Refresh the <code class="literal">node2</code> subscription's publications to copy initial table data from <code class="literal">node1</code> using <a class="link" href="sql-altersubscription#SQL-ALTERSUBSCRIPTION-PARAMS-REFRESH-PUBLICATION"><code class="command">ALTER SUBSCRIPTION ... REFRESH PUBLICATION</code></a>, e.g.:</p> <pre data-language="sql">
+/* node2 # */ ALTER SUBSCRIPTION sub1_node1_node2 REFRESH PUBLICATION;
+</pre> </li> </ol> </div> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/logical-replication-upgrade.html" class="_attribution-link">https://www.postgresql.org/docs/18/logical-replication-upgrade.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

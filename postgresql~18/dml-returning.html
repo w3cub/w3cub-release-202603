@@ -1,0 +1,141 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Returning Data From Modified Rows - PostgreSQL 18 - W3cubDocs</title>
+  
+  <meta name="description" content="Sometimes it is useful to obtain data from modified rows while they are being manipulated. The INSERT, UPDATE, DELETE, and MERGE commands all have &hellip;">
+  <meta name="keywords" content="returning, data, from, modified, rows, postgresql, postgresql~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/postgresql~18/dml-returning.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/postgresql~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/postgresql~18/" class="_nav-link" title="" style="margin-left:0;">PostgreSQL 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _postgres">
+				
+				
+<h1>6.4. Returning Data from Modified Rows </h1>    <p>Sometimes it is useful to obtain data from modified rows while they are being manipulated. The <code class="command">INSERT</code>, <code class="command">UPDATE</code>, <code class="command">DELETE</code>, and <code class="command">MERGE</code> commands all have an optional <code class="literal">RETURNING</code> clause that supports this. Use of <code class="literal">RETURNING</code> avoids performing an extra database query to collect the data, and is especially valuable when it would otherwise be difficult to identify the modified rows reliably.</p> <p>The allowed contents of a <code class="literal">RETURNING</code> clause are the same as a <code class="command">SELECT</code> command's output list (see <a class="xref" href="queries-select-lists" title="7.3. Select Lists">Section 7.3</a>). It can contain column names of the command's target table, or value expressions using those columns. A common shorthand is <code class="literal">RETURNING *</code>, which selects all columns of the target table in order.</p> <p>In an <code class="command">INSERT</code>, the default data available to <code class="literal">RETURNING</code> is the row as it was inserted. This is not so useful in trivial inserts, since it would just repeat the data provided by the client. But it can be very handy when relying on computed default values. For example, when using a <a class="link" href="datatype-numeric#DATATYPE-SERIAL" title="8.1.4. Serial Types"><code class="type">serial</code></a> column to provide unique identifiers, <code class="literal">RETURNING</code> can return the ID assigned to a new row:</p> <pre data-language="sql">
+CREATE TABLE users (firstname text, lastname text, id serial primary key);
+
+INSERT INTO users (firstname, lastname) VALUES ('Joe', 'Cool') RETURNING id;
+</pre> <p>The <code class="literal">RETURNING</code> clause is also very useful with <code class="literal">INSERT ... SELECT</code>.</p> <p>In an <code class="command">UPDATE</code>, the default data available to <code class="literal">RETURNING</code> is the new content of the modified row. For example:</p> <pre data-language="sql">
+UPDATE products SET price = price * 1.10
+  WHERE price &lt;= 99.99
+  RETURNING name, price AS new_price;
+</pre> <p>In a <code class="command">DELETE</code>, the default data available to <code class="literal">RETURNING</code> is the content of the deleted row. For example:</p> <pre data-language="sql">
+DELETE FROM products
+  WHERE obsoletion_date = 'today'
+  RETURNING *;
+</pre> <p>In a <code class="command">MERGE</code>, the default data available to <code class="literal">RETURNING</code> is the content of the source row plus the content of the inserted, updated, or deleted target row. Since it is quite common for the source and target to have many of the same columns, specifying <code class="literal">RETURNING *</code> can lead to a lot of duplicated columns, so it is often more useful to qualify it so as to return just the source or target row. For example:</p> <pre data-language="sql">
+MERGE INTO products p USING new_products n ON p.product_no = n.product_no
+  WHEN NOT MATCHED THEN INSERT VALUES (n.product_no, n.name, n.price)
+  WHEN MATCHED THEN UPDATE SET name = n.name, price = n.price
+  RETURNING p.*;
+</pre> <p>In each of these commands, it is also possible to explicitly return the old and new content of the modified row. For example:</p> <pre data-language="sql">
+UPDATE products SET price = price * 1.10
+  WHERE price &lt;= 99.99
+  RETURNING name, old.price AS old_price, new.price AS new_price,
+            new.price - old.price AS price_change;
+</pre> <p>In this example, writing <code class="literal">new.price</code> is the same as just writing <code class="literal">price</code>, but it makes the meaning clearer.</p> <p>This syntax for returning old and new values is available in <code class="command">INSERT</code>, <code class="command">UPDATE</code>, <code class="command">DELETE</code>, and <code class="command">MERGE</code> commands, but typically old values will be <code class="literal">NULL</code> for an <code class="command">INSERT</code>, and new values will be <code class="literal">NULL</code> for a <code class="command">DELETE</code>. However, there are situations where it can still be useful for those commands. For example, in an <code class="command">INSERT</code> with an <a class="link" href="sql-insert#SQL-ON-CONFLICT" title="ON CONFLICT Clause"><code class="literal">ON CONFLICT DO UPDATE</code></a> clause, the old values will be non-<code class="literal">NULL</code> for conflicting rows. Similarly, if a <code class="command">DELETE</code> is turned into an <code class="command">UPDATE</code> by a <a class="link" href="sql-createrule" title="CREATE RULE">rewrite rule</a>, the new values may be non-<code class="literal">NULL</code>.</p> <p>If there are triggers (<a class="xref" href="https://www.postgresql.org/docs/18/triggers.html" title="Chapter 37. Triggers">Chapter 37</a>) on the target table, the data available to <code class="literal">RETURNING</code> is the row as modified by the triggers. Thus, inspecting columns computed by triggers is another common use-case for <code class="literal">RETURNING</code>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1996–2026 The PostgreSQL Global Development Group<br>Licensed under the PostgreSQL License.<br>
+    <a href="https://www.postgresql.org/docs/18/dml-returning.html" class="_attribution-link">https://www.postgresql.org/docs/18/dml-returning.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
