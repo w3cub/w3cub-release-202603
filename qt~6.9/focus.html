@@ -1,0 +1,127 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Keyboard Focus in Widgets - Qt 6.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Qt&#39;s widgets handle keyboard focus in ways that have become customary in GUIs. ">
+  <meta name="keywords" content="keyboard, focus, widgets, qt, qt~6.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/qt~6.9/focus.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/qt~6.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/qt~6.9/" class="_nav-link" title="" style="margin-left:0;">Qt 6.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _qt">
+				
+				
+<h1>Keyboard Focus in Widgets</h1>  <div class="descr" id="details"> <p>Qt's widgets handle keyboard focus in ways that have become customary in GUIs.</p> <p>The basic issue is that the user's key strokes can be directed at any of several windows on the screen, and any of several widgets inside the intended window. When the user presses a key, they expect it to go to the right place, and the software must try to meet this expectation. The system must determine which application the key stroke is directed at, which window within that application, and which widget within that window.</p> <h2 id="focus-motion">Focus Motion
+</h2> <p>The customs that have evolved for directing keyboard focus to a particular widget are these:</p> <ol class="1" type="1">
+<li>The user presses <b translate="no">Tab</b> (or <b translate="no">Shift+Tab</b>).</li> <li>The user clicks a widget.</li> <li>The user presses a keyboard shortcut.</li> <li>The user uses the mouse wheel.</li> <li>The user moves the focus to a window, and the application must determine which widget within the window should get the focus.</li> </ol> <p>Each of these motion mechanisms is different, and different types of widgets receive focus in only some of them. We'll cover each of them in turn.</p> <h3 id="tab-or-shift-tab">Tab or Shift+Tab
+</h3> <p>Pressing <b translate="no">Tab</b> is by far the most common way to move focus using the keyboard. (Sometimes in data-entry applications Enter does the same as <b translate="no">Tab</b>; this can easily be achieved in Qt by implementing an <a href="eventsandfilters">event filter</a>.)</p> <p>Pressing <b translate="no">Tab</b>, in all window systems in common use today, moves the keyboard focus to the next widget in a circular per-window list. <b translate="no">Tab</b> moves focus along the circular list in one direction, <b translate="no">Shift+Tab</b> in the other. The order in which <b translate="no">Tab</b> presses move from widget to widget is called the tab order.</p> <p>You can customize the tab order using <a href="qwidget#setTabOrder" translate="no">QWidget::setTabOrder</a>(). (If you don't, <b translate="no">Tab</b> generally moves focus in the order of widget construction.) Qt Widgets Designer provides a means of visually changing the tab order.</p> <p>Since pressing <b translate="no">Tab</b> is so common, most widgets that can have focus should support tab focus. The major exception is widgets that are rarely used, and where there is some keyboard accelerator or error handler that moves the focus.</p> <p>For example, in a data entry dialog, there might be a field that is only necessary in one percent of all cases. In such a dialog, <b translate="no">Tab</b> could skip this field, and the dialog could use one of these mechanisms:</p> <ol class="1" type="1">
+<li>If the program can determine whether the field is needed, it can move focus there when the user finishes entry and presses <b translate="no">OK</b>, or when the user presses Enter after finishing the other fields. Alternately, include the field in the tab order but disable it. Enable it if it becomes appropriate in view of what the user has set in the other fields.</li> <li>The label for the field can include a keyboard shortcut that moves focus to this field.</li> </ol> <p>Another exception to <b translate="no">Tab</b> support is text-entry widgets that must support the insertion of tabs; almost all text editors fall into this class. Qt treats <b translate="no">Ctrl+Tab</b> as <b translate="no">Tab</b> and <b translate="no">Ctrl+Shift+Tab</b> as <b translate="no">Shift+Tab</b>, and such widgets can reimplement <a href="qwidget#event" translate="no">QWidget::event</a>() and handle Tab before calling <a href="qwidget#event" translate="no">QWidget::event</a>() to get normal processing of all other keys. However, since some systems use <b translate="no">Ctrl+Tab</b> for other purposes, and many users aren't aware of <b translate="no">Ctrl+Tab</b> anyway, this isn't a complete solution.</p> <h3 id="the-user-clicks-a-widget">The User Clicks a Widget
+</h3> <p>This is perhaps even more common than pressing <b translate="no">Tab</b> on computers with a mouse or other pointing device.</p> <p>Clicking to move the focus is slightly more powerful than <b translate="no">Tab</b>. While it moves the focus <i>to</i> a widget, for editor widgets it also moves the text cursor (the widget's internal focus) to the spot where the mouse is clicked.</p> <p>Since it is so common and people are used to it, it's a good idea to support it for most widgets. However, there is also an important reason to avoid it: you may not want to remove focus from the widget where it was.</p> <p>For example, in a word processor, when the user clicks the 'B' (bold) tool button, what should happen to the keyboard focus? Should it remain where it was, almost certainly in the editing widget, or should it move to the 'B' button?</p> <p>We advise supporting click-to-focus for widgets that support text entry, and to avoid it for most widgets where a mouse click has a different effect. (For buttons, we also recommend adding a keyboard shortcut: <a href="qabstractbutton" translate="no">QAbstractButton</a> and its subclasses make this very easy.)</p> <p>In Qt, only the <a href="qwidget#focusPolicy-prop" translate="no">QWidget::setFocusPolicy</a>() function affects click-to-focus.</p> <h3 id="the-user-presses-a-keyboard-shortcut">The User Presses a Keyboard Shortcut
+</h3> <p>It's not unusual for keyboard shortcuts to move the focus. This can happen implicitly by opening modal dialogs, but also explicitly using focus accelerators such as those provided by <a href="qlabel#setBuddy" translate="no">QLabel::setBuddy</a>(), <a href="qgroupbox" translate="no">QGroupBox</a>, and <a href="qtabbar" translate="no">QTabBar</a>.</p> <p>Your application can support shortcut focus for all widgets that the user may want to jump to. For example, a tab dialog can have keyboard shortcuts for each of its pages, so the user can press e.g. <b translate="no">Alt+P</b> to step to the <u>P</u>rinting page. Keep in mind that it's easy to overdo this, as there are only a few keys, and also important to provide keyboard shortcuts for commands. Refer to the design guidelines for the platform you target, for example Microsoft's <a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/dnacc/guidelines-for-keyboard-user-interface-design">guidelines for keyboard user interface design</a> or Apple's <a href="https://developer.apple.com/design/human-interface-guidelines/inputs/focus-and-selection/">focus and selection</a> guidelines.</p> <h3 id="the-user-rotates-the-mouse-wheel">The User Rotates the Mouse Wheel
+</h3> <p>On Microsoft Windows, mouse wheel usage is always handled by the widget that has keyboard focus. On macOS and X11, it's handled by the widget that gets other mouse events.</p> <p>The way Qt handles this platform difference is by letting widgets move the keyboard focus when the wheel is used. With the right focus policy on each widget, applications can work idiomatically correctly on Windows, macOS, and X11.</p> <h3 id="the-user-moves-the-focus-to-this-window">The User Moves the Focus to This Window
+</h3> <p>In this situation the application must determine which widget within the window should receive the focus.</p> <p>This can be simple: If the focus has been in this window before, then the last widget to have focus should regain it. Qt does this automatically.</p> <p>If focus has never been in this window before and you know where focus should start out, call <a href="qwidget#setFocus-1" translate="no">QWidget::setFocus</a>() on the widget which should receive focus before you call <a href="qwidget#show" translate="no">QWidget::show</a>() it. If you don't, Qt will pick a suitable widget.</p> </div>  <p class="naviNextPrevious footerNavi"> <a class="prevPage" href="https://doc.qt.io/qt-6.9/modelview.html">Model/View Tutorial</a> <a class="nextPage" href="https://doc.qt.io/qt-6.9/gestures-overview.html">Gestures in Widgets and Graphics View</a> </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © The Qt Company Ltd<br>Licensed under the GNU Free Documentation License, Version 1.3.<br>
+    <a href="https://doc.qt.io/qt-6.9/focus.html" class="_attribution-link">https://doc.qt.io/qt-6.9/focus.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

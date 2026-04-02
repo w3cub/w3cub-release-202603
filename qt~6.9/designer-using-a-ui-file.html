@@ -1,0 +1,311 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Using a Designer UI File in Your C++ Application - Qt 6.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Qt Widgets Designer UI files represent the widget tree of the form in XML format. The forms can be processed&#58; ">
+  <meta name="keywords" content="using, designer, ui, file, your, c++, application, qt, qt~6.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/qt~6.9/designer-using-a-ui-file.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/qt~6.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/qt~6.9/" class="_nav-link" title="" style="margin-left:0;">Qt 6.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _qt">
+				
+				
+<h1>Using a Designer UI File in Your C++ Application</h1>  <div class="descr" id="details"> <p>Qt Widgets Designer UI files represent the widget tree of the form in XML format. The forms can be processed:</p> <ul> <li>
+<a href="designer-using-a-ui-file#compile-time-form-processing">At compile time</a>, which means that forms are converted to C++ code that can be compiled.</li> <li>
+<a href="designer-using-a-ui-file#run-time-form-processing">At runtime</a>, which means that forms are processed by the <a href="quiloader" translate="no">QUiLoader</a> class that dynamically constructs the widget tree while parsing the XML file.</li> </ul> <h2 id="compile-time-form-processing">Compile Time Form Processing
+</h2> <p>You create user interface components with Qt Widgets Designer and use Qt's integrated build tools, <a href="https://doc.qt.io/qt-6.9/qmake-manual.html">qmake</a> and <a href="uic">uic</a>, to generate code for them when the application is built. The generated code contains the form's user interface object. It is a C++ struct that contains:</p> <ul> <li>Pointers to the form's widgets, layouts, layout items, button groups, and actions.</li> <li>A member function called <code translate="no">setupUi()</code> to build the widget tree on the parent widget.</li> <li>A member function called <code translate="no">retranslateUi()</code> that handles the translation of the string properties of the form. For more information, see <a href="designer-using-a-ui-file#reacting-to-language-changes">Reacting to Language Changes</a>.</li> </ul> <p>The generated code can be included in your application and used directly from it. Alternatively, you can use it to extend subclasses of standard widgets.</p> <p>A compile time processed form can be used in your application with one of the following approaches:</p> <ul> <li>
+<a href="designer-using-a-ui-file#the-direct-approach">The Direct Approach</a>: you construct a widget to use as a placeholder for the component, and set up the user interface inside it.</li> <li>
+<a href="designer-using-a-ui-file#the-single-inheritance-approach">The Single Inheritance Approach</a>: you subclass the form's base class (<a href="qwidget" translate="no">QWidget</a> or <a href="qdialog" translate="no">QDialog</a>, for example), and include a private instance of the form's user interface object.</li> <li>
+<a href="designer-using-a-ui-file#the-multiple-inheritance-approach">The Multiple Inheritance Approach</a>: you subclass both the form's base class and the form's user interface object. This allows the widgets defined in the form to be used directly from within the scope of the subclass.</li> </ul> <p>To demonstrate, we create a simple Calculator Form application. It is based on the original <a href="https://doc.qt.io/qt-6.9/qtdesigner-calculatorform-example.html">Calculator Form</a> example.</p> <p>The application consists of one source file, <code translate="no">main.cpp</code> and a UI file.</p> <p>The <code translate="no">calculatorform.ui</code> file designed with Qt Widgets Designer is shown below:</p> <p class="centerAlign"><img alt="" src="data:image/png;base64,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"></p>
+<p>When using <code translate="no">CMake</code> to build the executable, a <code translate="no">CMakeLists.txt</code> file is required:</p> <div class="pre"><pre translate="no" data-language="cpp">cmake_minimum_required(VERSION 3.16)
+project(calculatorform LANGUAGES CXX)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+
+qt_add_executable(calculatorform
+                  calculatorform.ui main.cpp)
+
+set_target_properties(calculatorform PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
+
+target_link_libraries(calculatorform  PUBLIC
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
+)</pre></div> <p>The form is listed among the C++ source files in <code translate="no">qt_add_executable()</code>. The option <code translate="no">CMAKE_AUTOUIC</code> tells <code translate="no">CMake</code> to run the <code translate="no">uic</code> tool to create a <code translate="no">ui_calculatorform.h</code> file that can be used by the source files.</p> <p>When using <code translate="no">qmake</code> to build the executable, a <code translate="no">.pro</code> file is required:</p> <div class="pre"><pre translate="no" data-language="cpp">TEMPLATE    = app
+FORMS       = calculatorform.ui
+SOURCES     = main.cpp</pre></div> <p>The special feature of this file is the <code translate="no">FORMS</code> declaration that tells <code translate="no">qmake</code> which files to process with <code translate="no">uic</code>. In this case, the <code translate="no">calculatorform.ui</code> file is used to create a <code translate="no">ui_calculatorform.h</code> file that can be used by any file listed in the <code translate="no">SOURCES</code> declaration.</p> <div class="admonition note"> <p><b>Note: </b>You can use Qt Creator to create the Calculator Form project. It automatically generates the main.cpp, UI, and a project file for the desired build tool, which you can modify.</p> </div> <h3 id="the-direct-approach">The Direct Approach
+</h3> <p>To use the direct approach, we include the <code translate="no">ui_calculatorform.h</code> file directly in <code translate="no">main.cpp</code>:</p> <div class="pre"><pre translate="no" data-language="cpp">#include "ui_calculatorform.h"</pre></div> <p>The <code translate="no">main</code> function creates the calculator widget by constructing a standard <a href="qwidget" translate="no">QWidget</a> that we use to host the user interface described by the <code translate="no">calculatorform.ui</code> file.</p> <div class="pre"><pre translate="no" data-language="cpp">int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    QWidget widget;
+    Ui::CalculatorForm ui;
+    ui.setupUi(&amp;widget);
+
+    widget.show();
+    return app.exec();
+}</pre></div> <p>In this case, the <code translate="no">Ui::CalculatorForm</code> is an interface description object from the <code translate="no">ui_calculatorform.h</code> file that sets up all the dialog's widgets and the connections between its signals and slots.</p> <p>The direct approach provides a quick and easy way to use simple, self-contained components in your applications. However, componens created with Qt Widgets Designer often require close integration with the rest of the application code. For instance, the <code translate="no">CalculatorForm</code> code provided above will compile and run, but the <a href="qspinbox" translate="no">QSpinBox</a> objects will not interact with the <a href="qlabel" translate="no">QLabel</a> as we need a custom slot to carry out the add operation and display the result in the <a href="qlabel" translate="no">QLabel</a>. To achieve this, we need to use the single inheritance approach.</p> <h3 id="the-single-inheritance-approach">The Single Inheritance Approach
+</h3> <p>To use the single inheritance approach, we subclass a standard Qt widget and include a private instance of the form's user interface object. This can take the form of:</p> <ul> <li>A member variable</li> <li>A pointer member variable</li> </ul> <h4 id="using-a-member-variable">Using a Member Variable
+</h4> <p>In this approach, we subclass a Qt widget and set up the user interface from within the constructor. Components used in this way expose the widgets and layouts used in the form to the Qt widget subclass, and provide a standard system for making signal and slot connections between the user interface and other objects in your application. The generated <code translate="no">Ui::CalculatorForm</code> structure is a member of the class.</p> <p>This approach is used in the <a href="https://doc.qt.io/qt-6.9/qtdesigner-calculatorform-example.html">Calculator Form</a> example.</p> <p>To ensure that we can use the user interface, we need to include the header file that <code translate="no">uic</code> generates before referring to <code translate="no">Ui::CalculatorForm</code>:</p> <div class="pre"><pre translate="no" data-language="cpp">#include "ui_calculatorform.h"</pre></div> <p>The project file must be updated to include <code translate="no">calculatorform.h</code>. For <code translate="no">CMake</code>:</p> <div class="pre"><pre translate="no" data-language="cpp">qt_add_executable(calculatorform
+    calculatorform.cpp calculatorform.h calculatorform.ui
+    main.cpp
+)</pre></div> <p>In specific cases, such as the example below where the include directive uses a relative path, <a href="qt-add-ui">qt_add_ui</a> can be used to generate the <code translate="no">ui_calculatorform.h</code> file instead of relying on <a href="https://cmake.org/cmake/help/latest/manual/cmake-qt.7.html#autouic">AUTOUIC</a>.</p> <p><a href="qt-add-ui#when-to-prefer-qt-add-ui-over-autouic">When to prefer qt_add_ui over AUTOUIC</a></p> <div class="pre"><pre translate="no" data-language="cpp">#include "src/files/ui_calculatorform.h"</pre></div> <div class="pre"><pre translate="no" data-language="cpp">qt_add_ui(calculatorform SOURCES calculatorform.ui
+          INCLUDE_PREFIX src/files)</pre></div> <p>For <code translate="no">qmake</code>:</p> <div class="pre"><pre translate="no" data-language="cpp">HEADERS     = calculatorform.h</pre></div> <p>The subclass is defined in the following way:</p> <div class="pre"><pre translate="no" data-language="cpp">class CalculatorForm : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit CalculatorForm(QWidget *parent = nullptr);
+
+private slots:
+    void updateResult();
+
+private:
+    Ui::CalculatorForm ui;
+};</pre></div> <p>The important feature of the class is the private <code translate="no">ui</code> object which provides the code for setting up and managing the user interface.</p> <p>The constructor for the subclass constructs and configures all the widgets and layouts for the dialog just by calling the <code translate="no">ui</code> object's <code translate="no">setupUi()</code> function. Once this has been done, it is possible to modify the user interface as needed.</p> <div class="pre"><pre translate="no" data-language="cpp">CalculatorForm::CalculatorForm(QWidget *parent)
+    : QWidget(parent)
+{
+    ui.setupUi(this);
+    connect(ui.inputSpinBox1, &amp;QSpinBox::valueChanged, this, &amp;CalculatorForm::updateResult);
+    connect(ui.inputSpinBox2, &amp;QSpinBox::valueChanged, this, &amp;CalculatorForm::updateResult);
+}</pre></div> <p>We can connect signals and slots in user interface widgets in the usual way by adding the on_&lt;object name&gt; - prefix. For more information, see <a href="designer-using-a-ui-file#widgets-and-dialogs-with-auto-connect">widgets-and-dialogs-with-auto-connect</a>.</p> <p>The advantages of this approach are its simple use of inheritance to provide a <a href="qwidget" translate="no">QWidget</a>-based interface, and its encapsulation of the user interface widget variables within the <code translate="no">ui</code> data member. We can use this method to define a number of user interfaces within the same widget, each of which is contained within its own namespace, and overlay (or compose) them. This approach can be used to create individual tabs from existing forms, for example.</p> <h4 id="using-a-pointer-member-variable">Using a Pointer Member Variable
+</h4> <p>Alternatively, the <code translate="no">Ui::CalculatorForm</code> structure can be made a pointer member of the class. The header then looks as follows:</p> <div class="pre"><pre translate="no" data-language="cpp">namespace Ui {
+    class CalculatorForm;
+}
+
+class CalculatorForm : public QWidget
+...
+virtual ~CalculatorForm();
+...
+private:
+    Ui::CalculatorForm *ui;
+...</pre></div> <p>The corresponding source file looks as follows:</p> <div class="pre"><pre translate="no" data-language="cpp">#include "ui_calculatorform.h"
+
+CalculatorForm::CalculatorForm(QWidget *parent) :
+    QWidget(parent), ui(new Ui::CalculatorForm)
+{
+    ui-&gt;setupUi(this);
+}
+
+CalculatorForm::~CalculatorForm()
+{
+    delete ui;
+}</pre></div> <p>The advantage of this approach is that the user interface object can be forward-declared, which means that we do not have to include the generated <code translate="no">ui_calculatorform.h</code> file in the header. The form can then be changed without recompiling the dependent source files. This is particularly important if the class is subject to binary compatibility restrictions.</p> <p>We generally recommend this approach for libraries and large applications. For more information, see <a href="https://doc.qt.io/qt-6.9/sharedlibrary.html">Creating Shared Libraries</a>.</p> <h3 id="the-multiple-inheritance-approach">The Multiple Inheritance Approach
+</h3> <p>Forms created with Qt Widgets Designer can be subclassed together with a standard <a href="qwidget" translate="no">QWidget</a>-based class. This approach makes all the user interface components defined in the form directly accessible within the scope of the subclass, and enables signal and slot connections to be made in the usual way with the <a href="qobject#connect" translate="no">connect</a>() function.</p> <p>We need to include the header file that <code translate="no">uic</code> generates from the <code translate="no">calculatorform.ui</code> file, as follows:</p> <div class="pre"><pre translate="no" data-language="cpp">#include "ui_calculatorform.h"</pre></div> <p>The class is defined in a similar way to the one used in the <a href="designer-using-a-ui-file#the-single-inheritance-approach">single inheritance approach</a>, except that this time we inherit from <i>both</i> <a href="qwidget" translate="no">QWidget</a> and <code translate="no">Ui::CalculatorForm</code>, as follows:</p> <div class="pre"><pre translate="no" data-language="cpp">class CalculatorForm : public QWidget, private Ui::CalculatorForm
+{
+    Q_OBJECT
+
+public:
+    explicit CalculatorForm(QWidget *parent = nullptr);
+
+private slots:
+    void on_inputSpinBox1_valueChanged(int value);
+    void on_inputSpinBox2_valueChanged(int value);
+};</pre></div> <p>We inherit <code translate="no">Ui::CalculatorForm</code> privately to ensure that the user interface objects are private in our subclass. We can also inherit it with the <code translate="no">public</code> or <code translate="no">protected</code> keywords in the same way that we could have made <code translate="no">ui</code> public or protected in the previous case.</p> <p>The constructor for the subclass performs many of the same tasks as the constructor used in the <a href="designer-using-a-ui-file#the-single-inheritance-approach">single inheritance</a> example:</p> <div class="pre"><pre translate="no" data-language="cpp">CalculatorForm::CalculatorForm(QWidget *parent)
+    : QWidget(parent)
+{
+    setupUi(this);
+}</pre></div> <p>In this case, the widgets used in the user interface can be accessed in the same say as a widget created in code by hand. We no longer require the <code translate="no">ui</code> prefix to access them.</p> <h3 id="reacting-to-language-changes">Reacting to Language Changes
+</h3> <p>Qt notifies applications if the user interface language changes by sending an event of the type <a href="qevent#Type-enum" translate="no">QEvent::LanguageChange</a>. To call the member function <code translate="no">retranslateUi()</code> of the user interface object, we reimplement <code translate="no">QWidget::changeEvent()</code> in the form class, as follows:</p> <div class="pre"><pre translate="no" data-language="cpp">void CalculatorForm::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
+    switch (e-&gt;type()) {
+    case QEvent::LanguageChange:
+        ui-&gt;retranslateUi(this);
+        break;
+    default:
+        break;
+   }
+}</pre></div> <h2 id="run-time-form-processing">Run Time Form Processing
+</h2> <p>Alternatively, forms can be processed at run time, producing dynamically- generated user interfaces. This can be done using the <a href="https://doc.qt.io/qt-6.9/qtuitools-module.html" translate="no">QtUiTools</a> module that provides the <a href="quiloader" translate="no">QUiLoader</a> class to handle forms created with Qt Widgets Designer.</p> <h3 id="the-uitools-approach">The UiTools Approach
+</h3> <p>A resource file containing a UI file is required to process forms at run time. Also, the application needs to be configured to use the <a href="https://doc.qt.io/qt-6.9/qtuitools-module.html" translate="no">QtUiTools</a> module. This is done by including the following declarations in a <code translate="no">CMake</code> project file, ensuring that the application is compiled and linked appropriately.</p> <div class="pre"><pre translate="no" data-language="cpp">find_package(Qt6 REQUIRED COMPONENTS Core Gui UiTools Widgets)
+target_link_libraries(textfinder PUBLIC
+    Qt::Core
+    Qt::Gui
+    Qt::UiTools
+    Qt::Widgets
+)</pre></div> <p>For <code translate="no">qmake</code>:</p> <div class="pre"><pre translate="no" data-language="cpp">QT += uitools</pre></div> <p>The <a href="quiloader" translate="no">QUiLoader</a> class provides a form loader object to construct the user interface. This user interface can be retrieved from any <a href="qiodevice" translate="no">QIODevice</a>, e.g., a <a href="qfile" translate="no">QFile</a> object, to obtain a form stored in a project's resource file. The <a href="quiloader#load" translate="no">QUiLoader::load</a>() function constructs the form widget using the user interface description contained in the file.</p> <p>The <a href="https://doc.qt.io/qt-6.9/qtuitools-module.html" translate="no">QtUiTools</a> module classes can be included using the following directive:</p> <div class="pre"><pre translate="no" data-language="cpp">#include &lt;QtUiTools&gt;</pre></div> <p>The <a href="quiloader#load" translate="no">QUiLoader::load</a>() function is invoked as shown in this code from the <a href="https://doc.qt.io/qt-6.9/qtuitools-textfinder-example.html">Text Finder</a> example:</p> <div class="pre"><pre translate="no" data-language="cpp">static QWidget *loadUiFile(QWidget *parent)
+{
+    QFile file(u":/forms/textfinder.ui"_s);
+    if (!file.open(QIODevice::ReadOnly))
+        qFatal("Cannot open resource file");
+
+    return QUiLoader().load(&amp;file, parent);
+}</pre></div> <p>In a class that uses <a href="https://doc.qt.io/qt-6.9/qtuitools-module.html" translate="no">QtUiTools</a> to build its user interface at run time, we can locate objects in the form using <a href="qobject#findChild" translate="no">QObject::findChild</a>(). For example, in the following code, we locate some components based on their object names and widget types:</p> <div class="pre"><pre translate="no" data-language="cpp">    ui_findButton = findChild&lt;QPushButton*&gt;("findButton");
+    ui_textEdit = findChild&lt;QTextEdit*&gt;("textEdit");
+    ui_lineEdit = findChild&lt;QLineEdit*&gt;("lineEdit");</pre></div> <p>Processing forms at run-time gives the developer the freedom to change a program's user interface, just by changing the UI file. This is useful when customizing programs to suit various user needs, such as extra large icons or a different colour scheme for accessibility support.</p> <h2 id="automatic-connections">Automatic Connections
+</h2> <p>The signals and slots connections defined for compile time or run time forms can either be set up manually or automatically, using <a href="qmetaobject" translate="no">QMetaObject</a>'s ability to make connections between signals and suitably-named slots.</p> <p>Generally, in a <a href="qdialog" translate="no">QDialog</a>, if we want to process the information entered by the user before accepting it, we need to connect the clicked() signal from the <b>OK</b> button to a custom slot in our dialog. We will first show an example of the dialog in which the slot is connected by hand then compare it with a dialog that uses automatic connection.</p> <h3 id="a-dialog-without-auto-connect">A Dialog Without Auto-Connect
+</h3> <p>We define the dialog in the same way as before, but now include a slot in addition to the constructor:</p> <div class="pre"><pre translate="no" data-language="cpp">class ImageDialog : public QDialog, private Ui::ImageDialog
+{
+    Q_OBJECT
+
+public:
+    explicit ImageDialog(QWidget *parent = nullptr);
+
+private slots:
+    void checkValues();
+};</pre></div> <p>The <code translate="no">checkValues()</code> slot will be used to validate the values provided by the user.</p> <p>In the dialog's constructor we set up the widgets as before, and connect the <b>Cancel</b> button's <a href="qabstractbutton#clicked" translate="no">clicked</a>() signal to the dialog's reject() slot. We also disable the <a href="qpushbutton#autoDefault-prop" translate="no">autoDefault</a> property in both buttons to ensure that the dialog does not interfere with the way that the line edit handles return key events:</p> <div class="pre"><pre translate="no" data-language="cpp">ImageDialog::ImageDialog(QWidget *parent)
+    : QDialog(parent)
+{
+    setupUi(this);
+    okButton-&gt;setAutoDefault(false);
+    cancelButton-&gt;setAutoDefault(false);
+    ...
+    connect(okButton, &amp;QAbstractButton::clicked, this, &amp;ImageDialog::checkValues);
+}</pre></div> <p>We connect the <b>OK</b> button's <a href="qabstractbutton#clicked" translate="no">clicked</a>() signal to the dialog's checkValues() slot which we implement as follows:</p> <div class="pre"><pre translate="no" data-language="cpp">void ImageDialog::checkValues()
+{
+    if (nameLineEdit-&gt;text().isEmpty()) {
+        QMessageBox::information(this, tr("No Image Name"),
+            tr("Please supply a name for the image."), QMessageBox::Cancel);
+    } else {
+        accept();
+    }
+}</pre></div> <p>This custom slot does the minimum necessary to ensure that the data entered by the user is valid - it only accepts the input if a name was given for the image.</p> <h3 id="widgets-and-dialogs-with-auto-connect">Widgets and Dialogs with Auto-Connect
+</h3> <p>Although it is easy to implement a custom slot in the dialog and connect it in the constructor, we could instead use <a href="qmetaobject" translate="no">QMetaObject</a>'s auto-connection facilities to connect the <b>OK</b> button's clicked() signal to a slot in our subclass. <code translate="no">uic</code> automatically generates code in the dialog's <code translate="no">setupUi()</code> function to do this, so we only need to declare and implement a slot with a name that follows a standard convention:</p> <div class="pre"><pre translate="no" data-language="cpp">void on_&lt;object name&gt;_&lt;signal name&gt;(&lt;signal parameters&gt;);</pre></div> <div class="admonition note"> <p><b>Note: </b>When renaming widgets in the form, the slot names need to be adapted accordingly, which can become a maintenance problem. For this reason, we recommend against using this in new code.</p> </div> <p>Using this convention, we can define and implement a slot that responds to mouse clicks on the <b>OK</b> button:</p> <div class="pre"><pre translate="no" data-language="cpp">class ImageDialog : public QDialog, private Ui::ImageDialog
+{
+    Q_OBJECT
+
+public:
+    explicit ImageDialog(QWidget *parent = nullptr);
+
+private slots:
+    void on_okButton_clicked();
+};</pre></div> <p>Another example of automatic signal and slot connection would be the <a href="https://doc.qt.io/qt-6.9/qtuitools-textfinder-example.html">Text Finder</a> with its <code translate="no">on_findButton_clicked()</code> slot.</p> <p>We use <a href="qmetaobject" translate="no">QMetaObject</a>'s system to enable signal and slot connections:</p> <div class="pre"><pre translate="no" data-language="cpp">    QMetaObject::connectSlotsByName(this);</pre></div> <p>This enables us to implement the slot, as shown below:</p> <div class="pre"><pre translate="no" data-language="cpp">void TextFinder::on_findButton_clicked()
+{
+    QString searchString = ui_lineEdit-&gt;text();
+    QTextDocument *document = ui_textEdit-&gt;document();
+
+    bool found = false;
+
+    // undo previous change (if any)
+    document-&gt;undo();
+
+    if (searchString.isEmpty()) {
+        QMessageBox::information(this, tr("Empty Search Field"),
+                                 tr("The search field is empty. "
+                                    "Please enter a word and click Find."));
+    } else {
+        QTextCursor highlightCursor(document);
+        QTextCursor cursor(document);
+
+        cursor.beginEditBlock();
+    ...
+        cursor.endEditBlock();
+
+        if (found == false) {
+            QMessageBox::information(this, tr("Word Not Found"),
+                                     tr("Sorry, the word cannot be found."));
+        }
+    }
+}</pre></div> <p>Automatic connection of signals and slots provides both a standard naming convention and an explicit interface for widget designers to work to. By providing source code that implements a given interface, user interface designers can check that their designs actually work without having to write code themselves.</p> </div>  <p class="naviNextPrevious footerNavi"> <a class="prevPage" href="designer-stylesheet">Using Stylesheets</a> <a class="nextPage" href="designer-using-a-ui-file-python">Using a Designer UI File in Your Qt for Python Application</a> </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © The Qt Company Ltd<br>Licensed under the GNU Free Documentation License, Version 1.3.<br>
+    <a href="https://doc.qt.io/qt-6.9/designer-using-a-ui-file.html" class="_attribution-link">https://doc.qt.io/qt-6.9/designer-using-a-ui-file.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

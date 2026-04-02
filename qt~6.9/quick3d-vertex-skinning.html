@@ -1,0 +1,166 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Vertex Skinning - Qt 6.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Qt Quick 3D supports vertex skinning for skeletal animation of mesh geometries. ">
+  <meta name="keywords" content="vertex, skinning, qt, qt~6.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/qt~6.9/quick3d-vertex-skinning.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/qt~6.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/qt~6.9/" class="_nav-link" title="" style="margin-left:0;">Qt 6.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _qt">
+				
+				
+<h1>Vertex Skinning</h1>  <div class="descr" id="details"> <h2 id="introduction">Introduction
+</h2> <p>Qt Quick 3D supports vertex skinning for skeletal animation of mesh geometries.</p> <p>See the <a href="https://doc.qt.io/qt-6.9/qtquick3d-skinning-example.html">Simple Skinning Example</a> for a practical demonstration of skeletal animation.</p> <p>In most cases, application developers will not be using the skinning API manually. The normal workflow is to use an external content creation tool to define the skeleton and the skin (this is sometimes also referred to as <i>rigging</i>), and then use the <a href="qtquick3d-tool-balsam">Balsam Asset Import Tool</a> to convert the asset to Qt Quick 3D's native format.</p> <h2 id="defining-a-skeleton">Defining a skeleton
+</h2> <p>The basis of skeletal animation is the <a href="qml-qtquick3d-skeleton" translate="no">Skeleton</a>. This is an abstract representation of how the model can move, inspired by how a physical skeleton works for vertebrates. The "bones" of the skeleton is represented by a hierarchy of <a href="qml-qtquick3d-joint" translate="no">Joint</a> nodes. These do not necessarily need to represent actual bones, of course.</p> <div class="pre"><pre translate="no" data-language="qml">Skeleton {
+    id: qmlskeleton
+    Joint {
+        id: joint0
+        index: 0
+        skeletonRoot: qmlskeleton
+        Joint {
+            id: joint1
+            index: 1
+            skeletonRoot: qmlskeleton
+        }
+        Joint {
+            id: joint2
+            index: 2
+            skeletonRoot: qmlskeleton
+        }
+
+    }
+}</pre></div> <h2 id="connecting-a-skeleton-to-a-model">Connecting a skeleton to a model
+</h2> <p>To apply a skeleton to a model, set the model's <a href="qml-qtquick3d-model#skeleton-prop" translate="no">skeleton</a> property:</p> <div class="pre"><pre translate="no" data-language="qml">Model {
+    skeleton: qmlskeleton
+    ...</pre></div> <p>In order for the skeleton to have an effect, the model's <a href="qml-qtquick3d-model#geometry-prop" translate="no">geometry</a> needs to include skinning information. This is done by including <a href="qquick3dgeometry#addAttribute" translate="no">vertex attributes</a> with <code translate="no">JointSemantic</code> and <code translate="no">WeightSemantic</code> in the vertex buffer.</p> <p>The <code translate="no">JointSemantic</code> attribute determines <i>which</i> of the joints in the skeleton can influence a given vertex. This uses the index values specified by <a href="qml-qtquick3d-joint#index-prop" translate="no">Joint.index</a>. Since this attribute contains 4 indexes, a maximum of 4 joints can influence one vertex.</p> <p>The <code translate="no">WeightSemantic</code> attribute describes the <i>strength</i> of the influence of those joints. It contains four floating point values, each value determining the weight given to the joint with the index at the corresponding position in the <code translate="no">JointSemantic</code> attribute.</p> <p>For example, given the skeleton above, if a vertex has these attributes:</p> <div class="table"><table class="generic"> <thead><tr class="qt-style">
+<th>
+<code translate="no">JointSemantic</code> attribute</th>
+<th>
+<code translate="no">WeightSemantic</code> attribute</th>
+</tr></thead> <tr class="odd" valign="top">
+<td><code translate="no">QVector4D(2, 0, 0, 0)</code></td>
+<td><code translate="no">QVector4D(1.0, 0.0, 0.0, 0.0)</code></td>
+</tr> </table></div> <p>that vertex will be 100% influenced by <i>joint2</i>, and it will move exactly as much as that joint. The last three indexes in the <code translate="no">JointSemantic</code> attribute are ignored since the corresponding weights are <code translate="no">0.0</code>.</p> <p>As another example, with these attributes:</p> <div class="table"><table class="generic"> <thead><tr class="qt-style">
+<th>
+<code translate="no">JointSemantic</code> attribute</th>
+<th>
+<code translate="no">WeightSemantic</code> attribute</th>
+</tr></thead> <tr class="odd" valign="top">
+<td><code translate="no">QVector4D(1, 2, 0, 0)</code></td>
+<td><code translate="no">QVector4D(0.5, 0.25, 0.0, 0.0)</code></td>
+</tr> </table></div> <p>the vertex will be moved by 50% of <i>joint1</i>'s movement plus 25% of <i>joint2</i>'s movement.</p> <p>In addition, since the skeleton is an abstract representation, the model need to specify geometry information for the joints. For performance reasons, this is not done by specifying the information directly. Instead, <a href="qml-qtquick3d-model#inverseBindPoses-prop" translate="no">Model.inverseBindPoses</a> contains the <i>inverse</i> of the transformation matrix needed to move each joint to its initial position.</p> <h2 id="animating-the-skeleton">Animating the skeleton
+</h2> <p>Transforming a joint in a skeleton will move all vertexes connected to that joint. Since Joint inheriths from <a href="qml-qtquick3d-node" translate="no">Node</a>, a skeleton can be animated simply by using standard <a href="qml-qtquick-animation" translate="no">QML animations</a>.</p> <div class="pre"><pre translate="no" data-language="qml">NumberAnimation {
+    target: joint1
+    property: "eulerRotation.z"
+    duration: 5000
+    from: -90
+    to: 90
+    running: true
+}</pre></div> <p>While it is possible to create complex animations by nesting <a href="qml-qtquick-sequentialanimation" translate="no">SequentialAnimation</a>, <a href="qml-qtquick-parallelanimation" translate="no">ParallelAnimation</a> and <a href="qml-qtquick-numberanimation" translate="no">NumberAnimation</a>, it is generally more convenient to use <a href="https://doc.qt.io/qt-6.9/qtquicktimeline-overview.html">timeline animations</a> for animating skinned models.</p> </div>  <p class="naviNextPrevious footerNavi"> <a class="prevPage" href="qtquick3d-tool-shadergen">Build-time materials</a> <a class="nextPage" href="quick3d-morphing">Morphing Animation</a> </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © The Qt Company Ltd<br>Licensed under the GNU Free Documentation License, Version 1.3.<br>
+    <a href="https://doc.qt.io/qt-6.9/quick3d-vertex-skinning.html" class="_attribution-link">https://doc.qt.io/qt-6.9/quick3d-vertex-skinning.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
