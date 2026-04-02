@@ -1,0 +1,179 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Asyncjs - Nim - W3cubDocs</title>
+  
+  <meta name="description" content="This module implements types and macros for writing asynchronous code for the JS backend. It provides tools for interaction with JavaScript async &hellip;">
+  <meta name="keywords" content="std, asyncjs, nim">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/nim/asyncjs.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/nim.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/nim/" class="_nav-link" title="" style="margin-left:0;">Nim</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 class="title">std/asyncjs</h1> <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L1" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L1" target="_blank">Edit</a>  
+<p>This module implements types and macros for writing asynchronous code for the JS backend. It provides tools for interaction with JavaScript async API-s and libraries, writing async procedures in Nim and converting callback-based code to promises.</p> <p>A Nim procedure is asynchronous when it includes the <code><span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">async</span><span class="Operator">.</span><span class="Punctuation">}</span></code> pragma. It should always have a <code><span class="Identifier">Future</span><span class="Punctuation">[</span><span class="Identifier">T</span><span class="Punctuation">]</span></code> return type or not have a return type at all. A <code><span class="Identifier">Future</span><span class="Punctuation">[</span><span class="Identifier">void</span><span class="Punctuation">]</span></code> return type is assumed by default.</p> <p>This is roughly equivalent to the <code><span class="Identifier">async</span></code> keyword in JavaScript code.</p> 
+<pre class="listing" data-language="nim">proc loadGame(name: string): Future[Game] {.async.} =
+  # code</pre> <p>should be equivalent to</p> 
+<pre class="listing" data-language="nim">async function loadGame(name) {
+  // code
+}</pre> <p>A call to an asynchronous procedure usually needs <code><span class="Identifier">await</span></code> to wait for the completion of the <code><span class="Identifier">Future</span></code>.</p> 
+<pre class="listing" data-language="nim">var game = await loadGame(name)</pre> <p>Often, you might work with callback-based API-s. You can wrap them with asynchronous procedures using promises and <code><span class="Identifier">newPromise</span></code>:</p> 
+<pre class="listing" data-language="nim">proc loadGame(name: string): Future[Game] =
+  var promise = newPromise() do (resolve: proc(response: Game)):
+    cbBasedLoadGame(name) do (game: Game):
+      resolve(game)
+  return promise</pre> <p>Forward definitions work properly, you just need to always add the <code><span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">async</span><span class="Operator">.</span><span class="Punctuation">}</span></code> pragma:</p> 
+<pre class="listing" data-language="nim">proc loadGame(name: string): Future[Game] {.async.}</pre> <h2 id="javascript-compatibility">JavaScript compatibility</h2>
+<p>Nim currently generates <code><span class="Identifier">async</span><span class="Operator">/</span><span class="Identifier">await</span></code> JavaScript code which is supported in modern EcmaScript and most modern versions of browsers, Node.js and Electron. If you need to use this module with older versions of JavaScript, you can use a tool that backports the resulting JavaScript code, as babel.</p>  <h2 id="6">Imports</h2> <dl> <a href="jsffi">jsffi</a>, <a href="macros">macros</a>, <a href="since">since</a> </dl>   <h2 id="7">Types</h2> <dl> <div id="Error"> <dt><pre data-language="nim">Error {.importjs: "Error".} = ref object of JsRoot
+  message*: cstring
+  name*: cstring</pre></dt> <dd> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error</a> <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L195" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L195" target="_blank">Edit</a> </dd> </div> <div id="Future"> <dt><pre data-language="nim">Future[T] = ref object
+  future*: T</pre></dt> <dd> <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L75" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L75" target="_blank">Edit</a> </dd> </div> <div id="OnReject"> <dt><pre data-language="nim">OnReject = proc (reason: Error)</pre></dt> <dd> <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L200" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L200" target="_blank">Edit</a> </dd> </div> <div id="PromiseJs"> <dt><pre data-language="nim">PromiseJs {.importjs: "Promise".} = ref object</pre></dt> <dd> <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L79" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L79" target="_blank">Edit</a> </dd> </div> </dl>   <h2 id="12">Procs</h2> <dl> <div id="catch-procs-all"> <div id="catch,Future[T],OnReject"> <dt><pre data-language="nim">proc catch[T](future: Future[T]; onReject: OnReject): Future[void]</pre></dt> <dd> See <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch</a> <p><strong class="examples_text">Example: cmd: -r:off</strong></p> <pre class="listing" data-language="nim">from std/sugar import `=&gt;`
+from std/strutils import contains
+
+proc fn(n: int): Future[int] {.async.} =
+  if n &gt;= 7: raise newException(ValueError, "foobar: " &amp; $n)
+  else: result = n * 2
+
+proc main() {.async.} =
+  var reason: Error
+  await fn(6).catch((r: Error) =&gt; (reason = r)) # note: `()` are needed, `=&gt; reason = r` would not work
+  assert reason == nil
+  await fn(7).catch((r: Error) =&gt; (reason = r))
+  assert reason != nil
+  assert  "foobar: 7" in $reason.message
+
+discard main()</pre> <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L249" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L249" target="_blank">Edit</a> </dd> </div> </div> <div id="newPromise-procs-all"> <div id="newPromise,proc(proc))"> <dt><pre data-language="nim">proc newPromise(handler: proc (resolve: proc ())): Future[void] {.
+    importjs: "(new Promise(#))", ...raises: [], tags: [], forbids: [].}</pre></dt> <dd> A helper for wrapping callback-based functions into promises and async procedures. <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L173" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L173" target="_blank">Edit</a> </dd> </div> <div id="newPromise,proc(proc(T))"> <dt><pre data-language="nim">proc newPromise[T](handler: proc (resolve: proc (response: T))): Future[T] {.
+    importjs: "(new Promise(#))", ...raises: [], tags: [], forbids: [].}</pre></dt> <dd> A helper for wrapping callback-based functions into promises and async procedures. <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L169" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L169" target="_blank">Edit</a> </dd> </div> </div> <div id="then-procs-all"> <div id="then,Future[T],proc,OnReject"> <dt><pre data-language="nim">proc then[T](future: Future[T]; onSuccess: proc; onReject: OnReject = nil): auto</pre></dt> <dd> See <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then</a> Returns a <code><span class="Identifier">Future</span></code> from the return type of <code><span class="Identifier">onSuccess</span><span class="Punctuation">(</span><span class="Identifier">T</span><span class="Operator">.</span><span class="Identifier">default</span><span class="Punctuation">)</span></code>. <p><strong class="examples_text">Example: cmd: -r:off</strong></p> <pre class="listing" data-language="nim">from std/sugar import `=&gt;`
+
+proc fn(n: int): Future[int] {.async.} =
+  if n &gt;= 7: raise newException(ValueError, "foobar: " &amp; $n)
+  else: result = n * 2
+
+proc asyncFact(n: int): Future[int] {.async.} =
+  if n &gt; 0: result = n * await asyncFact(n-1)
+  else: result = 1
+
+proc main() {.async.} =
+  block: # then
+    assert asyncFact(3).await == 3*2
+    assert asyncFact(3).then(asyncFact).await == 6*5*4*3*2
+    let x1 = await fn(3)
+    assert x1 == 3 * 2
+    let x2 = await fn(4)
+      .then((a: int) =&gt; a.float)
+      .then((a: float) =&gt; $a)
+    assert x2 == "8.0"
+
+  block: # then with `onReject` callback
+    var witness = 1
+    await fn(6).then((a: int) =&gt; (witness = 2), (r: Error) =&gt; (witness = 3))
+    assert witness == 2
+    await fn(7).then((a: int) =&gt; (witness = 2), (r: Error) =&gt; (witness = 3))
+    assert witness == 3</pre> <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L202" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L202" target="_blank">Edit</a> </dd> </div> </div> </dl>   <h2 id="17">Macros</h2> <dl> <div id="async-macros-all"> <div id="async.m,untyped"> <dt><pre data-language="nim">macro async(arg: untyped): untyped</pre></dt> <dd> Macro which converts normal procedures into javascript-compatible async procedures. <a href="https://github.com/nim-lang/Nim/tree/version-2-2/lib/js/asyncjs.nim#L159" target="_blank">Source</a> <a href="https://github.com/nim-lang/Nim/edit/devel/lib/js/asyncjs.nim#L159" target="_blank">Edit</a> </dd> </div> </div> </dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2006–2024 Andreas Rumpf<br>Licensed under the MIT License.<br>
+    <a href="https://nim-lang.org/docs/asyncjs.html" class="_attribution-link">https://nim-lang.org/docs/asyncjs.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
