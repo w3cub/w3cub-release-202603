@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Indexing - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content=" DuckDB has two types of indexes&#58; zonemaps and ART indexes. ">
+  <meta name="keywords" content="indexing, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/guides/performance/indexing.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Indexing</h1>  <p>DuckDB has two types of indexes: zonemaps and ART indexes.</p> <h2 id="zonemaps"> <a style="text-decoration: none;" href="#zonemaps">Zonemaps</a> </h2> <p>DuckDB automatically creates <a href="https://en.wikipedia.org/wiki/Block_Range_Index">zonemaps</a> (also known as min-max indexes) for the columns of all <a href="../../sql/data_types/overview#general-purpose-data-types.html">general-purpose data types</a>. These indexes are used for predicate pushdown into scan operators and computing aggregations. This means that if a filter criterion (like <code class="language-plaintext highlighter-rouge">WHERE column1 = 123</code>) is in use, DuckDB can skip any row group whose min-max range does not contain that filter value (e.g., a block with a min-max range of 1000 to 2000 will be omitted when comparing for <code class="language-plaintext highlighter-rouge">= 123</code> or <code class="language-plaintext highlighter-rouge">&lt; 400</code>).</p> <h3 id="the-effect-of-ordering-on-zonemaps"> <a style="text-decoration: none;" href="#the-effect-of-ordering-on-zonemaps">The Effect of Ordering on Zonemaps</a> </h3> <p>The more ordered the data within a column, the more useful the zonemap indexes will be. For example, in the worst case, a column could contain a random number on every row. DuckDB will be unlikely to be able to skip any row groups. The best case of ordered data commonly arises with <code class="language-plaintext highlighter-rouge">DATETIME</code> columns. If specific columns will be queried with selective filters, it is best to pre-order data by those columns when inserting it. Even an imperfect ordering will still be helpful.</p> <h3 id="microbenchmark-the-effect-of-ordering"> <a style="text-decoration: none;" href="#microbenchmark-the-effect-of-ordering">Microbenchmark: The Effect of Ordering</a> </h3> <p>For an example, let’s repeat the <a href="schema#microbenchmark-using-timestamps.html">microbenchmark for timestamps</a> with a timestamp column that sorted using an ascending order vs. an unordered one.</p>  <table> <thead> <tr> <th>Column type</th> <th>Ordered</th> <th style="text-align: right">Storage size</th> <th style="text-align: right">Query time</th> </tr> </thead> <tbody> <tr> <td><code class="language-plaintext highlighter-rouge">DATETIME</code></td> <td>yes</td> <td style="text-align: right">1.3 GB</td> <td style="text-align: right">0.6 s</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">DATETIME</code></td> <td>no</td> <td style="text-align: right">3.3 GB</td> <td style="text-align: right">0.9 s</td> </tr> </tbody> </table> <p>The results show that simply keeping the column order allows for improved compression, yielding a 2.5× smaller storage size. It also allows the computation to be 1.5× faster.</p> <h3 id="ordered-integers"> <a style="text-decoration: none;" href="#ordered-integers">Ordered Integers</a> </h3> <p>Another practical way to exploit ordering is to use the <code class="language-plaintext highlighter-rouge">INTEGER</code> type with automatic increments rather than <code class="language-plaintext highlighter-rouge">UUID</code> for columns that will be queried using selective filters. <code class="language-plaintext highlighter-rouge">UUID</code>s will likely be inserted in a random order, so many row groups in the table will need to be scanned to find a specific <code class="language-plaintext highlighter-rouge">UUID</code> value, while an ordered <code class="language-plaintext highlighter-rouge">INTEGER</code> column will allow all row groups to be skipped except the one that contains the value.</p> <h2 id="art-indexes"> <a style="text-decoration: none;" href="#art-indexes">ART Indexes</a> </h2> <p>DuckDB allows defining <a href="https://db.in.tum.de/~leis/papers/ART.pdf">Adaptive Radix Tree (ART) indexes</a> in two ways. First, such an index is created implicitly for columns with <code class="language-plaintext highlighter-rouge">PRIMARY KEY</code>, <code class="language-plaintext highlighter-rouge">FOREIGN KEY</code>, and <code class="language-plaintext highlighter-rouge">UNIQUE</code> <a href="schema#constraints.html">constraints</a>. Second, explicitly running a the <a href="../../sql/indexes"><code class="language-plaintext highlighter-rouge">CREATE INDEX</code></a> statement creates an ART index on the target column(s).</p> <p>The tradeoffs of having an ART index on a column are as follows:</p> <ol> <li>It enables efficient constraint checking upon changes (inserts, updates, and deletes) for non-bulky changes.</li> <li>Having an ART index makes changes to the affected column(s) slower compared to non-indexed performance. That is because of index maintenance for these operations.</li> </ol> <p>Regarding query performance, an ART index has the following effects:</p> <ol> <li>It speeds up point queries and other highly selective queries using the indexed column(s), where the filtering condition returns approx. 0.1% of all rows or fewer. When in doubt, use <a href="../meta/explain"><code class="language-plaintext highlighter-rouge">EXPLAIN</code></a> to verify that your query plan uses the index scan.</li> <li>An ART index has no effect on the performance of join, aggregation, and sorting queries.</li> </ol> <p>Indexes are serialized to disk and deserialized lazily, i.e., when the database is reopened, operations using the index will only load the required parts of the index. Therefore, having an index will not cause any slowdowns when opening an existing database.</p> <blockquote> <p>Bestpractice We recommend following these guidelines:</p> <ul> <li>Only use primary keys, foreign keys, or unique constraints, if these are necessary for enforcing constraints on your data.</li> <li>Do not define explicit indexes unless you have highly selective queries.</li> <li>If you define an ART index, do so after bulk loading the data to the table. Adding an index prior to loading, either explicitly or via primary/foreign keys, is <a href="schema#microbenchmark-the-effect-of-primary-keys.html">detrimental to load performance</a>.</li> </ul> </blockquote>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/guides/performance/indexing.html" class="_attribution-link">https://duckdb.org/docs/guides/performance/indexing.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

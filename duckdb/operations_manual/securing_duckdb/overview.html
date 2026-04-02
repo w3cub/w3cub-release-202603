@@ -1,0 +1,120 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Securing DuckDB - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="DuckDB is quite powerful, which can be problematic, especially if untrusted SQL queries are run, e.g., from public-facing user inputs. This page &hellip;">
+  <meta name="keywords" content="securing, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/operations_manual/securing_duckdb/overview.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Securing DuckDB</h1>  <p>DuckDB is quite powerful, which can be problematic, especially if untrusted SQL queries are run, e.g., from public-facing user inputs. This page lists some options to restrict the potential fallout from malicious SQL queries.</p> <p>The approach to securing DuckDB varies depending on your use case, environment, and potential attack models. Therefore, consider the security-related configuration options carefully, especially when working with confidential data sets.</p> <p>If you plan to embed DuckDB in your application, please consult the <a href="../embedding_duckdb">“Embedding DuckDB”</a> page.</p> <h2 id="reporting-vulnerabilities"> <a style="text-decoration: none;" href="#reporting-vulnerabilities">Reporting Vulnerabilities</a> </h2> <p>If you discover a potential vulnerability, please <a href="https://github.com/duckdb/duckdb/security/advisories/new">report it confidentially via GitHub</a>.</p> <h2 id="disabling-file-access"> <a style="text-decoration: none;" href="#disabling-file-access">Disabling File Access</a> </h2> <p>DuckDB can list directories and read arbitrary files via its CSV parser’s <a href="../../data/csv/overview"><code class="language-plaintext highlighter-rouge">read_csv</code> function</a> or read text via the <a href="../../sql/functions/char#read_textsource.html"><code class="language-plaintext highlighter-rouge">read_text</code> function</a>. For example:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT *
+FROM read_csv('/etc/passwd', sep = ':');</pre> <p>This can be disabled either by disabling external access altogether (<code class="language-plaintext highlighter-rouge">enable_external_access</code>) or disabling individual file systems. For example:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SET disabled_filesystems = 'LocalFileSystem';</pre> <h2 id="secrets"> <a style="text-decoration: none;" href="#secrets">Secrets</a> </h2> <p><a href="../../configuration/secrets_manager">Secrets</a> are used to manage credentials to log into third party services like AWS or Azure. DuckDB can show a list of secrets using the <code class="language-plaintext highlighter-rouge">duckdb_secrets()</code> table function. This will redact any sensitive information such as security keys by default. The <code class="language-plaintext highlighter-rouge">allow_unredacted_secrets</code> option can be set to show all information contained within a security key. It is recommended not to turn on this option if you are running untrusted SQL input.</p> <p>Queries can access the secrets defined in the Secrets Manager. For example, if there is a secret defined to authenticate with a user, who has write privileges to a given AWS S3 bucket, queries may write to that bucket. This is applicable for both persistent and temporary secrets.</p> <p><a href="../../configuration/secrets_manager#persistent-secrets.html">Persistent secrets</a> are stored in unencrypted binary format on the disk. These have the same permissions as SSH keys, <code class="language-plaintext highlighter-rouge">600</code>, i.e., only user who is running the DuckDB (parent) process can read and write them.</p> <h2 id="locking-configurations"> <a style="text-decoration: none;" href="#locking-configurations">Locking Configurations</a> </h2> <p>Security-related configuration settings generally lock themselves for safety reasons. For example, while we can disable <a href="../../extensions/community_extensions">community extensions</a> using the <code class="language-plaintext highlighter-rouge">SET allow_community_extensions = false</code>, we cannot re-enable them again after the fact without restarting the database. Trying to do so will result in an error:</p> <pre class="language-console highlighter-rouge" data-language="console">Invalid Input Error: Cannot upgrade allow_community_extensions setting while database is running</pre> <p>This prevents untrusted SQL input from re-enabling settings that were explicitly disabled for security reasons.</p> <p>Nevertheless, many configuration settings do not disable themselves, such as the resource constraints. If you allow users to run SQL statements unrestricted on your own hardware, it is recommended that you lock the configuration after your own configuration has finished using the following command:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SET lock_configuration = true;</pre> <p>This prevents any configuration settings from being modified from that point onwards.</p> <h2 id="constrain-resource-usage"> <a style="text-decoration: none;" href="#constrain-resource-usage">Constrain Resource Usage</a> </h2> <p>DuckDB can use quite a lot of CPU, RAM, and disk space. To avoid denial of service attacks, these resources can be limited.</p> <p>The number of CPU threads that DuckDB can use can be set using, for example:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SET threads = 4;</pre> <p>Where 4 is the number of allowed threads.</p> <p>The maximum amount of memory (RAM) can also be limited, for example:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SET memory_limit = '4GB';</pre> <p>The size of the temporary file directory can be limited with:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SET max_temp_directory_size = '4GB';</pre> <h2 id="extensions"> <a style="text-decoration: none;" href="#extensions">Extensions</a> </h2> <p>DuckDB has a powerful extension mechanism, which have the same privileges as the user running DuckDB's (parent) process. This introduces security considerations. Therefore, we recommend reviewing the configuration options for <a href="securing_extensions">securing extensions</a>.</p> <h2 id="generic-solutions"> <a style="text-decoration: none;" href="#generic-solutions">Generic Solutions</a> </h2> <p>Securing DuckDB can also be supported via proven means, for example:</p> <ul> <li>Scoping user privileges via <a href="https://en.wikipedia.org/wiki/Chroot"><code class="language-plaintext highlighter-rouge">chroot</code></a>, relying on the operating system</li> <li>Containerization, e.g., Docker and Podman</li> <li>Running DuckDB in WebAssembly</li> </ul> <div> <h2 id="pages-in-this-section">Pages in This Section</h2> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/operations_manual/securing_duckdb/overview.html" class="_attribution-link">https://duckdb.org/docs/operations_manual/securing_duckdb/overview.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

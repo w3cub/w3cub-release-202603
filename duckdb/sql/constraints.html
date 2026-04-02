@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Constraints - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="In SQL, constraints can be specified for tables. Constraints enforce certain properties over data that is inserted into a table. Constraints can be &hellip;">
+  <meta name="keywords" content="constraints, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/sql/constraints.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Constraints</h1>  <p>In SQL, constraints can be specified for tables. Constraints enforce certain properties over data that is inserted into a table. Constraints can be specified along with the schema of the table as part of the <a href="statements/create_table"><code class="language-plaintext highlighter-rouge">CREATE TABLE</code> statement</a>. In certain cases, constraints can also be added to a table using the <a href="statements/alter_table"><code class="language-plaintext highlighter-rouge">ALTER TABLE</code> statement</a>, but this is not currently supported for all constraints.</p> <blockquote> <p>Warning Constraints have a strong impact on performance: they slow down loading and updates but speed up certain queries. Please consult the <a href="../guides/performance/schema#constraints.html">Performance Guide</a> for details.</p> </blockquote> <h2 id="syntax"> <a style="text-decoration: none;" href="#syntax">Syntax</a> </h2>  <h2 id="check-constraint"> <a style="text-decoration: none;" href="#check-constraint">Check Constraint</a> </h2> <p>Check constraints allow you to specify an arbitrary Boolean expression. Any columns that <em>do not</em> satisfy this expression violate the constraint. For example, we could enforce that the <code class="language-plaintext highlighter-rouge">name</code> column does not contain spaces using the following <code class="language-plaintext highlighter-rouge">CHECK</code> constraint.</p> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TABLE students (name VARCHAR CHECK (NOT contains(name, ' ')));
+INSERT INTO students VALUES ('this name contains spaces');</pre> <pre class="language-console highlighter-rouge" data-language="console">Constraint Error: CHECK constraint failed: students</pre> <h2 id="not-null-constraint"> <a style="text-decoration: none;" href="#not-null-constraint">Not Null Constraint</a> </h2> <p>A not-null constraint specifies that the column cannot contain any <code class="language-plaintext highlighter-rouge">NULL</code> values. By default, all columns in tables are nullable. Adding <code class="language-plaintext highlighter-rouge">NOT NULL</code> to a column definition enforces that a column cannot contain <code class="language-plaintext highlighter-rouge">NULL</code> values.</p> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TABLE students (name VARCHAR NOT NULL);
+INSERT INTO students VALUES (NULL);</pre> <pre class="language-console highlighter-rouge" data-language="console">Constraint Error: NOT NULL constraint failed: students.name</pre> <h2 id="primary-key-and-unique-constraint"> <a style="text-decoration: none;" href="#primary-key-and-unique-constraint">Primary Key and Unique Constraint</a> </h2> <p>Primary key or unique constraints define a column, or set of columns, that are a unique identifier for a row in the table. The constraint enforces that the specified columns are <em>unique</em> within a table, i.e., that at most one row contains the given values for the set of columns.</p> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TABLE students (id INTEGER PRIMARY KEY, name VARCHAR);
+INSERT INTO students VALUES (1, 'Student 1');
+INSERT INTO students VALUES (1, 'Student 2');</pre> <pre class="language-console highlighter-rouge" data-language="console">Constraint Error: Duplicate key "id: 1" violates primary key constraint</pre> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TABLE students (id INTEGER, name VARCHAR, PRIMARY KEY (id, name));
+INSERT INTO students VALUES (1, 'Student 1');
+INSERT INTO students VALUES (1, 'Student 2');
+INSERT INTO students VALUES (1, 'Student 1');</pre> <pre class="language-console highlighter-rouge" data-language="console">Constraint Error: Duplicate key "id: 1, name: Student 1" violates primary key constraint</pre> <p>In order to enforce this property efficiently, an <a href="indexes">ART index is automatically created</a> for every primary key or unique constraint that is defined in the table.</p> <p>Primary key constraints and unique constraints are identical except for two points:</p> <ul> <li>A table can only have one primary key constraint defined, but many unique constraints</li> <li>A primary key constraint also enforces the keys to not be <code class="language-plaintext highlighter-rouge">NULL</code>.</li> </ul> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TABLE students(id INTEGER PRIMARY KEY, name VARCHAR, email VARCHAR UNIQUE);
+INSERT INTO students VALUES (1, 'Student 1', 'student1@uni.com');
+INSERT INTO students values (2, 'Student 2', 'student1@uni.com');</pre> <pre class="language-console highlighter-rouge" data-language="console">Constraint Error: Duplicate key "email: student1@uni.com" violates unique constraint.</pre> <pre class="language-sql highlighter-rouge" data-language="sql">INSERT INTO students(id, name) VALUES (3, 'Student 3');
+INSERT INTO students(name, email) VALUES ('Student 3', 'student3@uni.com');</pre> <pre class="language-console highlighter-rouge" data-language="console">Constraint Error: NOT NULL constraint failed: students.id</pre> <blockquote> <p>Warning Indexes have certain limitations that might result in constraints being evaluated too eagerly, leading to constraint errors such as <code class="language-plaintext highlighter-rouge">violates primary key constraint</code> and <code class="language-plaintext highlighter-rouge">violates unique constraint</code>. See the <a href="indexes#index-limitations.html">indexes section for more details</a>.</p> </blockquote> <h2 id="foreign-keys"> <a style="text-decoration: none;" href="#foreign-keys">Foreign Keys</a> </h2> <p>Foreign keys define a column, or set of columns, that refer to a primary key or unique constraint from <em>another</em> table. The constraint enforces that the key exists in the other table.</p> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TABLE students (id INTEGER PRIMARY KEY, name VARCHAR);
+CREATE TABLE exams (exam_id INTEGER REFERENCES students(id), grade INTEGER);
+INSERT INTO students VALUES (1, 'Student 1');
+INSERT INTO exams VALUES (1, 10);
+INSERT INTO exams VALUES (2, 10);</pre> <pre class="language-console highlighter-rouge" data-language="console">Constraint Error: Violates foreign key constraint because key "id: 2" does not exist in the referenced table</pre> <p>In order to enforce this property efficiently, an <a href="indexes">ART index is automatically created</a> for every foreign key constraint that is defined in the table.</p> <blockquote> <p>Warning Indexes have certain limitations that might result in constraints being evaluated too eagerly, leading to constraint errors such as <code class="language-plaintext highlighter-rouge">violates primary key constraint</code> and <code class="language-plaintext highlighter-rouge">violates unique constraint</code>. See the <a href="indexes#index-limitations.html">indexes section for more details</a>.</p> </blockquote>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/sql/constraints.html" class="_attribution-link">https://duckdb.org/docs/sql/constraints.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

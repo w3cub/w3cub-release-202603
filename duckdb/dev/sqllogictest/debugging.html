@@ -1,0 +1,122 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Debugging - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="The purpose of the tests is to figure out when things break. Inevitably changes made to the system will cause one of the tests to fail, and when &hellip;">
+  <meta name="keywords" content="debugging, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/dev/sqllogictest/debugging.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Debugging</h1>  <p>The purpose of the tests is to figure out when things break. Inevitably changes made to the system will cause one of the tests to fail, and when that happens the test needs to be debugged.</p> <p>First, it is always recommended to run in debug mode. This can be done by compiling the system using the command <code class="language-plaintext highlighter-rouge">make debug</code>. Second, it is recommended to only run the test that breaks. This can be done by passing the filename of the breaking test to the test suite as a command line parameter (e.g., <code class="language-plaintext highlighter-rouge">build/debug/test/unittest test/sql/projection/test_simple_projection.test</code>). For more options on running a subset of the tests see the <a href="#triggering-which-tests-to-run">Triggering which tests to run</a> section.</p> <p>After that, a debugger can be attached to the program and the test can be debugged. In the sqllogictests it is normally difficult to break on a specific query, however, we have expanded the test suite so that a function called <code class="language-plaintext highlighter-rouge">query_break</code> is called with the line number <code class="language-plaintext highlighter-rouge">line</code> as parameter for every query that is run. This allows you to put a conditional breakpoint on a specific query. For example, if we want to break on line number 43 of the test file we can create the following break point:</p> <pre class="language-text highlighter-rouge" data-language="text">gdb: break query_break if line==43
+lldb: break s -n query_break -c line==43</pre> <p>You can also skip certain queries from executing by placing <code class="language-plaintext highlighter-rouge">mode skip</code> in the file, followed by an optional <code class="language-plaintext highlighter-rouge">mode unskip</code>. Any queries between the two statements will not be executed.</p> <h2 id="triggering-which-tests-to-run"> <a style="text-decoration: none;" href="#triggering-which-tests-to-run">Triggering Which Tests to Run</a> </h2> <p>When running the unittest program, by default all the fast tests are run. A specific test can be run by adding the name of the test as an argument. For the sqllogictests, this is the relative path to the test file. To run only a single test:</p> <pre class="language-bash highlighter-rouge" data-language="bash">build/debug/test/unittest test/sql/projection/test_simple_projection.test</pre> <p>All tests in a given directory can be executed by providing the directory as a parameter with square brackets. To run all tests in the “projection” directory:</p> <pre class="language-bash highlighter-rouge" data-language="bash">build/debug/test/unittest "[projection]"</pre> <p>All tests, including the slow tests, can be run by running the tests with an asterisk. To run all tests, including the slow tests:</p> <pre class="language-bash highlighter-rouge" data-language="bash">build/debug/test/unittest "*"</pre> <p>We can run a subset of the tests using the <code class="language-plaintext highlighter-rouge">--start-offset</code> and <code class="language-plaintext highlighter-rouge">--end-offset</code> parameters. To run the tests 200..250:</p> <pre class="language-bash highlighter-rouge" data-language="bash">build/debug/test/unittest --start-offset=200 --end-offset=250</pre> <p>These are also available in percentages. To run tests 10% - 20%:</p> <pre class="language-bash highlighter-rouge" data-language="bash">build/debug/test/unittest --start-offset-percentage=10 --end-offset-percentage=20</pre> <p>The set of tests to run can also be loaded from a file containing one test name per line, and loaded using the <code class="language-plaintext highlighter-rouge">-f</code> command.</p> <pre class="language-bash highlighter-rouge" data-language="bash">cat test.list</pre> <pre class="language-text highlighter-rouge" data-language="text">test/sql/join/full_outer/test_full_outer_join_issue_4252.test
+test/sql/join/full_outer/full_outer_join_cache.test
+test/sql/join/full_outer/test_full_outer_join.test</pre> <p>To run only the tests labeled in the file:</p> <pre class="language-bash highlighter-rouge" data-language="bash">build/debug/test/unittest -f test.list</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/dev/sqllogictest/debugging.html" class="_attribution-link">https://duckdb.org/docs/dev/sqllogictest/debugging.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Schema - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="It is important to use the correct type for encoding columns (e.g., BIGINT, DATE, DATETIME). While it is always possible to use string types ( &hellip;">
+  <meta name="keywords" content="schema, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/guides/performance/schema.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Schema</h1>  <h2 id="types"> <a style="text-decoration: none;" href="#types">Types</a> </h2> <p>It is important to use the correct type for encoding columns (e.g., <code class="language-plaintext highlighter-rouge">BIGINT</code>, <code class="language-plaintext highlighter-rouge">DATE</code>, <code class="language-plaintext highlighter-rouge">DATETIME</code>). While it is always possible to use string types (<code class="language-plaintext highlighter-rouge">VARCHAR</code>, etc.) to encode more specific values, this is not recommended. Strings use more space and are slower to process in operations such as filtering, join, and aggregation.</p> <p>When loading CSV files, you may leverage the CSV reader's <a href="../../data/csv/auto_detection">auto-detection mechanism</a> to get the correct types for CSV inputs.</p> <p>If you run in a memory-constrained environment, using smaller data types (e.g., <code class="language-plaintext highlighter-rouge">TINYINT</code>) can reduce the amount of memory and disk space required to complete a query. DuckDB’s <a href="http://localhost:8000/2022/10/28/lightweight-compression.html#bit-packing">bitpacking compression</a> means small values stored in larger data types will not take up larger sizes on disk, but they will take up more memory during processing.</p> <blockquote> <p>Bestpractice Use the most restrictive types possible when creating columns. Avoid using strings for encoding more specific data items.</p> </blockquote> <h3 id="microbenchmark-using-timestamps"> <a style="text-decoration: none;" href="#microbenchmark-using-timestamps">Microbenchmark: Using Timestamps</a> </h3> <p>We illustrate the difference in aggregation speed using the <a href="https://blobs.duckdb.org/data/ldbc-sf300-comments-creationDate.parquet"><code class="language-plaintext highlighter-rouge">creationDate</code> column of the LDBC Comment table on scale factor 300</a>. This table has approx. 554 million unordered timestamp values. We run a simple aggregation query that returns the average day-of-the month from the timestamps in two configurations.</p> <p>First, we use a <code class="language-plaintext highlighter-rouge">DATETIME</code> to encode the values and run the query using the <a href="../../sql/functions/timestamp"><code class="language-plaintext highlighter-rouge">extract</code> datetime function</a>:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT avg(extract('day' FROM creationDate)) FROM Comment;</pre> <p>Second, we use the <code class="language-plaintext highlighter-rouge">VARCHAR</code> type and use string operations:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT avg(CAST(creationDate[9:10] AS INTEGER)) FROM Comment;</pre> <p>The results of the microbenchmark are as follows:</p>  <table> <thead> <tr> <th>Column type</th> <th style="text-align: right">Storage size</th> <th style="text-align: right">Query time</th> </tr> </thead> <tbody> <tr> <td><code class="language-plaintext highlighter-rouge">DATETIME</code></td> <td style="text-align: right">3.3 GB</td> <td style="text-align: right">0.9 s</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">VARCHAR</code></td> <td style="text-align: right">5.2 GB</td> <td style="text-align: right">3.9 s</td> </tr> </tbody> </table> <p>The results show that using the <code class="language-plaintext highlighter-rouge">DATETIME</code> value yields smaller storage sizes and faster processing.</p> <h3 id="microbenchmark-joining-on-strings"> <a style="text-decoration: none;" href="#microbenchmark-joining-on-strings">Microbenchmark: Joining on Strings</a> </h3> <p>We illustrate the difference caused by joining on different types by computing a self-join on the <a href="https://blobs.duckdb.org/data/ldbc-sf100-comments.tar.zst">LDBC Comment table at scale factor 100</a>. The table has 64-bit integer identifiers used as the <code class="language-plaintext highlighter-rouge">id</code> attribute of each row. We perform the following join operation:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT count(*) AS count
+FROM Comment c1
+JOIN Comment c2 ON c1.ParentCommentId = c2.id;</pre> <p>In the first experiment, we use the correct (most restrictive) types, i.e., both the <code class="language-plaintext highlighter-rouge">id</code> and the <code class="language-plaintext highlighter-rouge">ParentCommentId</code> columns are defined as <code class="language-plaintext highlighter-rouge">BIGINT</code>. In the second experiment, we define all columns with the <code class="language-plaintext highlighter-rouge">VARCHAR</code> type. While the results of the queries are the same for all both experiments, their runtime vary significantly. The results below show that joining on <code class="language-plaintext highlighter-rouge">BIGINT</code> columns is approx. 1.8× faster than performing the same join on <code class="language-plaintext highlighter-rouge">VARCHAR</code>-typed columns encoding the same value.</p>  <table> <thead> <tr> <th>Join column payload type</th> <th>Join column schema type</th> <th>Example value</th> <th style="text-align: right">Query time</th> </tr> </thead> <tbody> <tr> <td><code class="language-plaintext highlighter-rouge">BIGINT</code></td> <td><code class="language-plaintext highlighter-rouge">BIGINT</code></td> <td><code class="language-plaintext highlighter-rouge">70368755640078</code></td> <td style="text-align: right">1.2 s</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">BIGINT</code></td> <td><code class="language-plaintext highlighter-rouge">VARCHAR</code></td> <td><code class="language-plaintext highlighter-rouge">'70368755640078'</code></td> <td style="text-align: right">2.1 s</td> </tr> </tbody> </table> <blockquote> <p>Bestpractice Avoid representing numeric values as strings, especially if you intend to perform e.g., join operations on them.</p> </blockquote> <h2 id="constraints"> <a style="text-decoration: none;" href="#constraints">Constraints</a> </h2> <p>DuckDB allows defining <a href="../../sql/constraints">constraints</a> such as <code class="language-plaintext highlighter-rouge">UNIQUE</code>, <code class="language-plaintext highlighter-rouge">PRIMARY KEY</code>, and <code class="language-plaintext highlighter-rouge">FOREIGN KEY</code>. These constraints can be beneficial for ensuring data integrity but they have a negative effect on load performance as they necessitate building indexes and performing checks. Moreover, they <em>very rarely improve the performance of queries</em> as DuckDB does not rely on these indexes for join and aggregation operators (see <a href="indexing">indexing</a> for more details).</p> <blockquote> <p>Bestpractice Do not define constraints unless your goal is to ensure data integrity.</p> </blockquote> <h3 id="microbenchmark-the-effect-of-primary-keys"> <a style="text-decoration: none;" href="#microbenchmark-the-effect-of-primary-keys">Microbenchmark: The Effect of Primary Keys</a> </h3> <p>We illustrate the effect of using primary keys with the <a href="https://blobs.duckdb.org/data/ldbc-sf300-comments.tar.zst">LDBC Comment table at scale factor 300</a>. This table has approx. 554 million entries. We first create the schema without a primary key, then load the data. In the second experiment, we create the schema with a primary key, then load the data. In both cases, we take the data from <code class="language-plaintext highlighter-rouge">.csv.gz</code> files, and measure the time required to perform the loading.</p>  <table> <thead> <tr> <th>Operation</th> <th style="text-align: right">Execution time</th> </tr> </thead> <tbody> <tr> <td>Load without primary key</td> <td style="text-align: right">92.2 s</td> </tr> <tr> <td>Load with primary key</td> <td style="text-align: right">286.8 s</td> </tr> </tbody> </table> <p>In this case, primary keys will only have a (small) positive effect on highly selective queries such as when filtering on a single identifier. They do not have an effect on join and aggregation operators.</p> <blockquote> <p>Bestpractice For best bulk load performance, avoid defining primary key constraints if possible.</p> </blockquote>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/guides/performance/schema.html" class="_attribution-link">https://duckdb.org/docs/guides/performance/schema.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

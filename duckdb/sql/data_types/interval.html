@@ -1,0 +1,155 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Interval Type - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content=" INTERVALs represent periods of time that can be added to or subtracted from DATE, TIMESTAMP, TIMESTAMPTZ, or TIME values. ">
+  <meta name="keywords" content="interval, type, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/sql/data_types/interval.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Interval Type</h1>  <p><code class="language-plaintext highlighter-rouge">INTERVAL</code>s represent periods of time that can be added to or subtracted from <code class="language-plaintext highlighter-rouge">DATE</code>, <code class="language-plaintext highlighter-rouge">TIMESTAMP</code>, <code class="language-plaintext highlighter-rouge">TIMESTAMPTZ</code>, or <code class="language-plaintext highlighter-rouge">TIME</code> values.</p>  <table> <thead> <tr> <th style="text-align: left">Name</th> <th style="text-align: left">Description</th> </tr> </thead> <tbody> <tr> <td style="text-align: left"><code class="language-plaintext highlighter-rouge">INTERVAL</code></td> <td style="text-align: left">Period of time</td> </tr> </tbody> </table> <p>An <code class="language-plaintext highlighter-rouge">INTERVAL</code> can be constructed by providing amounts together with units. Units that aren't <em>months</em>, <em>days</em>, or <em>microseconds</em> are converted to equivalent amounts in the next smaller of these three basis units.</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    INTERVAL 1 YEAR, -- single unit using YEAR keyword; stored as 12 months
+    INTERVAL (random() * 10) YEAR, -- parentheses necessary for variable amounts;
+                                   -- stored as integer number of months
+    INTERVAL '1 month 1 day', -- string type necessary for multiple units; stored as (1 month, 1 day)
+    '16 months'::INTERVAL, -- string cast supported; stored as 16 months
+    '48:00:00'::INTERVAL, -- HH::MM::SS string supported; stored as (48 * 60 * 60 * 1e6 microseconds)
+;</pre> <blockquote> <p>Warning Decimal values can be used in strings but are rounded to integers.</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT INTERVAL '1.5' YEARS;
+-- Returns 12 months; equivalent to `to_years(CAST(trunc(1.5) AS INTEGER))`</pre> <p>For more precision, use a more granular unit; e.g., <code class="language-plaintext highlighter-rouge">18 MONTHS</code> instead of <code class="language-plaintext highlighter-rouge">'1.5' YEARS</code>.</p> </blockquote> <p>Three basis units are necessary because a month does not correspond to a fixed amount of days (February has fewer days than March) and a day doesn't correspond to a fixed amount of microseconds. The division into components makes the <code class="language-plaintext highlighter-rouge">INTERVAL</code> class suitable for adding or subtracting specific time units to a date. For example, we can generate a table with the first day of every month using the following SQL query:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT DATE '2000-01-01' + INTERVAL (i) MONTH
+FROM range(12) t(i);</pre> <p>When <code class="language-plaintext highlighter-rouge">INTERVAL</code>s are deconstructed via the <code class="language-plaintext highlighter-rouge">datepart</code> function, the <em>months</em> component is additionally split into years and months, and the <em>microseconds</em> component is split into hours, minutes, and microseconds. The <em>days</em> component is not split into additional units. To demonstrate this, the following query generates an <code class="language-plaintext highlighter-rouge">INTERVAL</code> called <code class="language-plaintext highlighter-rouge">period</code> by summing random amounts of the three basis units. It then extracts the aforementioned six parts from <code class="language-plaintext highlighter-rouge">period</code>, adds them back together, and confirms that the result is always equal to the original <code class="language-plaintext highlighter-rouge">period</code>.</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    period = list_reduce(
+        [INTERVAL (datepart(part, period) || part) FOR part IN
+             ['year', 'month', 'day', 'hour', 'minute', 'microsecond']
+        ],
+        (i1, i2) -&gt; i1 + i2
+    ) -- always true
+FROM (
+    VALUES (
+        INTERVAL (random() * 123_456_789_123) MICROSECONDS
+        + INTERVAL (random() * 12_345) DAYS
+        + INTERVAL (random() * 12_345) MONTHS
+    )
+) _(period);</pre> <blockquote> <p>Warning The <em>microseconds</em> component is split only into hours, minutes, and microseconds, rather than hours, minutes, <em>seconds</em>, and microseconds.</p> </blockquote> <p>Additionally, the amounts of centuries, decades, quarters, seconds, and milliseconds in an <code class="language-plaintext highlighter-rouge">INTERVAL</code>, rounded down to the nearest integer, can be extracted via the <code class="language-plaintext highlighter-rouge">datepart</code> function. However, these components are not required to reassemble the original <code class="language-plaintext highlighter-rouge">INTERVAL</code>. In fact, if the previous query additionally extracted decades or seconds, then the sum of extracted parts would generally be larger than the original <code class="language-plaintext highlighter-rouge">period</code> since this would double count the months and microseconds components, respectively.</p> <blockquote> <p>All units use 0-based indexing, except for quarters, which use 1-based indexing.</p> </blockquote> <p>For example:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    datepart('decade', INTERVAL 12 YEARS), -- returns 1
+    datepart('year', INTERVAL 12 YEARS), -- returns 12
+    datepart('second', INTERVAL 1_234 MILLISECONDS), -- returns 1
+    datepart('microsecond', INTERVAL 1_234 MILLISECONDS), -- returns 1_234_000</pre> <h2 id="arithmetic-with-timestamps-dates-and-intervals"> <a style="text-decoration: none;" href="#arithmetic-with-timestamps-dates-and-intervals">Arithmetic with Timestamps, Dates and Intervals</a> </h2> <p><code class="language-plaintext highlighter-rouge">INTERVAL</code>s can be added to and subtracted from <code class="language-plaintext highlighter-rouge">TIMESTAMP</code>s, <code class="language-plaintext highlighter-rouge">TIMESTAMPTZ</code>s, <code class="language-plaintext highlighter-rouge">DATE</code>s, and <code class="language-plaintext highlighter-rouge">TIME</code>s using the <code class="language-plaintext highlighter-rouge">+</code> and <code class="language-plaintext highlighter-rouge">-</code> operators.</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    DATE '2000-01-01' + INTERVAL 1 YEAR,
+    TIMESTAMP '2000-01-01 01:33:30' - INTERVAL '1 month 13 hours',
+    TIME '02:00:00' - INTERVAL '3 days 23 hours', -- wraps; equals TIME '03:00:00'
+;</pre> <p>Conversely, subtracting two <code class="language-plaintext highlighter-rouge">TIMESTAMP</code>s or two <code class="language-plaintext highlighter-rouge">TIMESTAMPTZ</code>s from one another creates an <code class="language-plaintext highlighter-rouge">INTERVAL</code> describing the difference between the timestamps with only the <em>days and microseconds</em> components. For example:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    TIMESTAMP '2000-02-06 12:00:00' - TIMESTAMP '2000-01-01 11:00:00', -- 36 days 1 hour
+    TIMESTAMP '2000-02-01' + (TIMESTAMP '2000-02-01' - TIMESTAMP '2000-01-01'), -- '2000-03-03', NOT '2000-03-01'
+;</pre> <p>Subtracting two <code class="language-plaintext highlighter-rouge">DATE</code>s from one another does not create an <code class="language-plaintext highlighter-rouge">INTERVAL</code> but rather returns the number of days between the given dates as integer value.</p> <blockquote> <p>Warning Extracting a component of the <code class="language-plaintext highlighter-rouge">INTERVAL</code> difference between two <code class="language-plaintext highlighter-rouge">TIMESTAMP</code>s is not equivalent to computing the number of partition boundaries between the two <code class="language-plaintext highlighter-rouge">TIMESTAMP</code>s for the corresponding unit, as computed by the <code class="language-plaintext highlighter-rouge">datediff</code> function:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    datediff('day', TIMESTAMP '2020-01-01 01:00:00', TIMESTAMP '2020-01-02 00:00:00'), -- 1
+    datepart('day', TIMESTAMP '2020-01-02 00:00:00' - TIMESTAMP '2020-01-01 01:00:00'), -- 0
+;</pre> </blockquote> <h2 id="equality-and-comparison"> <a style="text-decoration: none;" href="#equality-and-comparison">Equality and Comparison</a> </h2> <p>For equality and ordering comparisons only, the total number of microseconds in an <code class="language-plaintext highlighter-rouge">INTERVAL</code> is computed by converting the days basis unit to <code class="language-plaintext highlighter-rouge">24 * 60 * 60 * 1e6</code> microseconds and the months basis unit to 30 days, or <code class="language-plaintext highlighter-rouge">30 * 24 * 60 * 60 * 1e6</code> microseconds.</p> <p>As a result, <code class="language-plaintext highlighter-rouge">INTERVAL</code>s can compare equal even when they are functionally different, and the ordering of <code class="language-plaintext highlighter-rouge">INTERVAL</code>s is not always preserved when they are added to dates or timestamps.</p> <p>For example:</p> <ul> <li><code class="language-plaintext highlighter-rouge">INTERVAL 30 DAYS = INTERVAL 1 MONTH</code></li> <li>but <code class="language-plaintext highlighter-rouge">DATE '2020-01-01' + INTERVAL 30 DAYS != DATE '2020-01-01' + INTERVAL 1 MONTH</code>.</li> </ul> <p>and</p> <ul> <li><code class="language-plaintext highlighter-rouge">INTERVAL '30 days 12 hours' &gt; INTERVAL 1 MONTH</code></li> <li>but <code class="language-plaintext highlighter-rouge">DATE '2020-01-01' + INTERVAL '30 days 12 hours' &lt; DATE '2020-01-01' + INTERVAL 1 MONTH</code>.</li> </ul> <h2 id="functions"> <a style="text-decoration: none;" href="#functions">Functions</a> </h2> <p>See the <a href="../functions/datepart">Date Part Functions page</a> for a list of available date parts for use with an <code class="language-plaintext highlighter-rouge">INTERVAL</code>.</p> <p>See the <a href="../functions/interval">Interval Operators page</a> for functions that operate on intervals.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/sql/data_types/interval.html" class="_attribution-link">https://duckdb.org/docs/sql/data_types/interval.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

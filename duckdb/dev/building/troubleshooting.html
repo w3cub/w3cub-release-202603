@@ -1,0 +1,136 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Troubleshooting - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content=" Problem&#58; By default, R compiles packages using a single thread, which causes the build to be slow. ">
+  <meta name="keywords" content="troubleshooting, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/dev/building/troubleshooting.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Troubleshooting</h1>  <h2 id="r-package-the-build-only-uses-a-single-thread"> <a style="text-decoration: none;" href="#r-package-the-build-only-uses-a-single-thread">R Package: The Build Only Uses a Single Thread</a> </h2> <p><strong>Problem:</strong> By default, R compiles packages using a single thread, which causes the build to be slow.</p> <p><strong>Solution:</strong> To parallelize the compilation, create or edit the <code class="language-plaintext highlighter-rouge">~/.R/Makevars</code> file, and add a line like the following:</p> <pre class="language-ini highlighter-rouge" data-language="ini">MAKEFLAGS = -j8</pre> <p>The above will parallelize the compilation using 8 threads. On Linux/macOS, you can add the following to use all of the machine's threads:</p> <pre class="language-ini highlighter-rouge" data-language="ini">MAKEFLAGS = -j$(nproc)</pre> <p>However, note that, the more threads that are used, the higher the RAM consumption. If the system runs out of RAM while compiling, then the R session will crash.</p> <h2 id="r-package-on-linux-aarch64-too-many-got-entries-build-error"> <a style="text-decoration: none;" href="#r-package-on-linux-aarch64-too-many-got-entries-build-error">R Package on Linux AArch64: <code class="language-plaintext highlighter-rouge">too many GOT entries</code> Build Error</a> </h2> <p><strong>Problem:</strong> Building the R package on Linux running on an ARM64 architecture (AArch64) may result in the following error message:</p> <pre class="language-console highlighter-rouge" data-language="console">/usr/bin/ld: /usr/include/c++/10/bits/basic_string.tcc:206:
+warning: too many GOT entries for -fpic, please recompile with -fPIC</pre> <p><strong>Solution:</strong> Create or edit the <code class="language-plaintext highlighter-rouge">~/.R/Makevars</code> file. This example also contains the <a href="#r-package-the-build-only-uses-a-single-thread">flag to parallelize the build</a>:</p> <pre class="language-ini highlighter-rouge" data-language="ini">ALL_CXXFLAGS = $(PKG_CXXFLAGS) -fPIC $(SHLIB_CXXFLAGS) $(CXXFLAGS)
+MAKEFLAGS = -j$(nproc)</pre> <p>When making this change, also consider <a href="#r-package-the-build-only-uses-a-single-thread">making the build parallel</a>.</p> <h2 id="python-package-no-module-named-duckdbduckdb-build-error"> <a style="text-decoration: none;" href="#python-package-no-module-named-duckdbduckdb-build-error">Python Package: <code class="language-plaintext highlighter-rouge">No module named 'duckdb.duckdb'</code> Build Error</a> </h2> <p><strong>Problem:</strong> Building the Python package succeeds but the package cannot be imported:</p> <pre class="language-batch highlighter-rouge" data-language="batch">cd tools/pythonpkg/
+python3 -m pip install .
+python3 -c "import duckdb"</pre> <p>This returns the following error message:</p> <pre class="language-console highlighter-rouge" data-language="console">Traceback (most recent call last):
+  File "&lt;string&gt;", line 1, in &lt;module&gt;
+  File "/duckdb/tools/pythonpkg/duckdb/__init__.py", line 4, in &lt;module&gt;
+    import duckdb.functional as functional
+  File "/duckdb/tools/pythonpkg/duckdb/functional/__init__.py", line 1, in &lt;module&gt;
+    from duckdb.duckdb.functional import (
+ModuleNotFoundError: No module named 'duckdb.duckdb'</pre> <p><strong>Solution:</strong> The problem is caused by Python trying to import from the current working directory. To work around this, navigate to a different directory (e.g., <code class="language-plaintext highlighter-rouge">cd ..</code>) and try running Python import again.</p> <h2 id="python-package-on-macos-building-the-httpfs-extension-fails"> <a style="text-decoration: none;" href="#python-package-on-macos-building-the-httpfs-extension-fails">Python Package on macOS: Building the httpfs Extension Fails</a> </h2> <p><strong>Problem:</strong> The build fails on macOS when both the <a href="../../extensions/httpfs/overview"><code class="language-plaintext highlighter-rouge">httpfs</code> extension</a> and the Python package are included:</p> <pre class="language-bash highlighter-rouge" data-language="bash">GEN=ninja BUILD_PYTHON=1 CORE_EXTENSIONS="httpfs" make</pre> <pre class="language-console highlighter-rouge" data-language="console">ld: library not found for -lcrypto
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+error: command '/usr/bin/clang++' failed with exit code 1
+ninja: build stopped: subcommand failed.
+make: *** [release] Error 1</pre> <p><strong>Solution:</strong> In general, we recommended using the nightly builds, available under GitHub main on the <a href="http://localhost:8000/docs/installation/">installation page</a>. If you would like to build DuckDB from source, avoid using the <code class="language-plaintext highlighter-rouge">BUILD_PYTHON=1</code> flag unless you are actively developing the Python library. Instead, first build the <code class="language-plaintext highlighter-rouge">httpfs</code> extension (if required), then build and install the Python package separately using pip:</p> <pre class="language-bash highlighter-rouge" data-language="bash">GEN=ninja CORE_EXTENSIONS="httpfs" make</pre> <p>If the next line complains about pybind11 being missing, or <code class="language-plaintext highlighter-rouge">--use-pep517</code> not being supported, make sure you're using a modern version of pip and setuptools. <code class="language-plaintext highlighter-rouge">python3-pip</code> on your OS may not be modern, so you may need to run <code class="language-plaintext highlighter-rouge">python3 -m pip install pip -U</code> first.</p> <pre class="language-bash highlighter-rouge" data-language="bash">python3 -m pip install tools/pythonpkg --use-pep517 --user</pre> <h2 id="linux-building-the-httpfs-extension-fails"> <a style="text-decoration: none;" href="#linux-building-the-httpfs-extension-fails">Linux: Building the httpfs Extension Fails</a> </h2> <p><strong>Problem:</strong> When building the <a href="../../extensions/httpfs/overview"><code class="language-plaintext highlighter-rouge">httpfs</code> extension</a> on Linux, the build may fail with the following error.</p> <pre class="language-console highlighter-rouge" data-language="console">CMake Error at /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
+  Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the
+  system variable OPENSSL_ROOT_DIR (missing: OPENSSL_CRYPTO_LIBRARY
+  OPENSSL_INCLUDE_DIR)</pre> <p><strong>Solution:</strong> Install the <code class="language-plaintext highlighter-rouge">libssl-dev</code> library.</p> <pre class="language-bash highlighter-rouge" data-language="bash">sudo apt-get install -y libssl-dev</pre> <p>Then, build with:</p> <pre class="language-bash highlighter-rouge" data-language="bash">GEN=ninja CORE_EXTENSIONS="httpfs" make</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/dev/building/troubleshooting.html" class="_attribution-link">https://duckdb.org/docs/dev/building/troubleshooting.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

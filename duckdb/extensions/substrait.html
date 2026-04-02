@@ -1,0 +1,136 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Substrait Extension - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content=" The main goal of the substrait extension is to support both production and consumption of Substrait query plans in DuckDB. ">
+  <meta name="keywords" content="substrait, extension, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/extensions/substrait.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Substrait Extension</h1>  <p>The main goal of the <code class="language-plaintext highlighter-rouge">substrait</code> extension is to support both production and consumption of <a href="https://substrait.io/">Substrait</a> query plans in DuckDB.</p> <p>This extension is mainly exposed via 3 different APIs – the SQL API, the Python API, and the R API. Here we depict how to consume and produce Substrait query plans in each API.</p> <blockquote> <p>The Substrait integration is currently experimental. Support is currently only available on request. If you have not asked for permission to ask for support, <a href="https://duckdblabs.com/contact/">contact us prior to opening an issue</a>. If you open an issue without doing so, we will close it without further review.</p> </blockquote> <h2 id="installing-and-loading"> <a style="text-decoration: none;" href="#installing-and-loading">Installing and Loading</a> </h2> <p>The Substrait extension is an autoloadable extensions, meaning that it will be loaded at runtime whenever one of the substrait functions is called. To explicitly install and load the released version of the Substrait extension, you can also use the following SQL commands.</p> <pre class="language-sql highlighter-rouge" data-language="sql">INSTALL substrait;
+LOAD substrait;</pre> <h2 id="sql"> <a style="text-decoration: none;" href="#sql">SQL</a> </h2> <p>In the SQL API, users can generate Substrait plans (into a BLOB or a JSON) and consume Substrait plans.</p> <h3 id="blob-generation"> <a style="text-decoration: none;" href="#blob-generation">BLOB Generation</a> </h3> <p>To generate a Substrait BLOB the <code class="language-plaintext highlighter-rouge">get_substrait(sql)</code> function must be called with a valid SQL select query.</p> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TABLE crossfit (exercise TEXT, difficulty_level INTEGER);
+INSERT INTO crossfit VALUES ('Push Ups', 3), ('Pull Ups', 5), ('Push Jerk', 7), ('Bar Muscle Up', 10);</pre> <pre class="language-sql highlighter-rouge" data-language="sql">.mode line
+CALL get_substrait('SELECT count(exercise) AS exercise FROM crossfit WHERE difficulty_level &lt;= 5');</pre> <pre class="language-text highlighter-rouge" data-language="text">Plan BLOB = \x12\x09\x1A\x07\x10\x01\x1A\x03lte\x12\x11\x1A\x0F\x10\x02\x1A\x0Bis_not_null\x12\x09\x1A\x07\x10\x03\x1A\x03and\x12\x0B\x1A\x09\x10\x04\x1A\x05count\x1A\xC8\x01\x12\xC5\x01\x0A\xB8\x01:\xB5\x01\x12\xA8\x01\x22\xA5\x01\x12\x94\x01\x0A\x91\x01\x12/\x0A\x08exercise\x0A\x10difficulty_level\x12\x11\x0A\x07\xB2\x01\x04\x08\x0D\x18\x01\x0A\x04*\x02\x10\x01\x18\x02\x1AJ\x1AH\x08\x03\x1A\x04\x0A\x02\x10\x01\x22\x22\x1A \x1A\x1E\x08\x01\x1A\x04*\x02\x10\x01\x22\x0C\x1A\x0A\x12\x08\x0A\x04\x12\x02\x08\x01\x22\x00\x22\x06\x1A\x04\x0A\x02(\x05\x22\x1A\x1A\x18\x1A\x16\x08\x02\x1A\x04*\x02\x10\x01\x22\x0C\x1A\x0A\x12\x08\x0A\x04\x12\x02\x08\x01\x22\x00\x22\x06\x0A\x02\x0A\x00\x10\x01:\x0A\x0A\x08crossfit\x1A\x00\x22\x0A\x0A\x08\x08\x04*\x04:\x02\x10\x01\x1A\x08\x12\x06\x0A\x02\x12\x00\x22\x00\x12\x08exercise2\x0A\x10\x18*\x06DuckDB</pre> <h3 id="json-generation"> <a style="text-decoration: none;" href="#json-generation">JSON Generation</a> </h3> <p>To generate a JSON representing the Substrait plan the <code class="language-plaintext highlighter-rouge">get_substrait_json(sql)</code> function must be called with a valid SQL select query.</p> <pre class="language-sql highlighter-rouge" data-language="sql">CALL get_substrait_json('SELECT count(exercise) AS exercise FROM crossfit WHERE difficulty_level &lt;= 5');</pre> <pre class="language-json highlighter-rouge" data-language="json">Json = {"extensions":[{"extensionFunction":{"functionAnchor":1,"name":"lte"}},{"extensionFunction":{"functionAnchor":2,"name":"is_not_null"}},{"extensionFunction":{"functionAnchor":3,"name":"and"}},{"extensionFunction":{"functionAnchor":4,"name":"count"}}],"relations":[{"root":{"input":{"project":{"input":{"aggregate":{"input":{"read":{"baseSchema":{"names":["exercise","difficulty_level"],"struct":{"types":[{"varchar":{"length":13,"nullability":"NULLABILITY_NULLABLE"}},{"i32":{"nullability":"NULLABILITY_NULLABLE"}}],"nullability":"NULLABILITY_REQUIRED"}},"filter":{"scalarFunction":{"functionReference":3,"outputType":{"bool":{"nullability":"NULLABILITY_NULLABLE"}},"arguments":[{"value":{"scalarFunction":{"functionReference":1,"outputType":{"i32":{"nullability":"NULLABILITY_NULLABLE"}},"arguments":[{"value":{"selection":{"directReference":{"structField":{"field":1}},"rootReference":{}}}},{"value":{"literal":{"i32":5}}}]}}},{"value":{"scalarFunction":{"functionReference":2,"outputType":{"i32":{"nullability":"NULLABILITY_NULLABLE"}},"arguments":[{"value":{"selection":{"directReference":{"structField":{"field":1}},"rootReference":{}}}}]}}}]}},"projection":{"select":{"structItems":[{}]},"maintainSingularStruct":true},"namedTable":{"names":["crossfit"]}}},"groupings":[{}],"measures":[{"measure":{"functionReference":4,"outputType":{"i64":{"nullability":"NULLABILITY_NULLABLE"}}}}]}},"expressions":[{"selection":{"directReference":{"structField":{}},"rootReference":{}}}]}},"names":["exercise"]}}],"version":{"minorNumber":24,"producer":"DuckDB"}}</pre> <h3 id="blob-consumption"> <a style="text-decoration: none;" href="#blob-consumption">BLOB Consumption</a> </h3> <p>To consume a Substrait BLOB the <code class="language-plaintext highlighter-rouge">from_substrait(blob)</code> function must be called with a valid Substrait BLOB plan.</p> <pre class="language-sql highlighter-rouge" data-language="sql">CALL from_substrait('\x12\x09\x1A\x07\x10\x01\x1A\x03lte\x12\x11\x1A\x0F\x10\x02\x1A\x0Bis_not_null\x12\x09\x1A\x07\x10\x03\x1A\x03and\x12\x0B\x1A\x09\x10\x04\x1A\x05count\x1A\xC8\x01\x12\xC5\x01\x0A\xB8\x01:\xB5\x01\x12\xA8\x01\x22\xA5\x01\x12\x94\x01\x0A\x91\x01\x12/\x0A\x08exercise\x0A\x10difficulty_level\x12\x11\x0A\x07\xB2\x01\x04\x08\x0D\x18\x01\x0A\x04*\x02\x10\x01\x18\x02\x1AJ\x1AH\x08\x03\x1A\x04\x0A\x02\x10\x01\x22\x22\x1A \x1A\x1E\x08\x01\x1A\x04*\x02\x10\x01\x22\x0C\x1A\x0A\x12\x08\x0A\x04\x12\x02\x08\x01\x22\x00\x22\x06\x1A\x04\x0A\x02(\x05\x22\x1A\x1A\x18\x1A\x16\x08\x02\x1A\x04*\x02\x10\x01\x22\x0C\x1A\x0A\x12\x08\x0A\x04\x12\x02\x08\x01\x22\x00\x22\x06\x0A\x02\x0A\x00\x10\x01:\x0A\x0A\x08crossfit\x1A\x00\x22\x0A\x0A\x08\x08\x04*\x04:\x02\x10\x01\x1A\x08\x12\x06\x0A\x02\x12\x00\x22\x00\x12\x08exercise2\x0A\x10\x18*\x06DuckDB'::BLOB);</pre> <pre class="language-text highlighter-rouge" data-language="text">exercise = 2</pre> <h2 id="python"> <a style="text-decoration: none;" href="#python">Python</a> </h2> <p>Substrait extension is autoloadable, but if you prefer to do so explicitly, you can use the relevant Python syntax within a connection:</p> <pre class="language-python highlighter-rouge" data-language="python">import duckdb
+
+con = duckdb.connect()
+con.install_extension("substrait")
+con.load_extension("substrait")</pre> <h3 id="blob-generation-1"> <a style="text-decoration: none;" href="#blob-generation-1">BLOB Generation</a> </h3> <p>To generate a Substrait BLOB the <code class="language-plaintext highlighter-rouge">get_substrait(sql)</code> function must be called, from a connection, with a valid SQL select query.</p> <pre class="language-python highlighter-rouge" data-language="python">con.execute(query = "CREATE TABLE crossfit (exercise TEXT, difficulty_level INTEGER)")
+con.execute(query = "INSERT INTO crossfit VALUES ('Push Ups', 3), ('Pull Ups', 5), ('Push Jerk', 7), ('Bar Muscle Up', 10)")
+
+proto_bytes = con.get_substrait(query="SELECT count(exercise) AS exercise FROM crossfit WHERE difficulty_level &lt;= 5").fetchone()[0]</pre> <h3 id="json-generation-1"> <a style="text-decoration: none;" href="#json-generation-1">JSON Generation</a> </h3> <p>To generate a JSON representing the Substrait plan the <code class="language-plaintext highlighter-rouge">get_substrait_json(sql)</code> function, from a connection, must be called with a valid SQL select query.</p> <pre class="language-python highlighter-rouge" data-language="python">json = con.get_substrait_json("SELECT count(exercise) AS exercise FROM crossfit WHERE difficulty_level &lt;= 5").fetchone()[0]</pre> <h3 id="blob-consumption-1"> <a style="text-decoration: none;" href="#blob-consumption-1">BLOB Consumption</a> </h3> <p>To consume a Substrait BLOB the <code class="language-plaintext highlighter-rouge">from_substrait(blob)</code> function must be called, from the connection, with a valid Substrait BLOB plan.</p> <pre class="language-python highlighter-rouge" data-language="python">query_result = con.from_substrait(proto=proto_bytes)</pre> <h2 id="r"> <a style="text-decoration: none;" href="#r">R</a> </h2> <p>By default the extension will be autoloaded on first use. To explicitly install and load this extension in R, use the following commands:</p> <pre class="language-r highlighter-rouge" data-language="r">library("duckdb")
+con &lt;- dbConnect(duckdb::duckdb())
+dbExecute(con, "INSTALL substrait")
+dbExecute(con, "LOAD substrait")</pre> <h3 id="blob-generation-2"> <a style="text-decoration: none;" href="#blob-generation-2">BLOB Generation</a> </h3> <p>To generate a Substrait BLOB the <code class="language-plaintext highlighter-rouge">duckdb_get_substrait(con, sql)</code> function must be called, with a connection and a valid SQL select query.</p> <pre class="language-r highlighter-rouge" data-language="r">dbExecute(con, "CREATE TABLE crossfit (exercise TEXT, difficulty_level INTEGER)")
+dbExecute(con, "INSERT INTO crossfit VALUES ('Push Ups', 3), ('Pull Ups', 5), ('Push Jerk', 7), ('Bar Muscle Up', 10)")
+
+proto_bytes &lt;- duckdb::duckdb_get_substrait(con, "SELECT * FROM crossfit LIMIT 5")</pre> <h3 id="json-generation-2"> <a style="text-decoration: none;" href="#json-generation-2">JSON Generation</a> </h3> <p>To generate a JSON representing the Substrait plan <code class="language-plaintext highlighter-rouge">duckdb_get_substrait_json(con, sql)</code> function, with a connection and a valid SQL select query.</p> <pre class="language-r highlighter-rouge" data-language="r">json &lt;- duckdb::duckdb_get_substrait_json(con, "SELECT count(exercise) AS exercise FROM crossfit WHERE difficulty_level &lt;= 5")</pre> <h3 id="blob-consumption-2"> <a style="text-decoration: none;" href="#blob-consumption-2">BLOB Consumption</a> </h3> <p>To consume a Substrait BLOB the <code class="language-plaintext highlighter-rouge">duckdb_prepare_substrait(con, blob)</code> function must be called, with a connection and a valid Substrait BLOB plan.</p> <pre class="language-r highlighter-rouge" data-language="r">result &lt;- duckdb::duckdb_prepare_substrait(con, proto_bytes)
+df &lt;- dbFetch(result)</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/extensions/substrait.html" class="_attribution-link">https://duckdb.org/docs/extensions/substrait.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

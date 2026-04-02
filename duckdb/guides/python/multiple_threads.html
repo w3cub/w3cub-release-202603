@@ -1,0 +1,184 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Multiple Python Threads - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="This page demonstrates how to simultaneously insert into and read from a DuckDB database across multiple Python threads. This could be useful in &hellip;">
+  <meta name="keywords" content="multiple, python, threads, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/guides/python/multiple_threads.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Multiple Python Threads</h1>  <p>This page demonstrates how to simultaneously insert into and read from a DuckDB database across multiple Python threads. This could be useful in scenarios where new data is flowing in and an analysis should be periodically re-run. Note that this is all within a single Python process (see the <a href="http://localhost:8000/faq.html">FAQ</a> for details on DuckDB concurrency). Feel free to follow along in this <a href="https://colab.research.google.com/drive/190NB2m-LIfDcMamCY5lIzaD2OTMnYclB?usp=sharing">Google Colab notebook</a>.</p> <h2 id="setup"> <a style="text-decoration: none;" href="#setup">Setup</a> </h2> <p>First, import DuckDB and several modules from the Python standard library. Note: if using Pandas, add <code class="language-plaintext highlighter-rouge">import pandas</code> at the top of the script as well (as it must be imported prior to the multi-threading). Then connect to a file-backed DuckDB database and create an example table to store inserted data. This table will track the name of the thread that completed the insert and automatically insert the timestamp when that insert occurred using the <a href="../../sql/statements/create_table#syntax.html"><code class="language-plaintext highlighter-rouge">DEFAULT</code> expression</a>.</p> <pre class="language-python highlighter-rouge" data-language="python">import duckdb
+from threading import Thread, current_thread
+import random
+
+duckdb_con = duckdb.connect('my_peristent_db.duckdb')
+# Use connect without parameters for an in-memory database
+# duckdb_con = duckdb.connect()
+duckdb_con.execute("""
+    CREATE OR REPLACE TABLE my_inserts (
+        thread_name VARCHAR,
+        insert_time TIMESTAMP DEFAULT current_timestamp
+    )
+""")</pre> <h2 id="reader-and-writer-functions"> <a style="text-decoration: none;" href="#reader-and-writer-functions">Reader and Writer Functions</a> </h2> <p>Next, define functions to be executed by the writer and reader threads. Each thread must use the <code class="language-plaintext highlighter-rouge">.cursor()</code> method to create a thread-local connection to the same DuckDB file based on the original connection. This approach also works with in-memory DuckDB databases.</p> <pre class="language-python highlighter-rouge" data-language="python">def write_from_thread(duckdb_con):
+    # Create a DuckDB connection specifically for this thread
+    local_con = duckdb_con.cursor()
+    # Insert a row with the name of the thread. insert_time is auto-generated.
+    thread_name = str(current_thread().name)
+    result = local_con.execute("""
+        INSERT INTO my_inserts (thread_name)
+        VALUES (?)
+    """, (thread_name,)).fetchall()
+
+def read_from_thread(duckdb_con):
+    # Create a DuckDB connection specifically for this thread
+    local_con = duckdb_con.cursor()
+    # Query the current row count
+    thread_name = str(current_thread().name)
+    results = local_con.execute("""
+        SELECT
+            ? AS thread_name,
+            count(*) AS row_counter,
+            current_timestamp
+        FROM my_inserts
+    """, (thread_name,)).fetchall()
+    print(results)</pre> <h2 id="create-threads"> <a style="text-decoration: none;" href="#create-threads">Create Threads</a> </h2> <p>We define how many writers and readers to use, and define a list to track all of the threads that will be created. Then, create first writer and then reader threads. Next, shuffle them so that they will be kicked off in a random order to simulate simultaneous writers and readers. Note that the threads have not yet been executed, only defined.</p> <pre class="language-python highlighter-rouge" data-language="python">write_thread_count = 50
+read_thread_count = 5
+threads = []
+
+# Create multiple writer and reader threads (in the same process)
+# Pass in the same connection as an argument
+for i in range(write_thread_count):
+    threads.append(Thread(target = write_from_thread,
+                            args = (duckdb_con,),
+                            name = 'write_thread_' + str(i)))
+
+for j in range(read_thread_count):
+    threads.append(Thread(target = read_from_thread,
+                            args = (duckdb_con,),
+                            name = 'read_thread_' + str(j)))
+
+# Shuffle the threads to simulate a mix of readers and writers
+random.seed(6) # Set the seed to ensure consistent results when testing
+random.shuffle(threads)</pre> <h2 id="run-threads-and-show-results"> <a style="text-decoration: none;" href="#run-threads-and-show-results">Run Threads and Show Results</a> </h2> <p>Now, kick off all threads to run in parallel, then wait for all of them to finish before printing out the results. Note that the timestamps of readers and writers are interspersed as expected due to the randomization.</p> <pre class="language-python highlighter-rouge" data-language="python"># Kick off all threads in parallel
+for thread in threads:
+    thread.start()
+
+# Ensure all threads complete before printing final results
+for thread in threads:
+    thread.join()
+
+print(duckdb_con.execute("""
+    SELECT *
+    FROM my_inserts
+    ORDER BY
+        insert_time
+""").df())</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/guides/python/multiple_threads.html" class="_attribution-link">https://duckdb.org/docs/guides/python/multiple_threads.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Concurrency - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content=" DuckDB has two configurable options for concurrency&#58; ">
+  <meta name="keywords" content="concurrency, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/connect/concurrency.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Concurrency</h1>  <h2 id="handling-concurrency"> <a style="text-decoration: none;" href="#handling-concurrency">Handling Concurrency</a> </h2> <p>DuckDB has two configurable options for concurrency:</p> <ol> <li>One process can both read and write to the database.</li> <li>Multiple processes can read from the database, but no processes can write (<a href="../configuration/overview#configuration-reference.html"><code class="language-plaintext highlighter-rouge">access_mode = 'READ_ONLY'</code></a>).</li> </ol> <p>When using option 1, DuckDB supports multiple writer threads using a combination of <a href="https://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC (Multi-Version Concurrency Control)</a> and optimistic concurrency control (see <a href="#concurrency-within-a-single-process">Concurrency within a Single Process</a>), but all within that single writer process. The reason for this concurrency model is to allow for the caching of data in RAM for faster analytical queries, rather than going back and forth to disk during each query. It also allows the caching of functions pointers, the database catalog, and other items so that subsequent queries on the same connection are faster.</p> <blockquote> <p>DuckDB is optimized for bulk operations, so executing many small transactions is not a primary design goal.</p> </blockquote> <h2 id="concurrency-within-a-single-process"> <a style="text-decoration: none;" href="#concurrency-within-a-single-process">Concurrency within a Single Process</a> </h2> <p>DuckDB supports concurrency within a single process according to the following rules. As long as there are no write conflicts, multiple concurrent writes will succeed. Appends will never conflict, even on the same table. Multiple threads can also simultaneously update separate tables or separate subsets of the same table. Optimistic concurrency control comes into play when two threads attempt to edit (update or delete) the same row at the same time. In that situation, the second thread to attempt the edit will fail with a conflict error.</p> <h2 id="writing-to-duckdb-from-multiple-processes"> <a style="text-decoration: none;" href="#writing-to-duckdb-from-multiple-processes">Writing to DuckDB from Multiple Processes</a> </h2> <p>Writing to DuckDB from multiple processes is not supported automatically and is not a primary design goal (see <a href="#handling-concurrency">Handling Concurrency</a>).</p> <p>If multiple processes must write to the same file, several design patterns are possible, but would need to be implemented in application logic. For example, each process could acquire a cross-process mutex lock, then open the database in read/write mode and close it when the query is complete. Instead of using a mutex lock, each process could instead retry the connection if another process is already connected to the database (being sure to close the connection upon query completion). Another alternative would be to do multi-process transactions on a MySQL, PostgreSQL, or SQLite database, and use DuckDB's <a href="../extensions/mysql">MySQL</a>, <a href="../extensions/postgres">PostgreSQL</a>, or <a href="../extensions/sqlite">SQLite</a> extensions to execute analytical queries on that data periodically.</p> <p>Additional options include writing data to Parquet files and using DuckDB's ability to <a href="../data/parquet/overview">read multiple Parquet files</a>, taking a similar approach with <a href="../data/csv/overview">CSV files</a>, or creating a web server to receive requests and manage reads and writes to DuckDB.</p> <h2 id="optimistic-concurrency-control"> <a style="text-decoration: none;" href="#optimistic-concurrency-control">Optimistic Concurrency Control</a> </h2> <p>DuckDB uses <a href="https://en.wikipedia.org/wiki/Optimistic_concurrency_control">optimistic concurrency control</a>, an approach generally considered to be the best fit for read-intensive analytical database systems as it speeds up read query processing. As a result any transactions that modify the same rows at the same time will cause a transaction conflict error:</p> <pre class="language-console highlighter-rouge" data-language="console">Transaction conflict: cannot update a table that has been altered!</pre> <blockquote> <p>Tip A common workaround when a transaction conflict is encountered is to rerun the transaction.</p> </blockquote>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/connect/concurrency.html" class="_attribution-link">https://duckdb.org/docs/connect/concurrency.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

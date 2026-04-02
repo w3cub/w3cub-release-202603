@@ -1,0 +1,188 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Go - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="The DuckDB Go driver, go-duckdb, allows using DuckDB via the database&#47;sql interface. For examples on how to use this interface, see the official &hellip;">
+  <meta name="keywords" content="go, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/api/go.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Go</h1>  <p>The DuckDB Go driver, <code class="language-plaintext highlighter-rouge">go-duckdb</code>, allows using DuckDB via the <code class="language-plaintext highlighter-rouge">database/sql</code> interface. For examples on how to use this interface, see the <a href="https://pkg.go.dev/database/sql">official documentation</a> and <a href="https://go.dev/doc/tutorial/database-access">tutorial</a>.</p> <blockquote> <p>The Go client is a third-party library and its repository is hosted <a href="https://github.com/marcboeker/go-duckdb">https://github.com/marcboeker/go-duckdb</a>.</p> </blockquote> <h2 id="installation"> <a style="text-decoration: none;" href="#installation">Installation</a> </h2> <p>To install the <code class="language-plaintext highlighter-rouge">go-duckdb</code> client, run:</p> <pre class="language-bash highlighter-rouge" data-language="bash">go get github.com/marcboeker/go-duckdb</pre> <h2 id="importing"> <a style="text-decoration: none;" href="#importing">Importing</a> </h2> <p>To import the DuckDB Go package, add the following entries to your imports:</p> <pre class="language-go highlighter-rouge" data-language="go">import (
+	"database/sql"
+	_ "github.com/marcboeker/go-duckdb"
+)</pre> <h2 id="appender"> <a style="text-decoration: none;" href="#appender">Appender</a> </h2> <p>The DuckDB Go client supports the <a href="../data/appender">DuckDB Appender API</a> for bulk inserts. You can obtain a new Appender by supplying a DuckDB connection to <code class="language-plaintext highlighter-rouge">NewAppenderFromConn()</code>. For example:</p> <pre class="language-go highlighter-rouge" data-language="go">connector, err := duckdb.NewConnector("test.db", nil)
+if err != nil {
+  ...
+}
+conn, err := connector.Connect(context.Background())
+if err != nil {
+  ...
+}
+defer conn.Close()
+
+// Retrieve appender from connection (note that you have to create the table 'test' beforehand).
+appender, err := NewAppenderFromConn(conn, "", "test")
+if err != nil {
+  ...
+}
+defer appender.Close()
+
+err = appender.AppendRow(...)
+if err != nil {
+  ...
+}
+
+// Optional, if you want to access the appended rows immediately.
+err = appender.Flush()
+if err != nil {
+  ...
+}</pre> <h2 id="examples"> <a style="text-decoration: none;" href="#examples">Examples</a> </h2> <h3 id="simple-example"> <a style="text-decoration: none;" href="#simple-example">Simple Example</a> </h3> <p>An example for using the Go API is as follows:</p> <pre class="language-go highlighter-rouge" data-language="go">package main
+
+import (
+	"database/sql"
+	"errors"
+	"fmt"
+	"log"
+
+	_ "github.com/marcboeker/go-duckdb"
+)
+
+func main() {
+	db, err := sql.Open("duckdb", "")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	_, err = db.Exec(`CREATE TABLE people (id INTEGER, name VARCHAR)`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = db.Exec(`INSERT INTO people VALUES (42, 'John')`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var (
+		id   int
+		name string
+	)
+	row := db.QueryRow(`SELECT id, name FROM people`)
+	err = row.Scan(&amp;id, &amp;name)
+	if errors.Is(err, sql.ErrNoRows) {
+		log.Println("no rows")
+	} else if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("id: %d, name: %s\n", id, name)
+}</pre> <h3 id="more-examples"> <a style="text-decoration: none;" href="#more-examples">More Examples</a> </h3> <p>For more examples, see the <a href="https://github.com/marcboeker/go-duckdb/tree/master/examples">examples in the <code class="language-plaintext highlighter-rouge">duckdb-go</code> repository</a>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/api/go.html" class="_attribution-link">https://duckdb.org/docs/api/go.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

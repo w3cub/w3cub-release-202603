@@ -1,0 +1,153 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Data Chunks - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="Data chunks represent a horizontal slice of a table. They hold a number of vectors, that can each hold up to the VECTOR_SIZE rows. The vector size &hellip;">
+  <meta name="keywords" content="data, chunks, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/api/c/data_chunk.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Data Chunks</h1>  <p>Data chunks represent a horizontal slice of a table. They hold a number of <a href="vector">vectors</a>, that can each hold up to the <code class="language-plaintext highlighter-rouge">VECTOR_SIZE</code> rows. The vector size can be obtained through the <code class="language-plaintext highlighter-rouge">duckdb_vector_size</code> function and is configurable, but is usually set to <code class="language-plaintext highlighter-rouge">2048</code>.</p> <p>Data chunks and vectors are what DuckDB uses natively to store and represent data. For this reason, the data chunk interface is the most efficient way of interfacing with DuckDB. Be aware, however, that correctly interfacing with DuckDB using the data chunk API does require knowledge of DuckDB's internal vector format.</p> <p>Data chunks can be used in two manners:</p> <ul> <li>
+<strong>Reading Data</strong>: Data chunks can be obtained from query results using the <code class="language-plaintext highlighter-rouge">duckdb_fetch_chunk</code> method, or as input to a user-defined function. In this case, the <a href="vector">vector methods</a> can be used to read individual values.</li> <li>
+<strong>Writing Data</strong>: Data chunks can be created using <code class="language-plaintext highlighter-rouge">duckdb_create_data_chunk</code>. The data chunk can then be filled with values and used in <code class="language-plaintext highlighter-rouge">duckdb_append_data_chunk</code> to write data to the database.</li> </ul> <p>The primary manner of interfacing with data chunks is by obtaining the internal vectors of the data chunk using the <code class="language-plaintext highlighter-rouge">duckdb_data_chunk_get_vector</code> method. Afterwards, the <a href="vector">vector methods</a> can be used to read from or write to the individual vectors.</p> <h2 id="api-reference-overview"> <a style="text-decoration: none;" href="#api-reference-overview">API Reference Overview</a> </h2>  <pre class="language-c highlighter-rouge" data-language="c">duckdb_data_chunk duckdb_create_data_chunk(duckdb_logical_type *types, idx_t column_count);
+void duckdb_destroy_data_chunk(duckdb_data_chunk *chunk);
+void duckdb_data_chunk_reset(duckdb_data_chunk chunk);
+idx_t duckdb_data_chunk_get_column_count(duckdb_data_chunk chunk);
+duckdb_vector duckdb_data_chunk_get_vector(duckdb_data_chunk chunk, idx_t col_idx);
+idx_t duckdb_data_chunk_get_size(duckdb_data_chunk chunk);
+void duckdb_data_chunk_set_size(duckdb_data_chunk chunk, idx_t size);</pre> <h4 id="duckdb_create_data_chunk"> <a style="text-decoration: none;" href="#duckdb_create_data_chunk"><code class="language-plaintext highlighter-rouge">duckdb_create_data_chunk</code></a> </h4> <p>Creates an empty data chunk with the specified column types. The result must be destroyed with <code class="language-plaintext highlighter-rouge">duckdb_destroy_data_chunk</code>.</p> <h5 id="syntax"> <a style="text-decoration: none;" href="#syntax">Syntax</a> </h5> <pre class="language-c highlighter-rouge" data-language="c">duckdb_data_chunk duckdb_create_data_chunk(
+  duckdb_logical_type *types,
+  idx_t column_count
+);</pre> <h5 id="parameters"> <a style="text-decoration: none;" href="#parameters">Parameters</a> </h5> <ul> <li>
+<code class="language-plaintext highlighter-rouge">types</code>: An array of column types. Column types can not contain ANY and INVALID types.</li> <li>
+<code class="language-plaintext highlighter-rouge">column_count</code>: The number of columns.</li> </ul> <h5 id="return-value"> <a style="text-decoration: none;" href="#return-value">Return Value</a> </h5> <p>The data chunk.</p> <p><br></p> <h4 id="duckdb_destroy_data_chunk"> <a style="text-decoration: none;" href="#duckdb_destroy_data_chunk"><code class="language-plaintext highlighter-rouge">duckdb_destroy_data_chunk</code></a> </h4> <p>Destroys the data chunk and de-allocates all memory allocated for that chunk.</p> <h5 id="syntax-1"> <a style="text-decoration: none;" href="#syntax-1">Syntax</a> </h5> <pre class="language-c highlighter-rouge" data-language="c">void duckdb_destroy_data_chunk(
+  duckdb_data_chunk *chunk
+);</pre> <h5 id="parameters-1"> <a style="text-decoration: none;" href="#parameters-1">Parameters</a> </h5> <ul> <li>
+<code class="language-plaintext highlighter-rouge">chunk</code>: The data chunk to destroy.</li> </ul> <p><br></p> <h4 id="duckdb_data_chunk_reset"> <a style="text-decoration: none;" href="#duckdb_data_chunk_reset"><code class="language-plaintext highlighter-rouge">duckdb_data_chunk_reset</code></a> </h4> <p>Resets a data chunk, clearing the validity masks and setting the cardinality of the data chunk to 0. After calling this method, you must call <code class="language-plaintext highlighter-rouge">duckdb_vector_get_validity</code> and <code class="language-plaintext highlighter-rouge">duckdb_vector_get_data</code> to obtain current data and validity pointers</p> <h5 id="syntax-2"> <a style="text-decoration: none;" href="#syntax-2">Syntax</a> </h5> <pre class="language-c highlighter-rouge" data-language="c">void duckdb_data_chunk_reset(
+  duckdb_data_chunk chunk
+);</pre> <h5 id="parameters-2"> <a style="text-decoration: none;" href="#parameters-2">Parameters</a> </h5> <ul> <li>
+<code class="language-plaintext highlighter-rouge">chunk</code>: The data chunk to reset.</li> </ul> <p><br></p> <h4 id="duckdb_data_chunk_get_column_count"> <a style="text-decoration: none;" href="#duckdb_data_chunk_get_column_count"><code class="language-plaintext highlighter-rouge">duckdb_data_chunk_get_column_count</code></a> </h4> <p>Retrieves the number of columns in a data chunk.</p> <h5 id="syntax-3"> <a style="text-decoration: none;" href="#syntax-3">Syntax</a> </h5> <pre class="language-c highlighter-rouge" data-language="c">idx_t duckdb_data_chunk_get_column_count(
+  duckdb_data_chunk chunk
+);</pre> <h5 id="parameters-3"> <a style="text-decoration: none;" href="#parameters-3">Parameters</a> </h5> <ul> <li>
+<code class="language-plaintext highlighter-rouge">chunk</code>: The data chunk to get the data from</li> </ul> <h5 id="return-value-1"> <a style="text-decoration: none;" href="#return-value-1">Return Value</a> </h5> <p>The number of columns in the data chunk</p> <p><br></p> <h4 id="duckdb_data_chunk_get_vector"> <a style="text-decoration: none;" href="#duckdb_data_chunk_get_vector"><code class="language-plaintext highlighter-rouge">duckdb_data_chunk_get_vector</code></a> </h4> <p>Retrieves the vector at the specified column index in the data chunk.</p> <p>The pointer to the vector is valid for as long as the chunk is alive. It does NOT need to be destroyed.</p> <h5 id="syntax-4"> <a style="text-decoration: none;" href="#syntax-4">Syntax</a> </h5> <pre class="language-c highlighter-rouge" data-language="c">duckdb_vector duckdb_data_chunk_get_vector(
+  duckdb_data_chunk chunk,
+  idx_t col_idx
+);</pre> <h5 id="parameters-4"> <a style="text-decoration: none;" href="#parameters-4">Parameters</a> </h5> <ul> <li>
+<code class="language-plaintext highlighter-rouge">chunk</code>: The data chunk to get the data from</li> </ul> <h5 id="return-value-2"> <a style="text-decoration: none;" href="#return-value-2">Return Value</a> </h5> <p>The vector</p> <p><br></p> <h4 id="duckdb_data_chunk_get_size"> <a style="text-decoration: none;" href="#duckdb_data_chunk_get_size"><code class="language-plaintext highlighter-rouge">duckdb_data_chunk_get_size</code></a> </h4> <p>Retrieves the current number of tuples in a data chunk.</p> <h5 id="syntax-5"> <a style="text-decoration: none;" href="#syntax-5">Syntax</a> </h5> <pre class="language-c highlighter-rouge" data-language="c">idx_t duckdb_data_chunk_get_size(
+  duckdb_data_chunk chunk
+);</pre> <h5 id="parameters-5"> <a style="text-decoration: none;" href="#parameters-5">Parameters</a> </h5> <ul> <li>
+<code class="language-plaintext highlighter-rouge">chunk</code>: The data chunk to get the data from</li> </ul> <h5 id="return-value-3"> <a style="text-decoration: none;" href="#return-value-3">Return Value</a> </h5> <p>The number of tuples in the data chunk</p> <p><br></p> <h4 id="duckdb_data_chunk_set_size"> <a style="text-decoration: none;" href="#duckdb_data_chunk_set_size"><code class="language-plaintext highlighter-rouge">duckdb_data_chunk_set_size</code></a> </h4> <p>Sets the current number of tuples in a data chunk.</p> <h5 id="syntax-6"> <a style="text-decoration: none;" href="#syntax-6">Syntax</a> </h5> <pre class="language-c highlighter-rouge" data-language="c">void duckdb_data_chunk_set_size(
+  duckdb_data_chunk chunk,
+  idx_t size
+);</pre> <h5 id="parameters-6"> <a style="text-decoration: none;" href="#parameters-6">Parameters</a> </h5> <ul> <li>
+<code class="language-plaintext highlighter-rouge">chunk</code>: The data chunk to set the size in</li> <li>
+<code class="language-plaintext highlighter-rouge">size</code>: The number of tuples in the data chunk</li> </ul> <p><br></p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/api/c/data_chunk.html" class="_attribution-link">https://duckdb.org/docs/api/c/data_chunk.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

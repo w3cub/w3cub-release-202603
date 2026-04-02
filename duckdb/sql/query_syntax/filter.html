@@ -1,0 +1,166 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>FILTER Clause - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="The FILTER clause may optionally follow an aggregate function in a SELECT statement. This will filter the rows of data that are fed into the &hellip;">
+  <meta name="keywords" content="filter, clause, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/sql/query_syntax/filter.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">FILTER Clause</h1>  <p>The <code class="language-plaintext highlighter-rouge">FILTER</code> clause may optionally follow an aggregate function in a <code class="language-plaintext highlighter-rouge">SELECT</code> statement. This will filter the rows of data that are fed into the aggregate function in the same way that a <code class="language-plaintext highlighter-rouge">WHERE</code> clause filters rows, but localized to the specific aggregate function. <code class="language-plaintext highlighter-rouge">FILTER</code>s are not currently able to be used when the aggregate function is in a windowing context.</p> <p>There are multiple types of situations where this is useful, including when evaluating multiple aggregates with different filters, and when creating a pivoted view of a dataset. <code class="language-plaintext highlighter-rouge">FILTER</code> provides a cleaner syntax for pivoting data when compared with the more traditional <code class="language-plaintext highlighter-rouge">CASE WHEN</code> approach discussed below.</p> <p>Some aggregate functions also do not filter out null values, so using a <code class="language-plaintext highlighter-rouge">FILTER</code> clause will return valid results when at times the <code class="language-plaintext highlighter-rouge">CASE WHEN</code> approach will not. This occurs with the functions <code class="language-plaintext highlighter-rouge">first</code> and <code class="language-plaintext highlighter-rouge">last</code>, which are desirable in a non-aggregating pivot operation where the goal is to simply re-orient the data into columns rather than re-aggregate it. <code class="language-plaintext highlighter-rouge">FILTER</code> also improves null handling when using the <code class="language-plaintext highlighter-rouge">list</code> and <code class="language-plaintext highlighter-rouge">array_agg</code> functions, as the <code class="language-plaintext highlighter-rouge">CASE WHEN</code> approach will include null values in the list result, while the <code class="language-plaintext highlighter-rouge">FILTER</code> clause will remove them.</p> <h2 id="examples"> <a style="text-decoration: none;" href="#examples">Examples</a> </h2> <p>Return the following:</p> <ul> <li>The total number of rows.</li> <li>The number of rows where <code class="language-plaintext highlighter-rouge">i &lt;= 5</code>
+</li> <li>The number of rows where <code class="language-plaintext highlighter-rouge">i</code> is odd</li> </ul> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    count(*) AS total_rows,
+    count(*) FILTER (i &lt;= 5) AS lte_five,
+    count(*) FILTER (i % 2 = 1) AS odds
+FROM generate_series(1, 10) tbl(i);</pre>  <table> <thead> <tr> <th style="text-align: left">total_rows</th> <th style="text-align: left">lte_five</th> <th style="text-align: left">odds</th> </tr> </thead> <tbody> <tr> <td style="text-align: left">10</td> <td style="text-align: left">5</td> <td style="text-align: left">5</td> </tr> </tbody> </table> <p>Different aggregate functions may be used, and multiple <code class="language-plaintext highlighter-rouge">WHERE</code> expressions are also permitted:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    sum(i) FILTER (i &lt;= 5) AS lte_five_sum,
+    median(i) FILTER (i % 2 = 1) AS odds_median,
+    median(i) FILTER (i % 2 = 1 AND i &lt;= 5) AS odds_lte_five_median
+FROM generate_series(1, 10) tbl(i);</pre>  <table> <thead> <tr> <th style="text-align: left">lte_five_sum</th> <th style="text-align: left">odds_median</th> <th style="text-align: left">odds_lte_five_median</th> </tr> </thead> <tbody> <tr> <td style="text-align: left">15</td> <td style="text-align: left">5.0</td> <td style="text-align: left">3.0</td> </tr> </tbody> </table> <p>The <code class="language-plaintext highlighter-rouge">FILTER</code> clause can also be used to pivot data from rows into columns. This is a static pivot, as columns must be defined prior to runtime in SQL. However, this kind of statement can be dynamically generated in a host programming language to leverage DuckDB's SQL engine for rapid, larger than memory pivoting.</p> <p>First generate an example dataset:</p> <pre class="language-sql highlighter-rouge" data-language="sql">CREATE TEMP TABLE stacked_data AS
+    SELECT
+        i,
+        CASE WHEN i &lt;= rows * 0.25  THEN 2022
+             WHEN i &lt;= rows * 0.5   THEN 2023
+             WHEN i &lt;= rows * 0.75  THEN 2024
+             WHEN i &lt;= rows * 0.875 THEN 2025
+             ELSE NULL
+             END AS year
+    FROM (
+        SELECT
+            i,
+            count(*) OVER () AS rows
+        FROM generate_series(1, 100_000_000) tbl(i)
+    ) tbl;</pre> <p>“Pivot” the data out by year (move each year out to a separate column):</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    count(i) FILTER (year = 2022) AS "2022",
+    count(i) FILTER (year = 2023) AS "2023",
+    count(i) FILTER (year = 2024) AS "2024",
+    count(i) FILTER (year = 2025) AS "2025",
+    count(i) FILTER (year IS NULL) AS "NULLs"
+FROM stacked_data;</pre> <p>This syntax produces the same results as the <code class="language-plaintext highlighter-rouge">FILTER</code> clauses above:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    count(CASE WHEN year = 2022 THEN i END) AS "2022",
+    count(CASE WHEN year = 2023 THEN i END) AS "2023",
+    count(CASE WHEN year = 2024 THEN i END) AS "2024",
+    count(CASE WHEN year = 2025 THEN i END) AS "2025",
+    count(CASE WHEN year IS NULL THEN i END) AS "NULLs"
+FROM stacked_data;</pre>  <table> <thead> <tr> <th style="text-align: left">2022</th> <th style="text-align: left">2023</th> <th style="text-align: left">2024</th> <th style="text-align: left">2025</th> <th style="text-align: left">NULLs</th> </tr> </thead> <tbody> <tr> <td style="text-align: left">25000000</td> <td style="text-align: left">25000000</td> <td style="text-align: left">25000000</td> <td style="text-align: left">12500000</td> <td style="text-align: left">12500000</td> </tr> </tbody> </table> <p>However, the <code class="language-plaintext highlighter-rouge">CASE WHEN</code> approach will not work as expected when using an aggregate function that does not ignore <code class="language-plaintext highlighter-rouge">NULL</code> values. The <code class="language-plaintext highlighter-rouge">first</code> function falls into this category, so <code class="language-plaintext highlighter-rouge">FILTER</code> is preferred in this case.</p> <p>“Pivot” the data out by year (move each year out to a separate column):</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    first(i) FILTER (year = 2022) AS "2022",
+    first(i) FILTER (year = 2023) AS "2023",
+    first(i) FILTER (year = 2024) AS "2024",
+    first(i) FILTER (year = 2025) AS "2025",
+    first(i) FILTER (year IS NULL) AS "NULLs"
+FROM stacked_data;</pre>  <table> <thead> <tr> <th style="text-align: left">2022</th> <th style="text-align: left">2023</th> <th style="text-align: left">2024</th> <th style="text-align: left">2025</th> <th style="text-align: left">NULLs</th> </tr> </thead> <tbody> <tr> <td style="text-align: left">1474561</td> <td style="text-align: left">25804801</td> <td style="text-align: left">50749441</td> <td style="text-align: left">76431361</td> <td style="text-align: left">87500001</td> </tr> </tbody> </table> <p>This will produce <code class="language-plaintext highlighter-rouge">NULL</code> values whenever the first evaluation of the <code class="language-plaintext highlighter-rouge">CASE WHEN</code> clause returns a <code class="language-plaintext highlighter-rouge">NULL</code>:</p> <pre class="language-sql highlighter-rouge" data-language="sql">SELECT
+    first(CASE WHEN year = 2022 THEN i END) AS "2022",
+    first(CASE WHEN year = 2023 THEN i END) AS "2023",
+    first(CASE WHEN year = 2024 THEN i END) AS "2024",
+    first(CASE WHEN year = 2025 THEN i END) AS "2025",
+    first(CASE WHEN year IS NULL THEN i END) AS "NULLs"
+FROM stacked_data;</pre>  <table> <thead> <tr> <th style="text-align: left">2022</th> <th style="text-align: left">2023</th> <th style="text-align: left">2024</th> <th style="text-align: left">2025</th> <th style="text-align: left">NULLs</th> </tr> </thead> <tbody> <tr> <td style="text-align: left">1228801</td> <td style="text-align: left">NULL</td> <td style="text-align: left">NULL</td> <td style="text-align: left">NULL</td> <td style="text-align: left">NULL</td> </tr> </tbody> </table> <h2 id="aggregate-function-syntax-including-filter-clause"> <a style="text-decoration: none;" href="#aggregate-function-syntax-including-filter-clause">Aggregate Function Syntax (Including <code class="language-plaintext highlighter-rouge">FILTER</code> Clause)</a> </h2>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/sql/query_syntax/filter.html" class="_attribution-link">https://duckdb.org/docs/sql/query_syntax/filter.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

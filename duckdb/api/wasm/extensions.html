@@ -1,0 +1,123 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Extensions - DuckDB - W3cubDocs</title>
+  
+  <meta name="description" content="DuckDB-Wasm&#39;s (dynamic) extension loading is modeled after the regular DuckDB&#39;s extension loading, with a few relevant differences due to &hellip;">
+  <meta name="keywords" content="extensions, duckdb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/duckdb/api/wasm/extensions.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/duckdb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/duckdb/" class="_nav-link" title="" style="margin-left:0;">DuckDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _duckdb">
+				
+				
+<h1 class="title">Extensions</h1>  <p>DuckDB-Wasm's (dynamic) extension loading is modeled after the regular DuckDB's extension loading, with a few relevant differences due to the difference in platform.</p> <h2 id="format"> <a style="text-decoration: none;" href="#format">Format</a> </h2> <p>Extensions in DuckDB are binaries to be dynamically loaded via <code class="language-plaintext highlighter-rouge">dlopen</code>. A cryptographical signature is appended to the binary. An extension in DuckDB-Wasm is a regular Wasm file to be dynamically loaded via Emscripten's <code class="language-plaintext highlighter-rouge">dlopen</code>. A cryptographical signature is appended to the Wasm file as a WebAssembly custom section called <code class="language-plaintext highlighter-rouge">duckdb_signature</code>. This ensures the file remains a valid WebAssembly file.</p> <blockquote> <p>Currently, we require this custom section to be the last one, but this can be potentially relaxed in the future.</p> </blockquote> <h2 id="install-and-load"> <a style="text-decoration: none;" href="#install-and-load"><code class="language-plaintext highlighter-rouge">INSTALL</code> and <code class="language-plaintext highlighter-rouge">LOAD</code></a> </h2> <p>The <code class="language-plaintext highlighter-rouge">INSTALL</code> semantic in native embeddings of DuckDB is to fetch, decompress from <code class="language-plaintext highlighter-rouge">gzip</code> and store data in local disk. The <code class="language-plaintext highlighter-rouge">LOAD</code> semantic in native embeddings of DuckDB is to (optionally) perform signature checks <em>and</em> dynamic load the binary with the main DuckDB binary.</p> <p>In DuckDB-Wasm, <code class="language-plaintext highlighter-rouge">INSTALL</code> is a no-op given there is no durable cross-session storage. The <code class="language-plaintext highlighter-rouge">LOAD</code> operation will fetch (and decompress on the fly), perform signature checks <em>and</em> dynamically load via the Emscripten implementation of <code class="language-plaintext highlighter-rouge">dlopen</code>.</p> <h2 id="autoloading"> <a style="text-decoration: none;" href="#autoloading">Autoloading</a> </h2> <p><a href="../../extensions/overview">Autoloading</a>, i.e., the possibility for DuckDB to add extension functionality on-the-fly, is enabled by default in DuckDB-Wasm.</p> <h2 id="list-of-officially-available-extensions"> <a style="text-decoration: none;" href="#list-of-officially-available-extensions">List of Officially Available Extensions</a> </h2> <table> <thead> <tr> <th>Extension name</th> <th>Description</th> <th>Aliases</th> </tr> </thead> <tbody> <tr> <td><a href="../../extensions/autocomplete">autocomplete</a></td> <td>Adds support for autocomplete in the shell</td> <td> </td> </tr> <tr> <td><a href="../../extensions/excel">excel</a></td> <td>Adds support for Excel-like format strings</td> <td> </td> </tr> <tr> <td><a href="../../extensions/full_text_search">fts</a></td> <td>Adds support for Full-Text Search Indexes</td> <td> </td> </tr> <tr> <td>icu</td> <td>Adds support for time zones and collations using the ICU library</td> <td> </td> </tr> <tr> <td>inet</td> <td>Adds support for IP-related data types and functions</td> <td> </td> </tr> <tr> <td><a href="../../data/json/overview">json</a></td> <td>Adds support for JSON operations</td> <td> </td> </tr> <tr> <td><a href="../../data/parquet/overview">parquet</a></td> <td>Adds support for reading and writing Parquet files</td> <td> </td> </tr> <tr> <td>
+<a href="../../extensions/sqlite">sqlite</a> <a href="https://github.com/duckdb/sqlite_scanner"><span>GitHub</span></a>
+</td> <td>Adds support for reading SQLite database files</td> <td>sqlite, sqlite3</td> </tr> <tr> <td>sqlsmith</td> <td> </td> <td> </td> </tr> <tr> <td>
+<a href="../../extensions/substrait">substrait</a> <a href="https://github.com/duckdb/substrait"><span>GitHub</span></a>
+</td> <td>Adds support for the Substrait integration</td> <td> </td> </tr> <tr> <td><a href="../../extensions/tpcds">tpcds</a></td> <td>Adds TPC-DS data generation and query support</td> <td> </td> </tr> <tr> <td><a href="../../extensions/tpch">tpch</a></td> <td>Adds TPC-H data generation and query support</td> <td> </td> </tr> </tbody> </table> <p>WebAssembly is basically an additional platform, and there might be platform-specific limitations that make some extensions not able to match their native capabilities or to perform them in a different way. We will document here relevant differences for DuckDB-hosted extensions.</p> <h3 id="httpfs"> <a style="text-decoration: none;" href="#httpfs">HTTPFS</a> </h3> <p>The HTTPFS extension is, at the moment, not available in DuckDB-Wasm. Https protocol capabilities needs to go through an additional layer, the browser, which adds both differences and some restrictions to what is doable from native.</p> <p>Instead, DuckDB-Wasm has a separate implementation that for most purposes is interchangeable, but does not support all use cases (as it must follow security rules imposed by the browser, such as CORS). Due to this CORS restriction, any requests for data made using the HTTPFS extension must be to websites that allow (using CORS headers) the website hosting the DuckDB-Wasm instance to access that data. The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">MDN website</a> is a great resource for more information regarding CORS.</p> <h2 id="extension-signing"> <a style="text-decoration: none;" href="#extension-signing">Extension Signing</a> </h2> <p>As with regular DuckDB extensions, DuckDB-Wasm extension are by default checked on <code class="language-plaintext highlighter-rouge">LOAD</code> to verify the signature confirm the extension has not been tampered with. Extension signature verification can be disabled via a configuration option. Signing is a property of the binary itself, so copying a DuckDB extension (say to serve it from a different location) will still keep a valid signature (e.g., for local development).</p> <h2 id="fetching-duckdb-wasm-extensions"> <a style="text-decoration: none;" href="#fetching-duckdb-wasm-extensions">Fetching DuckDB-Wasm Extensions</a> </h2> <p>Official DuckDB extensions are served at <code class="language-plaintext highlighter-rouge">extensions.duckdb.org</code>, and this is also the default value for the <code class="language-plaintext highlighter-rouge">default_extension_repository</code> option. When installing extensions, a relevant URL will be built that will look like <code class="language-plaintext highlighter-rouge">extensions.duckdb.org/$duckdb_version_hash/$duckdb_platform/$name.duckdb_extension.gz</code>.</p> <p>DuckDB-Wasm extension are fetched only on load, and the URL will look like: <code class="language-plaintext highlighter-rouge">extensions.duckdb.org/duckdb-wasm/$duckdb_version_hash/$duckdb_platform/$name.duckdb_extension.wasm</code>.</p> <p>Note that an additional <code class="language-plaintext highlighter-rouge">duckdb-wasm</code> is added to the folder structure, and the file is served as a <code class="language-plaintext highlighter-rouge">.wasm</code> file.</p> <p>DuckDB-Wasm extensions are served pre-compressed using Brotli compression. While fetched from a browser, extensions will be transparently uncompressed. If you want to fetch the <code class="language-plaintext highlighter-rouge">duckdb-wasm</code> extension manually, you can use <code class="language-plaintext highlighter-rouge">curl --compress extensions.duckdb.org/&lt;...&gt;/icu.duckdb_extension.wasm</code>.</p> <h2 id="serving-extensions-from-a-third-party-repository"> <a style="text-decoration: none;" href="#serving-extensions-from-a-third-party-repository">Serving Extensions from a Third-Party Repository</a> </h2> <p>As with regular DuckDB, if you use <code class="language-plaintext highlighter-rouge">SET custom_extension_repository = some.url.com</code>, subsequent loads will be attempted at <code class="language-plaintext highlighter-rouge">some.url.com/duckdb-wasm/$duckdb_version_hash/$duckdb_platform/$name.duckdb_extension.wasm</code>.</p> <p>Note that GET requests on the extensions needs to be <a href="https://www.w3.org/wiki/CORS_Enabled">CORS enabled</a> for a browser to allow the connection.</p> <h2 id="tooling"> <a style="text-decoration: none;" href="#tooling">Tooling</a> </h2> <p>Both DuckDB-Wasm and its extensions have been compiled using latest packaged Emscripten toolchain.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2018–2024 Stichting DuckDB Foundation<br>Licensed under the MIT License.<br>
+    <a href="https://duckdb.org/docs/api/wasm/extensions.html" class="_attribution-link">https://duckdb.org/docs/api/wasm/extensions.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
