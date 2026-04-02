@@ -1,0 +1,579 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Exception&#36; - Scala 3.2 - W3cubDocs</title>
+  
+  <meta name="description" content=" Classes representing the components of exception handling. ">
+  <meta name="keywords" content="object, exception, exception&#36;, scala, scala~3.2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/scala~3.2/scala/util/control/exception$.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/scala~3.2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/scala~3.2/" class="_nav-link" title="" style="margin-left:0;">Scala 3.2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _scala">
+				
+				
+<h1>Object Exception.Exception</h1>
+<div class="links"><a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L153">Source code</a></div>
+<h2 id="signature">
+<div class="signature">
+object <a href="exception%24">Exception</a>
+</div>
+</h2>
+<p>Classes representing the components of exception handling.</p>
+<p>Each class is independently composable.</p>
+<p>This class differs from <a href="../try">scala.util.Try</a> in that it focuses on composing exception handlers rather than composing behavior. All behavior should be composed first and fed to a <a href="exception%24%24catch">Catch</a> object using one of the <code>opt</code>, <code>either</code> or <code>withTry</code> methods. Taken together the classes provide a DSL for composing catch and finally behaviors.</p>
+<h3> Examples </h3>
+<p>Create a <code>Catch</code> which handles specified exceptions.</p>
+<pre data-language="scala">import scala.util.control.Exception._
+import java.net._
+
+val s = "https://www.scala-lang.org/"
+
+// Some(https://www.scala-lang.org/)
+val x1: Option[URL] = catching(classOf[MalformedURLException]) opt new URL(s)
+
+// Right(https://www.scala-lang.org/)
+val x2: Either[Throwable,URL] =
+  catching(classOf[MalformedURLException], classOf[NullPointerException]) either new URL(s)
+
+// Success(https://www.scala-lang.org/)
+val x3: Try[URL] = catching(classOf[MalformedURLException], classOf[NullPointerException]) withTry new URL(s)
+
+val defaultUrl = new URL("http://example.com")
+//  URL(http://example.com) because htt/xx throws MalformedURLException
+val x4: URL = failAsValue(classOf[MalformedURLException])(defaultUrl)(new URL("htt/xx"))</pre>
+<p>Create a <code>Catch</code> which logs exceptions using <code>handling</code> and <code>by</code>.</p>
+<pre data-language="scala">def log(t: Throwable): Unit = t.printStackTrace
+
+val withThrowableLogging: Catch[Unit] = handling(classOf[MalformedURLException]) by (log)
+
+def printUrl(url: String) : Unit = {
+  val con = new URL(url) openConnection()
+  val source = scala.io.Source.fromInputStream(con.getInputStream())
+  source.getLines().foreach(println)
+}
+
+val badUrl = "htt/xx"
+// Prints stacktrace,
+//   java.net.MalformedURLException: no protocol: htt/xx
+//     at java.net.URL.&lt;init&gt;(URL.java:586)
+withThrowableLogging { printUrl(badUrl) }
+
+val goodUrl = "https://www.scala-lang.org/"
+// Prints page content,
+//   &amp;lt;!DOCTYPE html&amp;gt;
+//   &amp;lt;html&amp;gt;
+withThrowableLogging { printUrl(goodUrl) }</pre>
+<p>Use <code>unwrapping</code> to create a <code>Catch</code> that unwraps exceptions before rethrowing.</p>
+<pre data-language="scala">class AppException(cause: Throwable) extends RuntimeException(cause)
+
+val unwrappingCatch: Catch[Nothing] = unwrapping(classOf[AppException])
+
+def calcResult: Int = throw new AppException(new NullPointerException)
+
+// Throws NPE not AppException,
+//   java.lang.NullPointerException
+//     at .calcResult(&amp;lt;console&amp;gt;:17)
+val result = unwrappingCatch(calcResult)</pre>
+<p>Use <code>failAsValue</code> to provide a default when a specified exception is caught.</p>
+<pre data-language="scala">val inputDefaulting: Catch[Int] = failAsValue(classOf[NumberFormatException])(0)
+val candidatePick = "seven" // scala.io.StdIn.readLine()
+
+// Int = 0
+val pick = inputDefaulting(candidatePick.toInt)</pre>
+<p>Compose multiple <code>Catch</code>s with <code>or</code> to build a <code>Catch</code> that provides default values varied by exception.</p>
+<pre data-language="scala">val formatDefaulting: Catch[Int] = failAsValue(classOf[NumberFormatException])(0)
+val nullDefaulting: Catch[Int] = failAsValue(classOf[NullPointerException])(-1)
+val otherDefaulting: Catch[Int] = nonFatalCatch withApply(_ =&gt; -100)
+
+val combinedDefaulting: Catch[Int] = formatDefaulting or nullDefaulting or otherDefaulting
+
+def p(s: String): Int = s.length * s.toInt
+
+// Int = 0
+combinedDefaulting(p("tenty-nine"))
+
+// Int = -1
+combinedDefaulting(p(null: String))
+
+// Int = -100
+combinedDefaulting(throw new IllegalStateException)
+
+// Int = 22
+combinedDefaulting(p("11"))</pre>
+<table class="attributes">
+<tr>
+<th>Supertypes</th>
+<td><div class="related-types">
+<div class="member">class <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html">Object</a>
+</div>
+<div class="member">trait <a href="../../matchable">Matchable</a>
+</div>
+<div class="member">class <a href="../../any">Any</a>
+</div>
+</div></td>
+</tr>
+<tr>
+<th>Self type</th>
+<td><div class="related-types"><div class="member">
+<a href="exception%24">Exception</a>.type</div></div></td>
+</tr>
+</table>
+
+<h2>Catch behavior composition</h2>
+<p>Build Catch objects from exception lists and catch logic</p>
+<h3 id="catching-fffffb5b">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L303" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#catching-fffffb5b">catching</a>[T](exceptions: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a>[_]*): <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+
+<p>Creates a <code>Catch</code> object which will catch any of the supplied exceptions. Since the returned <code>Catch</code> object has no specific logic defined and will simply rethrow the exceptions it catches, you will typically want to call <code>opt</code>, <code>either</code> or <code>withTry</code> on the return value, or assign custom logic by calling "withApply".</p>
+<p>Note that <code>Catch</code> objects automatically rethrow <code>ControlExceptions</code> and others which should only be caught in exceptional circumstances. If you really want to catch exactly what you specify, use <code>catchingPromiscuously</code> instead.</p>
+
+
+
+
+<h3 id="failAsValue-83">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L331" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#failAsValue-83">failAsValue</a>[T](exceptions: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a>[_]*)(value: =&gt; T): <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+<p>Creates a <code>Catch</code> object which maps all the supplied exceptions to the given value.</p>
+
+
+
+<h3 id="failing-fffffb5b">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L325" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#failing-fffffb5b">failing</a>[T](exceptions: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a>[_]*): <a href="exception%24%24catch">Catch</a>[<a href="../../option">Option</a>[T]]
+</div>
+</h3>
+
+
+
+<p>Creates a <code>Catch</code> object which maps all the supplied exceptions to <code>None</code>.</p>
+
+
+
+<h3 id="ignoring-d6c">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L319" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#ignoring-d6c">ignoring</a>(exceptions: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a>[_]*): <a href="exception%24%24catch">Catch</a>[<a href="../../unit">Unit</a>]
+</div>
+</h3>
+
+
+
+<p>Creates a <code>Catch</code> object which catches and ignores any of the supplied exceptions.</p>
+
+
+
+<h3 id="unwrapping-fffffb5b">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L359" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#unwrapping-fffffb5b">unwrapping</a>[T](exceptions: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a>[_]*): <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+<p>Creates a <code>Catch</code> object which unwraps any of the supplied exceptions.</p>
+
+
+
+
+<h2>Finally behavior composition</h2>
+<p>Build Catch objects from finally logic</p>
+<h3 id="ultimately-fffff2d8">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L354" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#ultimately-fffff2d8">ultimately</a>[T](body: =&gt; <a href="../../unit">Unit</a>): <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+<p>Returns a <code>Catch</code> object with no catch logic and the argument as the finally logic.</p>
+
+
+
+
+<h2>General purpose catch objects</h2>
+<p>Catch objects with predefined behavior. Use combinator methods to compose additional behavior.</p>
+<h3 id="allCatch-9a6">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L286" class="source-link">Source</a><div class="signature">
+final def <a href="exception%24#allCatch-9a6">allCatch</a>[T]: <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+<p>A <code>Catch</code> object which catches everything.</p>
+
+
+
+<h3 id="noCatch-0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L281" class="source-link">Source</a><div class="signature">
+final val <a href="exception%24#noCatch-0">noCatch</a>: <a href="exception%24%24catch">Catch</a>[<a href="../../nothing">Nothing</a>]
+</div>
+</h3>
+
+
+
+<p>The empty <code>Catch</code> object.</p>
+
+
+
+<h3 id="nonFatalCatch-9a6">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L291" class="source-link">Source</a><div class="signature">
+final def <a href="exception%24#nonFatalCatch-9a6">nonFatalCatch</a>[T]: <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+<p>A <code>Catch</code> object which catches non-fatal exceptions.</p>
+
+
+
+
+<h2>DSL behavior composition</h2>
+<p>Expressive Catch behavior composition</p>
+<h3 id="handling-3b7">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L346" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#handling-3b7">handling</a>[T](exceptions: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a>[_]*): <a href="exception%24%24by">By</a>[<a href="../../../scala#Throwable-0">Throwable</a> =&gt; T, <a href="exception%24%24catch">Catch</a>[T]]
+</div>
+</h3>
+
+
+
+<p>Returns a partially constructed <code>Catch</code> object, which you must give an exception handler function as an argument to <code>by</code>.</p>
+<table class="attributes"><tr>
+<th>Example</th>
+<td>
+
+<pre data-language="scala">handling(classOf[MalformedURLException], classOf[NullPointerException]) by (_.printStackTrace)</pre>
+</td>
+</tr></table>
+
+
+
+<h2>Promiscuous Catch behaviors</h2>
+<p>Useful if catching <code>ControlThrowable</code> or <code>InterruptedException</code> is required.</p>
+<h3 id="catchingPromiscuously-fffffb5b">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L313" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#catchingPromiscuously-fffffb5b">catchingPromiscuously</a>[T](exceptions: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a>[_]*): <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+<p>Creates a <code>Catch</code> object which will catch any of the supplied exceptions. Unlike "catching" which filters out those in shouldRethrow, this one will catch whatever you ask of it including <code>ControlThrowable</code> or <code>InterruptedException</code>.</p>
+
+
+
+
+<h2>Logic Containers</h2>
+<p>Containers for catch and finally behavior.</p>
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L213" class="source-link">Source</a><div class="signature">
+class <a href="exception%24%24catch">Catch</a>[+T](val pf: <a href="exception%24#Catcher-0">Catcher</a>[T], val fin: <a href="../../option">Option</a>[<a href="exception%24%24finally">Finally</a>], val rethrow: <a href="../../../scala#Throwable-0">Throwable</a> =&gt; <a href="../../boolean">Boolean</a>) extends <a href="exception%24%24described">Described</a>
+</div>
+</h3>
+
+
+
+
+<p>A container class for catch/finally logic.</p>
+<p>Pass a different value for rethrow if you want to probably unwisely allow catching control exceptions and other throwables which the rest of the world may expect to get through.</p>
+
+<table class="attributes">
+<tr>
+<th>Type parameters</th>
+<td><dl class="attributes">
+<dt>T</dt>
+<dd><p>result type of bodies used in try and catch blocks</p></dd>
+</dl></td>
+</tr>
+<tr>
+<th>Value parameters</th>
+<td><dl class="attributes">
+<dt>fin</dt>
+<dd><p>Finally logic which if defined will be invoked after catch logic</p></dd>
+<dt>pf</dt>
+<dd><p>Partial function used when applying catch logic to determine result value</p></dd>
+<dt>rethrow</dt>
+<dd><p>Predicate on throwables determining when to rethrow a caught <a href="../../../scala#Throwable-0">Throwable</a></p></dd>
+</dl></td>
+</tr>
+</table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L195" class="source-link">Source</a><div class="signature">
+class <a href="exception%24%24finally">Finally</a> extends <a href="exception%24%24described">Described</a>
+</div>
+</h3>
+
+
+
+<p>A container class for finally code.</p>
+
+
+
+<h2>Classlikes</h2>
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L334" class="source-link">Source</a><div class="signature">
+class <a href="exception%24%24by">By</a>[T, R](f: T =&gt; R)
+</div>
+</h3>
+
+
+
+
+
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L181" class="source-link">Source</a><div class="signature">
+trait <a href="exception%24%24described">Described</a>
+</div>
+</h3>
+
+
+
+
+
+
+
+<h2>Types</h2>
+<h3 id="Catcher-0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L154" class="source-link">Source</a><div class="signature">
+type <a href="exception%24#Catcher-0">Catcher</a>[+T] = <a href="../../partialfunction">PartialFunction</a>[<a href="../../../scala#Throwable-0">Throwable</a>, T]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h2>Concrete methods</h2>
+<h3 id="allCatcher-fffffc20">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L276" class="source-link">Source</a><div class="signature">
+final def <a href="exception%24#allCatcher-fffffc20">allCatcher</a>[T]: <a href="exception%24#Catcher-0">Catcher</a>[T]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h3 id="catching-ffffff57">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L306" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#catching-ffffff57">catching</a>[T](c: <a href="exception%24#Catcher-0">Catcher</a>[T]): <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h3 id="catchingPromiscuously-ffffff57">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L314" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#catchingPromiscuously-ffffff57">catchingPromiscuously</a>[T](c: <a href="exception%24#Catcher-0">Catcher</a>[T]): <a href="exception%24%24catch">Catch</a>[T]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h3 id="mkCatcher-be4">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L156" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#mkCatcher-be4">mkCatcher</a>[Ex &lt;: <a href="../../../scala#Throwable-0">Throwable</a> : <a href="../../reflect/classtag">ClassTag</a>, T](isDef: Ex =&gt; <a href="../../boolean">Boolean</a>, f: Ex =&gt; T): <a href="../../partialfunction">PartialFunction</a>[<a href="../../../scala#Throwable-0">Throwable</a>, T]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h3 id="mkThrowableCatcher-0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L165" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#mkThrowableCatcher-0">mkThrowableCatcher</a>[T](isDef: <a href="../../../scala#Throwable-0">Throwable</a> =&gt; <a href="../../boolean">Boolean</a>, f: <a href="../../../scala#Throwable-0">Throwable</a> =&gt; T): <a href="../../partialfunction">PartialFunction</a>[<a href="../../../scala#Throwable-0">Throwable</a>, T]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h3 id="nonFatalCatcher-fffffc20">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L275" class="source-link">Source</a><div class="signature">
+final def <a href="exception%24#nonFatalCatcher-fffffc20">nonFatalCatcher</a>[T]: <a href="exception%24#Catcher-0">Catcher</a>[T]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h3 id="shouldRethrow-fffff474">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L174" class="source-link">Source</a><div class="signature">
+def <a href="exception%24#shouldRethrow-fffff474">shouldRethrow</a>(x: <a href="../../../scala#Throwable-0">Throwable</a>): <a href="../../boolean">Boolean</a>
+</div>
+</h3>
+
+
+
+<p>!!! Not at all sure of every factor which goes into this, and/or whether we need multiple standard variations.</p>
+<table class="attributes"><tr>
+<th>Returns</th>
+<td><p>true if <code>x</code> is <code>ControlThrowable</code> or <code>InterruptedException</code> otherwise false.</p></td>
+</tr></table>
+
+
+<h2>Concrete fields</h2>
+<h3 id="nothingCatcher-0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L274" class="source-link">Source</a><div class="signature">
+final val <a href="exception%24#nothingCatcher-0">nothingCatcher</a>: <a href="exception%24#Catcher-0">Catcher</a>[<a href="../../nothing">Nothing</a>]
+</div>
+</h3>
+
+
+
+
+
+
+
+<h2>Implicits</h2>
+<h3 id="throwableSubtypeToCatcher-fffff397">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/util/control/Exception.scala#L167" class="source-link">Source</a><div class="signature">
+implicit def <a href="exception%24#throwableSubtypeToCatcher-fffff397">throwableSubtypeToCatcher</a>[Ex &lt;: <a href="../../../scala#Throwable-0">Throwable</a> : <a href="../../reflect/classtag">ClassTag</a>, T](pf: <a href="../../partialfunction">PartialFunction</a>[Ex, T]): <a href="exception%24#Catcher-0">Catcher</a>[T]
+</div>
+</h3>
+
+
+
+
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002-2022 EPFL, with contributions from Lightbend.<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://scala-lang.org/api/3.2.0/scala/util/control/Exception$.html" class="_attribution-link">https://scala-lang.org/api/3.2.0/scala/util/control/Exception$.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

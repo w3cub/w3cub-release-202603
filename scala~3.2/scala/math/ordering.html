@@ -1,0 +1,1210 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Ordering - Scala 3.2 - W3cubDocs</title>
+  
+  <meta name="description" content=" Ordering is a trait whose instances each represent a strategy for sorting instances of a type. ">
+  <meta name="keywords" content="trait, ordering, scala, scala~3.2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/scala~3.2/scala/math/ordering.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/scala~3.2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/scala~3.2/" class="_nav-link" title="" style="margin-left:0;">Scala 3.2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _scala">
+				
+				
+<h1>Trait Ordering.Ordering</h1>
+<div class="links">
+<a href="ordering%24">Companion object</a> • <a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L73">Source code</a>
+</div>
+<h2 id="signature">
+<div class="signature">
+trait <a href="ordering">Ordering</a>[T] extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T] with <a href="partialordering">PartialOrdering</a>[T] with <a href="../../scala#Serializable-0">Serializable</a>
+</div>
+</h2>
+<p>Ordering is a trait whose instances each represent a strategy for sorting instances of a type.</p>
+<p>Ordering's companion object defines many implicit objects to deal with subtypes of <a href="../anyval">AnyVal</a> (e.g. <code>Int</code>, <code>Double</code>), <code>String</code>, and others.</p>
+<p>To sort instances by one or more member variables, you can take advantage of these built-in orderings using <a href="ordering%24#by-fffff19f">Ordering.by</a> and <a href="ordering#on-b32">Ordering.on</a>:</p>
+<pre data-language="scala">import scala.util.Sorting
+val pairs = Array(("a", 5, 2), ("c", 3, 1), ("b", 1, 3))
+
+// sort by 2nd element
+Sorting.quickSort(pairs)(Ordering.by[(String, Int, Int), Int](_._2))
+
+// sort by the 3rd element, then 1st
+Sorting.quickSort(pairs)(Ordering[(Int, String)].on(x =&gt; (x._3, x._1)))</pre>
+<p>An <code>Ordering[T]</code> is implemented by specifying the <a href="ordering#compare-cc1">compare</a> method, <code>compare(a: T, b: T): Int</code>, which decides how to order two instances <code>a</code> and <code>b</code>. Instances of <code>Ordering[T]</code> can be used by things like <code>scala.util.Sorting</code> to sort collections like <code>Array[T]</code>.</p>
+<p>For example:</p>
+<pre data-language="scala">import scala.util.Sorting
+
+case class Person(name:String, age:Int)
+val people = Array(Person("bob", 30), Person("ann", 32), Person("carl", 19))
+
+// sort by age
+object AgeOrdering extends Ordering[Person] {
+ def compare(a:Person, b:Person) = a.age.compare(b.age)
+}
+Sorting.quickSort(people)(AgeOrdering)</pre>
+<p>This trait and <a href="ordered">scala.math.Ordered</a> both provide this same functionality, but in different ways. A type <code>T</code> can be given a single way to order itself by extending <code>Ordered</code>. Using <code>Ordering</code>, this same type may be sorted in many other ways. <code>Ordered</code> and <code>Ordering</code> both provide implicits allowing them to be used interchangeably.</p>
+<p>You can <code>import scala.math.Ordering.Implicits._</code> to gain access to other implicit orderings. </p>
+<table class="attributes">
+<tr>
+<th>See also</th>
+<td><p><a href="ordered">scala.math.Ordered</a>, <a href="../util/sorting%24">scala.util.Sorting</a>, <a href="ordering%24%24implicits%24">scala.math.Ordering.Implicits</a></p></td>
+</tr>
+<tr>
+<th>Supertypes</th>
+<td><div class="related-types">
+<div class="member">trait <a href="partialordering">PartialOrdering</a>[T]</div>
+<div class="member">trait <a href="equiv">Equiv</a>[T]</div>
+<div class="member">trait <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html">Serializable</a>
+</div>
+<div class="member">trait <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]</div>
+<div class="member">class <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html">Object</a>
+</div>
+<div class="member">trait <a href="../matchable">Matchable</a>
+</div>
+<div class="member">class <a href="../any">Any</a>
+</div>
+</div></td>
+</tr>
+<tr>
+<th>Known subtypes</th>
+<td><details>
+              <summary>62 types</summary>
+              <div class="related-types">
+<div class="member">object <a href="../enumeration%24valueordering%24">ValueOrdering</a>.type</div>
+<div class="member">object <a href="../concurrent/duration/deadline%24%24deadlineisordered%24">DeadlineIsOrdered</a>.type</div>
+<div class="member">object <a href="../concurrent/duration/duration%24%24durationisordered%24">DurationIsOrdered</a>.type</div>
+<div class="member">object <a href="../concurrent/duration/finiteduration%24%24finitedurationisordered%24">FiniteDurationIsOrdered</a>.type</div>
+<div class="member">trait <a href="numeric">Numeric</a>[T]</div>
+<div class="member">trait <a href="fractional">Fractional</a>[T]</div>
+<div class="member">trait <a href="numeric%24%24bigdecimalisfractional">BigDecimalIsFractional</a>
+</div>
+<div class="member">object <a href="numeric%24%24bigdecimalisfractional%24">BigDecimalIsFractional</a>.type</div>
+<div class="member">trait <a href="numeric%24%24doubleisfractional">DoubleIsFractional</a>
+</div>
+<div class="member">object <a href="numeric%24%24doubleisfractional%24">DoubleIsFractional</a>.type</div>
+<div class="member">trait <a href="numeric%24%24floatisfractional">FloatIsFractional</a>
+</div>
+<div class="member">object <a href="numeric%24%24floatisfractional%24">FloatIsFractional</a>.type</div>
+<div class="member">trait <a href="integral">Integral</a>[T]</div>
+<div class="member">trait <a href="numeric%24%24bigdecimalasifintegral">BigDecimalAsIfIntegral</a>
+</div>
+<div class="member">object <a href="numeric%24%24bigdecimalasifintegral%24">BigDecimalAsIfIntegral</a>.type</div>
+<div class="member">trait <a href="numeric%24%24bigintisintegral">BigIntIsIntegral</a>
+</div>
+<div class="member">object <a href="numeric%24%24bigintisintegral%24">BigIntIsIntegral</a>.type</div>
+<div class="member">trait <a href="numeric%24%24byteisintegral">ByteIsIntegral</a>
+</div>
+<div class="member">object <a href="numeric%24%24byteisintegral%24">ByteIsIntegral</a>.type</div>
+<div class="member">trait <a href="numeric%24%24charisintegral">CharIsIntegral</a>
+</div>
+<div class="member">object <a href="numeric%24%24charisintegral%24">CharIsIntegral</a>.type</div>
+<div class="member">trait <a href="numeric%24%24intisintegral">IntIsIntegral</a>
+</div>
+<div class="member">object <a href="numeric%24%24intisintegral%24">IntIsIntegral</a>.type</div>
+<div class="member">trait <a href="numeric%24%24longisintegral">LongIsIntegral</a>
+</div>
+<div class="member">object <a href="numeric%24%24longisintegral%24">LongIsIntegral</a>.type</div>
+<div class="member">trait <a href="numeric%24%24shortisintegral">ShortIsIntegral</a>
+</div>
+<div class="member">object <a href="numeric%24%24shortisintegral%24">ShortIsIntegral</a>.type</div>
+<div class="member">trait <a href="numeric%24%24bigdecimalisconflicted">BigDecimalIsConflicted</a>
+</div>
+<div class="member">trait <a href="ordering%24%24bigdecimalordering">BigDecimalOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24bigdecimal%24">BigDecimal</a>.type</div>
+<div class="member">trait <a href="ordering%24%24bigintordering">BigIntOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24bigint%24">BigInt</a>.type</div>
+<div class="member">trait <a href="ordering%24%24booleanordering">BooleanOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24boolean%24">Boolean</a>.type</div>
+<div class="member">trait <a href="ordering%24%24byteordering">ByteOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24byte%24">Byte</a>.type</div>
+<div class="member">trait <a href="ordering%24%24cachedreverse">CachedReverse</a>[T]</div>
+<div class="member">object <a href="ordering%24%24int%24">Int</a>.type</div>
+<div class="member">trait <a href="ordering%24%24charordering">CharOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24char%24">Char</a>.type</div>
+<div class="member">trait <a href="ordering%24%24double%24%24ieeeordering">IeeeOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24double%24%24ieeeordering%24">IeeeOrdering</a>.type</div>
+<div class="member">trait <a href="ordering%24%24double%24%24totalordering">TotalOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24deprecateddoubleordering%24">DeprecatedDoubleOrdering</a>.type</div>
+<div class="member">object <a href="ordering%24%24double%24%24totalordering%24">TotalOrdering</a>.type</div>
+<div class="member">trait <a href="ordering%24%24float%24%24ieeeordering">IeeeOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24float%24%24ieeeordering%24">IeeeOrdering</a>.type</div>
+<div class="member">trait <a href="ordering%24%24float%24%24totalordering">TotalOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24deprecatedfloatordering%24">DeprecatedFloatOrdering</a>.type</div>
+<div class="member">object <a href="ordering%24%24float%24%24totalordering%24">TotalOrdering</a>.type</div>
+<div class="member">trait <a href="ordering%24%24intordering">IntOrdering</a>
+</div>
+<div class="member">trait <a href="ordering%24%24longordering">LongOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24long%24">Long</a>.type</div>
+<div class="member">trait <a href="ordering%24%24optionordering">OptionOrdering</a>[T]</div>
+<div class="member">trait <a href="ordering%24%24shortordering">ShortOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24short%24">Short</a>.type</div>
+<div class="member">trait <a href="ordering%24%24stringordering">StringOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24string%24">String</a>.type</div>
+<div class="member">trait <a href="ordering%24%24symbolordering">SymbolOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24symbol%24">Symbol</a>.type</div>
+<div class="member">trait <a href="ordering%24%24unitordering">UnitOrdering</a>
+</div>
+<div class="member">object <a href="ordering%24%24unit%24">Unit</a>.type</div>
+</div>
+            </details></td>
+</tr>
+<tr>
+<th>Self type</th>
+<td><div class="related-types"><div class="member">
+<a href="ordering">Ordering</a>[T]</div></div></td>
+</tr>
+</table>
+<h2>Classlikes</h2>
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L192" class="source-link">Source</a><div class="signature">
+class <a href="ordering%24orderingops">OrderingOps</a>(lhs: T)
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<p>This inner class defines comparison operators available for <code>T</code>.</p>
+<p>It can't extend <code>AnyVal</code> because it is not a top-level class or a member of a statically accessible object. </p>
+
+
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L192" class="source-link">Source</a><div class="signature">
+class <a href="ordering%24orderingops">OrderingOps</a>(lhs: T)
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<p>This inner class defines comparison operators available for <code>T</code>.</p>
+<p>It can't extend <code>AnyVal</code> because it is not a top-level class or a member of a statically accessible object. </p>
+
+
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L192" class="source-link">Source</a><div class="signature">
+class <a href="ordering%24orderingops">OrderingOps</a>(lhs: T)
+</div>
+</h3>
+
+
+
+
+<p>This inner class defines comparison operators available for <code>T</code>.</p>
+<p>It can't extend <code>AnyVal</code> because it is not a top-level class or a member of a statically accessible object. </p>
+
+
+
+
+<h2>Abstract methods</h2>
+<h3 id="compare-cc1">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L89" class="source-link">Source</a><div class="signature">
+def <a href="ordering#compare-cc1">compare</a>(x: T, y: T): <a href="../int">Int</a>
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<p>Returns an integer whose sign communicates how x compares to y.</p>
+<p>The result sign has the following meaning:</p>
+<p>- negative if x &lt; y - positive if x &gt; y - zero otherwise (if x == y) </p>
+
+
+
+
+<h3 id="compare-cc1">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L89" class="source-link">Source</a><div class="signature">
+def <a href="ordering#compare-cc1">compare</a>(x: T, y: T): <a href="../int">Int</a>
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<p>Returns an integer whose sign communicates how x compares to y.</p>
+<p>The result sign has the following meaning:</p>
+<p>- negative if x &lt; y - positive if x &gt; y - zero otherwise (if x == y) </p>
+
+
+
+
+<h3 id="compare-cc1">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L89" class="source-link">Source</a><div class="signature">
+def <a href="ordering#compare-cc1">compare</a>(x: T, y: T): <a href="../int">Int</a>
+</div>
+</h3>
+
+
+
+
+<p>Returns an integer whose sign communicates how x compares to y.</p>
+<p>The result sign has the following meaning:</p>
+<p>- negative if x &lt; y - positive if x &gt; y - zero otherwise (if x == y) </p>
+
+
+
+
+<h2>Concrete methods</h2>
+<h3 id="equiv-fffff7fa">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L104" class="source-link">Source</a><div class="signature">
+override def <a href="ordering#equiv-fffff7fa">equiv</a>(x: T, y: T): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+
+
+<p>Return true if <code>x</code> == <code>y</code> in the ordering.</p>
+<table class="attributes"><tr>
+<th>Definition Classes</th>
+<td>
+<a href="partialordering">PartialOrdering</a> -&gt; <a href="equiv">Equiv</a>
+</td>
+</tr></table>
+
+
+<h3 id="gt-fffff7fa">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L101" class="source-link">Source</a><div class="signature">
+override def <a href="ordering#gt-fffff7fa">gt</a>(x: T, y: T): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+
+
+<p>Return true if <code>x</code> &gt; <code>y</code> in the ordering.</p>
+<table class="attributes"><tr>
+<th>Definition Classes</th>
+<td><a href="partialordering">PartialOrdering</a></td>
+</tr></table>
+
+
+<h3 id="gteq-fffff7fa">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L95" class="source-link">Source</a><div class="signature">
+override def <a href="ordering#gteq-fffff7fa">gteq</a>(x: T, y: T): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+
+
+<p>Return true if <code>x</code> &gt;= <code>y</code> in the ordering.</p>
+<table class="attributes"><tr>
+<th>Definition Classes</th>
+<td><a href="partialordering">PartialOrdering</a></td>
+</tr></table>
+
+
+<h3 id="isReverseOf-fffff12e">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L128" class="source-link">Source</a><div class="signature">
+def <a href="ordering#isReverseOf-fffff12e">isReverseOf</a>(other: <a href="ordering">Ordering</a>[_]): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<p>Returns whether or not the other ordering is the opposite ordering of this one.</p>
+<p>Equivalent to <code>other == this.reverse</code>.</p>
+<p>Implementations should only override this method if they are overriding <a href="ordering#reverse-0">reverse</a> as well. </p>
+
+
+
+
+<h3 id="isReverseOf-fffff12e">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L128" class="source-link">Source</a><div class="signature">
+def <a href="ordering#isReverseOf-fffff12e">isReverseOf</a>(other: <a href="ordering">Ordering</a>[_]): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<p>Returns whether or not the other ordering is the opposite ordering of this one.</p>
+<p>Equivalent to <code>other == this.reverse</code>.</p>
+<p>Implementations should only override this method if they are overriding <a href="ordering#reverse-0">reverse</a> as well. </p>
+
+
+
+
+<h3 id="isReverseOf-fffff12e">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L128" class="source-link">Source</a><div class="signature">
+def <a href="ordering#isReverseOf-fffff12e">isReverseOf</a>(other: <a href="ordering">Ordering</a>[_]): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+
+
+
+<p>Returns whether or not the other ordering is the opposite ordering of this one.</p>
+<p>Equivalent to <code>other == this.reverse</code>.</p>
+<p>Implementations should only override this method if they are overriding <a href="ordering#reverse-0">reverse</a> as well. </p>
+
+
+
+
+<h3 id="lt-fffff7fa">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L98" class="source-link">Source</a><div class="signature">
+override def <a href="ordering#lt-fffff7fa">lt</a>(x: T, y: T): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+
+
+<p>Return true if <code>x</code> &lt; <code>y</code> in the ordering.</p>
+<table class="attributes"><tr>
+<th>Definition Classes</th>
+<td><a href="partialordering">PartialOrdering</a></td>
+</tr></table>
+
+
+<h3 id="lteq-fffff7fa">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L92" class="source-link">Source</a><div class="signature">
+override def <a href="ordering#lteq-fffff7fa">lteq</a>(x: T, y: T): <a href="../boolean">Boolean</a>
+</div>
+</h3>
+
+
+
+<p>Return true if <code>x</code> &lt;= <code>y</code> in the ordering.</p>
+<table class="attributes"><tr>
+<th>Definition Classes</th>
+<td><a href="partialordering">PartialOrdering</a></td>
+</tr></table>
+
+
+<h3 id="max-fffff4ea">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L107" class="source-link">Source</a><div class="signature">
+def <a href="ordering#max-fffff4ea">max</a>[U &lt;: T](x: U, y: U): U
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+<p>Return <code>x</code> if <code>x</code> &gt;= <code>y</code>, otherwise <code>y</code>.</p>
+
+
+
+<h3 id="max-fffff4ea">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L107" class="source-link">Source</a><div class="signature">
+def <a href="ordering#max-fffff4ea">max</a>[U &lt;: T](x: U, y: U): U
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+<p>Return <code>x</code> if <code>x</code> &gt;= <code>y</code>, otherwise <code>y</code>.</p>
+
+
+
+<h3 id="max-fffff4ea">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L107" class="source-link">Source</a><div class="signature">
+def <a href="ordering#max-fffff4ea">max</a>[U &lt;: T](x: U, y: U): U
+</div>
+</h3>
+
+
+
+<p>Return <code>x</code> if <code>x</code> &gt;= <code>y</code>, otherwise <code>y</code>.</p>
+
+
+
+<h3 id="min-fffff4ea">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L110" class="source-link">Source</a><div class="signature">
+def <a href="ordering#min-fffff4ea">min</a>[U &lt;: T](x: U, y: U): U
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+<p>Return <code>x</code> if <code>x</code> &lt;= <code>y</code>, otherwise <code>y</code>.</p>
+
+
+
+<h3 id="min-fffff4ea">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L110" class="source-link">Source</a><div class="signature">
+def <a href="ordering#min-fffff4ea">min</a>[U &lt;: T](x: U, y: U): U
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+<p>Return <code>x</code> if <code>x</code> &lt;= <code>y</code>, otherwise <code>y</code>.</p>
+
+
+
+<h3 id="min-fffff4ea">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L110" class="source-link">Source</a><div class="signature">
+def <a href="ordering#min-fffff4ea">min</a>[U &lt;: T](x: U, y: U): U
+</div>
+</h3>
+
+
+
+<p>Return <code>x</code> if <code>x</code> &lt;= <code>y</code>, otherwise <code>y</code>.</p>
+
+
+
+<h3 id="on-b32">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L140" class="source-link">Source</a><div class="signature">
+def <a href="ordering#on-b32">on</a>[U](f: U =&gt; T): <a href="ordering">Ordering</a>[U]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<p>Given f, a function from U into T, creates an Ordering[U] whose compare function is equivalent to:</p>
+<pre data-language="scala">def compare(x:U, y:U) = Ordering[T].compare(f(x), f(y))</pre>
+
+
+
+
+<h3 id="on-b32">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L140" class="source-link">Source</a><div class="signature">
+def <a href="ordering#on-b32">on</a>[U](f: U =&gt; T): <a href="ordering">Ordering</a>[U]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<p>Given f, a function from U into T, creates an Ordering[U] whose compare function is equivalent to:</p>
+<pre data-language="scala">def compare(x:U, y:U) = Ordering[T].compare(f(x), f(y))</pre>
+
+
+
+
+<h3 id="on-b32">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L140" class="source-link">Source</a><div class="signature">
+def <a href="ordering#on-b32">on</a>[U](f: U =&gt; T): <a href="ordering">Ordering</a>[U]
+</div>
+</h3>
+
+
+
+
+<p>Given f, a function from U into T, creates an Ordering[U] whose compare function is equivalent to:</p>
+<pre data-language="scala">def compare(x:U, y:U) = Ordering[T].compare(f(x), f(y))</pre>
+
+
+
+
+<h3 id="orElse-6c0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L158" class="source-link">Source</a><div class="signature">
+def <a href="ordering#orElse-6c0">orElse</a>(other: <a href="ordering">Ordering</a>[T]): <a href="ordering">Ordering</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+<p>Creates an Ordering[T] whose compare function returns the result of this Ordering's compare function, if it is non-zero, or else the result of <code>other</code>s compare function. </p>
+<table class="attributes">
+<tr>
+<th>Value parameters</th>
+<td><dl class="attributes">
+<dt>other</dt>
+<dd><p>an Ordering to use if this Ordering returns zero</p></dd>
+</dl></td>
+</tr>
+<tr>
+<th>Example</th>
+<td>
+
+<pre data-language="scala">case class Pair(a: Int, b: Int)
+val pairOrdering = Ordering.by[Pair, Int](_.a)
+                          .orElse(Ordering.by[Pair, Int](_.b))</pre>
+</td>
+</tr>
+</table>
+
+
+<h3 id="orElse-6c0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L158" class="source-link">Source</a><div class="signature">
+def <a href="ordering#orElse-6c0">orElse</a>(other: <a href="ordering">Ordering</a>[T]): <a href="ordering">Ordering</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+<p>Creates an Ordering[T] whose compare function returns the result of this Ordering's compare function, if it is non-zero, or else the result of <code>other</code>s compare function. </p>
+<table class="attributes">
+<tr>
+<th>Value parameters</th>
+<td><dl class="attributes">
+<dt>other</dt>
+<dd><p>an Ordering to use if this Ordering returns zero</p></dd>
+</dl></td>
+</tr>
+<tr>
+<th>Example</th>
+<td>
+
+<pre data-language="scala">case class Pair(a: Int, b: Int)
+val pairOrdering = Ordering.by[Pair, Int](_.a)
+                          .orElse(Ordering.by[Pair, Int](_.b))</pre>
+</td>
+</tr>
+</table>
+
+
+<h3 id="orElse-6c0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L158" class="source-link">Source</a><div class="signature">
+def <a href="ordering#orElse-6c0">orElse</a>(other: <a href="ordering">Ordering</a>[T]): <a href="ordering">Ordering</a>[T]
+</div>
+</h3>
+
+
+
+<p>Creates an Ordering[T] whose compare function returns the result of this Ordering's compare function, if it is non-zero, or else the result of <code>other</code>s compare function. </p>
+<table class="attributes">
+<tr>
+<th>Value parameters</th>
+<td><dl class="attributes">
+<dt>other</dt>
+<dd><p>an Ordering to use if this Ordering returns zero</p></dd>
+</dl></td>
+</tr>
+<tr>
+<th>Example</th>
+<td>
+
+<pre data-language="scala">case class Pair(a: Int, b: Int)
+val pairOrdering = Ordering.by[Pair, Int](_.a)
+                          .orElse(Ordering.by[Pair, Int](_.b))</pre>
+</td>
+</tr>
+</table>
+
+
+<h3 id="orElseBy-fffff300">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L182" class="source-link">Source</a><div class="signature">
+def <a href="ordering#orElseBy-fffff300">orElseBy</a>[S](f: T =&gt; S)(implicit ord: <a href="ordering">Ordering</a>[S]): <a href="ordering">Ordering</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<p>Given f, a function from T into S, creates an Ordering[T] whose compare function returns the result of this Ordering's compare function, if it is non-zero, or else a result equivalent to:</p>
+<pre data-language="scala">Ordering[S].compare(f(x), f(y))</pre>
+<p>This function is equivalent to passing the result of <code>Ordering.by(f)</code> to <code>orElse</code>. </p>
+
+<table class="attributes"><tr>
+<th>Example</th>
+<td>
+
+<pre data-language="scala">case class Pair(a: Int, b: Int)
+val pairOrdering = Ordering.by[Pair, Int](_.a)
+                          .orElseBy[Int](_.b)</pre>
+</td>
+</tr></table>
+
+
+<h3 id="orElseBy-fffff300">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L182" class="source-link">Source</a><div class="signature">
+def <a href="ordering#orElseBy-fffff300">orElseBy</a>[S](f: T =&gt; S)(implicit ord: <a href="ordering">Ordering</a>[S]): <a href="ordering">Ordering</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<p>Given f, a function from T into S, creates an Ordering[T] whose compare function returns the result of this Ordering's compare function, if it is non-zero, or else a result equivalent to:</p>
+<pre data-language="scala">Ordering[S].compare(f(x), f(y))</pre>
+<p>This function is equivalent to passing the result of <code>Ordering.by(f)</code> to <code>orElse</code>. </p>
+
+<table class="attributes"><tr>
+<th>Example</th>
+<td>
+
+<pre data-language="scala">case class Pair(a: Int, b: Int)
+val pairOrdering = Ordering.by[Pair, Int](_.a)
+                          .orElseBy[Int](_.b)</pre>
+</td>
+</tr></table>
+
+
+<h3 id="orElseBy-fffff300">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L182" class="source-link">Source</a><div class="signature">
+def <a href="ordering#orElseBy-fffff300">orElseBy</a>[S](f: T =&gt; S)(implicit ord: <a href="ordering">Ordering</a>[S]): <a href="ordering">Ordering</a>[T]
+</div>
+</h3>
+
+
+
+
+<p>Given f, a function from T into S, creates an Ordering[T] whose compare function returns the result of this Ordering's compare function, if it is non-zero, or else a result equivalent to:</p>
+<pre data-language="scala">Ordering[S].compare(f(x), f(y))</pre>
+<p>This function is equivalent to passing the result of <code>Ordering.by(f)</code> to <code>orElse</code>. </p>
+
+<table class="attributes"><tr>
+<th>Example</th>
+<td>
+
+<pre data-language="scala">case class Pair(a: Int, b: Int)
+val pairOrdering = Ordering.by[Pair, Int](_.a)
+                          .orElseBy[Int](_.b)</pre>
+</td>
+</tr></table>
+
+
+<h3 id="reverse-0">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L118" class="source-link">Source</a><div class="signature">
+override def <a href="ordering#reverse-0">reverse</a>: <a href="ordering">Ordering</a>[T]
+</div>
+</h3>
+
+
+
+
+<p>Return the opposite ordering of this one.</p>
+<p>Implementations overriding this method MUST override <a href="ordering#isReverseOf-fffff12e">isReverseOf</a> as well if they change the behavior at all (for example, caching does not require overriding it). </p>
+
+<table class="attributes"><tr>
+<th>Definition Classes</th>
+<td><a href="partialordering">PartialOrdering</a></td>
+</tr></table>
+
+
+<h3 id="tryCompare-fffffa63">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L79" class="source-link">Source</a><div class="signature">
+def <a href="ordering#tryCompare-fffffa63">tryCompare</a>(x: T, y: T): <a href="../option">Option</a>[<a href="../int">Int</a>]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+<p>Returns whether a comparison between <code>x</code> and <code>y</code> is defined, and if so the result of <code>compare(x, y)</code>. </p>
+
+
+
+<h3 id="tryCompare-fffffa63">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L79" class="source-link">Source</a><div class="signature">
+def <a href="ordering#tryCompare-fffffa63">tryCompare</a>(x: T, y: T): <a href="../option">Option</a>[<a href="../int">Int</a>]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+<p>Returns whether a comparison between <code>x</code> and <code>y</code> is defined, and if so the result of <code>compare(x, y)</code>. </p>
+
+
+
+<h3 id="tryCompare-fffffa63">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L79" class="source-link">Source</a><div class="signature">
+def <a href="ordering#tryCompare-fffffa63">tryCompare</a>(x: T, y: T): <a href="../option">Option</a>[<a href="../int">Int</a>]
+</div>
+</h3>
+
+
+
+<p>Returns whether a comparison between <code>x</code> and <code>y</code> is defined, and if so the result of <code>compare(x, y)</code>. </p>
+
+
+
+<h2>Inherited methods</h2>
+<h3 id="reversed-696">
+<div class="signature">
+def <a href="ordering#reversed-696">reversed</a>(): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#reversed--">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="reversed-696">
+<div class="signature">
+def <a href="ordering#reversed-696">reversed</a>(): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#reversed--">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="reversed-696">
+<div class="signature">
+def <a href="ordering#reversed-696">reversed</a>(): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#reversed--">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-6f3">
+<div class="signature">
+def <a href="ordering#thenComparing-6f3">thenComparing</a>[<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#U--">U</a> &lt;: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html">Comparable</a>[_ &gt;: U &lt;: &lt;FromJavaObject&gt;]](x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;, _ &lt;: U]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.function.Function-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-609">
+<div class="signature">
+def <a href="ordering#thenComparing-609">thenComparing</a>[<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#U--">U</a> &lt;: &lt;FromJavaObject&gt;](x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;, _ &lt;: U], x$1: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[_ &gt;: U &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.function.Function-java.util.Comparator-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-62c">
+<div class="signature">
+def <a href="ordering#thenComparing-62c">thenComparing</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.Comparator-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-6f3">
+<div class="signature">
+def <a href="ordering#thenComparing-6f3">thenComparing</a>[<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#U--">U</a> &lt;: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html">Comparable</a>[_ &gt;: U &lt;: &lt;FromJavaObject&gt;]](x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;, _ &lt;: U]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.function.Function-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-609">
+<div class="signature">
+def <a href="ordering#thenComparing-609">thenComparing</a>[<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#U--">U</a> &lt;: &lt;FromJavaObject&gt;](x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;, _ &lt;: U], x$1: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[_ &gt;: U &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.function.Function-java.util.Comparator-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-62c">
+<div class="signature">
+def <a href="ordering#thenComparing-62c">thenComparing</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.Comparator-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-6f3">
+<div class="signature">
+def <a href="ordering#thenComparing-6f3">thenComparing</a>[<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#U--">U</a> &lt;: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html">Comparable</a>[_ &gt;: U &lt;: &lt;FromJavaObject&gt;]](x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;, _ &lt;: U]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.function.Function-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-609">
+<div class="signature">
+def <a href="ordering#thenComparing-609">thenComparing</a>[<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#U--">U</a> &lt;: &lt;FromJavaObject&gt;](x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;, _ &lt;: U], x$1: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[_ &gt;: U &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.function.Function-java.util.Comparator-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparing-62c">
+<div class="signature">
+def <a href="ordering#thenComparing-62c">thenComparing</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparing-java.util.Comparator-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingDouble-d90">
+<div class="signature">
+def <a href="ordering#thenComparingDouble-d90">thenComparingDouble</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToDoubleFunction.html">ToDoubleFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingDouble-java.util.function.ToDoubleFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingDouble-d90">
+<div class="signature">
+def <a href="ordering#thenComparingDouble-d90">thenComparingDouble</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToDoubleFunction.html">ToDoubleFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingDouble-java.util.function.ToDoubleFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingDouble-d90">
+<div class="signature">
+def <a href="ordering#thenComparingDouble-d90">thenComparingDouble</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToDoubleFunction.html">ToDoubleFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingDouble-java.util.function.ToDoubleFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingInt-fffff0ec">
+<div class="signature">
+def <a href="ordering#thenComparingInt-fffff0ec">thenComparingInt</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToIntFunction.html">ToIntFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingInt-java.util.function.ToIntFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingInt-fffff0ec">
+<div class="signature">
+def <a href="ordering#thenComparingInt-fffff0ec">thenComparingInt</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToIntFunction.html">ToIntFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingInt-java.util.function.ToIntFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingInt-fffff0ec">
+<div class="signature">
+def <a href="ordering#thenComparingInt-fffff0ec">thenComparingInt</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToIntFunction.html">ToIntFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingInt-java.util.function.ToIntFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingLong-fffff1fb">
+<div class="signature">
+def <a href="ordering#thenComparingLong-fffff1fb">thenComparingLong</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToLongFunction.html">ToLongFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingLong-java.util.function.ToLongFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingLong-fffff1fb">
+<div class="signature">
+def <a href="ordering#thenComparingLong-fffff1fb">thenComparingLong</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToLongFunction.html">ToLongFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingLong-java.util.function.ToLongFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h3 id="thenComparingLong-fffff1fb">
+<div class="signature">
+def <a href="ordering#thenComparingLong-fffff1fb">thenComparingLong</a>(x$0: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/ToLongFunction.html">ToLongFunction</a>[_ &gt;: T &lt;: &lt;FromJavaObject&gt;]): <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a>[T]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#thenComparingLong-java.util.function.ToLongFunction-">Comparator</a></td>
+</tr></table>
+
+
+<h2>Implicits</h2>
+<h3 id="mkOrderingOps-fffff7af">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L205" class="source-link">Source</a><div class="signature">
+implicit def <a href="ordering#mkOrderingOps-fffff7af">mkOrderingOps</a>(lhs: T): <a href="ordering%24orderingops">OrderingOps</a>
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Iterable-fffffa31">Iterable</a>
+</div>
+
+<p>This implicit method augments <code>T</code> with the comparison operators defined in <code>scala.math.Ordering.Ops</code>. </p>
+
+
+
+<h3 id="mkOrderingOps-fffff7af">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L205" class="source-link">Source</a><div class="signature">
+implicit def <a href="ordering#mkOrderingOps-fffff7af">mkOrderingOps</a>(lhs: T): <a href="ordering%24orderingops">OrderingOps</a>
+</div>
+</h3>
+
+<div class="originInfo">Implicitly added by <a href="ordering%24#Option-fffffa31">Option</a>
+</div>
+
+<p>This implicit method augments <code>T</code> with the comparison operators defined in <code>scala.math.Ordering.Ops</code>. </p>
+
+
+
+<h3 id="mkOrderingOps-fffff7af">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/math/Ordering.scala#L205" class="source-link">Source</a><div class="signature">
+implicit def <a href="ordering#mkOrderingOps-fffff7af">mkOrderingOps</a>(lhs: T): <a href="ordering%24orderingops">OrderingOps</a>
+</div>
+</h3>
+
+
+
+<p>This implicit method augments <code>T</code> with the comparison operators defined in <code>scala.math.Ordering.Ops</code>. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002-2022 EPFL, with contributions from Lightbend.<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://scala-lang.org/api/3.2.0/scala/math/Ordering.html" class="_attribution-link">https://scala-lang.org/api/3.2.0/scala/math/Ordering.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,778 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>StreamConverters&#36; - Scala 3.2 - W3cubDocs</title>
+  
+  <meta name="description" content="This object provides extension methods to create Java Streams that operate on Scala collections (sequentially or in parallel). For more information &hellip;">
+  <meta name="keywords" content="object, streamconverters, streamconverters&#36;, scala, scala~3.2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/scala~3.2/scala/jdk/streamconverters$.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/scala~3.2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/scala~3.2/" class="_nav-link" title="" style="margin-left:0;">Scala 3.2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _scala">
+				
+				
+<h1>Object StreamConverters.StreamConverters</h1>
+<div class="links"><a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/jdk/StreamConverters.scala#L92">Source code</a></div>
+<h2 id="signature">
+<div class="signature">
+object <a href="streamconverters%24">StreamConverters</a> extends <a href="../collection/convert/streamextensions">StreamExtensions</a>
+</div>
+</h2>
+<p>This object provides extension methods to create <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Java Streams</a> that operate on Scala collections (sequentially or in parallel). For more information on Java streams, consult the documentation (<a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html">https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html</a>).</p>
+<p>When writing Java code, use the explicit conversion methods defined in <a href="javaapi/streamconverters%24">javaapi.StreamConverters</a> instead.</p>
+<p>The methods <code>asJavaSeqStream</code> and <code>asJavaParStream</code> convert a collection to a Java Stream:</p>
+<pre data-language="scala">scala&gt; import scala.jdk.StreamConverters._
+
+scala&gt; val s = (1 to 10).toList.asJavaSeqStream
+s: java.util.stream.IntStream = java.util.stream.IntPipeline$Head@7b1e5e55
+
+scala&gt; s.map(_ * 2).filter(_ &gt; 5).toScala(List)
+res1: List[Int] = List(6, 8, 10, 12, 14, 16, 18, 20)</pre>
+<p>Note: using parallel streams in the Scala REPL causes deadlocks, see <a href="https://github.com/scala/bug/issues/9076">https://github.com/scala/bug/issues/9076</a>. As a workaround, use <code>scala -Yrepl-class-based</code>.</p>
+<pre data-language="scala">scala&gt; def isPrime(n: Int): Boolean = !(2 +: (3 to Math.sqrt(n).toInt by 2) exists (n % _ == 0))
+isPrime: (n: Int)Boolean
+
+scala&gt; (10000 to 1000000).asJavaParStream.filter(isPrime).toScala(Vector)
+res6: scala.collection.immutable.Vector[Int] = Vector(10007, 10009, 10037, 10039, ...</pre>
+<p>A Java <a href="../../scala#Stream-0">Stream</a> provides operations on a sequence of elements. Streams are created from <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Spliterator.html">Spliterators</a>, which are similar to Iterators with the additional capability to partition off some of their elements. This partitioning, if supported by the Spliterator, is used for parallelizing Stream operations.</p>
+<p>Scala collections have a method <a href="../collection/iterableonce#stepper-190"><code>stepper</code></a> that returns a <a href="../collection/stepper">scala.collection.Stepper</a> for the collection, which in turn can be converted to a Spliterator for creating a Java Stream.</p>
+<p>The <code>asJavaSeqStream </code> extension method is available on any Scala collection. The <code>asJavaParStream</code> extension method can only be invoked on collections where the return type of the <a href="../collection/iterableonce#stepper-190"><code>stepper</code></a> method is marked with the <a href="../collection/stepper%24%24efficientsplit">scala.collection.Stepper.EfficientSplit</a> marker trait. This trait is added to steppers that support partitioning, and therefore efficient parallel processing.</p>
+<p>The following extension methods are available:</p>
+<table>
+<thead><tr>
+<th><p> Collection Type </p></th>
+<th><p> Extension Methods </p></th>
+</tr></thead>
+<tbody>
+<tr>
+<td><p> <code>IterableOnce</code> </p></td>
+<td><p> <code>asJavaSeqStream</code> </p></td>
+</tr>
+<tr>
+<td><p> <code>IndexedSeq</code>, Arrays, <code>BitSet</code>, <code>Accumulator</code>, <code>HashMap</code>, <code>HashSet</code>, <code>Range</code>, <code>TreeMap</code>, <code>TreeSet</code>, <code>Vector</code>, Strings </p></td>
+<td><p> <code>asJavaParStream</code> </p></td>
+</tr>
+<tr>
+<td><p> <code>Map</code> </p></td>
+<td><p> <code>asJavaSeqKeyStream</code>, <code>asJavaSeqValueStream</code> </p></td>
+</tr>
+<tr>
+<td><p> <code>HashMap</code>, <code>TreeMap</code> </p></td>
+<td><p> <code>asJavaParKeyStream</code>, <code>asJavaParValueStream</code> </p></td>
+</tr>
+<tr>
+<td><p> <code>Stepper</code> </p></td>
+<td><p> <code>asJavaSeqStream</code> </p></td>
+</tr>
+<tr>
+<td><p> <code>Stepper with EfficientSplit</code> </p></td>
+<td><p> <code>asJavaParStream</code> </p></td>
+</tr>
+<tr>
+<td><p> Strings </p></td>
+<td><p> <code>asJavaSeqStream</code>, <code>asJavaParStream</code>, <code>asJavaSeqCharStream</code>, <code>asJavaParCharStream</code>, <code>asJavaSeqCodePointStream</code>, <code>asJavaParCodePointStream</code> </p></td>
+</tr>
+<tr>
+<td><p> Java streams </p></td>
+<td><p> <code>toScala</code>, <code>asJavaPrimitiveStream</code> </p></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>asJavaPrimitiveStream</code> method converts a <code>Stream[Int]</code> to an <code>IntStream</code>. It is the dual of the <code>boxed</code> method defined on primitive streams (e.g., <code>IntStream.boxed</code> is a <code>Stream[Integer]</code>).</p>
+<p>The <code>toScala</code> extension methods on Java streams collects the result of a stream pipeline into a Scala collection, for example <code>stream.toScala(List)</code>, <code>stream.toScala(Vector)</code>. Note that transformation operations on streams are lazy (also called "intermediate"), terminal operations such as <code>forEach</code>, <code>count</code> or <code>toScala</code> trigger the evaluation.</p>
+<p>Collecting a parallel stream to a collection can be performed in parallel. This is beneficial if the target collection supports efficient merging of the segments that are built in parallel. To support this use case, the Scala standard library provides the <a href="accumulator">Accumulator</a> collection. This collection supports efficient parallel construction, and it has specialized subtypes for <code>Int</code>, <code>Long</code> and <code>Double</code> so that primitive Java streams can be collected to a Scala collection without boxing the elements. </p>
+<table class="attributes">
+<tr>
+<th>Supertypes</th>
+<td><div class="related-types">
+<div class="member">trait <a href="../collection/convert/streamextensions">StreamExtensions</a>
+</div>
+<div class="member">class <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html">Object</a>
+</div>
+<div class="member">trait <a href="../matchable">Matchable</a>
+</div>
+<div class="member">class <a href="../any">Any</a>
+</div>
+</div></td>
+</tr>
+<tr>
+<th>Self type</th>
+<td><div class="related-types"><div class="member">
+<a href="streamconverters%24">StreamConverters</a>.type</div></div></td>
+</tr>
+</table>
+<h2>Inherited classlikes</h2>
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L181" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24anyarrayhasseqparstream">AnyArrayHasSeqParStream</a>[A &lt;: <a href="../anyref">AnyRef</a>](a: <a href="../array">Array</a>[A])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24anyarrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L188" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24bytearrayhasseqparstream">ByteArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../byte">Byte</a>])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24bytearrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L202" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24chararrayhasseqparstream">CharArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../char">Char</a>])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24chararrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L160" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24doublearrayhasseqparstream">DoubleArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../double">Double</a>])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24doublearrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L334" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24doublestreamhastoscala">DoubleStreamHasToScala</a>(stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/DoubleStream.html">DoubleStream</a>)
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24doublestreamhastoscala">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L209" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24floatarrayhasseqparstream">FloatArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../float">Float</a>])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24floatarrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L167" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24intarrayhasseqparstream">IntArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../int">Int</a>])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24intarrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L280" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24intstreamhastoscala">IntStreamHasToScala</a>(stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/IntStream.html">IntStream</a>)
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24intstreamhastoscala">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L32" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24iterablehasseqstream">IterableHasSeqStream</a>[A](cc: <a href="../collection/iterableonce">IterableOnce</a>[A])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24iterablehasseqstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L42" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24iterablenongenerichasparstream">IterableNonGenericHasParStream</a>[A, C &lt;: <a href="../collection/iterableonce">IterableOnce</a>[_]](c: C)(implicit ev: C <a href="#">&lt;:&lt;</a> <a href="../collection/iterableonce">IterableOnce</a>[A])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24iterablenongenerichasparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L174" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24longarrayhasseqparstream">LongArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../long">Long</a>])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24longarrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L307" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24longstreamhastoscala">LongStreamHasToScala</a>(stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/LongStream.html">LongStream</a>)
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24longstreamhastoscala">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L85" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24maphasparkeyvaluestream">MapHasParKeyValueStream</a>[K, V, CC &lt;: (<a href="../collection/mapops">MapOps</a>)](cc: CC[K, V])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24maphasparkeyvaluestream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L61" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24maphasseqkeyvaluestream">MapHasSeqKeyValueStream</a>[K, V, CC &lt;: (<a href="../collection/mapops">MapOps</a>)](cc: CC[K, V])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24maphasseqkeyvaluestream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L195" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24shortarrayhasseqparstream">ShortArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../short">Short</a>])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24shortarrayhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L140" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24stepperhasparstream">StepperHasParStream</a>[A](stepper: <a href="../collection/stepper">Stepper</a>[A] &amp; <a href="../collection/stepper%24%24efficientsplit">EfficientSplit</a>)
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24stepperhasparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L126" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24stepperhasseqstream">StepperHasSeqStream</a>[A](stepper: <a href="../collection/stepper">Stepper</a>[A])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24stepperhasseqstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L245" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24streamhastoscala">StreamHasToScala</a>[A](stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Stream</a>[A])
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24streamhastoscala">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3>
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L220" class="source-link">Source</a><div class="signature">
+implicit class <a href="../collection/convert/streamextensions%24stringhasseqparstream">StringHasSeqParStream</a>(s: <a href="../predef%24#String-0">String</a>)
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions%24stringhasseqparstream">StreamExtensions</a></td>
+</tr></table>
+
+
+<h2>Inherited implicits</h2>
+<h3 id="AnyArrayHasSeqParStream-fffffaf2">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L181" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#AnyArrayHasSeqParStream-fffffaf2">AnyArrayHasSeqParStream</a>[A &lt;: <a href="../anyref">AnyRef</a>](a: <a href="../array">Array</a>[A]): <a href="../collection/convert/streamextensions%24anyarrayhasseqparstream">AnyArrayHasSeqParStream</a>[A]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#AnyArrayHasSeqParStream-fffffaf2">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="ByteArrayHasSeqParStream-fffff1b4">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L188" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#ByteArrayHasSeqParStream-fffff1b4">ByteArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../byte">Byte</a>]): <a href="../collection/convert/streamextensions%24bytearrayhasseqparstream">ByteArrayHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#ByteArrayHasSeqParStream-fffff1b4">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="CharArrayHasSeqParStream-fffffc50">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L202" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#CharArrayHasSeqParStream-fffffc50">CharArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../char">Char</a>]): <a href="../collection/convert/streamextensions%24chararrayhasseqparstream">CharArrayHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#CharArrayHasSeqParStream-fffffc50">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="DoubleArrayHasSeqParStream-5c6">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L160" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#DoubleArrayHasSeqParStream-5c6">DoubleArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../double">Double</a>]): <a href="../collection/convert/streamextensions%24doublearrayhasseqparstream">DoubleArrayHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#DoubleArrayHasSeqParStream-5c6">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="DoubleStreamHasToScala-298">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L334" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#DoubleStreamHasToScala-298">DoubleStreamHasToScala</a>(stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/DoubleStream.html">DoubleStream</a>): <a href="../collection/convert/streamextensions%24doublestreamhastoscala">DoubleStreamHasToScala</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#DoubleStreamHasToScala-298">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="FloatArrayHasSeqParStream-cd2">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L209" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#FloatArrayHasSeqParStream-cd2">FloatArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../float">Float</a>]): <a href="../collection/convert/streamextensions%24floatarrayhasseqparstream">FloatArrayHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#FloatArrayHasSeqParStream-cd2">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="IntArrayHasSeqParStream-b32">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L167" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#IntArrayHasSeqParStream-b32">IntArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../int">Int</a>]): <a href="../collection/convert/streamextensions%24intarrayhasseqparstream">IntArrayHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#IntArrayHasSeqParStream-b32">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="IntStreamHasToScala-ac8">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L280" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#IntStreamHasToScala-ac8">IntStreamHasToScala</a>(stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/IntStream.html">IntStream</a>): <a href="../collection/convert/streamextensions%24intstreamhastoscala">IntStreamHasToScala</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#IntStreamHasToScala-ac8">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="IterableHasSeqStream-df8">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L32" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#IterableHasSeqStream-df8">IterableHasSeqStream</a>[A](cc: <a href="../collection/iterableonce">IterableOnce</a>[A]): <a href="../collection/convert/streamextensions%24iterablehasseqstream">IterableHasSeqStream</a>[A]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#IterableHasSeqStream-df8">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="IterableNonGenericHasParStream-ffffff27">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L42" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#IterableNonGenericHasParStream-ffffff27">IterableNonGenericHasParStream</a>[A, C &lt;: <a href="../collection/iterableonce">IterableOnce</a>[_]](c: C)(implicit ev: C <a href="#">&lt;:&lt;</a> <a href="../collection/iterableonce">IterableOnce</a>[A]): <a href="../collection/convert/streamextensions%24iterablenongenerichasparstream">IterableNonGenericHasParStream</a>[A, C]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#IterableNonGenericHasParStream-ffffff27">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="LongArrayHasSeqParStream-9c">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L174" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#LongArrayHasSeqParStream-9c">LongArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../long">Long</a>]): <a href="../collection/convert/streamextensions%24longarrayhasseqparstream">LongArrayHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#LongArrayHasSeqParStream-9c">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="LongStreamHasToScala-fffff56e">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L307" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#LongStreamHasToScala-fffff56e">LongStreamHasToScala</a>(stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/LongStream.html">LongStream</a>): <a href="../collection/convert/streamextensions%24longstreamhastoscala">LongStreamHasToScala</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#LongStreamHasToScala-fffff56e">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="MapHasParKeyValueStream-fffff633">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L85" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#MapHasParKeyValueStream-fffff633">MapHasParKeyValueStream</a>[K, V, CC &lt;: (<a href="../collection/mapops">MapOps</a>)](cc: CC[K, V]): <a href="../collection/convert/streamextensions%24maphasparkeyvaluestream">MapHasParKeyValueStream</a>[K, V, CC]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#MapHasParKeyValueStream-fffff633">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="MapHasSeqKeyValueStream-d71">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L61" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#MapHasSeqKeyValueStream-d71">MapHasSeqKeyValueStream</a>[K, V, CC &lt;: (<a href="../collection/mapops">MapOps</a>)](cc: CC[K, V]): <a href="../collection/convert/streamextensions%24maphasseqkeyvaluestream">MapHasSeqKeyValueStream</a>[K, V, CC]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#MapHasSeqKeyValueStream-d71">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="ShortArrayHasSeqParStream-d2">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L195" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#ShortArrayHasSeqParStream-d2">ShortArrayHasSeqParStream</a>(a: <a href="../array">Array</a>[<a href="../short">Short</a>]): <a href="../collection/convert/streamextensions%24shortarrayhasseqparstream">ShortArrayHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#ShortArrayHasSeqParStream-d2">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="StepperHasParStream-fffffa47">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L140" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#StepperHasParStream-fffffa47">StepperHasParStream</a>[A](stepper: <a href="../collection/stepper">Stepper</a>[A] &amp; <a href="../collection/stepper%24%24efficientsplit">EfficientSplit</a>): <a href="../collection/convert/streamextensions%24stepperhasparstream">StepperHasParStream</a>[A]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#StepperHasParStream-fffffa47">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="StepperHasSeqStream-ffffff85">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L126" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#StepperHasSeqStream-ffffff85">StepperHasSeqStream</a>[A](stepper: <a href="../collection/stepper">Stepper</a>[A]): <a href="../collection/convert/streamextensions%24stepperhasseqstream">StepperHasSeqStream</a>[A]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#StepperHasSeqStream-ffffff85">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="StreamHasToScala-7a5">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L245" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#StreamHasToScala-7a5">StreamHasToScala</a>[A](stream: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Stream</a>[A]): <a href="../collection/convert/streamextensions%24streamhastoscala">StreamHasToScala</a>[A]
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#StreamHasToScala-7a5">StreamExtensions</a></td>
+</tr></table>
+
+
+<h3 id="StringHasSeqParStream-fffff2cf">
+<a href="https://github.com/scala/scala/blob/v2.13.8/src/library/scala/collection/convert/StreamExtensions.scala#L220" class="source-link">Source</a><div class="signature">
+final implicit def <a href="streamconverters%24#StringHasSeqParStream-fffff2cf">StringHasSeqParStream</a>(s: <a href="../predef%24#String-0">String</a>): <a href="../collection/convert/streamextensions%24stringhasseqparstream">StringHasSeqParStream</a>
+</div>
+</h3>
+
+
+
+
+<table class="attributes"><tr>
+<th>Inherited from</th>
+<td><a href="../collection/convert/streamextensions#StringHasSeqParStream-fffff2cf">StreamExtensions</a></td>
+</tr></table>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002-2022 EPFL, with contributions from Lightbend.<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://scala-lang.org/api/3.2.0/scala/jdk/StreamConverters$.html" class="_attribution-link">https://scala-lang.org/api/3.2.0/scala/jdk/StreamConverters$.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
