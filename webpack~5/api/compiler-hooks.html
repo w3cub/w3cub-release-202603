@@ -1,0 +1,226 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Compiler Hooks - Webpack 5 - W3cubDocs</title>
+  
+  <meta name="description" content="The Compiler module is the main engine that creates a compilation instance with all the options passed through the CLI or Node API. It extends the &hellip;">
+  <meta name="keywords" content="compiler, hooks, webpack, webpack~5">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/webpack~5/api/compiler-hooks.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/webpack~5.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/webpack~5/" class="_nav-link" title="" style="margin-left:0;">webpack 5</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _webpack">
+				
+				
+<h1>Compiler Hooks</h1>
+<div id="md-content">
+<p>The <code>Compiler</code> module is the main engine that creates a compilation instance with all the options passed through the <a href="cli">CLI</a> or <a href="node">Node API</a>. It extends the <code>Tapable</code> class in order to register and call plugins. Most user-facing plugins are first registered on the <code>Compiler</code>.</p> <p>When developing a plugin for webpack, you might want to know where each hook is called. To learn this, search for <code>hooks.&lt;hook name&gt;.call</code> across the webpack source.</p> <aside class="warning"><h6 class="warning__prefix">warning</h6>
+<p>Since webpack 5, <code>hooks</code> are no longer extendable. Use a <code>WeakMap</code> to add custom hooks.</p></aside> <h2>
+Watching
+</h2> <p>The <code>Compiler</code> supports <a href="node#watching">watching</a> which monitors the file system and recompiles as files change. When in watch mode, the compiler will emit the additional events such as <code>watchRun</code>, <code>watchClose</code>, and <code>invalid</code>. This is typically used in <a href="../guides/development">development</a>, usually under the hood of tools like <code>webpack-dev-server</code>, so that the developer doesn't need to re-compile manually every time. Watch mode can also be entered via the <a href="cli#watch-options">CLI</a>.</p> <h2>
+Hooks
+</h2> <p>The following lifecycle hooks are exposed by the <code>compiler</code> and can be accessed as such:</p> <pre data-language="js">compiler.hooks.someHook.tap('MyPlugin', (params) =&gt; {
+  /* ... */
+});</pre> <p>Depending on the hook type, <code>tapAsync</code> and <code>tapPromise</code> may also be available.</p> <p>For the description of hook types, see <a href="https://github.com/webpack/tapable#tapable">the Tapable docs</a>.</p> <h3>
+environment
+</h3> <p><code>SyncHook</code></p> <p>Called while preparing the compiler environment, right after initializing the plugins in the configuration file.</p> <h3>
+afterEnvironment
+</h3> <p><code>SyncHook</code></p> <p>Called right after the <code>environment</code> hook, when the compiler environment setup is complete.</p> <h3>
+entryOption
+</h3> <p><code>SyncBailHook</code></p> <p>Called after the <a href="../configuration/entry-context#entry"><code>entry</code> configuration</a> from webpack options has been processed.</p> <ul> <li>Callback Parameters: <a href="../configuration/entry-context#context"><code>context</code></a>, <a href="../configuration/entry-context#entry"><code>entry</code></a>
+</li> </ul> <pre data-language="js">compiler.hooks.entryOption.tap('MyPlugin', (context, entry) =&gt; {
+  /* ... */
+});</pre> <h3>
+afterPlugins
+</h3> <p><code>SyncHook</code></p> <p>Called after setting up initial set of internal plugins.</p> <ul> <li>Callback Parameters: <code>compiler</code>
+</li> </ul> <h3>
+afterResolvers
+</h3> <p><code>SyncHook</code></p> <p>Triggered after resolver setup is complete.</p> <ul> <li>Callback Parameters: <code>compiler</code>
+</li> </ul> <h3>
+initialize
+</h3> <p><code>SyncHook</code></p> <p>Called when a compiler object is initialized.</p> <h3>
+beforeRun
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Adds a hook right before running the compiler.</p> <ul> <li>Callback Parameters: <code>compiler</code>
+</li> </ul> <h3>
+run
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Hook into the compiler before it begins reading <a href="../configuration/other-options#recordspath"><code>records</code></a>.</p> <ul> <li>Callback Parameters: <code>compiler</code>
+</li> </ul> <h3>
+watchRun
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Executes a plugin during watch mode after a new compilation is triggered but before the compilation is actually started.</p> <ul> <li>Callback Parameters: <code>compiler</code>
+</li> </ul> <h3>
+normalModuleFactory
+</h3> <p><code>SyncHook</code></p> <p>Called after a <a href="normalmodulefactory-hooks">NormalModuleFactory</a> is created.</p> <ul> <li>Callback Parameters: <code>normalModuleFactory</code>
+</li> </ul> <h3>
+contextModuleFactory
+</h3> <p><code>SyncHook</code></p> <p>Runs a plugin after a <a href="contextmodulefactory-hooks">ContextModuleFactory</a> is created.</p> <ul> <li>Callback Parameters: <code>contextModuleFactory</code>
+</li> </ul> <h3>
+beforeCompile
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Executes a plugin after compilation parameters are created.</p> <ul> <li>Callback Parameters: <code>compilationParams</code>
+</li> </ul> <p>The <code>compilationParams</code> variable is initialized as follows:</p> <pre data-language="js">compilationParams = {
+  normalModuleFactory,
+  contextModuleFactory,
+};</pre> <p>This hook can be used to add/modify the compilation parameters:</p> <pre data-language="js">compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) =&gt; {
+  params['MyPlugin - data'] = 'important stuff my plugin will use later';
+  callback();
+});</pre> <h3>
+compile
+</h3> <p><code>SyncHook</code></p> <p>Called right after <code>beforeCompile</code>, before a new compilation is created. This hook is <em>not</em> copied to child compilers.</p> <ul> <li>Callback Parameters: <code>compilationParams</code>
+</li> </ul> <h3>
+thisCompilation
+</h3> <p><code>SyncHook</code></p> <p>Executed while initializing the compilation, right before emitting the <code>compilation</code> event. This hook is <em>not</em> copied to child compilers.</p> <ul> <li>Callback Parameters: <code>compilation</code>, <code>compilationParams</code>
+</li> </ul> <h3>
+compilation
+</h3> <p><code>SyncHook</code></p> <p>Runs a plugin after a compilation has been created.</p> <ul> <li>Callback Parameters: <code>compilation</code>, <code>compilationParams</code>
+</li> </ul> <h3>
+make
+</h3> <p><code>AsyncParallelHook</code></p> <p>Executed before finishing the compilation. This hook is <em>not</em> copied to child compilers.</p> <ul> <li>Callback Parameters: <code>compilation</code>
+</li> </ul> <h3>
+afterCompile
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Called after finishing and sealing the compilation.</p> <ul> <li>Callback Parameters: <code>compilation</code>
+</li> </ul> <h3>
+shouldEmit
+</h3> <p><code>SyncBailHook</code></p> <p>Called before emitting assets. Should return a boolean telling whether to emit.</p> <ul> <li>Callback Parameters: <code>compilation</code>
+</li> </ul> <pre data-language="js">compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) =&gt; {
+  // return true to emit the output, otherwise false
+  return true;
+});</pre> <h3>
+emit
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Executed right before emitting assets to output dir. This hook is <em>not</em> copied to child compilers.</p> <ul> <li>Callback Parameters: <code>compilation</code>
+</li> </ul> <h3>
+afterEmit
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Called after emitting assets to output directory. This hook is <em>not</em> copied to child compilers.</p> <ul> <li>Callback Parameters: <code>compilation</code>
+</li> </ul> <h3>
+assetEmitted
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Executed when an asset has been emitted. Provides access to information about the emitted asset, such as its output path and byte content.</p> <ul> <li>Callback Parameters: <code>file</code>, <code>info</code>
+</li> </ul> <p>For example, you may access the asset's content buffer via <code>info.content</code>:</p> <pre data-language="js">compiler.hooks.assetEmitted.tap(
+  'MyPlugin',
+  (file, { content, source, outputPath, compilation, targetPath }) =&gt; {
+    console.log(content); // &lt;Buffer 66 6f 6f 62 61 72&gt;
+  }
+);</pre> <h3>
+done
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Executed when the compilation has completed. This hook is <em>not</em> copied to child compilers.</p> <ul> <li>Callback Parameters: <code>stats</code>
+</li> </ul> <h3>
+additionalPass
+</h3> <p><code>AsyncSeriesHook</code></p> <p>This hook allows you to do a one more additional pass of the build.</p> <h3>
+failed
+</h3> <p><code>SyncHook</code></p> <p>Called if the compilation fails.</p> <ul> <li>Callback Parameters: <code>error</code>
+</li> </ul> <h3>
+invalid
+</h3> <p><code>SyncHook</code></p> <p>Executed when a watching compilation has been invalidated. This hook is <em>not</em> copied to child compilers.</p> <ul> <li>Callback Parameters: <code>fileName</code>, <code>changeTime</code>
+</li> </ul> <h3>
+watchClose
+</h3> <p><code>SyncHook</code></p> <p>Called when a watching compilation has stopped.</p> <h3>
+shutdown
+</h3> <p><code>AsyncSeriesHook</code></p> <p>Called when the compiler is closing.</p> <h3>
+infrastructureLog
+</h3> <p><code>SyncBailHook</code></p> <p>Allows to use infrastructure logging when enabled in the configuration via <a href="../configuration/infrastructurelogging"><code>infrastructureLogging</code> option</a>.</p> <ul> <li>Callback Parameters: <code>name</code>, <code>type</code>, <code>args</code>
+</li> </ul> <h3>
+log
+</h3> <p><code>SyncBailHook</code></p> <p>Allows to log into <a href="../configuration/stats">stats</a> when enabled, see <a href="../configuration/infrastructurelogging"><code>stats.logging</code>, <code>stats.loggingDebug</code> and <code>stats.loggingTrace</code> options</a>.</p> <ul> <li>Callback Parameters: <code>origin</code>, <code>logEntry</code>
+</li> </ul>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © JS Foundation and other contributors<br>Licensed under the Creative Commons Attribution License 4.0.<br>
+    <a href="https://webpack.js.org/api/compiler-hooks" class="_attribution-link">https://webpack.js.org/api/compiler-hooks</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

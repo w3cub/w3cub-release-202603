@@ -1,0 +1,433 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Asset Modules - Webpack 5 - W3cubDocs</title>
+  
+  <meta name="description" content=" Asset Modules allow one to use asset files (fonts, icons, etc) without configuring additional loaders. ">
+  <meta name="keywords" content="asset, modules, webpack, webpack~5">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/webpack~5/guides/asset-modules.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/webpack~5.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/webpack~5/" class="_nav-link" title="" style="margin-left:0;">webpack 5</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _webpack">
+				
+				
+<h1>Asset Modules</h1>
+<div id="md-content">
+<p>Asset Modules allow one to use asset files (fonts, icons, etc) without configuring additional loaders.</p> <p>Prior to webpack 5 it was common to use:</p> <ul> <li>
+<a href="https://v4.webpack.js.org/loaders/raw-loader/"><code>raw-loader</code></a> to import a file as a string</li> <li>
+<a href="https://v4.webpack.js.org/loaders/url-loader/"><code>url-loader</code></a> to inline a file into the bundle as a data URI</li> <li>
+<a href="https://v4.webpack.js.org/loaders/file-loader/"><code>file-loader</code></a> to emit a file into the output directory</li> </ul> <p>Asset Modules types replace all of these loaders by adding 4 new module types:</p> <ul> <li>
+<code>asset/resource</code> emits a separate file and exports the URL. Previously achievable by using <code>file-loader</code>.</li> <li>
+<code>asset/inline</code> exports a data URI of the asset. Previously achievable by using <code>url-loader</code>.</li> <li>
+<code>asset/source</code> exports the source code of the asset. Previously achievable by using <code>raw-loader</code>.</li> <li>
+<code>asset</code> automatically chooses between exporting a data URI and emitting a separate file. Previously achievable by using <code>url-loader</code> with asset size limit.</li> </ul> <p>When using the old assets loaders (i.e. <code>file-loader</code>/<code>url-loader</code>/<code>raw-loader</code>) along with Asset Modules in webpack 5, you might want to stop Asset Modules from processing your assets again as that would result in asset duplication. This can be done by setting the asset's module type to <code>'javascript/auto'</code>.</p> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">module.exports = {
+  module: {
+   rules: [
+      {
+        test: /\.(png|jpg|gif)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+            }
+          },
+        ],
++       type: 'javascript/auto'
+      },
+   ]
+  },
+}</pre> <p>To exclude assets that came from new URL calls from the asset loaders add <code>dependency: { not: ['url'] }</code> to the loader configuration.</p> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpg|gif)$/i,
++       dependency: { not: ['url'] },
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+            },
+          },
+        ],
+      },
+    ],
+  }
+}</pre> <h2>
+Public Path
+</h2> <p>By default, under the hood, the <code>asset</code> type does <code>__webpack_public_path__ + import.meta</code>. This means that setting the <code>output.publicPath</code> in your config will allow you to override the URL from which the <code>asset</code> loads.</p> <h3>
+On The Fly Override
+</h3> <p>If you set the <code>__webpack_public_path__</code> in code, the way you need to achieve it so as not to break the <code>asset</code> loading logic is to make sure you run it as the first code in your app and not use a function to do so. An example of this would be having a file called <code>publicPath.js</code> with contents</p> <pre data-language="javascript">__webpack_public_path__ = 'https://cdn.url.com';</pre> <p>And then in your <code>webpack.config.js</code> updating your <code>entry</code> field to look like</p> <pre data-language="javascript">module.exports = {
+  entry: ['./publicPath.js', './App.js'],
+};</pre> <p>Alternatively, you can do the following in your <code>App.js</code> without modifying your webpack config. The only downside is you have to enforce ordering here and that can collide with some linting tools.</p> <pre data-language="javascript">import './publicPath.js';</pre> <h2>
+Resource assets
+</h2> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist')
+  },
++ module: {
++   rules: [
++     {
++       test: /\.png/,
++       type: 'asset/resource'
++     }
++   ]
++ },
+};</pre> <p><strong>src/index.js</strong></p> <pre data-language="js">import mainImage from './images/main.png';
+
+img.src = mainImage; // '/dist/151cfcfa1bd74779aadb.png'</pre> <p>All <code>.png</code> files will be emitted to the output directory and their paths will be injected into the bundles, besides, you can customize <a href="../configuration/module#rulegeneratoroutputpath"><code>outputPath</code></a> and <a href="../configuration/module#rulegeneratorpublicpath"><code>publicPath</code></a> for them.</p> <h3>
+Custom output filename
+</h3> <p>By default, <code>asset/resource</code> modules are emitting with <code>[hash][ext][query]</code> filename into output directory.</p> <p>You can modify this template by setting <a href="../configuration/output#outputassetmodulefilename"><code>output.assetModuleFilename</code></a> in your webpack configuration:</p> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
++   assetModuleFilename: 'images/[hash][ext][query]'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.png/,
+        type: 'asset/resource'
+      }
+    ]
+  },
+};</pre> <p>Another case to customize output filename is to emit some kind of assets to a specified directory:</p> <pre data-language="diff">const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
++   assetModuleFilename: 'images/[hash][ext][query]'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.png/,
+        type: 'asset/resource'
+-     }
++     },
++     {
++       test: /\.html/,
++       type: 'asset/resource',
++       generator: {
++         filename: 'static/[hash][ext][query]'
++       }
++     }
+    ]
+  },
+};</pre> <p>With this configuration all the <code>html</code> files will be emitted into a <code>static</code> directory within the output directory.</p> <p><code>Rule.generator.filename</code> is the same as <a href="../configuration/output#outputassetmodulefilename"><code>output.assetModuleFilename</code></a> and works only with <code>asset</code> and <code>asset/resource</code> module types.</p> <h2>
+Inlining assets
+</h2> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+-   assetModuleFilename: 'images/[hash][ext][query]'
+  },
+  module: {
+    rules: [
+      {
+-       test: /\.png/,
+-       type: 'asset/resource'
++       test: /\.svg/,
++       type: 'asset/inline'
+-     },
++     }
+-     {
+-       test: /\.html/,
+-       type: 'asset/resource',
+-       generator: {
+-         filename: 'static/[hash][ext][query]'
+-       }
+-     }
+    ]
+  }
+};</pre> <p><strong>src/index.js</strong></p> <pre data-language="diff">- import mainImage from './images/main.png';
++ import metroMap from './images/metro.svg';
+
+- img.src = mainImage; // '/dist/151cfcfa1bd74779aadb.png'
++ block.style.background = `url(${metroMap})`; // url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDo...vc3ZnPgo=)</pre> <p>All <code>.svg</code> files will be injected into the bundles as data URI.</p> <h3>
+Custom data URI generator
+</h3> <p>By default, data URI emitted by webpack represents file contents encoded by using Base64 algorithm.</p> <p>If you want to use a custom encoding algorithm, you may specify a custom function to encode a file content:</p> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">const path = require('path');
++ const svgToMiniDataURI = require('mini-svg-data-uri');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.svg/,
+        type: 'asset/inline',
++       generator: {
++         dataUrl: content =&gt; {
++           content = content.toString();
++           return svgToMiniDataURI(content);
++         }
++       }
+      }
+    ]
+  },
+};</pre> <p>Now all <code>.svg</code> files will be encoded by <code>mini-svg-data-uri</code> package.</p> <h2>
+Source assets
+</h2> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">const path = require('path');
+- const svgToMiniDataURI = require('mini-svg-data-uri');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+-       test: /\.svg/,
+-       type: 'asset/inline',
+-       generator: {
+-         dataUrl: content =&gt; {
+-           content = content.toString();
+-           return svgToMiniDataURI(content);
+-         }
+-       }
++       test: /\.txt/,
++       type: 'asset/source',
+      }
+    ]
+  },
+};</pre> <p><strong>src/example.txt</strong></p> <pre data-language="text">Hello world
+</pre> <p><strong>src/index.js</strong></p> <pre data-language="diff">- import metroMap from './images/metro.svg';
++ import exampleText from './example.txt';
+
+- block.style.background = `url(${metroMap}); // url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDo...vc3ZnPgo=)
++ block.textContent = exampleText; // 'Hello world'</pre> <p>All <code>.txt</code> files will be injected into the bundles as is.</p> <h2>
+URL assets
+</h2> <p>When using <code>new URL('./path/to/asset', import.meta.url)</code>, webpack creates an asset module too.</p> <p><strong>src/index.js</strong></p> <pre data-language="js">const logo = new URL('./logo.svg', import.meta.url);</pre> <p>Depending on the <a href="../configuration/target"><code>target</code></a> in your configuration, webpack would compile the above code into a different result:</p> <pre data-language="js">// target: web
+new URL(
+  __webpack_public_path__ + 'logo.svg',
+  document.baseURI || self.location.href
+);
+
+// target: webworker
+new URL(__webpack_public_path__ + 'logo.svg', self.location);
+
+// target: node, node-webkit, nwjs, electron-main, electron-renderer, electron-preload, async-node
+new URL(
+  __webpack_public_path__ + 'logo.svg',
+  require('url').pathToFileUrl(__filename)
+);</pre> <p>As of webpack 5.38.0, <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">Data URLs</a> are supported in <code>new URL()</code> as well:</p> <p><strong>src/index.js</strong></p> <pre data-language="js">const url = new URL('data:,', import.meta.url);
+console.log(url.href === 'data:,');
+console.log(url.protocol === 'data:');
+console.log(url.pathname === ',');</pre> <h2>
+General asset type
+</h2> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
++       test: /\.txt/,
++       type: 'asset',
+      }
+    ]
+  },
+};</pre> <p>Now webpack will automatically choose between <code>resource</code> and <code>inline</code> by following a default condition: a file with size less than 8kb will be treated as a <code>inline</code> module type and <code>resource</code> module type otherwise.</p> <p>You can change this condition by setting a <a href="../configuration/module#ruleparserdataurlcondition"><code>Rule.parser.dataUrlCondition.maxSize</code></a> option on the module rule level of your webpack configuration:</p> <p><strong>webpack.config.js</strong></p> <pre data-language="diff">const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.txt/,
+        type: 'asset',
++       parser: {
++         dataUrlCondition: {
++           maxSize: 4 * 1024 // 4kb
++         }
++       }
+      }
+    ]
+  },
+};</pre> <p>Also you can <a href="../configuration/module#ruleparserdataurlcondition">specify a function</a> to decide to inlining a module or not.</p> <h2>
+Replacing Inline Loader Syntax
+</h2> <p>Before Asset Modules and Webpack 5, it was possible to use <a href="../concepts/loaders#inline">inline syntax</a> with the legacy loaders mentioned above.</p> <p>It is now recommended to remove all inline loader syntax and use a resourceQuery condition to mimic the functionality of the inline syntax.</p> <p>For example, in the case of replacing <code>raw-loader</code> with <code>asset/source</code> type:</p> <pre data-language="diff">- import myModule from 'raw-loader!my-module';
++ import myModule from 'my-module?raw';</pre> <p>and in the webpack configuration:</p> <pre data-language="diff">module: {
+    rules: [
+    // ...
++     {
++       resourceQuery: /raw/,
++       type: 'asset/source',
++     }
+    ]
+  },</pre> <p>and if you'd like to exclude raw assets from being processed by other loaders, use a negative condition:</p> <pre data-language="diff">module: {
+    rules: [
+    // ...
++     {
++       test: /\.m?js$/,
++       resourceQuery: { not: [/raw/] },
++       use: [ ... ]
++     },
+      {
+        resourceQuery: /raw/,
+        type: 'asset/source',
+      }
+    ]
+  },</pre> <p>or a <code>oneOf</code> list of rules. Here only the first matching rule will be applied:</p> <pre data-language="diff">module: {
+    rules: [
+    // ...
++     { oneOf: [
+        {
+          resourceQuery: /raw/,
+          type: 'asset/source',
+        },
++       {
++         test: /\.m?js$/,
++         use: [ ... ]
++       },
++     ] }
+    ]
+  },</pre> <h2>
+Disable emitting assets
+</h2> <p>For use cases like Server side rendering, you might want to disable emitting assets, which is feasible with <a href="../configuration/module#rulegeneratoremit"><code>emit</code></a> option under <code>Rule.generator</code>:</p> <pre data-language="js">module.exports = {
+  // …
+  module: {
+    rules: [
+      {
+        test: /\.png$/i,
+        type: 'asset/resource',
+        generator: {
+          emit: false,
+        },
+      },
+    ],
+  },
+};</pre>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © JS Foundation and other contributors<br>Licensed under the Creative Commons Attribution License 4.0.<br>
+    <a href="https://webpack.js.org/guides/asset-modules" class="_attribution-link">https://webpack.js.org/guides/asset-modules</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
