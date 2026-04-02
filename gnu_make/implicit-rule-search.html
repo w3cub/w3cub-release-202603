@@ -1,0 +1,136 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Implicit Rule Search Algorithm - GNU Make - W3cubDocs</title>
+  
+  <meta name="description" content="Here is the procedure make uses for searching for an implicit rule for a target t. This procedure is followed for each double-colon rule with no &hellip;">
+  <meta name="keywords" content="implicit, rule, search, algorithm, gnu, make, gnu_make">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/gnu_make/implicit-rule-search.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/gnu_make.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/gnu_make/" class="_nav-link" title="" style="margin-left:0;">GNU Make</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _gnu_make">
+				
+				
+<h1 class="section">Implicit Rule Search Algorithm</h1>   <p>Here is the procedure <code>make</code> uses for searching for an implicit rule for a target <var>t</var>. This procedure is followed for each double-colon rule with no recipe, for each target of ordinary rules none of which have a recipe, and for each prerequisite that is not the target of any rule. It is also followed recursively for prerequisites that come from implicit rules, in the search for a chain of rules. </p> <p>Suffix rules are not mentioned in this algorithm because suffix rules are converted to equivalent pattern rules once the makefiles have been read in. </p> <p>For an archive member target of the form ‘<samp><var>archive</var>(<var>member</var>)</samp>’, the following algorithm is run twice, first using the entire target name <var>t</var>, and second using ‘<samp>(<var>member</var>)</samp>’ as the target <var>t</var> if the first run found no rule. </p> <ol> <li> Split <var>t</var> into a directory part, called <var>d</var>, and the rest, called <var>n</var>. For example, if <var>t</var> is ‘<samp>src/foo.o</samp>’, then <var>d</var> is ‘<samp>src/</samp>’ and <var>n</var> is ‘<samp>foo.o</samp>’. </li>
+<li> Make a list of all the pattern rules one of whose targets matches <var>t</var> or <var>n</var>. If the target pattern contains a slash, it is matched against <var>t</var>; otherwise, against <var>n</var>. </li>
+<li> If any rule in that list is <em>not</em> a match-anything rule, or if <var>t</var> is a prerequisite of an implicit rule, then remove all non-terminal match-anything rules from the list. </li>
+<li> Remove from the list all rules with no recipe. </li>
+<li> For each pattern rule in the list: <ol type="a" start="1"> <li> Find the stem <var>s</var>, which is the nonempty part of <var>t</var> or <var>n</var> matched by the ‘<samp>%</samp>’ in the target pattern. </li>
+<li> Compute the prerequisite names by substituting <var>s</var> for ‘<samp>%</samp>’; if the target pattern does not contain a slash, append <var>d</var> to the front of each prerequisite name. </li>
+<li> Test whether all the prerequisites exist or ought to exist. (If a file name is mentioned in the makefile as a target or as an explicit prerequisite of target T, then we say it ought to exist.) <p>If all prerequisites exist or ought to exist, or there are no prerequisites, then this rule applies. </p>
+</li>
+</ol> </li>
+<li> If no pattern rule has been found so far, try harder. For each pattern rule in the list: <ol type="a" start="1"> <li> If the rule is terminal, ignore it and go on to the next rule. </li>
+<li> Compute the prerequisite names as before. </li>
+<li> Test whether all the prerequisites exist or ought to exist. </li>
+<li> For each prerequisite that does not exist, follow this algorithm recursively to see if the prerequisite can be made by an implicit rule. </li>
+<li> If all prerequisites exist, ought to exist, or can be made by implicit rules, then this rule applies. </li>
+</ol> </li>
+<li> If no pattern rule has been found then try step 5 and step 6 again with a modified definition of “ought to exist”: if a filename is mentioned as a target or as an explicit prerequisite of <em>any</em> target, then it ought to exist. This check is only present for backward-compatibility with older versions of GNU make: we don’t recommend relying on it. </li>
+<li> If no implicit rule applies, the rule for <code>.DEFAULT</code>, if any, applies. In that case, give <var>t</var> the same recipe that <code>.DEFAULT</code> has. Otherwise, there is no recipe for <var>t</var>. </li>
+</ol> <p>Once a rule that applies has been found, for each target pattern of the rule other than the one that matched <var>t</var> or <var>n</var>, the ‘<samp>%</samp>’ in the pattern is replaced with <var>s</var> and the resultant file name is stored until the recipe to remake the target file <var>t</var> is executed. After the recipe is executed, each of these stored file names are entered into the data base and marked as having been updated and having the same update status as the file <var>t</var>. </p> <p>When the recipe of a pattern rule is executed for <var>t</var>, the automatic variables are set corresponding to the target and prerequisites. See <a href="automatic-variables">Automatic Variables</a>. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Free Software Foundation, Inc. <br>Licensed under the GNU Free Documentation License.<br>
+    <a href="https://www.gnu.org/software/make/manual/html_node/Implicit-Rule-Search.html" class="_attribution-link">https://www.gnu.org/software/make/manual/html_node/Implicit-Rule-Search.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>The Call Function - GNU Make - W3cubDocs</title>
+  
+  <meta name="description" content="The call function is unique in that it can be used to create new parameterized functions. You can write a complex expression as the value of a &hellip;">
+  <meta name="keywords" content="call, function, gnu, make, gnu_make">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/gnu_make/call-function.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/gnu_make.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/gnu_make/" class="_nav-link" title="" style="margin-left:0;">GNU Make</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _gnu_make">
+				
+				
+<h1 class="section">The call Function</h1>    <p>The <code>call</code> function is unique in that it can be used to create new parameterized functions. You can write a complex expression as the value of a variable, then use <code>call</code> to expand it with different values. </p> <p>The syntax of the <code>call</code> function is: </p> <div class="example"> <pre class="example">$(call <var>variable</var>,<var>param</var>,<var>param</var>,…)
+</pre>
+</div> <p>When <code>make</code> expands this function, it assigns each <var>param</var> to temporary variables <code>$(1)</code>, <code>$(2)</code>, etc. The variable <code>$(0)</code> will contain <var>variable</var>. There is no maximum number of parameter arguments. There is no minimum, either, but it doesn’t make sense to use <code>call</code> with no parameters. </p> <p>Then <var>variable</var> is expanded as a <code>make</code> variable in the context of these temporary assignments. Thus, any reference to <code>$(1)</code> in the value of <var>variable</var> will resolve to the first <var>param</var> in the invocation of <code>call</code>. </p> <p>Note that <var>variable</var> is the <em>name</em> of a variable, not a <em>reference</em> to that variable. Therefore you would not normally use a ‘<samp>$</samp>’ or parentheses when writing it. (You can, however, use a variable reference in the name if you want the name not to be a constant.) </p> <p>If <var>variable</var> is the name of a built-in function, the built-in function is always invoked (even if a <code>make</code> variable by that name also exists). </p> <p>The <code>call</code> function expands the <var>param</var> arguments before assigning them to temporary variables. This means that <var>variable</var> values containing references to built-in functions that have special expansion rules, like <code>foreach</code> or <code>if</code>, may not work as you expect. </p> <p>Some examples may make this clearer. </p> <p>This macro simply reverses its arguments: </p> <div class="example"> <pre class="example">reverse = $(2) $(1)
+
+foo = $(call reverse,a,b)
+</pre>
+</div> <p>Here <code>foo</code> will contain ‘<samp>b a</samp>’. </p> <p>This one is slightly more interesting: it defines a macro to search for the first instance of a program in <code>PATH</code>: </p> <div class="example"> <pre class="example">pathsearch = $(firstword $(wildcard $(addsuffix /$(1),$(subst :, ,$(PATH)))))
+
+LS := $(call pathsearch,ls)
+</pre>
+</div> <p>Now the variable <code>LS</code> contains <code>/bin/ls</code> or similar. </p> <p>The <code>call</code> function can be nested. Each recursive invocation gets its own local values for <code>$(1)</code>, etc. that mask the values of higher-level <code>call</code>. For example, here is an implementation of a <em>map</em> function: </p> <div class="example"> <pre class="example">map = $(foreach a,$(2),$(call $(1),$(a)))
+</pre>
+</div> <p>Now you can <code>map</code> a function that normally takes only one argument, such as <code>origin</code>, to multiple values in one step: </p> <div class="example"> <pre class="example">o = $(call map,origin,o map MAKE)
+</pre>
+</div> <p>and end up with <code>o</code> containing something like ‘<samp>file file default</samp>’. </p> <p>A final caution: be careful when adding whitespace to the arguments to <code>call</code>. As with other functions, any whitespace contained in the second and subsequent arguments is kept; this can cause strange effects. It’s generally safest to remove all extraneous whitespace when providing parameters to <code>call</code>. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Free Software Foundation, Inc. <br>Licensed under the GNU Free Documentation License.<br>
+    <a href="https://www.gnu.org/software/make/manual/html_node/Call-Function.html" class="_attribution-link">https://www.gnu.org/software/make/manual/html_node/Call-Function.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

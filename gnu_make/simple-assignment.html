@@ -1,0 +1,140 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Simply Expanded Variable Assignment - GNU Make - W3cubDocs</title>
+  
+  <meta name="description" content=" To avoid the problems and inconveniences of recursively expanded variables, there is another flavor&#58; simply expanded variables. ">
+  <meta name="keywords" content="simply, expanded, variable, assignment, gnu, make, gnu_make">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/gnu_make/simple-assignment.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/gnu_make.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/gnu_make/" class="_nav-link" title="" style="margin-left:0;">GNU Make</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _gnu_make">
+				
+				
+<h1 class="subsection">Simply Expanded Variable Assignment</h1> <p>To avoid the problems and inconveniences of recursively expanded variables, there is another flavor: simply expanded variables. </p>     <p><em>Simply expanded variables</em> are defined by lines using ‘<samp>:=</samp>’ or ‘<samp>::=</samp>’ (see <a href="setting">Setting Variables</a>). Both forms are equivalent in GNU <code>make</code>; however only the ‘<samp>::=</samp>’ form is described by the POSIX standard (support for ‘<samp>::=</samp>’ is added to the POSIX standard for POSIX Issue 8). </p> <p>The value of a simply expanded variable is scanned once, expanding any references to other variables and functions, when the variable is defined. Once that expansion is complete the value of the variable is never expanded again: when the variable is used the value is copied verbatim as the expansion. If the value contained variable references the result of the expansion will contain their values <em>as of the time this variable was defined</em>. Therefore, </p> <div class="example"> <pre class="example">x := foo
+y := $(x) bar
+x := later
+</pre>
+</div> <p>is equivalent to </p> <div class="example"> <pre class="example">y := foo bar
+x := later
+</pre>
+</div> <p>Here is a somewhat more complicated example, illustrating the use of ‘<samp>:=</samp>’ in conjunction with the <code>shell</code> function. (See <a href="shell-function">The <code>shell</code> Function</a>.) This example also shows use of the variable <code>MAKELEVEL</code>, which is changed when it is passed down from level to level. (See <a href="variables_002frecursion">Communicating Variables to a Sub-<code>make</code></a>, for information about <code>MAKELEVEL</code>.) </p>   <div class="example"> <pre class="example">ifeq (0,${MAKELEVEL})
+whoami    := $(shell whoami)
+host-type := $(shell arch)
+MAKE := ${MAKE} host-type=${host-type} whoami=${whoami}
+endif
+</pre>
+</div> <p>An advantage of this use of ‘<samp>:=</samp>’ is that a typical ‘descend into a directory’ recipe then looks like this: </p> <div class="example"> <pre class="example">${subdirs}:
+        ${MAKE} -C $@ all
+</pre>
+</div> <p>Simply expanded variables generally make complicated makefile programming more predictable because they work like variables in most programming languages. They allow you to redefine a variable using its own value (or its value processed in some way by one of the expansion functions) and to use the expansion functions much more efficiently (see <a href="functions">Functions for Transforming Text</a>). </p>    <p>You can also use them to introduce controlled leading whitespace into variable values. Leading whitespace characters are discarded from your input before substitution of variable references and function calls; this means you can include leading spaces in a variable value by protecting them with variable references, like this: </p> <div class="example"> <pre class="example">nullstring :=
+space := $(nullstring) # end of the line
+</pre>
+</div> <p>Here the value of the variable <code>space</code> is precisely one space. The comment ‘<samp># end of the line</samp>’ is included here just for clarity. Since trailing space characters are <em>not</em> stripped from variable values, just a space at the end of the line would have the same effect (but be rather hard to read). If you put whitespace at the end of a variable value, it is a good idea to put a comment like that at the end of the line to make your intent clear. Conversely, if you do <em>not</em> want any whitespace characters at the end of your variable value, you must remember not to put a random comment on the end of the line after some whitespace, such as this: </p> <div class="example"> <pre class="example">dir := /foo/bar    # directory to put the frobs in
+</pre>
+</div> <p>Here the value of the variable <code>dir</code> is ‘<samp>/foo/bar </samp>’ (with four trailing spaces), which was probably not the intention. (Imagine something like ‘<samp>$(dir)/file</samp>’ with this definition!) </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Free Software Foundation, Inc. <br>Licensed under the GNU Free Documentation License.<br>
+    <a href="https://www.gnu.org/software/make/manual/html_node/Simple-Assignment.html" class="_attribution-link">https://www.gnu.org/software/make/manual/html_node/Simple-Assignment.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

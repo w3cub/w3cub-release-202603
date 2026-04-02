@@ -1,0 +1,130 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Recursively Expanded Variable Assignment - GNU Make - W3cubDocs</title>
+  
+  <meta name="description" content="The first flavor of variable is a recursively expanded variable. Variables of this sort are defined by lines using ‘&#61;’ (see Setting Variables) &hellip;">
+  <meta name="keywords" content="recursively, expanded, variable, assignment, gnu, make, gnu_make">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/gnu_make/recursive-assignment.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/gnu_make.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/gnu_make/" class="_nav-link" title="" style="margin-left:0;">GNU Make</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _gnu_make">
+				
+				
+<h1 class="subsection">Recursively Expanded Variable Assignment</h1>  <p>The first flavor of variable is a <em>recursively expanded</em> variable. Variables of this sort are defined by lines using ‘<samp>=</samp>’ (see <a href="setting">Setting Variables</a>) or by the <code>define</code> directive (see <a href="multi_002dline">Defining Multi-Line Variables</a>). The value you specify is installed verbatim; if it contains references to other variables, these references are expanded whenever this variable is substituted (in the course of expanding some other string). When this happens, it is called <em>recursive expansion</em>. </p> <p>For example, </p> <div class="example"> <pre class="example">foo = $(bar)
+bar = $(ugh)
+ugh = Huh?
+
+all:;echo $(foo)
+</pre>
+</div> <p>will echo ‘<samp>Huh?</samp>’: ‘<samp>$(foo)</samp>’ expands to ‘<samp>$(bar)</samp>’ which expands to ‘<samp>$(ugh)</samp>’ which finally expands to ‘<samp>Huh?</samp>’. </p> <p>This flavor of variable is the only sort supported by most other versions of <code>make</code>. It has its advantages and its disadvantages. An advantage (most would say) is that: </p> <div class="example"> <pre class="example">CFLAGS = $(include_dirs) -O
+include_dirs = -Ifoo -Ibar
+</pre>
+</div> <p>will do what was intended: when ‘<samp>CFLAGS</samp>’ is expanded in a recipe, it will expand to ‘<samp>-Ifoo -Ibar -O</samp>’. A major disadvantage is that you cannot append something on the end of a variable, as in </p> <div class="example"> <pre class="example">CFLAGS = $(CFLAGS) -O
+</pre>
+</div> <p>because it will cause an infinite loop in the variable expansion. (Actually <code>make</code> detects the infinite loop and reports an error.)   </p> <p>Another disadvantage is that any functions (see <a href="functions">Functions for Transforming Text</a>) referenced in the definition will be executed every time the variable is expanded. This makes <code>make</code> run slower; worse, it causes the <code>wildcard</code> and <code>shell</code> functions to give unpredictable results because you cannot easily control when they are called, or even how many times. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Free Software Foundation, Inc. <br>Licensed under the GNU Free Documentation License.<br>
+    <a href="https://www.gnu.org/software/make/manual/html_node/Recursive-Assignment.html" class="_attribution-link">https://www.gnu.org/software/make/manual/html_node/Recursive-Assignment.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

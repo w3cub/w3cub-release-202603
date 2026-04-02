@@ -1,0 +1,136 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Disabling Parallel Execution - GNU Make - W3cubDocs</title>
+  
+  <meta name="description" content="If a makefile completely and accurately defines the dependency relationships between all of its targets, then make will correctly build the goals &hellip;">
+  <meta name="keywords" content="disabling, parallel, execution, gnu, make, gnu_make">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/gnu_make/parallel-disable.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/gnu_make.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/gnu_make/" class="_nav-link" title="" style="margin-left:0;">GNU Make</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _gnu_make">
+				
+				
+<h1 class="subsection">Disabling Parallel Execution</h1>   <p>If a makefile completely and accurately defines the dependency relationships between all of its targets, then <code>make</code> will correctly build the goals regardless of whether parallel execution is enabled or not. This is the ideal way to write makefiles. </p> <p>However, sometimes some or all of the targets in a makefile cannot be executed in parallel and it’s not feasible to add the prerequisites needed to inform <code>make</code>. In that case the makefile can use various methods to disable parallel execution. </p>   <p>If the <code>.NOTPARALLEL</code> special target with no prerequisites is specified anywhere then the entire instance of <code>make</code> will be run serially, regardless of the parallel setting. For example: </p> <div class="example"> <pre class="example">all: one two three
+one two three: ; @sleep 1; echo $@
+
+.NOTPARALLEL:
+</pre>
+</div> <p>Regardless of how <code>make</code> is invoked, the targets <samp>one</samp>, <samp>two</samp>, and <samp>three</samp> will be run serially. </p> <p>If the <code>.NOTPARALLEL</code> special target has prerequisites, then each of those prerequisites will be considered a target and all prerequisites of these targets will be run serially. Note that only when building this target will the prerequisites be run serially: if some other target lists the same prerequisites and is not in <code>.NOTPARALLEL</code> then these prerequisites may be run in parallel. For example: </p> <div class="example"> <pre class="example">all: base notparallel
+
+base: one two three
+notparallel: one two three
+
+one two three: ; @sleep 1; echo $@
+
+.NOTPARALLEL: notparallel
+</pre>
+</div> <p>Here ‘<samp>make -j base</samp>’ will run the targets <samp>one</samp>, <samp>two</samp>, and <samp>three</samp> in parallel, while ‘<samp>make -j notparallel</samp>’ will run them serially. If you run ‘<samp>make -j all</samp>’ then they <em>will</em> be run in parallel since <samp>base</samp> lists them as prerequisites and is not serialized. </p> <p>The <code>.NOTPARALLEL</code> target should not have commands. </p>   <p>Finally you can control the serialization of specific prerequisites in a fine-grained way using the <code>.WAIT</code> special target. When this target appears in a prerequisite list and parallel execution is enabled, <code>make</code> will not build any of the prerequisites to the <em>right</em> of <code>.WAIT</code> until all prerequisites to the <em>left</em> of <code>.WAIT</code> have completed. For example: </p> <div class="example"> <pre class="example">all: one two .WAIT three
+one two three: ; @sleep 1; echo $@
+</pre>
+</div> <p>If parallel execution is enabled, <code>make</code> will try to build <samp>one</samp> and <samp>two</samp> in parallel but will not try to build <samp>three</samp> until both are complete. </p> <p>As with targets provided to <code>.NOTPARALLEL</code>, <code>.WAIT</code> takes effect only when building the target in whose prerequisite list it appears. If the same prerequisites are present in other targets, without <code>.WAIT</code>, then they may still be run in parallel. Because of this, neither <code>.NOTPARALLEL</code> with targets nor <code>.WAIT</code> are as reliable for controlling parallel execution as defining a prerequisite relationship. However they are easy to use and may be sufficient in less complex situations. </p> <p>The <code>.WAIT</code> prerequisite will not be present in any of the automatic variables for the rule. </p> <p>You can create an actual target <code>.WAIT</code> in your makefile for portability but this is not required to use this feature. If a <code>.WAIT</code> target is created it should not have prerequisites or commands. </p> <p>The <code>.WAIT</code> feature is also implemented in other versions of <code>make</code> and it’s specified in the POSIX standard for <code>make</code>. </p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Free Software Foundation, Inc. <br>Licensed under the GNU Free Documentation License.<br>
+    <a href="https://www.gnu.org/software/make/manual/html_node/Parallel-Disable.html" class="_attribution-link">https://www.gnu.org/software/make/manual/html_node/Parallel-Disable.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
