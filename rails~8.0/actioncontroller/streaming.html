@@ -1,0 +1,154 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>ActionController&#58;&#58;Streaming - Ruby on Rails 8.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" Allows views to be streamed back to the client as they are rendered. ">
+  <meta name="keywords" content="module, actioncontroller, streaming, action, controller, ruby, on, rails, rails~8.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rails~8.0/actioncontroller/streaming.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rails~8.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rails~8.0/" class="_nav-link" title="" style="margin-left:0;">Ruby on Rails 8.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rdoc">
+				
+				
+<h1 id="module-ActionController::Streaming" class="module"> module ActionController::Streaming </h1> <section class="description"> <h1 id="module-ActionController::Streaming-label-Action+Controller+Streaming">Action Controller <a href="streaming"><code>Streaming</code></a>
+</h1> <p>Allows views to be streamed back to the client as they are rendered.</p> <p>By default, <a href="../rails"><code>Rails</code></a> renders views by first rendering the template and then the layout. The response is sent to the client after the whole template is rendered, all queries are made, and the layout is processed.</p> <p><a href="streaming"><code>Streaming</code></a> inverts the rendering flow by rendering the layout first and subsequently each part of the layout as they are processed. This allows the header of the HTML (which is usually in the layout) to be streamed back to client very quickly, enabling JavaScripts and stylesheets to be loaded earlier than usual.</p> <p>Several Rack middlewares may not work and you need to be careful when streaming. This is covered in more detail below, see the <a href="streaming#module-ActionController::Streaming-label-Middlewares">Middlewares at <code>Streaming</code></a> section.</p> <p><a href="streaming"><code>Streaming</code></a> can be added to a given template easily, all you need to do is to pass the <code>:stream</code> option to <code>render</code>.</p> <pre class="ruby" data-language="ruby">class PostsController
+  def index
+    @posts = Post.all
+    render stream: true
+  end
+end
+</pre> <h2 id="module-ActionController::Streaming-label-When+to+use+streaming">When to use streaming</h2> <p><a href="streaming"><code>Streaming</code></a> may be considered to be overkill for lightweight actions like <code>new</code> or <code>edit</code>. The real benefit of streaming is on expensive actions that, for example, do a lot of queries on the database.</p> <p>In such actions, you want to delay queries execution as much as you can. For example, imagine the following <code>dashboard</code> action:</p> <pre class="ruby" data-language="ruby">def dashboard
+  @posts = Post.all
+  @pages = Page.all
+  @articles = Article.all
+end
+</pre> <p>Most of the queries here are happening in the controller. In order to benefit from streaming you would want to rewrite it as:</p> <pre class="ruby" data-language="ruby">def dashboard
+  # Allow lazy execution of the queries
+  @posts = Post.all
+  @pages = Page.all
+  @articles = Article.all
+  render stream: true
+end
+</pre> <p>Notice that <code>:stream</code> only works with templates. <span><code>Rendering</code></span> <code>:json</code> or <code>:xml</code> with <code>:stream</code> won’t work.</p> <h2 id="module-ActionController::Streaming-label-Communication+between+layout+and+template">Communication between layout and template</h2> <p>When streaming, rendering happens top-down instead of inside-out. <a href="../rails"><code>Rails</code></a> starts with the layout, and the template is rendered later, when its <code>yield</code> is reached.</p> <p>This means that, if your application currently relies on instance variables set in the template to be used in the layout, they won’t work once you move to streaming. The proper way to communicate between layout and template, regardless of whether you use streaming or not, is by using <code>content_for</code>, <code>provide</code>, and <code>yield</code>.</p> <p>Take a simple example where the layout expects the template to tell which title to use:</p> <pre>&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;&lt;%= yield :title %&gt;&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;&lt;%= yield %&gt;&lt;/body&gt;
+&lt;/html&gt;</pre> <p>You would use <code>content_for</code> in your template to specify the title:</p> <pre>&lt;%= content_for :title, "Main" %&gt;
+Hello</pre> <p>And the final result would be:</p> <pre>&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Main&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;Hello&lt;/body&gt;
+&lt;/html&gt;</pre> <p>However, if <code>content_for</code> is called several times, the final result would have all calls concatenated. For instance, if we have the following template:</p> <pre>&lt;%= content_for :title, "Main" %&gt;
+Hello
+&lt;%= content_for :title, " page" %&gt;</pre> <p>The final result would be:</p> <pre>&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Main page&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;Hello&lt;/body&gt;
+&lt;/html&gt;</pre> <p>This means that, if you have <code>yield :title</code> in your layout and you want to use streaming, you would have to render the whole template (and eventually trigger all queries) before streaming the title and all assets, which defeats the purpose of streaming. Alternatively, you can use a helper called <code>provide</code> that does the same as <code>content_for</code> but tells the layout to stop searching for other entries and continue rendering.</p> <p>For instance, the template above using <code>provide</code> would be:</p> <pre>&lt;%= provide :title, "Main" %&gt;
+Hello
+&lt;%= content_for :title, " page" %&gt;</pre> <p>Resulting in:</p> <pre>&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Main&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;Hello&lt;/body&gt;
+&lt;/html&gt;</pre> <p>That said, when streaming, you need to properly check your templates and choose when to use <code>provide</code> and <code>content_for</code>.</p> <p>See also <a href="../actionview/helpers/capturehelper"><code>ActionView::Helpers::CaptureHelper</code></a> for more information.</p> <h2 id="module-ActionController::Streaming-label-Headers-2C+cookies-2C+session-2C+and+flash">Headers, cookies, session, and flash</h2> <p>When streaming, the HTTP headers are sent to the client right before it renders the first line. This means that, modifying headers, cookies, session or flash after the template starts rendering will not propagate to the client.</p> <h2 id="module-ActionController::Streaming-label-Middlewares">Middlewares</h2> <p>Middlewares that need to manipulate the body won’t work with streaming. You should disable those middlewares whenever streaming in development or production. For instance, <code>Rack::Bug</code> won’t work when streaming as it needs to inject contents in the HTML body.</p> <p>Also <code>Rack::Cache</code> won’t work with streaming as it does not support streaming bodies yet. Whenever streaming <code>Cache-Control</code> is automatically set to “no-cache”.</p> <h2 id="module-ActionController::Streaming-label-Errors">Errors</h2> <p>When it comes to streaming, exceptions get a bit more complicated. This happens because part of the template was already rendered and streamed to the client, making it impossible to render a whole exception page.</p> <p>Currently, when an exception happens in development or production, <a href="../rails"><code>Rails</code></a> will automatically stream to the client:</p> <pre>"&gt;&lt;script&gt;window.location = "/500.html"&lt;/script&gt;&lt;/html&gt;</pre> <p>The first two characters (<code>"&gt;</code>) are required in case the exception happens while rendering attributes for a given tag. You can check the real cause for the exception in your logger.</p> <h2 id="module-ActionController::Streaming-label-Web+server+support">Web server support</h2> <p>Rack 3+ compatible servers all support streaming.</p> </section> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2004–2021 David Heinemeier Hansson<br>Licensed under the MIT License.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

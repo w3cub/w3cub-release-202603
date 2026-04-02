@@ -1,0 +1,268 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>ActiveModel&#58;&#58;Validations - Ruby on Rails 8.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" Provides a full validation framework to your objects. ">
+  <meta name="keywords" content="module, activemodel, validations, active, model, ruby, on, rails, rails~8.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rails~8.0/activemodel/validations.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rails~8.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rails~8.0/" class="_nav-link" title="" style="margin-left:0;">Ruby on Rails 8.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rdoc">
+				
+				
+<h1 id="module-ActiveModel::Validations" class="module"> module ActiveModel::Validations </h1>
+<dl class="meta">
+<dt>Included modules:</dt>
+<dd class="meta-includes"><a class="include" href="validations/helpermethods">ActiveModel::Validations::HelperMethods</a></dd>
+</dl> <section class="description"> <h1 id="module-ActiveModel::Validations-label-Active+Model+Validations">Active Model Validations</h1> <p>Provides a full validation framework to your objects.</p> <p>A minimal implementation could be:</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  attr_accessor :first_name, :last_name
+
+  validates_each :first_name, :last_name do |record, attr, value|
+    record.errors.add attr, "starts with z." if value.start_with?("z")
+  end
+end
+</pre> <p>Which provides you with the full standard validation stack that you know from Active Record:</p> <pre class="ruby" data-language="ruby">person = Person.new
+person.valid?                   # =&gt; true
+person.invalid?                 # =&gt; false
+
+person.first_name = 'zoolander'
+person.valid?                   # =&gt; false
+person.invalid?                 # =&gt; true
+person.errors.messages          # =&gt; {first_name:["starts with z."]}
+</pre> <p>Note that <code>ActiveModel::Validations</code> automatically adds an <code>errors</code> method to your instances initialized with a new <a href="errors"><code>ActiveModel::Errors</code></a> object, so there is no need for you to do this manually.</p> </section> <section id="5Buntitled-5D" class="documentation-section"> <section id="public-instance-5Buntitled-5D-method-details" class="method-section"> <header> <h3>Public Instance Methods</h3> </header> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-errors"> <span class="method-name">errors</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="errors-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations.rb, line 328
+def errors
+  @errors ||= Errors.new(self)
+end</pre> </div> <p>Returns the <code>Errors</code> object that holds all information about attribute error messages.</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  attr_accessor :name
+  validates_presence_of :name
+end
+
+person = Person.new
+person.valid? # =&gt; false
+person.errors # =&gt; #&lt;ActiveModel::Errors:0x007fe603816640 @messages={name:["can't be blank"]}&gt;
+</pre>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-freeze"> <span class="method-name">freeze</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="freeze-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations.rb, line 372
+def freeze
+  errors
+  context_for_validation
+
+  super
+end</pre> </div> <div class="method-calls-super"> Calls superclass method </div>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-invalid-3F"> <span class="method-name">invalid?</span><span class="method-args">(context = nil)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="invalid-3F-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations.rb, line 408
+def invalid?(context = nil)
+  !valid?(context)
+end</pre> </div> <p>Performs the opposite of <code>valid?</code>. Returns <code>true</code> if errors were added, <code>false</code> otherwise.</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  attr_accessor :name
+  validates_presence_of :name
+end
+
+person = Person.new
+person.name = ''
+person.invalid? # =&gt; true
+person.name = 'david'
+person.invalid? # =&gt; false
+</pre> <p>Context can optionally be supplied to define which callbacks to test against (the context is defined on the validations using <code>:on</code>).</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  attr_accessor :name
+  validates_presence_of :name, on: :new
+end
+
+person = Person.new
+person.invalid?       # =&gt; false
+person.invalid?(:new) # =&gt; true
+</pre>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-valid-3F"> <span class="method-name">valid?</span><span class="method-args">(context = nil)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="valid-3F-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations.rb, line 361
+def valid?(context = nil)
+  current_context = validation_context
+  context_for_validation.context = context
+  errors.clear
+  run_validations!
+ensure
+  context_for_validation.context = current_context
+end</pre> </div> <p>Runs all the specified validations and returns <code>true</code> if no errors were added otherwise <code>false</code>.</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  attr_accessor :name
+  validates_presence_of :name
+end
+
+person = Person.new
+person.name = ''
+person.valid? # =&gt; false
+person.name = 'david'
+person.valid? # =&gt; true
+</pre> <p>Context can optionally be supplied to define which callbacks to test against (the context is defined on the validations using <code>:on</code>).</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  attr_accessor :name
+  validates_presence_of :name, on: :new
+end
+
+person = Person.new
+person.valid?       # =&gt; true
+person.valid?(:new) # =&gt; false
+</pre>  </div> <div class="aliases"> Also aliased as: <a href="validations#method-i-validate">validate</a> </div> </div> <div class="method-detail method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-validate"> <span class="method-name">validate</span><span class="method-args">(context = nil)</span> </div> </div>  <div class="aliases"> Alias for: <a href="validations#method-i-valid-3F">valid?</a> </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-validate-21"> <span class="method-name">validate!</span><span class="method-args">(context = nil)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="validate-21-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations.rb, line 417
+def validate!(context = nil)
+  valid?(context) || raise_validation_error
+end</pre> </div> <p>Runs all the validations within the specified context. Returns <code>true</code> if no errors are found, raises <code>ValidationError</code> otherwise.</p> <p><a href="validations"><code>Validations</code></a> with no <code>:on</code> option will run no matter the context. <a href="validations"><code>Validations</code></a> with some <code>:on</code> option will only run in the specified context.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-validates_with"> <span class="method-name">validates_with</span><span class="method-args">(*args, &amp;block)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="validates_with-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations/with.rb, line 144
+def validates_with(*args, &amp;block)
+  options = args.extract_options!
+  options[:class] = self.class
+
+  args.each do |klass|
+    validator = klass.new(options.dup, &amp;block)
+    validator.validate(self)
+  end
+end</pre> </div> <p>Passes the record off to the class or classes specified and allows them to add errors based on more complex conditions.</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  validate :instance_validations
+
+  def instance_validations
+    validates_with MyValidator
+  end
+end
+</pre> <p>Please consult the class method documentation for more information on creating your own validator.</p> <p>You may also pass it multiple classes, like so:</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  validate :instance_validations, on: :create
+
+  def instance_validations
+    validates_with MyValidator, MyOtherValidator
+  end
+end
+</pre> <p>Standard configuration options (<code>:on</code>, <code>:if</code> and <code>:unless</code>), which are available on the class version of <code>validates_with</code>, should instead be placed on the <code>validates</code> method as these are applied and tested in the callback.</p> <p>If you pass any additional configuration options, they will be passed to the class and available as <code>options</code>, please refer to the class version of this method for more information.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-validation_context"> <span class="method-name">validation_context</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="validation_context-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations.rb, line 454
+def validation_context
+  context_for_validation.context
+end</pre> </div> <p>Returns the context when running validations.</p> <p>This is useful when running validations except a certain context (opposite to the <code>on</code> option).</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::Validations
+
+  attr_accessor :name
+  validates :name, presence: true, if: -&gt; { validation_context != :custom }
+end
+
+person = Person.new
+person.valid?          #=&gt; false
+person.valid?(:new)    #=&gt; false
+person.valid?(:custom) #=&gt; true
+</pre>  </div> </div> </section> <section id="private-instance-5Buntitled-5D-method-details" class="method-section"> <header> <h3>Private Instance Methods</h3> </header> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-raise_validation_error"> <span class="method-name">raise_validation_error</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="raise_validation_error-source"> <pre class="ruby" data-language="ruby"># File activemodel/lib/active_model/validations.rb, line 478
+def raise_validation_error # :doc:
+  raise(ValidationError.new(self))
+end</pre> </div>  </div> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2004–2021 David Heinemeier Hansson<br>Licensed under the MIT License.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

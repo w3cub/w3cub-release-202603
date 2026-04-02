@@ -1,0 +1,284 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>ActiveRecord&#58;&#58;Batches - Ruby on Rails 8.0 - W3cubDocs</title>
+  
+  <meta name="description" content="Looping through a collection of records from the database (using the Scoping&#58;&#58;Named&#58;&#58;ClassMethods.all method, for example) is very &hellip;">
+  <meta name="keywords" content="module, activerecord, batches, active, record, ruby, on, rails, rails~8.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rails~8.0/activerecord/batches.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rails~8.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rails~8.0/" class="_nav-link" title="" style="margin-left:0;">Ruby on Rails 8.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rdoc">
+				
+				
+<h1 id="module-ActiveRecord::Batches" class="module"> module ActiveRecord::Batches </h1> <section class="description"> <h1 id="module-ActiveRecord::Batches-label-Active+Record+Batches">Active Record Batches</h1> </section> <section id="5Buntitled-5D" class="documentation-section"> <section class="constants-list"> <header> <h3>Constants</h3> </header> <dl> <dt id="DEFAULT_ORDER">DEFAULT_ORDER </dt>
+
+<dt id="ORDER_IGNORE_MESSAGE">ORDER_IGNORE_MESSAGE </dt>
+
+</dl> </section> <section id="public-instance-5Buntitled-5D-method-details" class="method-section"> <header> <h3>Public Instance Methods</h3> </header> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-find_each"> <span class="method-name">find_each</span><span class="method-args">(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: DEFAULT_ORDER, &amp;block)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="find_each-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record/relation/batches.rb, line 85
+def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: DEFAULT_ORDER, &amp;block)
+  if block_given?
+    find_in_batches(start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, cursor: cursor, order: order) do |records|
+      records.each(&amp;block)
+    end
+  else
+    enum_for(:find_each, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, cursor: cursor, order: order) do
+      relation = self
+      cursor = Array(cursor)
+      apply_limits(relation, cursor, start, finish, build_batch_orders(cursor, order)).size
+    end
+  end
+end</pre> </div> <p>Looping through a collection of records from the database (using the <a href="scoping/named/classmethods#method-i-all"><code>Scoping::Named::ClassMethods.all</code></a> method, for example) is very inefficient since it will try to instantiate all the objects at once.</p> <p>In that case, batch processing methods allow you to work with the records in batches, thereby greatly reducing memory consumption.</p> <p>The <a href="batches#method-i-find_each"><code>find_each</code></a> method uses <a href="batches#method-i-find_in_batches"><code>find_in_batches</code></a> with a batch size of 1000 (or as specified by the <code>:batch_size</code> option).</p> <pre class="ruby" data-language="ruby">Person.find_each do |person|
+  person.do_awesome_stuff
+end
+
+Person.where("age &gt; 21").find_each do |person|
+  person.party_all_night!
+end
+</pre> <p>If you do not provide a block to <a href="batches#method-i-find_each"><code>find_each</code></a>, it will return an Enumerator for chaining with other methods:</p> <pre class="ruby" data-language="ruby">Person.find_each.with_index do |person, index|
+  person.award_trophy(index + 1)
+end
+</pre> <h4 id="method-i-find_each-label-Options">Options</h4> <ul>
+<li> <p><code>:batch_size</code> - Specifies the size of the batch. Defaults to 1000.</p> </li>
+<li> <p><code>:start</code> - Specifies the cursor column value to start from, inclusive of the value.</p> </li>
+<li> <p><code>:finish</code> - Specifies the cursor column value to end at, inclusive of the value.</p> </li>
+<li> <p><code>:error_on_ignore</code> - Overrides the application config to specify if an error should be raised when an order is present in the relation.</p> </li>
+<li> <p><code>:cursor</code> - Specifies the column to use for batching (can be a column name or an array of column names). Defaults to primary key.</p> </li>
+<li> <p><code>:order</code> - Specifies the cursor column order (can be <code>:asc</code> or <code>:desc</code> or an array consisting of :asc or :desc). Defaults to <code>:asc</code>.</p> <pre class="ruby" data-language="ruby">class Order &lt; ActiveRecord::Base
+  self.primary_key = [:id_1, :id_2]
+end
+
+Order.find_each(order: [:asc, :desc])
+</pre> <p>In the above code, <code>id_1</code> is sorted in ascending order and <code>id_2</code> in descending order.</p> </li>
+</ul> <p>Limits are honored, and if present there is no requirement for the batch size: it can be less than, equal to, or greater than the limit.</p> <p>The options <code>start</code> and <code>finish</code> are especially useful if you want multiple workers dealing with the same processing queue. You can make worker 1 handle all the records between id 1 and 9999 and worker 2 handle from 10000 and beyond by setting the <code>:start</code> and <code>:finish</code> option on each worker.</p> <pre class="ruby" data-language="ruby"># In worker 1, let's process until 9999 records.
+Person.find_each(finish: 9_999) do |person|
+  person.party_all_night!
+end
+
+# In worker 2, let's process from record 10_000 and onwards.
+Person.find_each(start: 10_000) do |person|
+  person.party_all_night!
+end
+</pre> <p>NOTE: Order can be ascending (:asc) or descending (:desc). It is automatically set to ascending on the primary key (“id ASC”). This also means that this method only works when the cursor column is orderable (e.g. an integer or string).</p> <p>NOTE: When using custom columns for batching, they should include at least one unique column (e.g. primary key) as a tiebreaker. Also, to reduce the likelihood of race conditions, all columns should be static (unchangeable after it was set).</p> <p>NOTE: By its nature, batch processing is subject to race conditions if other processes are modifying the database.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-find_in_batches"> <span class="method-name">find_in_batches</span><span class="method-args">(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: DEFAULT_ORDER) { |to_a| ... }</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="find_in_batches-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record/relation/batches.rb, line 161
+def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: DEFAULT_ORDER)
+  relation = self
+  unless block_given?
+    return to_enum(:find_in_batches, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, cursor: cursor, order: order) do
+      cursor = Array(cursor)
+      total = apply_limits(relation, cursor, start, finish, build_batch_orders(cursor, order)).size
+      (total - 1).div(batch_size) + 1
+    end
+  end
+
+  in_batches(of: batch_size, start: start, finish: finish, load: true, error_on_ignore: error_on_ignore, cursor: cursor, order: order) do |batch|
+    yield batch.to_a
+  end
+end</pre> </div> <p>Yields each batch of records that was found by the find options as an array.</p> <pre class="ruby" data-language="ruby">Person.where("age &gt; 21").find_in_batches do |group|
+  sleep(50) # Make sure it doesn't get too crowded in there!
+  group.each { |person| person.party_all_night! }
+end
+</pre> <p>If you do not provide a block to <a href="batches#method-i-find_in_batches"><code>find_in_batches</code></a>, it will return an Enumerator for chaining with other methods:</p> <pre class="ruby" data-language="ruby">Person.find_in_batches.with_index do |group, batch|
+  puts "Processing group ##{batch}"
+  group.each(&amp;:recover_from_last_night!)
+end
+</pre> <p>To be yielded each record one by one, use <a href="batches#method-i-find_each"><code>find_each</code></a> instead.</p> <h4 id="method-i-find_in_batches-label-Options">Options</h4> <ul>
+<li> <p><code>:batch_size</code> - Specifies the size of the batch. Defaults to 1000.</p> </li>
+<li> <p><code>:start</code> - Specifies the cursor column value to start from, inclusive of the value.</p> </li>
+<li> <p><code>:finish</code> - Specifies the cursor column value to end at, inclusive of the value.</p> </li>
+<li> <p><code>:error_on_ignore</code> - Overrides the application config to specify if an error should be raised when an order is present in the relation.</p> </li>
+<li> <p><code>:cursor</code> - Specifies the column to use for batching (can be a column name or an array of column names). Defaults to primary key.</p> </li>
+<li> <p><code>:order</code> - Specifies the cursor column order (can be <code>:asc</code> or <code>:desc</code> or an array consisting of :asc or :desc). Defaults to <code>:asc</code>.</p> <pre class="ruby" data-language="ruby">class Order &lt; ActiveRecord::Base
+  self.primary_key = [:id_1, :id_2]
+end
+
+Order.find_in_batches(order: [:asc, :desc])
+</pre> <p>In the above code, <code>id_1</code> is sorted in ascending order and <code>id_2</code> in descending order.</p> </li>
+</ul> <p>Limits are honored, and if present there is no requirement for the batch size: it can be less than, equal to, or greater than the limit.</p> <p>The options <code>start</code> and <code>finish</code> are especially useful if you want multiple workers dealing with the same processing queue. You can make worker 1 handle all the records between id 1 and 9999 and worker 2 handle from 10000 and beyond by setting the <code>:start</code> and <code>:finish</code> option on each worker.</p> <pre class="ruby" data-language="ruby"># Let's process from record 10_000 on.
+Person.find_in_batches(start: 10_000) do |group|
+  group.each { |person| person.party_all_night! }
+end
+</pre> <p>NOTE: Order can be ascending (:asc) or descending (:desc). It is automatically set to ascending on the primary key (“id ASC”). This also means that this method only works when the cursor column is orderable (e.g. an integer or string).</p> <p>NOTE: When using custom columns for batching, they should include at least one unique column (e.g. primary key) as a tiebreaker. Also, to reduce the likelihood of race conditions, all columns should be static (unchangeable after it was set).</p> <p>NOTE: By its nature, batch processing is subject to race conditions if other processes are modifying the database.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-i-in_batches"> <span class="method-name">in_batches</span><span class="method-args">(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: DEFAULT_ORDER, use_ranges: nil, &amp;block)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="in_batches-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record/relation/batches.rb, line 259
+def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: DEFAULT_ORDER, use_ranges: nil, &amp;block)
+  cursor = Array(cursor).map(&amp;:to_s)
+  ensure_valid_options_for_batching!(cursor, start, finish, order)
+
+  if arel.orders.present?
+    act_on_ignored_order(error_on_ignore)
+  end
+
+  unless block
+    return BatchEnumerator.new(of: of, start: start, finish: finish, relation: self, cursor: cursor, order: order, use_ranges: use_ranges)
+  end
+
+  batch_limit = of
+
+  if limit_value
+    remaining   = limit_value
+    batch_limit = remaining if remaining &lt; batch_limit
+  end
+
+  if self.loaded?
+    batch_on_loaded_relation(
+      relation: self,
+      start: start,
+      finish: finish,
+      cursor: cursor,
+      order: order,
+      batch_limit: batch_limit,
+      &amp;block
+    )
+  else
+    batch_on_unloaded_relation(
+      relation: self,
+      start: start,
+      finish: finish,
+      load: load,
+      cursor: cursor,
+      order: order,
+      use_ranges: use_ranges,
+      remaining: remaining,
+      batch_limit: batch_limit,
+      &amp;block
+    )
+  end
+end</pre> </div> <p>Yields <a href="relation"><code>ActiveRecord::Relation</code></a> objects to work with a batch of records.</p> <pre class="ruby" data-language="ruby">Person.where("age &gt; 21").in_batches do |relation|
+  relation.delete_all
+  sleep(10) # Throttle the delete queries
+end
+</pre> <p>If you do not provide a block to <a href="batches#method-i-in_batches"><code>in_batches</code></a>, it will return a <a href="batches/batchenumerator"><code>BatchEnumerator</code></a> which is enumerable.</p> <pre class="ruby" data-language="ruby">Person.in_batches.each_with_index do |relation, batch_index|
+  puts "Processing relation ##{batch_index}"
+  relation.delete_all
+end
+</pre> <p>Examples of calling methods on the returned <a href="batches/batchenumerator"><code>BatchEnumerator</code></a> object:</p> <pre class="ruby" data-language="ruby">Person.in_batches.delete_all
+Person.in_batches.update_all(awesome: true)
+Person.in_batches.each_record(&amp;:party_all_night!)
+</pre> <h4 id="method-i-in_batches-label-Options">Options</h4> <ul>
+<li> <p><code>:of</code> - Specifies the size of the batch. Defaults to 1000.</p> </li>
+<li> <p><code>:load</code> - Specifies if the relation should be loaded. Defaults to false.</p> </li>
+<li> <p><code>:start</code> - Specifies the cursor column value to start from, inclusive of the value.</p> </li>
+<li> <p><code>:finish</code> - Specifies the cursor column value to end at, inclusive of the value.</p> </li>
+<li> <p><code>:error_on_ignore</code> - Overrides the application config to specify if an error should be raised when an order is present in the relation.</p> </li>
+<li> <p><code>:cursor</code> - Specifies the column to use for batching (can be a column name or an array of column names). Defaults to primary key.</p> </li>
+<li> <p><code>:order</code> - Specifies the cursor column order (can be <code>:asc</code> or <code>:desc</code> or an array consisting of :asc or :desc). Defaults to <code>:asc</code>.</p> <pre class="ruby" data-language="ruby">class Order &lt; ActiveRecord::Base
+  self.primary_key = [:id_1, :id_2]
+end
+
+Order.in_batches(order: [:asc, :desc])
+</pre> <p>In the above code, <code>id_1</code> is sorted in ascending order and <code>id_2</code> in descending order.</p> </li>
+<li> <p><code>:use_ranges</code> - Specifies whether to use range iteration (id &gt;= x AND id &lt;= y). It can make iterating over the whole or almost whole tables several times faster. Only whole table iterations use this style of iteration by default. You can disable this behavior by passing <code>false</code>. If you iterate over the table and the only condition is, e.g., <code>archived_at: nil</code> (and only a tiny fraction of the records are archived), it makes sense to opt in to this approach.</p> </li>
+</ul> <p>Limits are honored, and if present there is no requirement for the batch size, it can be less than, equal, or greater than the limit.</p> <p>The options <code>start</code> and <code>finish</code> are especially useful if you want multiple workers dealing with the same processing queue. You can make worker 1 handle all the records between id 1 and 9999 and worker 2 handle from 10000 and beyond by setting the <code>:start</code> and <code>:finish</code> option on each worker.</p> <pre class="ruby" data-language="ruby"># Let's process from record 10_000 on.
+Person.in_batches(start: 10_000).update_all(awesome: true)
+</pre> <p>An example of calling where query method on the relation:</p> <pre class="ruby" data-language="ruby">Person.in_batches.each do |relation|
+  relation.update_all('age = age + 1')
+  relation.where('age &gt; 21').update_all(should_party: true)
+  relation.where('age &lt;= 21').delete_all
+end
+</pre> <p>NOTE: If you are going to iterate through each record, you should call each_record on the yielded BatchEnumerator:</p> <pre class="ruby" data-language="ruby">Person.in_batches.each_record(&amp;:party_all_night!)
+</pre> <p>NOTE: Order can be ascending (:asc) or descending (:desc). It is automatically set to ascending on the primary key (“id ASC”). This also means that this method only works when the cursor column is orderable (e.g. an integer or string).</p> <p>NOTE: When using custom columns for batching, they should include at least one unique column (e.g. primary key) as a tiebreaker. Also, to reduce the likelihood of race conditions, all columns should be static (unchangeable after it was set).</p> <p>NOTE: By its nature, batch processing is subject to race conditions if other processes are modifying the database.</p>  </div> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2004–2021 David Heinemeier Hansson<br>Licensed under the MIT License.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

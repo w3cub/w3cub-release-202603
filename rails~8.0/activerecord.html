@@ -1,0 +1,398 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>ActiveRecord - Ruby on Rails 8.0 - W3cubDocs</title>
+  
+  <meta name="description" content="Active Record connects classes to relational database tables to establish an almost zero-configuration persistence layer for applications. The &hellip;">
+  <meta name="keywords" content="module, activerecord, active, record, –, object-relational, mapping, railsactive, model, unknownattributeerror, ruby, on, rails, rails~8.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rails~8.0/activerecord.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rails~8.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rails~8.0/" class="_nav-link" title="" style="margin-left:0;">Ruby on Rails 8.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rdoc">
+				
+				
+<h1 id="module-ActiveRecord" class="module"> module ActiveRecord </h1>
+<dl class="meta">
+<dt>Included modules:</dt>
+<dd class="meta-includes"><a class="include" href="activesupport/deprecation/deprecatedconstantaccessor">ActiveSupport::Deprecation::DeprecatedConstantAccessor</a></dd>
+</dl> <section class="description"> <h1 id="module-ActiveRecord-label-Active+Record+--+Object-relational+mapping+in+Rails">Active Record – Object-relational mapping in Rails</h1> <p>Active Record connects classes to relational database tables to establish an almost zero-configuration persistence layer for applications. The library provides a base class that, when subclassed, sets up a mapping between the new class and an existing table in the database. In the context of an application, these classes are commonly referred to as <strong>models</strong>. Models can also be connected to other models; this is done by defining <strong>associations</strong>.</p> <p>Active Record relies heavily on naming in that it uses class and association names to establish mappings between respective database tables and foreign key columns. Although these mappings can be defined explicitly, it’s recommended to follow naming conventions, especially when getting started with the library.</p> <p>You can read more about Active Record in the <a href="https://guides.rubyonrails.org/active_record_basics.html">Active Record Basics</a> guide.</p> <p>A short rundown of some of the major features:</p> <ul>
+<li> <p>Automated mapping between classes and tables, attributes and columns.</p> <pre class="ruby" data-language="ruby">class Product &lt; ActiveRecord::Base
+end
+</pre> <p>The Product class is automatically mapped to the table named “products”, which might look like this:</p> <pre>CREATE TABLE products (
+  id bigint NOT NULL auto_increment,
+  name varchar(255),
+  PRIMARY KEY  (id)
+);</pre> <p>This would also define the following accessors: <code>Product#name</code> and <code>Product#name=(new_name)</code>.</p> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Base.html">Learn more</a></p> </li>
+<li> <p><span><code>Associations</code></span> between objects defined by simple class methods.</p> <pre class="ruby" data-language="ruby">class Firm &lt; ActiveRecord::Base
+  has_many   :clients
+  has_one    :account
+  belongs_to :conglomerate
+end
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html">Learn more</a></p> </li>
+<li> <p><a href="activerecord/aggregations"><code>Aggregations</code></a> of value objects.</p> <pre class="ruby" data-language="ruby">class Account &lt; ActiveRecord::Base
+  composed_of :balance, class_name: 'Money',
+              mapping: %w(balance amount)
+  composed_of :address,
+              mapping: [%w(address_street street), %w(address_city city)]
+end
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Aggregations/ClassMethods.html">Learn more</a></p> </li>
+<li> <p>Validation rules that can differ for new or existing objects.</p> <pre class="ruby" data-language="ruby">class Account &lt; ActiveRecord::Base
+  validates :subdomain, :name, :email_address, :password, presence: true
+  validates :subdomain, uniqueness: true
+  validates :terms_of_service, acceptance: true, on: :create
+  validates :password, :email_address, confirmation: true, on: :create
+end
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Validations.html">Learn more</a></p> </li>
+<li> <p><a href="activerecord/callbacks"><code>Callbacks</code></a> available for the entire life cycle (instantiation, saving, destroying, validating, etc.).</p> <pre class="ruby" data-language="ruby">class Person &lt; ActiveRecord::Base
+  before_destroy :invalidate_payment_plan
+  # the `invalidate_payment_plan` method gets called just before Person#destroy
+end
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">Learn more</a></p> </li>
+<li> <p><a href="activerecord/inheritance"><code>Inheritance</code></a> hierarchies.</p> <pre class="ruby" data-language="ruby">class Company &lt; ActiveRecord::Base; end
+class Firm &lt; Company; end
+class Client &lt; Company; end
+class PriorityClient &lt; Client; end
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Base.html">Learn more</a></p> </li>
+<li> <p><a href="activerecord/transactions"><code>Transactions</code></a>.</p> <pre class="ruby" data-language="ruby"># Database transaction
+Account.transaction do
+  david.withdrawal(100)
+  mary.deposit(100)
+end
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html">Learn more</a></p> </li>
+<li> <p>Reflections on columns, associations, and aggregations.</p> <pre class="ruby" data-language="ruby">reflection = Firm.reflect_on_association(:clients)
+reflection.klass # =&gt; Client (class)
+Firm.columns # Returns an array of column descriptors for the firms table
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Reflection/ClassMethods.html">Learn more</a></p> </li>
+<li> <p>Database abstraction through simple adapters.</p> <pre class="ruby" data-language="ruby"># connect to SQLite3
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'dbfile.sqlite3')
+
+# connect to MySQL with authentication
+ActiveRecord::Base.establish_connection(
+  adapter:  'mysql2',
+  host:     'localhost',
+  username: 'me',
+  password: 'secret',
+  database: 'activerecord'
+)
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Base.html">Learn more</a> and read about the built-in support for <a href="https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/Mysql2Adapter.html">MySQL</a>, <a href="https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/PostgreSQLAdapter.html">PostgreSQL</a>, and <a href="https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SQLite3Adapter.html">SQLite3</a>.</p> </li>
+<li> <p>Logging support for <a href="https://github.com/colbygk/log4r">Log4r</a> and <a href="https://docs.ruby-lang.org/en/master/Logger.html">Logger</a>.</p> <pre class="ruby" data-language="ruby">ActiveRecord::Base.logger = ActiveSupport::Logger.new(STDOUT)
+ActiveRecord::Base.logger = Log4r::Logger.new('Application Log')
+</pre> </li>
+<li> <p>Database agnostic schema management with Migrations.</p> <pre class="ruby" data-language="ruby">class AddSystemSettings &lt; ActiveRecord::Migration[8.0]
+  def up
+    create_table :system_settings do |t|
+      t.string  :name
+      t.string  :label
+      t.text    :value
+      t.string  :type
+      t.integer :position
+    end
+
+    SystemSetting.create name: 'notice', label: 'Use notice?', value: 1
+  end
+
+  def down
+    drop_table :system_settings
+  end
+end
+</pre> <p><a href="https://api.rubyonrails.org/classes/ActiveRecord/Migration.html">Learn more</a></p> </li>
+</ul> <h2 id="module-ActiveRecord-label-Philosophy">Philosophy</h2> <p>Active Record is an implementation of the object-relational mapping (ORM) <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">pattern</a> by the same name described by Martin Fowler:</p> <blockquote> <p>“An object that wraps a row in a database table or view, encapsulates the database access, and adds domain logic on that data.”</p> </blockquote> <p>Active Record attempts to provide a coherent wrapper as a solution for the inconvenience that is object-relational mapping. The prime directive for this mapping has been to minimize the amount of code needed to build a real-world domain model. This is made possible by relying on a number of conventions that make it easy for Active Record to infer complex relations and structures from a minimal amount of explicit direction.</p> <p>Convention over Configuration:</p> <ul>
+<li> <p>No XML files!</p> </li>
+<li> <p>Lots of reflection and run-time extension</p> </li>
+<li> <p>Magic is not inherently a bad word</p> </li>
+</ul> <p>Admit the Database:</p> <ul>
+<li> <p>Lets you drop down to SQL for odd cases and performance</p> </li>
+<li> <p>Doesn’t attempt to duplicate or replace data definitions</p> </li>
+</ul> <h2 id="module-ActiveRecord-label-Download+and+installation">Download and installation</h2> <p>The latest version of Active Record can be installed with RubyGems:</p> <pre>$ gem install activerecord</pre> <p>Source code can be downloaded as part of the Rails project on GitHub:</p> <ul><li> <p><a href="https://github.com/rails/rails/tree/main/activerecord">github.com/rails/rails/tree/main/activerecord</a></p> </li></ul> <h2 id="module-ActiveRecord-label-License">License</h2> <p>Active Record is released under the MIT license:</p> <ul><li> <p><a href="https://opensource.org/licenses/MIT">opensource.org/licenses/MIT</a></p> </li></ul> <h2 id="module-ActiveRecord-label-Support">Support</h2> <p>API documentation is at:</p> <ul><li> <p><a href="https://api.rubyonrails.org">api.rubyonrails.org</a></p> </li></ul> <p>Bug reports for the Ruby on Rails project can be filed here:</p> <ul><li> <p><a href="https://github.com/rails/rails/issues">github.com/rails/rails/issues</a></p> </li></ul> <p>Feature requests should be discussed on the rails-core mailing list here:</p> <ul><li> <p><a href="https://discuss.rubyonrails.org/c/rubyonrails-core">discuss.rubyonrails.org/c/rubyonrails-core</a></p> </li></ul> <p>Validation error class to wrap association records’ errors, with index_errors support.</p> </section> <section id="5Buntitled-5D" class="documentation-section"> <section class="constants-list"> <header> <h3>Constants</h3> </header> <dl> <dt id="MigrationProxy">MigrationProxy </dt>
+<dd>
+<p><a href="activerecord#MigrationProxy"><code>MigrationProxy</code></a> is used to defer loading of the actual migration classes until they are needed</p> </dd>
+<dt id="Point">Point </dt>
+
+<dt id="UnknownAttributeError">UnknownAttributeError </dt>
+<dd>
+<h1 id="label-Active+Model+UnknownAttributeError">Active Model UnknownAttributeError</h1> <p>Raised when unknown attributes are supplied via mass assignment.</p> <pre class="ruby" data-language="ruby">class Person
+  include ActiveModel::AttributeAssignment
+  include ActiveModel::Validations
+end
+
+person = Person.new
+person.assign_attributes(name: 'Gorby')
+# =&gt; ActiveModel::UnknownAttributeError: unknown attribute 'name' for Person.
+</pre> </dd>
+</dl> </section> <section class="attribute-method-details"> <header> <h3>Attributes</h3> </header> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-application_record_class"> <span class="method-name">application_record_class</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-before_committed_on_all_records"> <span class="method-name">before_committed_on_all_records</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-belongs_to_required_validates_foreign_key"> <span class="method-name">belongs_to_required_validates_foreign_key</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-database_cli"> <span class="method-name">database_cli</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-default_timezone"> <span class="method-name">default_timezone</span><span class="attribute-access-type">[R]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-disable_prepared_statements"> <span class="method-name">disable_prepared_statements</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-index_nested_attribute_errors"> <span class="method-name">index_nested_attribute_errors</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-maintain_test_schema"> <span class="method-name">maintain_test_schema</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-permanent_connection_checkout"> <span class="method-name">permanent_connection_checkout</span><span class="attribute-access-type">[R]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-query_transformers"> <span class="method-name">query_transformers</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-raise_on_assign_to_attr_readonly"> <span class="method-name">raise_on_assign_to_attr_readonly</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-reading_role"> <span class="method-name">reading_role</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-run_after_transaction_callbacks_in_order_defined"> <span class="method-name">run_after_transaction_callbacks_in_order_defined</span><span class="attribute-access-type">[RW]</span> </div>  </div> <div class="method-detail"> <div class="method-heading attribute-method-heading" id="attribute-i-writing_role"> <span class="method-name">writing_role</span><span class="attribute-access-type">[RW]</span> </div>  </div> </section> <section id="public-class-5Buntitled-5D-method-details" class="method-section"> <header> <h3>Public Class Methods</h3> </header> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-action_on_strict_loading_violation"> <span class="method-name">action_on_strict_loading_violation</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="action_on_strict_loading_violation-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 361
+singleton_class.attr_accessor :action_on_strict_loading_violation
+</pre> </div> <p>Set the application to log or raise when an association violates strict loading. Defaults to :raise.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-after_all_transactions_commit"> <span class="method-name">after_all_transactions_commit</span><span class="method-args">() { || ... }</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="after_all_transactions_commit-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 527
+def self.after_all_transactions_commit(&amp;block)
+  open_transactions = all_open_transactions
+
+  if open_transactions.empty?
+    yield
+  elsif open_transactions.size == 1
+    open_transactions.first.after_commit(&amp;block)
+  else
+    count = open_transactions.size
+    callback = -&gt; do
+      count -= 1
+      block.call if count.zero?
+    end
+    open_transactions.each do |t|
+      t.after_commit(&amp;callback)
+    end
+    open_transactions = nil # rubocop:disable Lint/UselessAssignment avoid holding it in the closure
+  end
+end</pre> </div> <p>Registers a block to be called after all the current transactions have been committed.</p> <p>If there is no currently open transaction, the block is called immediately.</p> <p>If there are multiple nested transactions, the block is called after the outermost one has been committed,</p> <p>If any of the currently open transactions is rolled back, the block is never called.</p> <p>If multiple transactions are open across multiple databases, the block will be invoked if and once all of them have been committed. But note that nesting transactions across two distinct databases is a sharding anti-pattern that comes with a world of hurts.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-async_query_executor"> <span class="method-name">async_query_executor</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="async_query_executor-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 283
+singleton_class.attr_accessor :async_query_executor
+</pre> </div> <p>Sets the <a href="activerecord#method-c-async_query_executor"><code>async_query_executor</code></a> for an application. By default the thread pool executor set to <code>nil</code> which will not run queries in the background. Applications must configure a thread pool executor to use this feature. Options are:</p> <pre>* nil - Does not initialize a thread pool executor. Any async calls will be
+run in the foreground.
+* :global_thread_pool - Initializes a single +Concurrent::ThreadPoolExecutor+
+that uses the +async_query_concurrency+ for the +max_threads+ value.
+* :multi_thread_pool - Initializes a +Concurrent::ThreadPoolExecutor+ for each
+database connection. The initializer values are defined in the configuration hash.</pre>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-db_warnings_action"> <span class="method-name">db_warnings_action</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="db_warnings_action-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 233
+singleton_class.attr_reader :db_warnings_action
+</pre> </div> <p>The action to take when database query produces warning. Must be one of :ignore, :log, :raise, :report, or a custom proc. The default is :ignore.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-db_warnings_action-3D"> <span class="method-name">db_warnings_action=</span><span class="method-args">(action)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="db_warnings_action-3D-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 235
+def self.db_warnings_action=(action)
+  @db_warnings_action =
+    case action
+    when :ignore
+      nil
+    when :log
+      -&gt;(warning) do
+        warning_message = "[#{warning.class}] #{warning.message}"
+        warning_message += " (#{warning.code})" if warning.code
+        ActiveRecord::Base.logger.warn(warning_message)
+      end
+    when :raise
+      -&gt;(warning) { raise warning }
+    when :report
+      -&gt;(warning) { Rails.error.report(warning, handled: true) }
+    when Proc
+      action
+    else
+      raise ArgumentError, "db_warnings_action must be one of :ignore, :log, :raise, :report, or a custom proc."
+    end
+end</pre> </div>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-db_warnings_ignore"> <span class="method-name">db_warnings_ignore</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="db_warnings_ignore-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 262
+singleton_class.attr_accessor :db_warnings_ignore
+</pre> </div> <p>Specify allowlist of database warnings.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-default_timezone-3D"> <span class="method-name">default_timezone=</span><span class="method-args">(default_timezone)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="default_timezone-3D-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 218
+def self.default_timezone=(default_timezone)
+  unless %i(local utc).include?(default_timezone)
+    raise ArgumentError, "default_timezone must be either :utc (default) or :local."
+  end
+
+  @default_timezone = default_timezone
+end</pre> </div> <p>Determines whether to use Time.utc (using :utc) or Time.local (using :local) when pulling dates and times from the database. This is set to :utc by default.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-disconnect_all-21"> <span class="method-name">disconnect_all!</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="disconnect_all-21-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 510
+def self.disconnect_all!
+  ConnectionAdapters::PoolConfig.disconnect_all!
+end</pre> </div> <p>Explicitly closes all database connections in all pools.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-dump_schema_after_migration"> <span class="method-name">dump_schema_after_migration</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="dump_schema_after_migration-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 409
+singleton_class.attr_accessor :dump_schema_after_migration
+</pre> </div> <p>Specify whether schema dump should happen at the end of the bin/rails db:migrate command. This is true by default, which is useful for the development environment. This should ideally be false in the production environment where dumping schema is rarely needed.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-dump_schemas"> <span class="method-name">dump_schemas</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="dump_schemas-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 419
+singleton_class.attr_accessor :dump_schemas
+</pre> </div> <p>Specifies which database schemas to dump when calling db:schema:dump. If the value is :schema_search_path (the default), any schemas listed in schema_search_path are dumped. Use :all to dump all schemas regardless of schema_search_path, or a string of comma separated schemas for a custom list.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-eager_load-21"> <span class="method-name">eager_load!</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="eager_load-21-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 499
+def self.eager_load!
+  super
+  ActiveRecord::Locking.eager_load!
+  ActiveRecord::Scoping.eager_load!
+  ActiveRecord::Associations.eager_load!
+  ActiveRecord::AttributeMethods.eager_load!
+  ActiveRecord::ConnectionAdapters.eager_load!
+  ActiveRecord::Encryption.eager_load!
+end</pre> </div> <div class="method-calls-super"> Calls superclass method </div>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-error_on_ignored_order"> <span class="method-name">error_on_ignored_order</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="error_on_ignored_order-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 380
+singleton_class.attr_accessor :error_on_ignored_order
+</pre> </div> <p>Specifies if an error should be raised if the query has an order being ignored when doing batch queries. Useful in applications where the scope being ignored is error-worthy, rather than a warning.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-gem_version"> <span class="method-name">gem_version</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="gem_version-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record/gem_version.rb, line 5
+def self.gem_version
+  Gem::Version.new VERSION::STRING
+end</pre> </div> <p>Returns the currently loaded version of Active Record as a <code>Gem::Version</code>.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-generate_secure_token_on"> <span class="method-name">generate_secure_token_on</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="generate_secure_token_on-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 460
+singleton_class.attr_accessor :generate_secure_token_on
+</pre> </div> <p>Controls when to generate a value for <code>has_secure_token</code> declarations. Defaults to <code>:create</code>.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-global_executor_concurrency-3D"> <span class="method-name">global_executor_concurrency=</span><span class="method-args">(global_executor_concurrency)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="global_executor_concurrency-3D-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 298
+def self.global_executor_concurrency=(global_executor_concurrency)
+  if self.async_query_executor.nil? || self.async_query_executor == :multi_thread_pool
+    raise ArgumentError, "`global_executor_concurrency` cannot be set when the executor is nil or set to `:multi_thread_pool`. For multiple thread pools, please set the concurrency in your database configuration."
+  end
+
+  @global_executor_concurrency = global_executor_concurrency
+end</pre> </div> <p>Set the <code>global_executor_concurrency</code>. This configuration value can only be used with the global thread pool async query executor.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-lazily_load_schema_cache"> <span class="method-name">lazily_load_schema_cache</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="lazily_load_schema_cache-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 189
+singleton_class.attr_accessor :lazily_load_schema_cache
+</pre> </div> <p>Lazily load the schema cache. This option will load the schema cache when a connection is established rather than on boot.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-marshalling_format_version"> <span class="method-name">marshalling_format_version</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="marshalling_format_version-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 463
+def self.marshalling_format_version
+  Marshalling.format_version
+end</pre> </div>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-marshalling_format_version-3D"> <span class="method-name">marshalling_format_version=</span><span class="method-args">(value)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="marshalling_format_version-3D-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 467
+def self.marshalling_format_version=(value)
+  Marshalling.format_version = value
+end</pre> </div>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-migration_strategy"> <span class="method-name">migration_strategy</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="migration_strategy-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 400
+singleton_class.attr_accessor :migration_strategy
+</pre> </div> <p>Specify strategy to use for executing migrations.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-permanent_connection_checkout-3D"> <span class="method-name">permanent_connection_checkout=</span><span class="method-args">(value)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="permanent_connection_checkout-3D-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 314
+def self.permanent_connection_checkout=(value)
+  unless [true, :deprecated, :disallowed].include?(value)
+    raise ArgumentError, "permanent_connection_checkout must be one of: `true`, `:deprecated` or `:disallowed`"
+  end
+  @permanent_connection_checkout = value
+end</pre> </div> <p>Defines whether <code>ActiveRecord::Base.connection</code> is allowed, deprecated, or entirely disallowed.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-protocol_adapters"> <span class="method-name">protocol_adapters</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="protocol_adapters-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 490
+singleton_class.attr_accessor :protocol_adapters
+</pre> </div> <p>Provides a mapping between database protocols/DBMSs and the underlying database adapter to be used. This is used only by the <code>DATABASE_URL</code> environment variable.</p> <h2 id="method-c-protocol_adapters-label-Example">Example</h2> <pre class="ruby" data-language="ruby">DATABASE_URL="mysql://myuser:mypass@localhost/somedatabase"
+</pre> <p>The above URL specifies that MySQL is the desired protocol/DBMS, and the application configuration can then decide which adapter to use. For this example the default mapping is from <code>mysql</code> to <code>mysql2</code>, but <code>:trilogy</code> is also supported.</p> <pre class="ruby" data-language="ruby">ActiveRecord.protocol_adapters.mysql = "mysql2"
+</pre> <p>The protocols names are arbitrary, and external database adapters can be registered and set here.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-queues"> <span class="method-name">queues</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="queues-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 336
+singleton_class.attr_accessor :queues
+</pre> </div> <p>Specifies the names of the queues used by background jobs.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-raise_int_wider_than_64bit"> <span class="method-name">raise_int_wider_than_64bit</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="raise_int_wider_than_64bit-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 446
+singleton_class.attr_accessor :raise_int_wider_than_64bit
+</pre> </div> <p>Application configurable boolean that denotes whether or not to raise an exception when the PostgreSQLAdapter is provided with an integer that is wider than signed 64bit representation</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-schema_cache_ignored_table-3F"> <span class="method-name">schema_cache_ignored_table?</span><span class="method-args">(table_name)</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="schema_cache_ignored_table-3F-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record.rb, line 205
+def self.schema_cache_ignored_table?(table_name)
+  ActiveRecord.schema_cache_ignored_tables.any? do |ignored|
+    ignored === table_name
+  end
+end</pre> </div> <p>Checks to see if the <code>table_name</code> is ignored by checking against the <code>schema_cache_ignored_tables</code> option.</p> <pre class="ruby" data-language="ruby">ActiveRecord.schema_cache_ignored_table?(:developers)
+</pre>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-schema_cache_ignored_tables"> <span class="method-name">schema_cache_ignored_tables</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="schema_cache_ignored_tables-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 197
+singleton_class.attr_accessor :schema_cache_ignored_tables
+</pre> </div> <p>A list of tables or regex’s to match tables to ignore when dumping the schema cache. For example if this is set to +[/^_/]+ the schema cache will not dump tables named with an underscore.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-schema_format"> <span class="method-name">schema_format</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="schema_format-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 372
+singleton_class.attr_accessor :schema_format
+</pre> </div> <p>Specifies the format to use when dumping the database schema with Rails’ Rakefile. If :sql, the schema is dumped as (potentially database- specific) SQL statements. If :ruby, the schema is dumped as an <a href="activerecord/schema"><code>ActiveRecord::Schema</code></a> file which can be loaded into any database that supports migrations. Use :ruby if you want to have different database adapters for, e.g., your development and test environments.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-timestamped_migrations"> <span class="method-name">timestamped_migrations</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="timestamped_migrations-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 386
+singleton_class.attr_accessor :timestamped_migrations
+</pre> </div> <p>Specify whether or not to use timestamps for migration versions</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-use_yaml_unsafe_load"> <span class="method-name">use_yaml_unsafe_load</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="use_yaml_unsafe_load-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 438
+singleton_class.attr_accessor :use_yaml_unsafe_load
+</pre> </div> <p>Application configurable boolean that instructs the YAML Coder to use an unsafe load if set to true.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-validate_migration_timestamps"> <span class="method-name">validate_migration_timestamps</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="validate_migration_timestamps-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 394
+singleton_class.attr_accessor :validate_migration_timestamps
+</pre> </div> <p>Specify whether or not to validate migration timestamps. When set, an error will be raised if a timestamp is more than a day ahead of the timestamp associated with the current time. <code>timestamped_migrations</code> must be set to true.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-verbose_query_logs"> <span class="method-name">verbose_query_logs</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="verbose_query_logs-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 329
+singleton_class.attr_accessor :verbose_query_logs
+</pre> </div> <p>Specifies if the methods calling database queries should be logged below their relevant queries. Defaults to false.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-verify_foreign_keys_for_fixtures"> <span class="method-name">verify_foreign_keys_for_fixtures</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="verify_foreign_keys_for_fixtures-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 428
+singleton_class.attr_accessor :verify_foreign_keys_for_fixtures
+</pre> </div> <p>If true, <a href="rails"><code>Rails</code></a> will verify all foreign keys in the database after loading fixtures. An error will be raised if there are any foreign key violations, indicating incorrectly written fixtures. Supported by PostgreSQL and SQLite.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-version"> <span class="method-name">version</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="version-source"> <pre class="ruby" data-language="ruby"># File activerecord/lib/active_record/version.rb, line 7
+def self.version
+  gem_version
+end</pre> </div> <p>Returns the currently loaded version of Active Record as a <code>Gem::Version</code>.</p>  </div> </div> <div class="method-detail "> <div class="method-header"> <div class="method-heading" id="method-c-yaml_column_permitted_classes"> <span class="method-name">yaml_column_permitted_classes</span><span class="method-args">()</span> <a class="method-click-advice">Show source</a> </div> </div> <div class="method-description">
+<div class="method-source-code" id="yaml_column_permitted_classes-source"> <pre class="c" data-language="c"># File activerecord/lib/active_record.rb, line 453
+singleton_class.attr_accessor :yaml_column_permitted_classes
+</pre> </div> <p>Application configurable array that provides additional permitted classes to Psych safe_load in the YAML Coder</p>  </div> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2004–2021 David Heinemeier Hansson<br>Licensed under the MIT License.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
