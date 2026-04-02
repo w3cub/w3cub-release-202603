@@ -1,0 +1,129 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>13. Definition of Manager Net if - Erlang 26 - W3cubDocs</title>
+  
+  <meta name="description" content=" Figure 13.1&#58; The Purpose of Manager Net if ">
+  <meta name="keywords" content="definition, manager, net, if, erlang, erlang~26">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/erlang~26/lib/snmp-5.14/doc/html/snmp_manager_netif.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/erlang~26.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/erlang~26/" class="_nav-link" title="" style="margin-left:0;">Erlang 26</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _erlang">
+				
+				
+<div class="innertube"> <h1 id="Definition of Manager Net if">13 Definition of Manager Net if</h1>  <div class="doc-image-wrapper">  <p class="doc-image-caption">Figure 13.1: The Purpose of Manager Net if</p> </div> <p>The Network Interface (Net If) process delivers SNMP PDUs to the manager server, and receives SNMP PDUs from the manager server. The most common behaviour of a Net if process is that is receives request PDU from the manager server, encodes the PDU into bytes and transmits the bytes onto the network to an agent. When the reply from the agent is received by the Net if process, which it decodes into an SNMP PDU, which it sends to the manager server. </p> <p>However, that simple behaviour can be modified in numerous ways. For example, the Net if process can apply some kind of encrypting/decrypting scheme on the bytes. </p> <p>The snmp application provides two different modules, <code>snmpm_net_if</code> (the default) and <code>snmpm_net_if_mt</code>, both uses UDP as the transport protocol i.e the transport domains <code>transportDomainUdpIpv4</code> and/or <code>transportDomainUdpIpv6</code>. The difference between the two modules is that the latter is "multi-threaded", i.e. for each message/request a new process is created that processes the message/request and then exits. </p> <p>There is a <code>server</code> config option, <code><a href="snmp_config#manager_server_nis">netif_sup</a></code> that enables "active" Net If supervision. This is very simple mechanism. The (supervising) process simply sends a <code><a href="#im_ping">ping</a></code> message and expects a <code><a href="#om_pong">pong</a></code> message response (within a specific time). The interval between each <code>ping/pong</code> exchange is user configurable. As is the time that is allowed for the <code><a href="#om_pong">pong</a></code> message to arrive. Both the NetIf module(s) provided with the app supports active supervision. If a NetIf module/process is used which do not implement this, then the server cannot be configured with active supervision. </p> <p>It is also possible to write your own Net if process and this section describes how to do that.</p> <h2 id="mandatory-functions" class="title-link"> <div class="title-name">13.1 Mandatory Functions</div>  </h2> <p>A Net If process must implement the SNMP manager <code><a href="snmpm_network_interface">network interface behaviour</a></code>. </p> <h2 id="messages" class="title-link"> <div class="title-name">13.2 Messages</div>  </h2> <p>The section <strong>Messages</strong> describes mandatory (with exception for the ping/pong messages) messages, which Net If must send to the manager server process. </p> <p>In this section a <code>Domain</code> field is the transport domain i.e one of <code>transportDomainUdpIpv4</code> or <code>transportDomainUdpIpv6</code>, and an <code>Addr</code> field is an <code>{</code><code>IpAddr</code><code>,IpPort}</code> tuple.</p> <h3 id="outgoing-messages" class="title-link"> <div class="title-name">Outgoing Messages</div>  </h3> <p>Net if must send the following message when it receives an SNMP PDU from the network that is aimed for the MasterAgent: </p> <pre data-language="erlang">
+Server ! {snmp_pdu, Pdu, Domain, Addr}
+      </pre> <ul> <li> <p><code>Pdu</code> is an SNMP PDU record, as defined in <code>snmp_types.hrl</code>, with the SNMP request.</p> </li> <li> <p><code>Domain</code> is the source transport domain. </p> </li> <li> <p><code>Addr</code> is the source address. </p> </li> </ul> <pre data-language="erlang">
+Server ! {snmp_trap, Trap, Domain, Addr}
+      </pre> <ul> <li> <p><code>Trap</code> is either an SNMP pdu record or an trappdu record, as defined in <code>snmp_types.hrl</code>, with the SNMP request.</p> </li> <li> <p><code>Domain</code> is the source transport domain. </p> </li> <li> <p><code>Addr</code> is the source address. </p> </li> </ul> <pre data-language="erlang">
+Server ! {snmp_inform, Ref, Pdu, PduMS, Domain, Addr}
+      </pre> <ul> <li> <p><code>Ref</code> is either the atom <code>ignore</code> or something that can be used to identify the inform-request (e.g. request-id). <code>ignore</code> is used if the response (acknowledgment) to the inform-request has already been sent (this means that the server will not make the call to the <code><a href="snmpm_network_interface#inform_response">inform_response</a></code> function). See the <code><a href="snmp_config#manager_irb">inform request behaviour</a></code> configuration option for more info.</p> </li> <li> <p><code>Pdu</code> is an SNMP PDU record, as defined in <code>snmp_types.hrl</code>, with the SNMP request.</p> </li> <li> <p><code>Domain</code> is the source transport domain. </p> </li> <li> <p><code>Addr</code> is the source address. </p> </li> </ul> <pre data-language="erlang">
+Server ! {snmp_report, Data, Domain, Addr}
+      </pre> <ul> <li> <p><code>Data</code> is either <code>{ok, Pdu}</code> or <code>{error, ReqId, ReasonInfo, Pdu}</code>. Which one is used depends on the return value from the MPD <code><a href="snmpm_mpd#process_msg">process_msg</a></code> function. If the MsgData is <code>ok</code>, the first is used, and if it is <code>{error, ReqId, Reason}</code> the latter is used.</p> </li> <li> <p><code>Pdu</code> is an SNMP PDU record, as defined in <code>snmp_types.hrl</code>, with the SNMP request.</p> </li> <li> <p><code>ReqId</code> is an integer.</p> </li> <li> <p><code>ReasonInfo</code> is a term().</p> </li> <li> <p><code>Domain</code> is the source transport domain. </p> </li> <li> <p><code>Addr</code> is the source address. </p> </li> </ul>  <pre id="om_pong" data-language="erlang">
+Supervisor ! {pong, self()}
+      </pre> <ul> <li> <p><code>Supervisor</code> is the process that sent the <code><a href="#im_ping">ping</a></code> message (see below). </p> </li> </ul> <h3 id="incoming-messages" class="title-link"> <div class="title-name">Incoming Messages</div>  </h3> <p>This section describes the incoming messages which a Net If process may choose to respond to. </p> <ul> <li>  <p id="im_ping"><code>{ping, Supervisor}</code></p> <p>This message is sent to the Net If process by a process that has been configured to perfor "active supervision" of the Net If process. The Net If process should respond immediately with a <code><a href="#om_pong">pong</a></code> message. </p> <ul> <li> <p><code>Supervisor</code> is a <code>pid()</code>. </p> </li> </ul> </li> </ul> <h2 id="notes" class="title-link"> <div class="title-name">13.3 Notes</div>  </h2> <p>Since the Net if process is responsible for encoding and decoding of SNMP messages, it must also update the relevant counters in the SNMP group in MIB-II. It can use the functions in the module <code>snmpm_mpd</code> for this purpose (refer to the Reference Manual, section <code>snmp</code>, module <code>snmpm_mpd</code> for more details). </p> <p>There are also some useful functions for encoding and decoding of SNMP messages in the module <code>snmp_pdus</code>. </p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2023 Ericsson AB<br>Licensed under the Apache License, Version 2.0.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

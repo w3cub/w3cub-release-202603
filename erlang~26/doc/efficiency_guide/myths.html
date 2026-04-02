@@ -1,0 +1,132 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>2. The Seven Myths of Erlang Performance - Erlang 26 - W3cubDocs</title>
+  
+  <meta name="description" content="Some truths seem to live on well beyond their best-before date, perhaps because &#34;information&#34; spreads faster from person-to-person than a &hellip;">
+  <meta name="keywords" content="seven, myths, erlang, performance, erlang~26">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/erlang~26/doc/efficiency_guide/myths.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/erlang~26.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/erlang~26/" class="_nav-link" title="" style="margin-left:0;">Erlang 26</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _erlang">
+				
+				
+<div class="innertube"> <h1 id="The Seven Myths of Erlang Performance">2 The Seven Myths of Erlang Performance</h1>  <p id="myths">Some truths seem to live on well beyond their best-before date, perhaps because "information" spreads faster from person-to-person than a single release note that says, for example, that body-recursive calls have become faster.</p> <p>This section tries to kill the old truths (or semi-truths) that have become myths.</p> <h2 id="myth--tail-recursive-functions-are-much-faster-----than-recursive-functions" class="title-link"> <div class="title-name">2.1 Myth: Tail-Recursive Functions are Much Faster Than Recursive Functions</div>  </h2> <h3 id="tail_recursive">
+According to the myth, using a tail-recursive function that builds a list in reverse followed by a call to <code id="tail_recursive">lists:reverse/1</code> is faster than a body-recursive function that builds the list in correct order; the reason being that body-recursive functions use more memory than tail-recursive functions.</h3> <p>That was true to some extent before R12B. It was even more true before R7B. Today, not so much. A body-recursive function generally uses the same amount of memory as a tail-recursive function. It is generally not possible to predict whether the tail-recursive or the body-recursive version will be faster. Therefore, use the version that makes your code cleaner (hint: it is usually the body-recursive version).</p> <p>For a more thorough discussion about tail and body recursion, see <code><a href="http://ferd.ca/erlang-s-tail-recursion-is-not-a-silver-bullet.html">Erlang's Tail Recursion is Not a Silver Bullet</a></code>.</p> <div class="note"> <div class="label">Note</div> <div class="content">
+
+<p>A tail-recursive function that does not need to reverse the list at the end is faster than a body-recursive function, as are tail-recursive functions that do not construct any terms at all (for example, a function that sums all integers in a list).</p>
+</div> </div> <h2 id="myth--operator--++--is-always-bad" class="title-link"> <div class="title-name">2.2 Myth: Operator "++" is Always Bad</div>  </h2> <p>The <code>++</code> operator has, somewhat undeservedly, got a bad reputation. It probably has something to do with code like the following, which is the most inefficient way there is to reverse a list:</p> <p><strong>DO NOT</strong></p> <pre data-language="erlang">naive_reverse([H|T]) -&gt;
+    naive_reverse(T)++[H];
+naive_reverse([]) -&gt;
+    [].</pre> <p>As the <code>++</code> operator copies its left operand, the result is copied repeatedly, leading to quadratic complexity.</p> <p>But using <code>++</code> as follows is not bad:</p> <p><strong>OK</strong></p> <pre data-language="erlang">naive_but_ok_reverse([H|T], Acc) -&gt;
+    naive_but_ok_reverse(T, [H]++Acc);
+naive_but_ok_reverse([], Acc) -&gt;
+    Acc.</pre> <p>Each list element is copied only once. The growing result <code>Acc</code> is the right operand for the <code>++</code> operator, and it is <strong>not</strong> copied.</p> <p>Experienced Erlang programmers would write as follows:</p> <p><strong>DO</strong></p> <pre data-language="erlang">vanilla_reverse([H|T], Acc) -&gt;
+    vanilla_reverse(T, [H|Acc]);
+vanilla_reverse([], Acc) -&gt;
+    Acc.</pre> <p>This is slightly more efficient because here you do not build a list element only to copy it directly. (Or it would be more efficient if the compiler did not automatically rewrite <code>[H]++Acc</code> to <code>[H|Acc]</code>.)</p> <h2 id="myth--strings-are-slow" class="title-link"> <div class="title-name">2.3 Myth: Strings are Slow</div>  </h2> <p>String handling can be slow if done improperly. In Erlang, you need to think a little more about how the strings are used and choose an appropriate representation. If you use regular expressions, use the <code>re</code> module in STDLIB instead of the obsolete <code>regexp</code> module.</p> <h2 id="myth--repairing-a-dets-file-is-very-slow" class="title-link"> <div class="title-name">2.4 Myth: Repairing a Dets File is Very Slow</div>  </h2> <p>The repair time is still proportional to the number of records in the file, but Dets repairs used to be much slower in the past. Dets has been massively rewritten and improved.</p> <h2 id="myth--beam-is-a-stack-based-byte-code-virtual-machine------and-therefore-slow-" class="title-link"> <div class="title-name">2.5 Myth: BEAM is a Stack-Based Byte-Code Virtual Machine (and Therefore Slow)</div>  </h2> <p>BEAM is a register-based virtual machine. It has 1024 virtual registers that are used for holding temporary values and for passing arguments when calling functions. Variables that need to survive a function call are saved to the stack.</p> <p>BEAM is a threaded-code interpreter. Each instruction is word pointing directly to executable C-code, making instruction dispatching very fast.</p> <h2 id="myth--use--_--to-speed-up-your-program-when-a-variable-----is-not-used" class="title-link"> <div class="title-name">2.6 Myth: Use "_" to Speed Up Your Program When a Variable is Not Used</div>  </h2> <p>That was once true, but from R6B the BEAM compiler can see that a variable is not used.</p> <p>Similarly, trivial transformations on the source-code level such as converting a <code>case</code> statement to clauses at the top-level of the function seldom makes any difference to the generated code.</p> <h2 id="myth--a-nif-always-speeds-up-your-program" class="title-link"> <div class="title-name">2.7 Myth: A NIF Always Speeds Up Your Program</div>  </h2> <p>Rewriting Erlang code to a NIF to make it faster should be seen as a last resort. It is only guaranteed to be dangerous, but not guaranteed to speed up the program.</p> <p>Doing too much work in each NIF call will <code>degrade responsiveness of the VM</code>. Doing too little work may mean that the gain of the faster processing in the NIF is eaten up by the overhead of calling the NIF and checking the arguments.</p> <p>Be sure to read about <code>Long-running NIFs</code> before writing a NIF.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2023 Ericsson AB<br>Licensed under the Apache License, Version 2.0.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

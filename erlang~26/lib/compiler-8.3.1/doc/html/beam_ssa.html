@@ -1,0 +1,180 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>1. Invariants on the Structure and Format of BEAM SSA - Erlang 26 - W3cubDocs</title>
+  
+  <meta name="description" content=" The translation of a try-catch expression into BEAM SSA has the following structure&#58; ">
+  <meta name="keywords" content="invariants, on, structure, and, format, beam, ssa, erlang, erlang~26">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/erlang~26/lib/compiler-8.3.1/doc/html/beam_ssa.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/erlang~26.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/erlang~26/" class="_nav-link" title="" style="margin-left:0;">Erlang 26</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _erlang">
+				
+				
+<div class="innertube"> <h1 id="Invariants on the Structure and Format of BEAM SSA">1 Invariants on the Structure and Format of BEAM SSA</h1> <h2 id="exception-handling" class="title-link"> <div class="title-name">1.1 Exception Handling</div>  </h2> <p> The translation of a <code>try</code>-<code>catch</code> expression into BEAM SSA has the following structure: </p> <pre data-language="erlang">@tag = new_try_tag `try`
+br @tag, ^protected_block0, ^landing_pad_block
+
+protected_block0:
+  @success0 = ... % Something that could raise an exception
+  br @success0, ^protected_block1, ^landing_pad_block
+
+...
+
+protected_blockN:
+  % The end of the protected code
+  @ignored0 = kill_try_tag @tag
+  br ^after_try_catch
+
+landing_pad_block:
+  @aggregate = landingpad try, @tag
+  @class  = extract @aggregate, `0` % The error class
+  @reason = extract @aggregate, `1` % The reason
+  @stk    = extract @aggregate, `2` % The stack trace
+  @ignored1 = kill_try_tag @tag
+  %% Pattern matching on @class, @reason, and @stk is done here
+  %% to send control to the appropriate catch clause
+  br ^after_try_catch
+
+after_try_catch:
+  % Normal execution continues</pre> <p> The following invariants must hold for the SSA: </p> <ul> <li> All code that can cause an exception in one of the protected blocks must have explicit control flow edges to the landing pad block. If there are no edges to the landing pad block except from the block containing the <code>new_try_tag</code>, the compiler will remove the redundant exception handler. </li> <li> The extraction of the class, reason and stack trace from the result of the <code>landingpad</code> instruction must be done in that order. Omitting the extraction of elements which are unused is allowed. </li> <li> Both the landing pad block and the final protected block must end with a <code>kill_try_tag</code> instruction. Trying to share the <code>kill_try_tag</code> epilogue between the last protected block and the landing pad is unlikely to work. </li> </ul> <p> The translation of an old-style <code>catch</code> expression into BEAM SSA has the following structure: </p> <pre data-language="erlang">@tag = new_try_tag `try`
+br @tag, ^protected_block0, ^landing_pad_block
+
+protected_block0:
+  @success0 = ... % Something that could raise an exception
+  br @success0, ^protected_block1, ^landing_pad_block
+
+...
+
+protected_blockN:
+  % The end of the protected code
+  @successful_result = .... % The result of a successful computation
+  br ^common_end_of_catch
+
+landing_pad_block:
+   @aggregate = landingpad catch, @tag
+   @catched_val = extract @ssa_agg, `0`
+   br ^common_end_of_catch
+
+common_end_of_catch:
+  @tmp = phi { @catched_val, ^landing_pad_block },
+             { @successful_result, ^protected_blockN }
+  @result_of_catch_expr = catch_end @tag, @tmp</pre> <p> Just as for a <code>try</code>-<code>catch</code> expression all code that can cause an exception in one of the protected blocks must have explicit control flow edges to the landing pad block. </p> <h2 id="exception-re-issuing" class="title-link"> <div class="title-name">1.2 Exception Re-issuing</div>  </h2> <p> A typical user-written <code>try</code>-<code>catch</code> expression will catch a subset of all possible exception classes and reasons and leave unhandled exceptions to a handler further up the call stack. Re-issuing an exception is done with the <code>resume</code> instruction. The <code>resume</code> must come after the <code>kill_try_tag</code> instruction in the program flow. For example, if the <code><a href="#Exception-Handling">example in the Exception Handling Section</a></code> was to only handle user <code>throws</code>, the relevant blocks would look like this: </p> <pre data-language="erlang">landing_pad_block:
+  @aggregate = landingpad `try`, @tag
+  @class  = extract @aggregate, `0` % The error class
+  @reason = extract @aggregate, `1` % The reason
+  @stk    = extract @aggregate, `2` % The stack trace
+  @ignored1 = kill_try_tag @tag
+  @is_throw = bif:'=:=' @class, `throw`
+  br @is_throw ^first_block_of_throw_handler, ^reissue
+
+first_block_of_throw_handler:
+  %% Handle the user-defined throw
+
+reissue:
+  @tmp = resume @stk, @reason
+  ret @tmp</pre> <h2 id="function-calls" class="title-link"> <div class="title-name">1.3 Function Calls</div>  </h2> <p> All function calls not in a tail call position must be followed by a succeeded:body-instruction unless one of the following exceptions apply: </p> <ul> <li> <p>The function call can statically be proven to always fail. </p> </li> <li> <p>The function call is to the <code>erlang</code>-module and can statically be proven to always succeed or fail. </p> </li> </ul> <h2 id="variable-naming" class="title-link"> <div class="title-name">1.4 Variable Naming</div>  </h2> <p> A variable name in BEAM SSA is either an atom, a non-negative integer or a tuple: <code>atom() | non_neg_integer() | {atom() | non_neg_integer(), non_neg_integer()}</code>. In order to generate fresh unused variable names, all compiler transforms maintain a counter, the <code>cnt</code>-field in the <code>opt_st</code>-record, which is incremented each time a new variable or label is created. In the following description the value of the <code>cnt</code>-field is called <code>Cnt</code>. </p> <p> Due to peculiarities in the BEAM SSA code generator, a compiler transformation unfortunately cannot just use the <code>cnt</code>-value directly as a fresh name. There are three basic strategies for creating fresh variable names which can by used by a compiler pass: </p> <p> 1) A name can be derived from an existing name of the form <code>V :: atom() | non_neg_integer()</code> by selecting an atom, which is unique to the compiler pass, to form a new name <code>{A, V}</code>. The same <code>A</code> cannot be used by strategy 3) below. </p> <p> 2) A name can be derived from an existing name of the form <code>V :: non_neg_integer()</code> by combining it with the <code>cnt</code>-field into <code>{V, Cnt}</code>. </p> <p> 3) A fresh name can be created by selecting an atom <code>A</code>, which is unique to the compiler pass, to form the new name <code>{A, Cnt}</code>. The same <code>A</code> cannot be used by strategy 1) above. </p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2023 Ericsson AB<br>Licensed under the Apache License, Version 2.0.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
