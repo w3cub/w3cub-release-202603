@@ -1,0 +1,153 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Hashing - Laravel 11 - W3cubDocs</title>
+  
+  <meta name="description" content="The Laravel Hash facade provides secure Bcrypt and Argon2 hashing for storing user passwords. If you are using one of the Laravel application &hellip;">
+  <meta name="keywords" content="hashing, laravel, laravel~11">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/laravel~11/docs/11.x/hashing.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/laravel~11.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/laravel~11/" class="_nav-link" title="" style="margin-left:0;">Laravel 11</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _laravel">
+				
+				
+<h1>Hashing</h1> <ul> <li> <a href="#introduction">Introduction</a> </li> <li> <a href="#configuration">Configuration</a> </li> <li> <a href="#basic-usage">Basic Usage</a> <ul> <li> <a href="#hashing-passwords">Hashing Passwords</a> </li> <li> <a href="#verifying-that-a-password-matches-a-hash">Verifying That a Password Matches a Hash</a> </li> <li> <a href="#determining-if-a-password-needs-to-be-rehashed">Determining if a Password Needs to be Rehashed</a> </li> </ul> </li> <li> <a href="#hash-algorithm-verification">Hash Algorithm Verification</a> </li> </ul>  <h2 id="introduction">Introduction</h2> <p>The Laravel <code>Hash</code> <a href="facades">facade</a> provides secure Bcrypt and Argon2 hashing for storing user passwords. If you are using one of the <a href="starter-kits">Laravel application starter kits</a>, Bcrypt will be used for registration and authentication by default.</p> <p>Bcrypt is a great choice for hashing passwords because its "work factor" is adjustable, which means that the time it takes to generate a hash can be increased as hardware power increases. When hashing passwords, slow is good. The longer an algorithm takes to hash a password, the longer it takes malicious users to generate "rainbow tables" of all possible string hash values that may be used in brute force attacks against applications.</p>  <h2 id="configuration">Configuration</h2> <p>By default, Laravel uses the <code>bcrypt</code> hashing driver when hashing data. However, several other hashing drivers are supported, including <a href="https://en.wikipedia.org/wiki/Argon2"><code>argon</code></a> and <a href="https://en.wikipedia.org/wiki/Argon2"><code>argon2id</code></a>.</p> <p>You may specify your application's hashing driver using the <code>HASH_DRIVER</code> environment variable. But, if you want to customize all of Laravel's hashing driver options, you should publish the complete <code>hashing</code> configuration file using the <code>config:publish</code> Artisan command:</p> <div class="code-container"> <pre data-language="bash">php artisan config:publish hashing</pre> </div>  <h2 id="basic-usage">Basic Usage</h2>  <h3 id="hashing-passwords">Hashing Passwords</h3> <p>You may hash a password by calling the <code>make</code> method on the <code>Hash</code> facade:</p> <pre data-language="php">&lt;?php
+ 
+namespace App\Http\Controllers;
+ 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+ 
+class PasswordController extends Controller
+{
+    /**
+     * Update the password for the user.
+     */
+    public function update(Request $request): RedirectResponse
+    {
+        // Validate the new password length...
+ 
+        $request-&gt;user()-&gt;fill([
+            'password' =&gt; Hash::make($request-&gt;newPassword)
+        ])-&gt;save();
+ 
+        return redirect('/profile');
+    }
+}</pre>  <h4 id="adjusting-the-bcrypt-work-factor">Adjusting The Bcrypt Work Factor</h4> <p>If you are using the Bcrypt algorithm, the <code>make</code> method allows you to manage the work factor of the algorithm using the <code>rounds</code> option; however, the default work factor managed by Laravel is acceptable for most applications:</p> <pre data-language="php">$hashed = Hash::make('password', [
+    'rounds' =&gt; 12,
+]);</pre>  <h4 id="adjusting-the-argon2-work-factor">Adjusting The Argon2 Work Factor</h4> <p>If you are using the Argon2 algorithm, the <code>make</code> method allows you to manage the work factor of the algorithm using the <code>memory</code>, <code>time</code>, and <code>threads</code> options; however, the default values managed by Laravel are acceptable for most applications:</p> <pre data-language="php">$hashed = Hash::make('password', [
+    'memory' =&gt; 1024,
+    'time' =&gt; 2,
+    'threads' =&gt; 2,
+]);</pre> <div class="mb-10 max-w-2xl mx-auto px-4 py-8 shadow-lg lg:flex lg:items-center callout"> <div class="w-20 h-20 mb-6 flex items-center justify-center shrink-0 lg:mb-0 bg-purple-600"> <div class="opacity-75"><svg width="28" height="40" viewbox="0 0 28 40" xmlns="http://www.w3.org/2000/svg"><title>lightbulb</title>
+</svg></div> </div> <p class="mb-0 lg:ml-6 callout"> For more information on these options, please refer to the <a href="https://secure.php.net/manual/en/function.password-hash.php">official PHP documentation regarding Argon hashing</a>.</p> </div>  <h3 id="verifying-that-a-password-matches-a-hash">Verifying That a Password Matches a Hash</h3> <p>The <code>check</code> method provided by the <code>Hash</code> facade allows you to verify that a given plain-text string corresponds to a given hash:</p> <pre data-language="php">if (Hash::check('plain-text', $hashedPassword)) {
+    // The passwords match...
+}</pre>  <h3 id="determining-if-a-password-needs-to-be-rehashed">Determining if a Password Needs to be Rehashed</h3> <p>The <code>needsRehash</code> method provided by the <code>Hash</code> facade allows you to determine if the work factor used by the hasher has changed since the password was hashed. Some applications choose to perform this check during the application's authentication process:</p> <pre data-language="php">if (Hash::needsRehash($hashed)) {
+    $hashed = Hash::make('plain-text');
+}</pre>  <h2 id="hash-algorithm-verification">Hash Algorithm Verification</h2> <p>To prevent hash algorithm manipulation, Laravel's <code>Hash::check</code> method will first verify the given hash was generated using the application's selected hashing algorithm. If the algorithms are different, a <code>RuntimeException</code> exception will be thrown.</p> <p>This is the expected behavior for most applications, where the hashing algorithm is not expected to change and different algorithms can be an indication of a malicious attack. However, if you need to support multiple hashing algorithms within your application, such as when migrating from one algorithm to another, you can disable hash algorithm verification by setting the <code>HASH_VERIFY</code> environment variable to <code>false</code>:</p> <div class="code-container"> <pre data-language="ini">HASH_VERIFY=false</pre> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Taylor Otwell<br>Licensed under the MIT License.<br>Laravel is a trademark of Taylor Otwell.<br>
+    <a href="https://laravel.com/docs/11.x/hashing" class="_attribution-link">https://laravel.com/docs/11.x/hashing</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

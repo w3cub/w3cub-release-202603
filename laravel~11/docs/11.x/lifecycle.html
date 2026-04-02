@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Request Lifecycle - Laravel 11 - W3cubDocs</title>
+  
+  <meta name="description" content="When using any tool in the &#34;real world&#34;, you feel more confident if you understand how that tool works. Application development is no &hellip;">
+  <meta name="keywords" content="request, lifecycle, laravel, laravel~11">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/laravel~11/docs/11.x/lifecycle.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/laravel~11.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/laravel~11/" class="_nav-link" title="" style="margin-left:0;">Laravel 11</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _laravel">
+				
+				
+<h1>Request Lifecycle</h1> <ul> <li> <a href="#introduction">Introduction</a> </li> <li> <a href="#lifecycle-overview">Lifecycle Overview</a> <ul> <li> <a href="#first-steps">First Steps</a> </li> <li> <a href="#http-console-kernels">HTTP / Console Kernels</a> </li> <li> <a href="#service-providers">Service Providers</a> </li> <li> <a href="#routing">Routing</a> </li> <li> <a href="#finishing-up">Finishing Up</a> </li> </ul> </li> <li> <a href="#focus-on-service-providers">Focus on Service Providers</a> </li> </ul>  <h2 id="introduction">Introduction</h2> <p>When using any tool in the "real world", you feel more confident if you understand how that tool works. Application development is no different. When you understand how your development tools function, you feel more comfortable and confident using them.</p> <p>The goal of this document is to give you a good, high-level overview of how the Laravel framework works. By getting to know the overall framework better, everything feels less "magical" and you will be more confident building your applications. If you don't understand all of the terms right away, don't lose heart! Just try to get a basic grasp of what is going on, and your knowledge will grow as you explore other sections of the documentation.</p>  <h2 id="lifecycle-overview">Lifecycle Overview</h2>  <h3 id="first-steps">First Steps</h3> <p>The entry point for all requests to a Laravel application is the <code>public/index.php</code> file. All requests are directed to this file by your web server (Apache / Nginx) configuration. The <code>index.php</code> file doesn't contain much code. Rather, it is a starting point for loading the rest of the framework.</p> <p>The <code>index.php</code> file loads the Composer generated autoloader definition, and then retrieves an instance of the Laravel application from <code>bootstrap/app.php</code>. The first action taken by Laravel itself is to create an instance of the application / <a href="container">service container</a>.</p>  <h3 id="http-console-kernels">HTTP / Console Kernels</h3> <p>Next, the incoming request is sent to either the HTTP kernel or the console kernel, using the <code>handleRequest</code> or <code>handleCommand</code> methods of the application instance, depending on the type of request entering the application. These two kernels serve as the central location through which all requests flow. For now, let's just focus on the HTTP kernel, which is an instance of <code>Illuminate\Foundation\Http\Kernel</code>.</p> <p>The HTTP kernel defines an array of <code>bootstrappers</code> that will be run before the request is executed. These bootstrappers configure error handling, configure logging, <a href="configuration#environment-configuration">detect the application environment</a>, and perform other tasks that need to be done before the request is actually handled. Typically, these classes handle internal Laravel configuration that you do not need to worry about.</p> <p>The HTTP kernel is also responsible for passing the request through the application's middleware stack. These middleware handle reading and writing the <a href="session">HTTP session</a>, determining if the application is in maintenance mode, <a href="csrf">verifying the CSRF token</a>, and more. We'll talk more about these soon.</p> <p>The method signature for the HTTP kernel's <code>handle</code> method is quite simple: it receives a <code>Request</code> and returns a <code>Response</code>. Think of the kernel as being a big black box that represents your entire application. Feed it HTTP requests and it will return HTTP responses.</p>  <h3 id="service-providers">Service Providers</h3> <p>One of the most important kernel bootstrapping actions is loading the <a href="providers">service providers</a> for your application. Service providers are responsible for bootstrapping all of the framework's various components, such as the database, queue, validation, and routing components.</p> <p>Laravel will iterate through this list of providers and instantiate each of them. After instantiating the providers, the <code>register</code> method will be called on all of the providers. Then, once all of the providers have been registered, the <code>boot</code> method will be called on each provider. This is so service providers may depend on every container binding being registered and available by the time their <code>boot</code> method is executed.</p> <p>Essentially every major feature offered by Laravel is bootstrapped and configured by a service provider. Since they bootstrap and configure so many features offered by the framework, service providers are the most important aspect of the entire Laravel bootstrap process.</p> <p>While the framework internally uses dozens of service providers, you also have the option to create your own. You can find a list of the user-defined or third-party service providers that your application is using in the <code>bootstrap/providers.php</code> file.</p>  <h3 id="routing">Routing</h3> <p>Once the application has been bootstrapped and all service providers have been registered, the <code>Request</code> will be handed off to the router for dispatching. The router will dispatch the request to a route or controller, as well as run any route specific middleware.</p> <p>Middleware provide a convenient mechanism for filtering or examining HTTP requests entering your application. For example, Laravel includes a middleware that verifies if the user of your application is authenticated. If the user is not authenticated, the middleware will redirect the user to the login screen. However, if the user is authenticated, the middleware will allow the request to proceed further into the application. Some middleware are assigned to all routes within the application, like <code>PreventRequestsDuringMaintenance</code>, while some are only assigned to specific routes or route groups. You can learn more about middleware by reading the complete <a href="middleware">middleware documentation</a>.</p> <p>If the request passes through all of the matched route's assigned middleware, the route or controller method will be executed and the response returned by the route or controller method will be sent back through the route's chain of middleware.</p>  <h3 id="finishing-up">Finishing Up</h3> <p>Once the route or controller method returns a response, the response will travel back outward through the route's middleware, giving the application a chance to modify or examine the outgoing response.</p> <p>Finally, once the response travels back through the middleware, the HTTP kernel's <code>handle</code> method returns the response object to the <code>handleRequest</code> of the application instance, and this method calls the <code>send</code> method on the returned response. The <code>send</code> method sends the response content to the user's web browser. We've now completed our journey through the entire Laravel request lifecycle!</p>  <h2 id="focus-on-service-providers">Focus on Service Providers</h2> <p>Service providers are truly the key to bootstrapping a Laravel application. The application instance is created, the service providers are registered, and the request is handed to the bootstrapped application. It's really that simple!</p> <p>Having a firm grasp of how a Laravel application is built and bootstrapped via service providers is very valuable. Your application's user-defined service providers are stored in the <code>app/Providers</code> directory.</p> <p>By default, the <code>AppServiceProvider</code> is fairly empty. This provider is a great place to add your application's own bootstrapping and service container bindings. For large applications, you may wish to create several service providers, each with more granular bootstrapping for specific services used by your application.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Taylor Otwell<br>Licensed under the MIT License.<br>Laravel is a trademark of Taylor Otwell.<br>
+    <a href="https://laravel.com/docs/11.x/lifecycle" class="_attribution-link">https://laravel.com/docs/11.x/lifecycle</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
