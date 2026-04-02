@@ -1,0 +1,210 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WebSocketSubjectConfig - RxJS - W3cubDocs</title>
+  
+  <meta name="description" content=" interface stable ">
+  <meta name="keywords" content="websocketsubjectconfig, rxjs">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rxjs/api/websocket/websocketsubjectconfig.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rxjs.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rxjs/" class="_nav-link" title="" style="margin-left:0;">RxJS</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rxjs">
+				
+				
+<h1 id="websocketsubjectconfig">WebSocketSubjectConfig</h1> <p><code class="api-type-label interface">interface</code> <code class="api-status-label stable">stable</code></p>   <aio-toc class="embedded"></aio-toc> <div class="api-body"> 
+<p>WebSocketSubjectConfig is a plain Object that allows us to make our webSocket configurable.</p>   <pre data-language="typescript">interface WebSocketSubjectConfig&lt;T&gt; {
+  url: string
+  protocol?: string | Array&lt;string&gt;
+  resultSelector?: (e: MessageEvent) =&gt; T
+  serializer?: (value: T) =&gt; WebSocketMessage
+  deserializer?: (e: MessageEvent) =&gt; T
+  openObserver?: NextObserver&lt;Event&gt;
+  closeObserver?: NextObserver&lt;CloseEvent&gt;
+  closingObserver?: NextObserver&lt;void&gt;
+  WebSocketCtor?: {...}
+  binaryType?: 'blob' | 'arraybuffer'
+}</pre>   <h2 id="description">Description</h2> <p><span class="informal">Provides flexibility to <a href="websocket"><code>webSocket</code></a></span></p> <p>It defines a set of properties to provide custom behavior in specific moments of the socket's lifecycle. When the connection opens we can use <code>openObserver</code>, when the connection is closed <code>closeObserver</code>, if we are interested in listening for data coming from server: <code>deserializer</code>, which allows us to customize the deserialization strategy of data before passing it to the socket client. By default, <code>deserializer</code> is going to apply <code>JSON.parse</code> to each message coming from the Server.</p> <h2 id="examples">Examples</h2> <p><strong>deserializer</strong>, the default for this property is <code>JSON.parse</code> but since there are just two options for incoming data, either be text or binary data. We can apply a custom deserialization strategy or just simply skip the default behaviour.</p> <pre data-language="typescript">import { webSocket } from 'rxjs/webSocket';
+
+const wsSubject = webSocket({
+  url: 'ws://localhost:8081',
+  //Apply any transformation of your choice.
+  deserializer: ({ data }) =&gt; data
+});
+
+wsSubject.subscribe(console.log);
+
+// Let's suppose we have this on the Server: ws.send('This is a msg from the server')
+//output
+//
+// This is a msg from the server</pre> <p><strong>serializer</strong> allows us to apply custom serialization strategy but for the outgoing messages.</p> <pre data-language="typescript">import { webSocket } from 'rxjs/webSocket';
+
+const wsSubject = webSocket({
+  url: 'ws://localhost:8081',
+  // Apply any transformation of your choice.
+  serializer: msg =&gt; JSON.stringify({ channel: 'webDevelopment', msg: msg })
+});
+
+wsSubject.subscribe(() =&gt; subject.next('msg to the server'));
+
+// Let's suppose we have this on the Server:
+//   ws.on('message', msg =&gt; console.log);
+//   ws.send('This is a msg from the server');
+// output at server side:
+//
+// {"channel":"webDevelopment","msg":"msg to the server"}</pre> <p><strong>closeObserver</strong> allows us to set a custom error when an error raises up.</p> <pre data-language="typescript">import { webSocket } from 'rxjs/webSocket';
+
+const wsSubject = webSocket({
+  url: 'ws://localhost:8081',
+  closeObserver: {
+    next() {
+      const customError = { code: 6666, reason: 'Custom evil reason' }
+      console.log(`code: ${ customError.code }, reason: ${ customError.reason }`);
+    }
+  }
+});
+
+// output
+// code: 6666, reason: Custom evil reason</pre> <p><strong>openObserver</strong>, Let's say we need to make some kind of init task before sending/receiving msgs to the webSocket or sending notification that the connection was successful, this is when openObserver is useful for.</p> <pre data-language="typescript">import { webSocket } from 'rxjs/webSocket';
+
+const wsSubject = webSocket({
+  url: 'ws://localhost:8081',
+  openObserver: {
+    next: () =&gt; {
+      console.log('Connection ok');
+    }
+  }
+});
+
+// output
+// Connection ok</pre>   <h2 id="properties">Properties</h2> <table> <thead> <tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr> </thead> <tbody> <tr class="instance-property"> <td>
+<code class="">url</code>
+</td> <td><code class="property-type-label">string</code></td> <td> <p>The url of the socket server to connect to</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="">protocol</code>
+</td> <td><code class="property-type-label">string | Array&lt;string&gt;</code></td> <td> <p>The protocol to use to connect</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="deprecated-api-item">resultSelector</code>
+</td> <td><code class="property-type-label">(e: MessageEvent) =&gt; T</code></td> <td> </td> </tr> <tr class="instance-property"> <td>
+<code class="">serializer</code>
+</td> <td><code class="property-type-label">(value: T) =&gt; WebSocketMessage</code></td> <td> <p>A serializer used to create messages from passed values before the messages are sent to the server. Defaults to JSON.stringify.</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="">deserializer</code>
+</td> <td><code class="property-type-label">(e: MessageEvent) =&gt; T</code></td> <td> <p>A deserializer used for messages arriving on the socket from the server. Defaults to JSON.parse.</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="">openObserver</code>
+</td> <td><code class="property-type-label"><a href="https://rxjs.dev/api/index/interface/NextObserver" class="code-anchor">NextObserver</a>&lt;Event&gt;</code></td> <td> <p>An Observer that watches when open events occur on the underlying web socket.</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="">closeObserver</code>
+</td> <td><code class="property-type-label"><a href="https://rxjs.dev/api/index/interface/NextObserver" class="code-anchor">NextObserver</a>&lt;CloseEvent&gt;</code></td> <td> <p>An Observer that watches when close events occur on the underlying web socket</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="">closingObserver</code>
+</td> <td><code class="property-type-label"><a href="https://rxjs.dev/api/index/interface/NextObserver" class="code-anchor">NextObserver</a>&lt;void&gt;</code></td> <td> <p>An Observer that watches when a close is about to occur due to unsubscription.</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="">WebSocketCtor</code>
+</td> <td><code class="property-type-label">{
+    new (url: string, protocols?: string | string[]): WebSocket;
+}</code></td> <td> <p>A WebSocket constructor to use. This is useful for situations like using a WebSocket impl in Node (WebSocket is a DOM API), or for mocking a WebSocket for testing purposes</p> </td> </tr> <tr class="instance-property"> <td>
+<code class="">binaryType</code>
+</td> <td><code class="property-type-label">'blob' | 'arraybuffer'</code></td> <td> <p>Sets the <code>binaryType</code> property of the underlying WebSocket.</p> </td> </tr> </tbody> </table>  </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2015–2022 Google, Inc., Netflix, Inc., Microsoft Corp. and contributors.<br>Code licensed under an Apache-2.0 License. Documentation licensed under CC BY 4.0.<br>
+    <a href="https://rxjs.dev/api/webSocket/WebSocketSubjectConfig" class="_attribution-link">https://rxjs.dev/api/webSocket/WebSocketSubjectConfig</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
