@@ -1,0 +1,126 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Shutdown - Redis - W3cubDocs</title>
+  
+  <meta name="description" content=" The command behavior is the following&#58; ">
+  <meta name="keywords" content="shutdown, redis">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/redis/shutdown/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/redis.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/redis/" class="_nav-link" title="" style="margin-left:0;">Redis</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _redis">
+				
+				
+<h1 class="command-name">SHUTDOWN</h1>
+<pre>SHUTDOWN</pre> <div class="font-semibold text-slate-900">Syntax</div> <pre class="command-syntax">SHUTDOWN [NOSAVE | SAVE] [NOW] [FORCE] [ABORT]</pre> <dl class="grid grid-cols-[auto,1fr] gap-x-2 mb-12"> <dt class="font-semibold text-slate-900">Available since:</dt> <dd>1.0.0</dd> <dt class="font-semibold text-slate-900">Time complexity:</dt> <dd>O(N) when saving, where N is the total number of keys in all databases when saving data, otherwise O(1)</dd> <dt class="font-semibold text-slate-900">ACL categories:</dt> <dd> <code>@admin</code><span class="mr-1 last:hidden">,</span> <code>@slow</code><span class="mr-1 last:hidden">,</span> <code>@dangerous</code><span class="mr-1 last:hidden">,</span> </dd> </dl> <p>The command behavior is the following:</p> <ul> <li>If there are any replicas lagging behind in replication: <ul> <li>Pause clients attempting to write by performing a <a href="../client-pause"><code>CLIENT PAUSE</code></a> with the <code>WRITE</code> option.</li> <li>Wait up to the configured <code>shutdown-timeout</code> (default 10 seconds) for replicas to catch up the replication offset.</li> </ul> </li> <li>Stop all the clients.</li> <li>Perform a blocking SAVE if at least one <strong>save point</strong> is configured.</li> <li>Flush the Append Only File if AOF is enabled.</li> <li>Quit the server.</li> </ul> <p>If persistence is enabled this commands makes sure that Redis is switched off without any data loss.</p> <p>Note: A Redis instance that is configured for not persisting on disk (no AOF configured, nor "save" directive) will not dump the RDB file on <code>SHUTDOWN</code>, as usually you don't want Redis instances used only for caching to block on when shutting down.</p> <p>Also note: If Redis receives one of the signals <code>SIGTERM</code> and <code>SIGINT</code>, the same shutdown sequence is performed. See also <a href="https://redis.io/topics/signals">Signal Handling</a>.</p> <h2 id="modifiers">Modifiers</h2> <p>It is possible to specify optional modifiers to alter the behavior of the command. Specifically:</p> <ul> <li>
+<strong>SAVE</strong> will force a DB saving operation even if no save points are configured.</li> <li>
+<strong>NOSAVE</strong> will prevent a DB saving operation even if one or more save points are configured.</li> <li>
+<strong>NOW</strong> skips waiting for lagging replicas, i.e. it bypasses the first step in the shutdown sequence.</li> <li>
+<strong>FORCE</strong> ignores any errors that would normally prevent the server from exiting. For details, see the following section.</li> <li>
+<strong>ABORT</strong> cancels an ongoing shutdown and cannot be combined with other flags.</li> </ul> <h2 id="conditions-where-a-shutdown-fails">Conditions where a SHUTDOWN fails</h2> <p>When a save point is configured or the <strong>SAVE</strong> modifier is specified, the shutdown may fail if the RDB file can't be saved. Then, the server continues to run in order to ensure no data loss. This may be bypassed using the <strong>FORCE</strong> modifier, causing the server to exit anyway.</p> <p>When the Append Only File is enabled the shutdown may fail because the system is in a state that does not allow to safely immediately persist on disk.</p> <p>Normally if there is an AOF child process performing an AOF rewrite, Redis will simply kill it and exit. However, there are situations where it is unsafe to do so and, unless the <strong>FORCE</strong> modifier is specified, the <strong>SHUTDOWN</strong> command will be refused with an error instead. This happens in the following situations:</p> <ul> <li>The user just turned on AOF, and the server triggered the first AOF rewrite in order to create the initial AOF file. In this context, stopping will result in losing the dataset at all: once restarted, the server will potentially have AOF enabled without having any AOF file at all.</li> <li>A replica with AOF enabled, reconnected with its master, performed a full resynchronization, and restarted the AOF file, triggering the initial AOF creation process. In this case not completing the AOF rewrite is dangerous because the latest dataset received from the master would be lost. The new master can actually be even a different instance (if the <strong>REPLICAOF</strong> or <strong>SLAVEOF</strong> command was used in order to reconfigure the replica), so it is important to finish the AOF rewrite and start with the correct data set representing the data set in memory when the server was terminated.</li> </ul> <p>There are situations when we want just to terminate a Redis instance ASAP, regardless of what its content is. In such a case, the command <strong>SHUTDOWN NOW NOSAVE FORCE</strong> can be used. In versions before 7.0, where the <strong>NOW</strong> and <strong>FORCE</strong> flags are not available, the right combination of commands is to send a <strong>CONFIG appendonly no</strong> followed by a <strong>SHUTDOWN NOSAVE</strong>. The first command will turn off the AOF if needed, and will terminate the AOF rewriting child if there is one active. The second command will not have any problem to execute since the AOF is no longer enabled.</p> <h2 id="minimize-the-risk-of-data-loss">Minimize the risk of data loss</h2> <p>Since Redis 7.0, the server waits for lagging replicas up to a configurable <code>shutdown-timeout</code>, by default 10 seconds, before shutting down. This provides a best effort minimizing the risk of data loss in a situation where no save points are configured and AOF is disabled. Before version 7.0, shutting down a heavily loaded master node in a diskless setup was more likely to result in data loss. To minimize the risk of data loss in such setups, it's advised to trigger a manual <a href="../failover"><code>FAILOVER</code></a> (or <a href="../cluster-failover"><code>CLUSTER FAILOVER</code></a>) to demote the master to a replica and promote one of the replicas to be the new master, before shutting down a master node.</p> <h2 id="return">Return</h2> <p><a href="https://redis.io/docs/reference/protocol-spec#resp-simple-strings">Simple string reply</a>: <code>OK</code> if <code>ABORT</code> was specified and shutdown was aborted. On successful shutdown, nothing is returned since the server quits and the connection is closed. On failure, an error is returned.</p> <h2 id="behavior-change-history">Behavior change history</h2> <ul> <li>
+<code>&gt;= 7.0.0</code>: Introduced waiting for lagging replicas before exiting.</li> </ul> <h2>History</h2> <ul> <li>Starting with Redis version 7.0.0: Added the <code>NOW</code>, <code>FORCE</code> and <code>ABORT</code> modifiers.</li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2006–2022 Salvatore Sanfilippo<br>Licensed under the Creative Commons Attribution-ShareAlike License 4.0.<br>
+    <a href="https://redis.io/commands/shutdown/" class="_attribution-link">https://redis.io/commands/shutdown/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Cluster Forget - Redis - W3cubDocs</title>
+  
+  <meta name="description" content="The command is used in order to remove a node, specified via its node ID, from the set of known nodes of the Redis Cluster node receiving the &hellip;">
+  <meta name="keywords" content="cluster, forget, redis">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/redis/cluster-forget/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/redis.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/redis/" class="_nav-link" title="" style="margin-left:0;">Redis</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _redis">
+				
+				
+<h1 class="command-name">CLUSTER</h1>
+<pre>CLUSTER FORGET</pre> <div class="font-semibold text-slate-900">Syntax</div> <pre class="command-syntax">CLUSTER FORGET node-id</pre> <dl class="grid grid-cols-[auto,1fr] gap-x-2 mb-12"> <dt class="font-semibold text-slate-900">Available since:</dt> <dd>3.0.0</dd> <dt class="font-semibold text-slate-900">Time complexity:</dt> <dd>O(1)</dd> <dt class="font-semibold text-slate-900">ACL categories:</dt> <dd> <code>@admin</code><span class="mr-1 last:hidden">,</span> <code>@slow</code><span class="mr-1 last:hidden">,</span> <code>@dangerous</code><span class="mr-1 last:hidden">,</span> </dd> </dl> <p>The command is used in order to remove a node, specified via its node ID, from the set of <em>known nodes</em> of the Redis Cluster node receiving the command. In other words the specified node is removed from the <em>nodes table</em> of the node receiving the command.</p> <p>Because when a given node is part of the cluster, all the other nodes participating in the cluster knows about it, in order for a node to be completely removed from a cluster, the <code>CLUSTER FORGET</code> command must be sent to all the remaining nodes, regardless of the fact they are masters or replicas.</p> <p>However the command cannot simply drop the node from the internal node table of the node receiving the command, it also implements a ban-list, not allowing the same node to be added again as a side effect of processing the <em>gossip section</em> of the heartbeat packets received from other nodes.</p> <h2 id="details-on-why-the-ban-list-is-needed">Details on why the ban-list is needed</h2> <p>In the following example we'll show why the command must not just remove a given node from the nodes table, but also prevent it for being re-inserted again for some time.</p> <p>Let's assume we have four nodes, A, B, C and D. In order to end with just a three nodes cluster A, B, C we may follow these steps:</p> <ol> <li>Reshard all the hash slots from D to nodes A, B, C.</li> <li>D is now empty, but still listed in the nodes table of A, B and C.</li> <li>We contact A, and send <code>CLUSTER FORGET D</code>.</li> <li>B sends node A a heartbeat packet, where node D is listed.</li> <li>A does no longer known node D (see step 3), so it starts a handshake with D.</li> <li>D ends re-added in the nodes table of A.</li> </ol> <p>As you can see in this way removing a node is fragile, we need to send <code>CLUSTER FORGET</code> commands to all the nodes ASAP hoping there are no gossip sections processing in the meantime. Because of this problem the command implements a ban-list with an expire time for each entry.</p> <p>So what the command really does is:</p> <ol> <li>The specified node gets removed from the nodes table.</li> <li>The node ID of the removed node gets added to the ban-list, for 1 minute.</li> <li>The node will skip all the node IDs listed in the ban-list when processing gossip sections received in heartbeat packets from other nodes.</li> </ol> <p>This way we have a 60 second window to inform all the nodes in the cluster that we want to remove a node.</p> <h2 id="special-conditions-not-allowing-the-command-execution">Special conditions not allowing the command execution</h2> <p>The command does not succeed and returns an error in the following cases:</p> <ol> <li>The specified node ID is not found in the nodes table.</li> <li>The node receiving the command is a replica, and the specified node ID identifies its current master.</li> <li>The node ID identifies the same node we are sending the command to.</li> </ol> <h2 id="return">Return</h2> <p><a href="https://redis.io/docs/reference/protocol-spec#resp-simple-strings">Simple string reply</a>: <code>OK</code> if the command was executed successfully, otherwise an error is returned.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2006–2022 Salvatore Sanfilippo<br>Licensed under the Creative Commons Attribution-ShareAlike License 4.0.<br>
+    <a href="https://redis.io/commands/cluster-forget/" class="_attribution-link">https://redis.io/commands/cluster-forget/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

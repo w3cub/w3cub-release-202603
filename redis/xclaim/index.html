@@ -1,0 +1,132 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Xclaim - Redis - W3cubDocs</title>
+  
+  <meta name="description" content="In the context of a stream consumer group, this command changes the ownership of a pending message, so that the new owner is the consumer specified &hellip;">
+  <meta name="keywords" content="xclaim, redis">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/redis/xclaim/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/redis.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/redis/" class="_nav-link" title="" style="margin-left:0;">Redis</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _redis">
+				
+				
+<h1 class="command-name">XCLAIM</h1>
+<pre>XCLAIM</pre> <div class="font-semibold text-slate-900">Syntax</div> <pre class="command-syntax">XCLAIM key group consumer min-idle-time id [id ...] [IDLE ms]
+  [TIME unix-time-milliseconds] [RETRYCOUNT count] [FORCE] [JUSTID]
+  [LASTID lastid]</pre> <dl class="grid grid-cols-[auto,1fr] gap-x-2 mb-12"> <dt class="font-semibold text-slate-900">Available since:</dt> <dd>5.0.0</dd> <dt class="font-semibold text-slate-900">Time complexity:</dt> <dd>O(log N) with N being the number of messages in the PEL of the consumer group.</dd> <dt class="font-semibold text-slate-900">ACL categories:</dt> <dd> <code>@write</code><span class="mr-1 last:hidden">,</span> <code>@stream</code><span class="mr-1 last:hidden">,</span> <code>@fast</code><span class="mr-1 last:hidden">,</span> </dd> </dl> <p>In the context of a stream consumer group, this command changes the ownership of a pending message, so that the new owner is the consumer specified as the command argument. Normally this is what happens:</p> <ol> <li>There is a stream with an associated consumer group.</li> <li>Some consumer A reads a message via <a href="../xreadgroup"><code>XREADGROUP</code></a> from a stream, in the context of that consumer group.</li> <li>As a side effect a pending message entry is created in the Pending Entries List (PEL) of the consumer group: it means the message was delivered to a given consumer, but it was not yet acknowledged via <a href="../xack"><code>XACK</code></a>.</li> <li>Then suddenly that consumer fails forever.</li> <li>Other consumers may inspect the list of pending messages, that are stale for quite some time, using the <a href="../xpending"><code>XPENDING</code></a> command. In order to continue processing such messages, they use <code>XCLAIM</code> to acquire the ownership of the message and continue. Consumers can also use the <a href="../xautoclaim"><code>XAUTOCLAIM</code></a> command to automatically scan and claim stale pending messages.</li> </ol> <p>This dynamic is clearly explained in the <a href="https://redis.io/topics/streams-intro">Stream intro documentation</a>.</p> <p>Note that the message is claimed only if its idle time is greater than the minimum idle time we specify when calling <code>XCLAIM</code>. Because as a side effect <code>XCLAIM</code> will also reset the idle time (since this is a new attempt at processing the message), two consumers trying to claim a message at the same time will never both succeed: only one will successfully claim the message. This avoids that we process a given message multiple times in a trivial way (yet multiple processing is possible and unavoidable in the general case).</p> <p>Moreover, as a side effect, <code>XCLAIM</code> will increment the count of attempted deliveries of the message unless the <code>JUSTID</code> option has been specified (which only delivers the message ID, not the message itself). In this way messages that cannot be processed for some reason, for instance because the consumers crash attempting to process them, will start to have a larger counter and can be detected inside the system.</p> <p><code>XCLAIM</code> will not claim a message in the following cases:</p> <ol> <li>The message doesn't exist in the group PEL (i.e. it was never read by any consumer)</li> <li>The message exists in the group PEL but not in the stream itself (i.e. the message was read but never acknowledged, and then was deleted from the stream, either by trimming or by <a href="../xdel"><code>XDEL</code></a>)</li> </ol> <p>In both cases the reply will not contain a corresponding entry to that message (i.e. the length of the reply array may be smaller than the number of IDs provided to <code>XCLAIM</code>). In the latter case, the message will also be deleted from the PEL in which it was found. This feature was introduced in Redis 7.0.</p> <h2 id="command-options">Command options</h2> <p>The command has multiple options, however most are mainly for internal use in order to transfer the effects of <code>XCLAIM</code> or other commands to the AOF file and to propagate the same effects to the replicas, and are unlikely to be useful to normal users:</p> <ol> <li>
+<code>IDLE &lt;ms&gt;</code>: Set the idle time (last time it was delivered) of the message. If IDLE is not specified, an IDLE of 0 is assumed, that is, the time count is reset because the message has now a new owner trying to process it.</li> <li>
+<code>TIME &lt;ms-unix-time&gt;</code>: This is the same as IDLE but instead of a relative amount of milliseconds, it sets the idle time to a specific Unix time (in milliseconds). This is useful in order to rewrite the AOF file generating <code>XCLAIM</code> commands.</li> <li>
+<code>RETRYCOUNT &lt;count&gt;</code>: Set the retry counter to the specified value. This counter is incremented every time a message is delivered again. Normally <code>XCLAIM</code> does not alter this counter, which is just served to clients when the XPENDING command is called: this way clients can detect anomalies, like messages that are never processed for some reason after a big number of delivery attempts.</li> <li>
+<code>FORCE</code>: Creates the pending message entry in the PEL even if certain specified IDs are not already in the PEL assigned to a different client. However the message must be exist in the stream, otherwise the IDs of non existing messages are ignored.</li> <li>
+<code>JUSTID</code>: Return just an array of IDs of messages successfully claimed, without returning the actual message. Using this option means the retry counter is not incremented.</li> </ol> <h2 id="return">Return</h2> <p><a href="https://redis.io/docs/reference/protocol-spec#resp-arrays">Array reply</a>, specifically:</p> <p>The command returns all the messages successfully claimed, in the same format as <a href="../xrange"><code>XRANGE</code></a>. However if the <code>JUSTID</code> option was specified, only the message IDs are reported, without including the actual message.</p> <h2 id="examples">Examples</h2> <pre tabindex="0">&gt; XCLAIM mystream mygroup Alice 3600000 1526569498055-0
+1) 1) 1526569498055-0
+   2) 1) "message"
+      2) "orange"
+</pre>
+<p>In the above example we claim the message with ID <code>1526569498055-0</code>, only if the message is idle for at least one hour without the original consumer or some other consumer making progresses (acknowledging or claiming it), and assigns the ownership to the consumer <code>Alice</code>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2006–2022 Salvatore Sanfilippo<br>Licensed under the Creative Commons Attribution-ShareAlike License 4.0.<br>
+    <a href="https://redis.io/commands/xclaim/" class="_attribution-link">https://redis.io/commands/xclaim/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

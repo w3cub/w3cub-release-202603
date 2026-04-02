@@ -1,0 +1,123 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Failover - Redis - W3cubDocs</title>
+  
+  <meta name="description" content="This command will start a coordinated failover between the currently-connected-to master and one of its replicas. The failover is not synchronous, &hellip;">
+  <meta name="keywords" content="failover, redis">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/redis/failover/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/redis.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/redis/" class="_nav-link" title="" style="margin-left:0;">Redis</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _redis">
+				
+				
+<h1 class="command-name">FAILOVER</h1>
+<pre>FAILOVER</pre> <div class="font-semibold text-slate-900">Syntax</div> <pre class="command-syntax">FAILOVER [TO host port [FORCE]] [ABORT] [TIMEOUT milliseconds]</pre> <dl class="grid grid-cols-[auto,1fr] gap-x-2 mb-12"> <dt class="font-semibold text-slate-900">Available since:</dt> <dd>6.2.0</dd> <dt class="font-semibold text-slate-900">Time complexity:</dt> <dd>O(1)</dd> <dt class="font-semibold text-slate-900">ACL categories:</dt> <dd> <code>@admin</code><span class="mr-1 last:hidden">,</span> <code>@slow</code><span class="mr-1 last:hidden">,</span> <code>@dangerous</code><span class="mr-1 last:hidden">,</span> </dd> </dl> <p>This command will start a coordinated failover between the currently-connected-to master and one of its replicas. The failover is not synchronous, instead a background task will handle coordinating the failover. It is designed to limit data loss and unavailability of the cluster during the failover. This command is analogous to the <a href="../cluster-failover"><code>CLUSTER FAILOVER</code></a> command for non-clustered Redis and is similar to the failover support provided by sentinel.</p> <p>The specific details of the default failover flow are as follows:</p> <ol> <li>The master will internally start a <code>CLIENT PAUSE WRITE</code>, which will pause incoming writes and prevent the accumulation of new data in the replication stream.</li> <li>The master will monitor its replicas, waiting for a replica to indicate that it has fully consumed the replication stream. If the master has multiple replicas, it will only wait for the first replica to catch up.</li> <li>The master will then demote itself to a replica. This is done to prevent any dual master scenarios. NOTE: The master will not discard its data, so it will be able to rollback if the replica rejects the failover request in the next step.</li> <li>The previous master will send a special PSYNC request to the target replica, <code>PSYNC FAILOVER</code>, instructing the target replica to become a master.</li> <li>Once the previous master receives acknowledgement the <code>PSYNC FAILOVER</code> was accepted it will unpause its clients. If the PSYNC request is rejected, the master will abort the failover and return to normal.</li> </ol> <p>The field <code>master_failover_state</code> in <code>INFO replication</code> can be used to track the current state of the failover, which has the following values:</p> <ul> <li>
+<code>no-failover</code>: There is no ongoing coordinated failover.</li> <li>
+<code>waiting-for-sync</code>: The master is waiting for the replica to catch up to its replication offset.</li> <li>
+<code>failover-in-progress</code>: The master has demoted itself, and is attempting to hand off ownership to a target replica.</li> </ul> <p>If the previous master had additional replicas attached to it, they will continue replicating from it as chained replicas. You will need to manually execute a <a href="../replicaof"><code>REPLICAOF</code></a> on these replicas to start replicating directly from the new master.</p> <h2 id="optional-arguments">Optional arguments</h2> <p>The following optional arguments exist to modify the behavior of the failover flow:</p> <ul> <li> <p><code>TIMEOUT</code> <em>milliseconds</em> -- This option allows specifying a maximum time a master will wait in the <code>waiting-for-sync</code> state before aborting the failover attempt and rolling back. This is intended to set an upper bound on the write outage the Redis cluster can experience. Failovers typically happen in less than a second, but could take longer if there is a large amount of write traffic or the replica is already behind in consuming the replication stream. If this value is not specified, the timeout can be considered to be "infinite".</p> </li> <li> <p><code>TO</code> <em>HOST</em> <em>PORT</em> -- This option allows designating a specific replica, by its host and port, to failover to. The master will wait specifically for this replica to catch up to its replication offset, and then failover to it.</p> </li> <li> <p><code>FORCE</code> -- If both the <code>TIMEOUT</code> and <code>TO</code> options are set, the force flag can also be used to designate that that once the timeout has elapsed, the master should failover to the target replica instead of rolling back. This can be used for a best-effort attempt at a failover without data loss, but limiting write outage.</p> </li> </ul> <p>NOTE: The master will always rollback if the <code>PSYNC FAILOVER</code> request is rejected by the target replica.</p> <h2 id="failover-abort">Failover abort</h2> <p>The failover command is intended to be safe from data loss and corruption, but can encounter some scenarios it can not automatically remediate from and may get stuck. For this purpose, the <code>FAILOVER ABORT</code> command exists, which will abort an ongoing failover and return the master to its normal state. The command has no side effects if issued in the <code>waiting-for-sync</code> state but can introduce multi-master scenarios in the <code>failover-in-progress</code> state. If a multi-master scenario is encountered, you will need to manually identify which master has the latest data and designate it as the master and have the other replicas.</p> <p>NOTE: <a href="../replicaof"><code>REPLICAOF</code></a> is disabled while a failover is in progress, this is to prevent unintended interactions with the failover that might cause data loss.</p> <h2 id="return">Return</h2> <p><a href="https://redis.io/docs/reference/protocol-spec#resp-simple-strings">Simple string reply</a>: <code>OK</code> if the command was accepted and a coordinated failover is in progress. An error if the operation cannot be executed.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2006–2022 Salvatore Sanfilippo<br>Licensed under the Creative Commons Attribution-ShareAlike License 4.0.<br>
+    <a href="https://redis.io/commands/failover/" class="_attribution-link">https://redis.io/commands/failover/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
