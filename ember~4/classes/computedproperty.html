@@ -1,0 +1,246 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>ComputedProperty - Ember.js 4 - W3cubDocs</title>
+  
+  <meta name="description" content="&#64;computed is a decorator that turns a JavaScript getter and setter into a computed property, which is a cached, trackable value. By default the &hellip;">
+  <meta name="keywords" content="class, computedproperty, ember, js, ember~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ember~4/classes/computedproperty.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ember~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ember~4/" class="_nav-link" title="" style="margin-left:0;">Ember.js 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _ember">
+				
+				
+<article class="chapter">  <h1 class="module-name">Class ComputedProperty</h1> <span class="access">public</span> <table>  <tr> <th>Defined in:</th> <td> <a href="https://github.com/emberjs/ember.js/tree/v4.9.1/packages/@ember/-internals/metal/lib/computed.ts#L77" target="_blank" rel="noopener noreferrer">packages/@ember/-internals/metal/lib/computed.ts:77</a> </td> </tr> <tr> <th>Module:</th> <td> <a href="../modules/@ember/object"> @ember/object </a> </td> </tr>  </table> <pre class="highlight javascript" data-language="javascript">import ComputedProperty from '@ember/object/computed';</pre> 
+<p><code>@computed</code> is a decorator that turns a JavaScript getter and setter into a computed property, which is a <em>cached, trackable value</em>. By default the getter will only be called once and the result will be cached. You can specify various properties that your computed property depends on. This will force the cached result to be cleared if the dependencies are modified, and lazily recomputed the next time something asks for it.</p> <p>In the following example we decorate a getter - <code>fullName</code> - by calling <code>computed</code> with the property dependencies (<code>firstName</code> and <code>lastName</code>) as arguments. The <code>fullName</code> getter will be called once (regardless of how many times it is accessed) as long as its dependencies do not change. Once <code>firstName</code> or <code>lastName</code> are updated any future calls to <code>fullName</code> will incorporate the new values, and any watchers of the value such as templates will be updated:</p> <pre class="highlight javascript" data-language="javascript">import { computed, set } from '@ember/object';
+
+class Person {
+  constructor(firstName, lastName) {
+    set(this, 'firstName', firstName);
+    set(this, 'lastName', lastName);
+  }
+
+  @computed('firstName', 'lastName')
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+});
+
+let tom = new Person('Tom', 'Dale');
+
+tom.fullName; // 'Tom Dale'</pre> <p>You can also provide a setter, which will be used when updating the computed property. Ember's <code>set</code> function must be used to update the property since it will also notify observers of the property:</p> <pre class="highlight javascript" data-language="javascript">import { computed, set } from '@ember/object';
+
+class Person {
+  constructor(firstName, lastName) {
+    set(this, 'firstName', firstName);
+    set(this, 'lastName', lastName);
+  }
+
+  @computed('firstName', 'lastName')
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+  set fullName(value) {
+    let [firstName, lastName] = value.split(' ');
+
+    set(this, 'firstName', firstName);
+    set(this, 'lastName', lastName);
+  }
+});
+
+let person = new Person();
+
+set(person, 'fullName', 'Peter Wagenet');
+person.firstName; // 'Peter'
+person.lastName;  // 'Wagenet'</pre> <p>You can also pass a getter function or object with <code>get</code> and <code>set</code> functions as the last argument to the computed decorator. This allows you to define computed property <em>macros</em>:</p> <pre class="highlight javascript" data-language="javascript">import { computed } from '@ember/object';
+
+function join(...keys) {
+  return computed(...keys, function() {
+    return keys.map(key =&gt; this[key]).join(' ');
+  });
+}
+
+class Person {
+  @join('firstName', 'lastName')
+  fullName;
+}</pre> <p>Note that when defined this way, getters and setters receive the <em>key</em> of the property they are decorating as the first argument. Setters receive the value they are setting to as the second argument instead. Additionally, setters must <em>return</em> the value that should be cached:</p> <pre class="highlight javascript" data-language="javascript">import { computed, set } from '@ember/object';
+
+function fullNameMacro(firstNameKey, lastNameKey) {
+  return computed(firstNameKey, lastNameKey, {
+    get() {
+      return `${this[firstNameKey]} ${this[lastNameKey]}`;
+    }
+
+    set(key, value) {
+      let [firstName, lastName] = value.split(' ');
+
+      set(this, firstNameKey, firstName);
+      set(this, lastNameKey, lastName);
+
+      return value;
+    }
+  });
+}
+
+class Person {
+  constructor(firstName, lastName) {
+    set(this, 'firstName', firstName);
+    set(this, 'lastName', lastName);
+  }
+
+  @fullNameMacro('firstName', 'lastName') fullName;
+});
+
+let person = new Person();
+
+set(person, 'fullName', 'Peter Wagenet');
+person.firstName; // 'Peter'
+person.lastName;  // 'Wagenet'</pre> <p>Computed properties can also be used in classic classes. To do this, we provide the getter and setter as the last argument like we would for a macro, and we assign it to a property on the class definition. This is an <em>anonymous</em> computed macro:</p> <pre class="highlight javascript" data-language="javascript">import EmberObject, { computed, set } from '@ember/object';
+
+let Person = EmberObject.extend({
+  // these will be supplied by `create`
+  firstName: null,
+  lastName: null,
+
+  fullName: computed('firstName', 'lastName', {
+    get() {
+      return `${this.firstName} ${this.lastName}`;
+    }
+
+    set(key, value) {
+      let [firstName, lastName] = value.split(' ');
+
+      set(this, 'firstName', firstName);
+      set(this, 'lastName', lastName);
+
+      return value;
+    }
+  })
+});
+
+let tom = Person.create({
+  firstName: 'Tom',
+  lastName: 'Dale'
+});
+
+tom.get('fullName') // 'Tom Dale'</pre> <p>You can overwrite computed property without setters with a normal property (no longer computed) that won't change if dependencies change. You can also mark computed property as <code>.readOnly()</code> and block all attempts to set it.</p> <pre class="highlight javascript" data-language="javascript">import { computed, set } from '@ember/object';
+
+class Person {
+  constructor(firstName, lastName) {
+    set(this, 'firstName', firstName);
+    set(this, 'lastName', lastName);
+  }
+
+  @computed('firstName', 'lastName').readOnly()
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+});
+
+let person = new Person();
+person.set('fullName', 'Peter Wagenet'); // Uncaught Error: Cannot set read-only property "fullName" on object: &lt;(...):emberXXX&gt;</pre> <p>Additional resources:</p> <ul> <li><a href="https://github.com/emberjs/rfcs/blob/master/text/0408-decorators.md">Decorators RFC</a></li> <li><a href="https://github.com/emberjs/rfcs/blob/master/text/0011-improved-cp-syntax.md">New CP syntax RFC</a></li> <li><a href="https://emberjs.com/blog/2015/05/13/ember-1-12-released.html#toc_new-computed-syntax">New computed syntax explained in "Ember 1.12 released" </a></li> </ul>  <div> <h3>Methods</h3> <ul> <li> <a href="computedproperty/methods#meta"> meta </a> </li> <li> <a href="computedproperty/methods#readOnly"> readOnly </a> </li> </ul> <h3>Properties</h3> <p>No documented items</p> <h3>Events</h3> <p>No documented items</p> </div>  </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2022 Yehuda Katz, Tom Dale and Ember.js contributors<br>Licensed under the MIT License.<br>
+    <a href="https://api.emberjs.com/ember/4.9/classes/ComputedProperty" class="_attribution-link">https://api.emberjs.com/ember/4.9/classes/ComputedProperty</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

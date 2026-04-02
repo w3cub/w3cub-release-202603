@@ -1,0 +1,139 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>&#64;ember-data&#47;serializer - Ember.js 4 - W3cubDocs</title>
+  
+  <meta name="description" content=" In order to properly manage and present your data, EmberData needs to understand the structure of data it receives. ">
+  <meta name="keywords" content="package, ember-data, serializer, ember, js, ember~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ember~4/modules/@ember-data/serializer.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ember~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ember~4/" class="_nav-link" title="" style="margin-left:0;">Ember.js 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _ember">
+				
+				
+<article class="chapter"> <h1 class="module-name">Package @ember-data/serializer</h1>   
+<h2 id="overview">Overview</h2> <p>In order to properly manage and present your data, EmberData needs to understand the structure of data it receives.</p> <p><code>Serializers</code> convert data between the server's API format and the format EmberData understands.</p> <p>Data received from an API response is <strong>normalized</strong> into <a href="https://jsonapi.org/">JSON:API</a> (the format used internally by EmberData), while data sent to an API is <strong>serialized</strong> into the format the API expects.</p> <h3 id="implementing-a-serializer">Implementing a Serializer</h3> <p>There are only two required serializer methods, one for normalizing data from the server API format into JSON:API, and another for serializing records via <code>Snapshots</code> into the expected server API format.</p> <p>To implement a serializer, export a class that conforms to the structure described by the <a href="https://api.emberjs.com/ember-data/release/classes/MinimumSerializerInterface">MinimumSerializerInterface</a> from the <code>app/serializers/</code> directory. An example is below.</p> <pre class="highlight typescript" data-language="">import EmberObject from '@ember/object';
+
+export default class ApplicationSerializer extends EmberObject {
+  normalizeResponse(store, schema, rawPayload) {
+    return rawPayload;
+  }
+
+  serialize(snapshot, options) {
+    const serializedResource = {
+      id: snapshot.id,
+      type: snapshot.modelName,
+      attributes: snapshot.attributes()
+    };
+
+    return serializedResource;
+  }
+}</pre> <h3 id="serializer-resolution">Serializer Resolution</h3> <p><code>store.serializerFor(name)</code> will lookup serializers defined in <code>app/serializers/</code> and return an instance. If no serializer is found, an error will be thrown.</p> <p><code>serializerFor</code> first attempts to find a serializer with an exact match on <code>name</code>, then falls back to checking for the presence of a serializer named <code>application</code>.</p> <pre class="highlight typescript" data-language="">store.serializerFor('author');
+
+// lookup paths (in order) =&gt;
+//   app/serializers/author.js
+//   app/serializers/application.js</pre> <p>Most requests in EmberData are made with respect to a particular <code>type</code> (or <code>modelName</code>) (e.g., "get me the full collection of <strong>books</strong>" or "get me the <strong>employee</strong> whose id is 37"). We refer to this as the <strong>primary</strong> resource <code>type</code>.</p> <p>Typically <code>serializerFor</code> will be used to find a serializer with a name matching that of the primary resource <code>type</code> for the request, falling back to the <code>application</code> serializer for those types that do not have a defined serializer. This is often described as a <code>per-model</code> or <code>per-type</code> strategy for defining serializers. However, because APIs rarely format payloads per-type but rather per-API-version, this may not be a desired strategy.</p> <p>It is recommended that applications define only a single <code>application</code> adapter and serializer where possible.</p> <p>If you have multiple API formats and the per-type strategy is not viable, one strategy is to write an <code>application</code> adapter and serializer that make use of <code>options</code> to specify the desired format when making a request.</p> <h3 id="using-a-serializer">Using a Serializer</h3> <p>Any serializer in <code>app/serializers/</code> can be looked up by <code>name</code> using <code>store.serializerFor(name)</code>.</p> <h3 id="default-serializers">Default Serializers</h3> <p>For applications whose APIs are <em>very close to</em> or <em>exactly</em> the <strong>REST</strong> format or <strong>JSON:API</strong> format the <code>@ember-data/serializer</code> package contains implementations these applications can extend. It also contains a simple <code>JSONSerializer</code> for serializing to/from very basic JSON objects.</p> <p>Many applications will find writing their own serializer to be more performant and less complex than extending these classes even when their API format is very close to that expected by these serializers.</p> <p>It is recommended that apps write their own serializer to best suit the needs of their API and application.</p>   <h2 id="classes" class="anchorable-toc">  Classes </h2> <ul> <li> <a href="../classes/booleantransform"> BooleanTransform </a> </li> <li> <a href="../classes/datetransform"> DateTransform </a> </li> <li> <a href="../classes/minimumserializerinterface"> MinimumSerializerInterface </a> </li> <li> <a href="../classes/numbertransform"> NumberTransform </a> </li> <li> <a href="../classes/serializer"> Serializer </a> </li> <li> <a href="../classes/stringtransform"> StringTransform </a> </li> <li> <a href="../classes/transform"> Transform </a> </li> </ul>    </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2022 Yehuda Katz, Tom Dale and Ember.js contributors<br>Licensed under the MIT License.<br>
+    <a href="https://api.emberjs.com/ember-data/4.9/modules/@ember-data%2Fserializer" class="_attribution-link">https://api.emberjs.com/ember-data/4.9/modules/@ember-data%2Fserializer</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

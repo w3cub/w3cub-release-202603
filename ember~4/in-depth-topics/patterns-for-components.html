@@ -1,0 +1,174 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Patterns for Components - Ember.js 4 - W3cubDocs</title>
+  
+  <meta name="description" content="This guide assumes that you have read the component guides and are familiar with how Ember components work. We&#39;ll cover components in more depth &hellip;">
+  <meta name="keywords" content="patterns, for, components, ember, js, ember~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ember~4/in-depth-topics/patterns-for-components.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ember~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ember~4/" class="_nav-link" title="" style="margin-left:0;">Ember.js 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _ember">
+				
+				
+<h1> Patterns for Components </h1>  <div id="ember358321" class="ember-view">
+<p>This guide assumes that you have read the <a href="https://guides.emberjs.com/components/">component guides</a> and are familiar with how Ember components work. We'll cover components in more depth in this section. At the end, we'll present recommended component patterns.</p> <h2 id="toc_argument-defaults">Argument Defaults</h2> <section aria-labelledby="toc_argument-defaults"> <p>At some point, you may want to add default values to your arguments if one wasn't passed to your component. Arguments are not mutable, so if you attempt to reassign a value on <code>this.args</code>, it'll fail. Instead, you should define a getter on your component that provides the default value if the argument was not provided.</p> <p>For instance, if you wanted to create a tooltip icon that had a standard icon and class, you could do it like so:</p> <pre><code class="javascript language-javascript" data-filename="app/components/tooltip.js">import Component from '@glimmer/component';
+
+export default class TooltipComponent extends Component {
+  get icon() {
+    return this.args.icon ?? 'icon-info';
+  }
+
+  get tooltipClass() {
+    return this.args.tooltipClass + ' tooltip';
+  }
+}
+</code></pre> <pre><code class="handlebars language-handlebars" data-filename="app/components/tooltip.hbs">&lt;div class={{this.tooltipClass}}&gt;
+  &lt;i class={{this.icon}}&gt;&lt;/i&gt;
+  {{@content}}
+&lt;/div&gt;
+</code></pre> <p>Now when called like so:</p> <pre><code class="handlebars language-handlebars">&lt;Tooltip @content="I'm a tooltip!"/&gt;
+</code></pre> <p>The result will be:</p> <pre><code class="html language-html">&lt;div class="tooltip"&gt;
+  &lt;i class="icon-info"&gt;&lt;/i&gt;
+  I'm a tooltip!
+&lt;/div&gt;
+</code></pre> <p>Note that because arguments are prefixed with <code>@</code> in templates, and placed on <code>args</code> in the component definition, we can use the same name for our <code>icon</code> and <code>tooltipClass</code> getters, which is pretty convenient. We can also tell clearly when we look at the template for the tooltip that <code>this.tooltipClass</code> and <code>this.icon</code> are values that come from the class definition, and that means they probably have been used in some kind of dynamic code (in this case, our defaulting logic).</p> </section> <h2 id="toc_attributes">Attributes</h2>  <h3 id="toc_attribute-ordering">Attribute Ordering</h3> <section aria-labelledby="toc_attribute-ordering"> <p>The positioning of <code>...attributes</code> matters, with respect to the other attributes in the element it is applied to. Attributes that come <em>before</em> <code>...attributes</code> can be overridden, but attributes that come <em>after</em> cannot:</p> <pre><code class="handlebars language-handlebars">&lt;p
+  data-overridable="you can override me"
+  ...attributes
+  data-non-overridable="but you can't override me!"
+&gt;
+  ...
+&lt;/p&gt;
+</code></pre> <p>There is one exception to this, which is the <code>class</code> attribute. <code>class</code> will get merged, since its more often the case that users of the component want to <em>add</em> a class than completely override the existing ones. For <code>class</code>, the order of <code>...attributes</code> will determine the order of merging. Putting it before:</p> <pre><code class="handlebars language-handlebars">&lt;p ...attributes class="friend-greeting"&gt;
+  Hello {{@friend}}, I'm {{this.name}}!
+&lt;/p&gt;
+</code></pre> <p>Results in:</p> <pre><code class="html language-html">&lt;p class="red-alert friend-greeting"&gt;
+  Hello {{@friend}}, I'm {{this.name}}!
+&lt;/p&gt;
+</code></pre> <p>And putting it after:</p> <pre><code class="handlebars language-handlebars">&lt;p class="friend-greeting" ...attributes&gt;
+  Hello {{@friend}}, I'm {{this.name}}!
+&lt;/p&gt;
+</code></pre> <p>Results in:</p> <pre><code class="html language-html">&lt;p class="friend-greeting red-alert"&gt;
+  Hello {{@friend}}, I'm {{this.name}}!
+&lt;/p&gt;
+</code></pre> </section> <h3 id="toc_aria-attributes">
+<code>aria</code> Attributes</h3> <section aria-labelledby="toc_aria-attributes"> <p>There are some <code>aria</code> attributes that can have multiple values <strong>and</strong> the order of those values matter. The most frequently used of these is <code>aria-describedby</code> and <code>aria-labelledby</code>.</p> <p>In these cases, make sure to declare <em>all</em> of the relevant values in the correct order.</p> <pre><code class="hbs language-hbs">&lt;MyInput @input-label="Password" aria-describedby="text-help-0 text-help-1" /&gt;
+</code></pre> <p>To learn more about <code>aria</code> roles and accessibility in Ember, check out the <a href="https://guides.emberjs.com/reference/accessibility-guide/">Accessibility Guide</a>.</p> </section> <h2 id="toc_contextual-components">Contextual Components</h2> <section aria-labelledby="toc_contextual-components"> <p>The <a href="https://api.emberjs.com/ember/release/classes/Ember.Templates.helpers/methods#component"><code>{{component}}</code></a> helper can be used to defer the selection of a component to runtime. The <code>&lt;MyComponent /&gt;</code> syntax always renders the same component, while using the <code>{{component}}</code> helper allows choosing a component to render on the fly. This is useful in cases where you want to interact with different external libraries depending on the data. Using the <code>{{component}}</code> helper would allow you to keep different logic well separated.</p> <p>The first parameter of the helper is the name of a component to render, as a string. So <code>{{component 'blog-post'}}</code> is the same as using <code>&lt;BlogPost /&gt;</code>.</p> <p>The real value of <a href="https://api.emberjs.com/ember/release/classes/Ember.Templates.helpers/methods#component"><code>{{component}}</code></a> comes from being able to dynamically pick the component being rendered. Below is an example of using the helper as a means of choosing different components for displaying different kinds of posts:</p> <pre><code class="handlebars language-handlebars" data-filename="app/components/foo-component.hbs">&lt;h3&gt;Hello from foo!&lt;/h3&gt;
+&lt;p&gt;{{this.post.body}}&lt;/p&gt;
+</code></pre> <pre><code class="handlebars language-handlebars" data-filename="app/components/bar-component.hbs">&lt;h3&gt;Hello from bar!&lt;/h3&gt;
+&lt;div&gt;{{this.post.author}}&lt;/div&gt;
+</code></pre> <pre><code class="handlebars language-handlebars" data-filename="app/templates/index.hbs">{{#each this.myPosts as |post|}}
+  {{!-- either foo-component or bar-component --}}
+  {{component post.postType post=post}}
+{{/each}}
+</code></pre> <p>or</p> <pre><code class="handlebars language-handlebars" data-filename="app/templates/index.hbs">{{#each this.myPosts as |post|}}
+  {{!-- either foo-component or bar-component --}}
+  {{#let (component post.postType) as |Post|}}
+    &lt;Post @post={{post}} /&gt;
+  {{/let}}
+{{/each}}
+</code></pre> <p>When the parameter passed to <code>{{component}}</code> evaluates to <code>null</code> or <code>undefined</code>, the helper renders nothing. When the parameter changes, the currently rendered component is destroyed and the new component is created and brought in.</p> <p>Picking different components to render in response to the data allows you to have a different template and behavior for each case. The <code>{{component}}</code> helper is a powerful tool for improving code modularity.</p> </section> <h2 id="toc_learn-more">Learn More</h2> <section aria-labelledby="toc_learn-more"> <p>To keep this guide concise, we built a separate site for <a href="https://emberjs-1.gitbook.io/ember-component-patterns/">component patterns in Ember</a>. This project also addresses anti-patterns and accessibility for components.</p> <p><a href="https://emberjs-1.gitbook.io/ember-component-patterns/"><img src="https://guides.emberjs.com/v4.9.0/images/ember-component-patterns.png" alt="ember-component-patterns"></a></p> </section> </div> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2022 Yehuda Katz, Tom Dale and Ember.js contributors<br>Licensed under the MIT License.<br>
+    <a href="https://guides.emberjs.com/v4.9.0/in-depth-topics/patterns-for-components" class="_attribution-link">https://guides.emberjs.com/v4.9.0/in-depth-topics/patterns-for-components</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

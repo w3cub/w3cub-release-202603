@@ -1,0 +1,224 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>&#64;ember-data&#47;adapter&#47;rest - Ember.js 4 - W3cubDocs</title>
+  
+  <meta name="description" content="The REST adapter allows your store to communicate with an HTTP server by transmitting JSON via XHR. Most Ember.js apps that consume a JSON API &hellip;">
+  <meta name="keywords" content="package, ember-data, adapter, rest, ember, js, ember~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ember~4/modules/@ember-data/adapter/rest.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ember~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ember~4/" class="_nav-link" title="" style="margin-left:0;">Ember.js 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _ember">
+				
+				
+<article class="chapter"> <h1 class="module-name">Package @ember-data/adapter/rest</h1>   
+<p>The REST adapter allows your store to communicate with an HTTP server by transmitting JSON via XHR. Most Ember.js apps that consume a JSON API should use the REST adapter.</p> <p>This adapter is designed around the idea that the JSON exchanged with the server should be conventional.</p> <h2 id="success-and-failure">Success and failure</h2> <p>The REST adapter will consider a success any response with a status code of the 2xx family ("Success"), as well as 304 ("Not Modified"). Any other status code will be considered a failure.</p> <p>On success, the request promise will be resolved with the full response payload.</p> <p>Failed responses with status code 422 ("Unprocessable Entity") will be considered "invalid". The response will be discarded, except for the <code>errors</code> key. The request promise will be rejected with a <code>InvalidError</code>. This error object will encapsulate the saved <code>errors</code> value.</p> <p>Any other status codes will be treated as an "adapter error". The request promise will be rejected, similarly to the "invalid" case, but with an instance of <code>AdapterError</code> instead.</p> <h2 id="json-structure">JSON Structure</h2> <p>The REST adapter expects the JSON returned from your server to follow these conventions.</p> <h3 id="object-root">Object Root</h3> <p>The JSON payload should be an object that contains the record inside a root property. For example, in response to a <code>GET</code> request for <code>/posts/1</code>, the JSON should look like this:</p> <pre class="highlight javascript" data-language="javascript">{
+  "posts": {
+    "id": 1,
+    "title": "I'm Running to Reform the W3C's Tag",
+    "author": "Yehuda Katz"
+  }
+}</pre> <p>Similarly, in response to a <code>GET</code> request for <code>/posts</code>, the JSON should look like this:</p> <pre class="highlight javascript" data-language="javascript">{
+  "posts": [
+    {
+      "id": 1,
+      "title": "I'm Running to Reform the W3C's Tag",
+      "author": "Yehuda Katz"
+    },
+    {
+      "id": 2,
+      "title": "Rails is omakase",
+      "author": "D2H"
+    }
+  ]
+}</pre> <p>Note that the object root can be pluralized for both a single-object response and an array response: the REST adapter is not strict on this. Further, if the HTTP server responds to a <code>GET</code> request to <code>/posts/1</code> (e.g. the response to a <code>findRecord</code> query) with more than one object in the array, Ember Data will only display the object with the matching ID.</p> <h3 id="conventional-names">Conventional Names</h3> <p>Attribute names in your JSON payload should be the camelCased versions of the attributes in your Ember.js models.</p> <p>For example, if you have a <code>Person</code> model:</p> <div class="pre-title"><code>app/models/person.js</code></div>
+<pre class="highlight javascript" data-language="javascript">import Model, { attr } from '@ember-data/model';
+
+export default Model.extend({
+  firstName: attr('string'),
+  lastName: attr('string'),
+  occupation: attr('string')
+});</pre> <p>The JSON returned should look like this:</p> <pre class="highlight javascript" data-language="javascript">{
+  "people": {
+    "id": 5,
+    "firstName": "Zaphod",
+    "lastName": "Beeblebrox",
+    "occupation": "President"
+  }
+}</pre> <h4 id="relationships">Relationships</h4> <p>Relationships are usually represented by ids to the record in the relationship. The related records can then be sideloaded in the response under a key for the type.</p> <pre class="highlight javascript" data-language="javascript">{
+  "posts": {
+    "id": 5,
+    "title": "I'm Running to Reform the W3C's Tag",
+    "author": "Yehuda Katz",
+    "comments": [1, 2]
+  },
+  "comments": [{
+    "id": 1,
+    "author": "User 1",
+    "message": "First!",
+  }, {
+    "id": 2,
+    "author": "User 2",
+    "message": "Good Luck!",
+  }]
+}</pre> <p>If the records in the relationship are not known when the response is serialized it's also possible to represent the relationship as a URL using the <code>links</code> key in the response. Ember Data will fetch this URL to resolve the relationship when it is accessed for the first time.</p> <pre class="highlight javascript" data-language="javascript">{
+  "posts": {
+    "id": 5,
+    "title": "I'm Running to Reform the W3C's Tag",
+    "author": "Yehuda Katz",
+    "links": {
+      "comments": "/posts/5/comments"
+    }
+  }
+}</pre> <h3 id="errors">Errors</h3> <p>If a response is considered a failure, the JSON payload is expected to include a top-level key <code>errors</code>, detailing any specific issues. For example:</p> <pre class="highlight javascript" data-language="javascript">{
+  "errors": {
+    "msg": "Something went wrong"
+  }
+}</pre> <p>This adapter does not make any assumptions as to the format of the <code>errors</code> object. It will simply be passed along as is, wrapped in an instance of <code>InvalidError</code> or <code>AdapterError</code>. The serializer can interpret it afterwards.</p> <h2 id="customization">Customization</h2> <h3 id="endpoint-path-customization">Endpoint path customization</h3> <p>Endpoint paths can be prefixed with a <code>namespace</code> by setting the namespace property on the adapter:</p> <div class="pre-title"><code>app/adapters/application.js</code></div>
+<pre class="highlight javascript" data-language="javascript">import RESTAdapter from '@ember-data/adapter/rest';
+
+export default class ApplicationAdapter extends RESTAdapter {
+  namespace = 'api/1';
+}</pre> <p>Requests for the <code>Person</code> model would now target <code>/api/1/people/1</code>.</p> <h3 id="host-customization">Host customization</h3> <p>An adapter can target other hosts by setting the <code>host</code> property.</p> <div class="pre-title"><code>app/adapters/application.js</code></div>
+<pre class="highlight javascript" data-language="javascript">import RESTAdapter from '@ember-data/adapter/rest';
+
+export default class ApplicationAdapter extends RESTAdapter {
+  host = 'https://api.example.com';
+}</pre> <h3 id="headers-customization">Headers customization</h3> <p>Some APIs require HTTP headers, e.g. to provide an API key. Arbitrary headers can be set as key/value pairs on the <code>RESTAdapter</code>'s <code>headers</code> object and Ember Data will send them along with each ajax request.</p> <div class="pre-title"><code>app/adapters/application.js</code></div>
+<pre class="highlight javascript" data-language="javascript">import RESTAdapter from '@ember-data/adapter/rest';
+import { computed } from '@ember/object';
+
+export default class ApplicationAdapter extends RESTAdapter {
+  headers: computed(function() {
+    return {
+      'API_KEY': 'secret key',
+      'ANOTHER_HEADER': 'Some header value'
+    };
+  }
+}</pre> <p><code>headers</code> can also be used as a computed property to support dynamic headers. In the example below, the <code>session</code> object has been injected into an adapter by Ember's container.</p> <div class="pre-title"><code>app/adapters/application.js</code></div>
+<pre class="highlight javascript" data-language="javascript">import RESTAdapter from '@ember-data/adapter/rest';
+import { computed } from '@ember/object';
+
+export default class ApplicationAdapter extends RESTAdapter {
+  headers: computed('session.authToken', function() {
+    return {
+      'API_KEY': this.session.authToken,
+      'ANOTHER_HEADER': 'Some header value'
+    };
+  })
+}</pre> <p>In some cases, your dynamic headers may require data from some object outside of Ember's observer system (for example <code>document.cookie</code>). You can use the <a href="https://api.emberjs.com/api/classes/Ember.ComputedProperty.html#volatile">volatile</a> function to set the property into a non-cached mode causing the headers to be recomputed with every request.</p> <div class="pre-title"><code>app/adapters/application.js</code></div>
+<pre class="highlight javascript" data-language="javascript">import RESTAdapter from '@ember-data/adapter/rest';
+import { computed } from '@ember/object';
+
+export default class ApplicationAdapter extends RESTAdapter {
+  headers: computed(function() {
+    return {
+      'API_KEY': document.cookie.match(/apiKey\=([^;]*)/)['1'],
+      'ANOTHER_HEADER': 'Some header value'
+    };
+  }).volatile()
+}</pre>   <h2 id="classes" class="anchorable-toc">  Classes </h2> <ul> <li> <a href="../classes/restadapter"> RESTAdapter </a> </li> </ul>    </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2022 Yehuda Katz, Tom Dale and Ember.js contributors<br>Licensed under the MIT License.<br>
+    <a href="https://api.emberjs.com/ember-data/4.9/modules/@ember-data%2Fadapter%2Frest" class="_attribution-link">https://api.emberjs.com/ember-data/4.9/modules/@ember-data%2Fadapter%2Frest</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
