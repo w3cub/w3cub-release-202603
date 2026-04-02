@@ -1,0 +1,150 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Introduction to Ad Hoc Commands - Ansible - W3cubDocs</title>
+  
+  <meta name="description" content="An Ansible ad hoc command uses the &#47;usr&#47;bin&#47;ansible command-line tool to automate a single task on one or more managed nodes. ad hoc &hellip;">
+  <meta name="keywords" content="introduction, ad, hoc, commands, ansible">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ansible/command_guide/intro_adhoc.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ansible.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ansible/" class="_nav-link" title="" style="margin-left:0;">Ansible</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="introduction-to-ad-hoc-commands"> <h1 id="intro-adhoc">Introduction to ad hoc commands</h1> <p>An Ansible ad hoc command uses the <code>/usr/bin/ansible</code> command-line tool to automate a single task on one or more managed nodes. ad hoc commands are quick and easy, but they are not reusable. So why learn about ad hoc commands? ad hoc commands demonstrate the simplicity and power of Ansible. The concepts you learn here will port over directly to the playbook language. Before reading and executing these examples, please read <a class="reference internal" href="../inventory_guide/intro_inventory#intro-inventory"><span class="std std-ref">How to build your inventory</span></a>.</p>  <ul class="simple"> <li><a class="reference internal" href="#why-use-ad-hoc-commands" id="id4">Why use ad hoc commands?</a></li> <li>
+<p><a class="reference internal" href="#use-cases-for-ad-hoc-tasks" id="id5">Use cases for ad hoc tasks</a></p> <ul> <li><a class="reference internal" href="#rebooting-servers" id="id6">Rebooting servers</a></li> <li><a class="reference internal" href="#managing-files" id="id7">Managing files</a></li> <li><a class="reference internal" href="#managing-packages" id="id8">Managing packages</a></li> <li><a class="reference internal" href="#managing-users-and-groups" id="id9">Managing users and groups</a></li> <li><a class="reference internal" href="#managing-services" id="id10">Managing services</a></li> <li><a class="reference internal" href="#gathering-facts" id="id11">Gathering facts</a></li> <li><a class="reference internal" href="#check-mode" id="id12">Check mode</a></li> <li><a class="reference internal" href="#patterns-and-ad-hoc-commands" id="id13">Patterns and ad-hoc commands</a></li> </ul> </li> </ul>  <section id="why-use-ad-hoc-commands"> <h2>Why use ad hoc commands?</h2> <p>ad hoc commands are great for tasks you repeat rarely. For example, if you want to power off all the machines in your lab for Christmas vacation, you could execute a quick one-liner in Ansible without writing a playbook. An ad hoc command looks like this:</p> <pre data-language="bash">$ ansible [pattern] -m [module] -a "[module options]"
+</pre> <p>The <code>-a</code> option accepts options either through the <code>key=value</code> syntax or a JSON string starting with <code>{</code> and ending with <code>}</code> for more complex option structure. You can learn more about <a class="reference internal" href="../inventory_guide/intro_patterns#intro-patterns"><span class="std std-ref">patterns</span></a> and <a class="reference internal" href="../plugins/module#module-plugins"><span class="std std-ref">modules</span></a> on other pages.</p> </section> <section id="use-cases-for-ad-hoc-tasks"> <h2>Use cases for ad hoc tasks</h2> <p>ad hoc tasks can be used to reboot servers, copy files, manage packages and users, and much more. You can use any Ansible module in an ad hoc task. ad hoc tasks, like playbooks, use a declarative model, calculating and executing the actions required to reach a specified final state. They achieve a form of idempotence by checking the current state before they begin and doing nothing unless the current state is different from the specified final state.</p> <section id="rebooting-servers"> <h3>Rebooting servers</h3> <p>The default module for the <code>ansible</code> command-line utility is the <a class="reference internal" href="../collections/ansible/builtin/command_module#command-module"><span class="std std-ref">ansible.builtin.command module</span></a>. You can use an ad hoc task to call the command module and reboot all web servers in Atlanta, 10 at a time. Before Ansible can do this, you must have all servers in Atlanta listed in a group called [atlanta] in your inventory, and you must have working SSH credentials for each machine in that group. To reboot all the servers in the [atlanta] group:</p> <pre data-language="bash">$ ansible atlanta -a "/sbin/reboot"
+</pre> <p>By default, Ansible uses only five simultaneous processes. If you have more hosts than the value set for the fork count, it can increase the time it takes for Ansible to communicate with the hosts. To reboot the [atlanta] servers with 10 parallel forks:</p> <pre data-language="bash">$ ansible atlanta -a "/sbin/reboot" -f 10
+</pre> <p>/usr/bin/ansible will default to running from your user account. To connect as a different user:</p> <pre data-language="bash">$ ansible atlanta -a "/sbin/reboot" -f 10 -u username
+</pre> <p>Rebooting probably requires privilege escalation. You can connect to the server as <code>username</code> and run the command as the <code>root</code> user by using the <a class="reference internal" href="../playbook_guide/playbooks_privilege_escalation#become"><span class="std std-ref">become</span></a> keyword:</p> <pre data-language="bash">$ ansible atlanta -a "/sbin/reboot" -f 10 -u username --become [--ask-become-pass]
+</pre> <p>If you add <code>--ask-become-pass</code> or <code>-K</code>, Ansible prompts you for the password to use for privilege escalation (sudo/su/pfexec/doas/etc).</p> <div class="admonition note"> <p class="admonition-title">Note</p> <p>The <a class="reference internal" href="../collections/ansible/builtin/command_module#command-module"><span class="std std-ref">command module</span></a> does not support extended shell syntaxes like piping and redirects (although shell variables will always work). If your command requires shell-specific syntax, use the <code>shell</code> module instead.</p> </div> <p>So far all our examples have used the default ‘command’ module. To use a different module, pass <code>-m</code> for module name. For example, to use the <a class="reference internal" href="../collections/ansible/builtin/shell_module#shell-module"><span class="std std-ref">ansible.builtin.shell module</span></a>:</p> <pre data-language="bash">$ ansible raleigh -m ansible.builtin.shell -a 'echo $TERM'
+</pre> <p>When running any command with the Ansible <em>ad hoc</em> CLI (as opposed to <a class="reference internal" href="../playbook_guide/playbooks#working-with-playbooks"><span class="std std-ref">Playbooks</span></a>), pay particular attention to shell quoting rules, so the local shell retains the variable and passes it to Ansible. For example, using double rather than single quotes in the above example would evaluate the variable on the box you were on.</p> </section> <section id="managing-files"> <h3 id="file-transfer">Managing files</h3> <p>An ad hoc task can harness the power of Ansible and SCP to transfer many files to multiple machines in parallel. To transfer a file directly to all servers in the [atlanta] group:</p> <pre data-language="bash">$ ansible atlanta -m ansible.builtin.copy -a "src=/etc/hosts dest=/tmp/hosts"
+</pre> <p>If you plan to repeat a task like this, use the <a class="reference internal" href="../collections/ansible/builtin/template_module#template-module"><span class="std std-ref">ansible.builtin.template</span></a> module in a playbook.</p> <p>The <a class="reference internal" href="../collections/ansible/builtin/file_module#file-module"><span class="std std-ref">ansible.builtin.file</span></a> module allows changing ownership and permissions on files. These same options can be passed directly to the <code>copy</code> module as well:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.file -a "dest=/srv/foo/a.txt mode=600"
+$ ansible webservers -m ansible.builtin.file -a "dest=/srv/foo/b.txt mode=600 owner=mdehaan group=mdehaan"
+</pre> <p>The <code>file</code> module can also create directories, similar to <code>mkdir -p</code>:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.file -a "dest=/path/to/c mode=755 owner=mdehaan group=mdehaan state=directory"
+</pre> <p>As well as delete directories (recursively) and delete files:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.file -a "dest=/path/to/c state=absent"
+</pre> </section> <section id="managing-packages"> <h3 id="id1">Managing packages</h3> <p>You might also use an ad hoc task to install, update, or remove packages on managed nodes using a package management module such as <code>yum</code>. Package management modules support common functions to install, remove, and generally manage packages. Some specific functions for a package manager might not be present in the Ansible module since they are not part of general package management.</p> <p>To ensure a package is installed without updating it:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.yum -a "name=acme state=present"
+</pre> <p>To ensure a specific version of a package is installed:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.yum -a "name=acme-1.5 state=present"
+</pre> <p>To ensure a package is at the latest version:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.yum -a "name=acme state=latest"
+</pre> <p>To ensure a package is not installed:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.yum -a "name=acme state=absent"
+</pre> <p>Ansible has modules for managing packages under many platforms. If there is no module for your package manager, you can install packages using the command module or create a module for your package manager.</p> </section> <section id="managing-users-and-groups"> <h3 id="users-and-groups">Managing users and groups</h3> <p>You can create, manage, and remove user accounts on your managed nodes with ad hoc tasks:</p> <pre data-language="bash">$ ansible all -m ansible.builtin.user -a "name=foo password=&lt;encrypted password here&gt;"
+
+$ ansible all -m ansible.builtin.user -a "name=foo state=absent"
+</pre> <p>See the <a class="reference internal" href="../collections/ansible/builtin/user_module#user-module"><span class="std std-ref">ansible.builtin.user</span></a> module documentation for details on all of the available options, including how to manipulate groups and group membership.</p> </section> <section id="managing-services"> <h3 id="id2">Managing services</h3> <p>Ensure a service is started on all webservers:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.service -a "name=httpd state=started"
+</pre> <p>Alternatively, restart a service on all webservers:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.service -a "name=httpd state=restarted"
+</pre> <p>Ensure a service is stopped:</p> <pre data-language="bash">$ ansible webservers -m ansible.builtin.service -a "name=httpd state=stopped"
+</pre> </section> <section id="gathering-facts"> <h3 id="id3">Gathering facts</h3> <p>Facts represent discovered variables about a system. You can use facts to implement conditional execution of tasks but also just to get ad hoc information about your systems. To see all facts:</p> <pre data-language="bash">$ ansible all -m ansible.builtin.setup
+</pre> <p>You can also filter this output to display only certain facts, see the <a class="reference internal" href="../collections/ansible/builtin/setup_module#setup-module"><span class="std std-ref">ansible.builtin.setup</span></a> module documentation for details.</p> </section> <section id="check-mode"> <h3>Check mode</h3> <p>In check mode, Ansible does not make any changes to remote systems. Ansible prints the commands only. It does not run the commands.</p> <pre data-language="bash">$  ansible all -m copy -a "content=foo dest=/root/bar.txt" -C
+</pre> <p>Enabling check mode (<code>-C</code> or <code>--check</code>) in the above command means Ansible does not actually create or update the <code>/root/bar.txt</code> file on any remote systems.</p> </section> <section id="patterns-and-ad-hoc-commands"> <h3>Patterns and ad-hoc commands</h3> <p>See the <a class="reference internal" href="../inventory_guide/intro_patterns#intro-patterns"><span class="std std-ref">patterns</span></a> documentation for details on all of the available options, including how to limit using patterns in ad-hoc commands.</p> <p>Now that you understand the basic elements of Ansible execution, you are ready to learn to automate repetitive tasks using <a class="reference internal" href="../playbook_guide/playbooks_intro#playbooks-intro"><span class="std std-ref">Ansible Playbooks</span></a>.</p> <div class="admonition seealso"> <p class="admonition-title">See also</p> <dl class="simple"> <dt><a class="reference internal" href="../installation_guide/intro_configuration#intro-configuration"><span class="std std-ref">Configuring Ansible</span></a></dt>
+<dd>
+<p>All about the Ansible config file</p> </dd> <dt><a class="reference internal" href="../collections/index#list-of-collections"><span class="std std-ref">Collection Index</span></a></dt>
+<dd>
+<p>Browse existing collections, modules, and plugins</p> </dd> <dt><a class="reference internal" href="../playbook_guide/playbooks#working-with-playbooks"><span class="std std-ref">Working with playbooks</span></a></dt>
+<dd>
+<p>Using Ansible for configuration management &amp; deployment</p> </dd> <dt><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/communication.html#communication"><span class="std std-ref">Communication</span></a></dt>
+<dd>
+<p>Got questions? Need help? Want to share your ideas? Visit the Ansible communication guide</p> </dd> </dl> </div> </section> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2012–2018 Michael DeHaan<br>© 2018–2025 Red Hat, Inc.<br>Licensed under the GNU General Public License version 3.<br>
+    <a href="https://docs.ansible.com/ansible/latest/command_guide/intro_adhoc.html" class="_attribution-link">https://docs.ansible.com/ansible/latest/command_guide/intro_adhoc.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

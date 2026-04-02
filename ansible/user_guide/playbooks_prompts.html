@@ -1,0 +1,182 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Interactive Input&#58; Prompts - Ansible - W3cubDocs</title>
+  
+  <meta name="description" content="If you want your playbook to prompt the user for certain input, add a ‘vars_prompt’ section. Prompting the user for variables lets you avoid &hellip;">
+  <meta name="keywords" content="interactive, input, prompts, ansible">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ansible/user_guide/playbooks_prompts.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ansible.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ansible/" class="_nav-link" title="" style="margin-left:0;">Ansible</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="interactive-input-prompts"> <h1 id="playbooks-prompts">Interactive input: prompts</h1> <p>If you want your playbook to prompt the user for certain input, add a ‘vars_prompt’ section. Prompting the user for variables lets you avoid recording sensitive data like passwords. In addition to security, prompts support flexibility. For example, if you use one playbook across multiple software releases, you could prompt for the particular release version.</p>  <ul class="simple"> <li><a class="reference internal" href="#hashing-values-supplied-by-vars-prompt" id="id1">Hashing values supplied by <code>vars_prompt</code></a></li> <li><a class="reference internal" href="#allowing-special-characters-in-vars-prompt-values" id="id2">Allowing special characters in <code>vars_prompt</code> values</a></li> </ul>  <p>Here is a most basic example:</p> <pre data-language="yaml">---
+- hosts: all
+  vars_prompt:
+
+    - name: username
+      prompt: What is your username?
+      private: false
+
+    - name: password
+      prompt: What is your password?
+
+  tasks:
+
+    - name: Print a message
+      ansible.builtin.debug:
+        msg: 'Logging in as {{ username }}'
+</pre> <p>The user input is hidden by default but it can be made visible by setting <code>private: false</code>.</p> <div class="admonition note"> <p class="admonition-title">Note</p> <p>Prompts for individual <code>vars_prompt</code> variables will be skipped for any variable that is already defined through the command line <code>--extra-vars</code> option, or when running from a non-interactive session (such as cron or Ansible AWX). See <a class="reference internal" href="playbooks_variables#passing-variables-on-the-command-line"><span class="std std-ref">Defining variables at runtime</span></a>.</p> </div> <p>If you have a variable that changes infrequently, you can provide a default value that can be overridden.</p> <pre data-language="yaml">vars_prompt:
+
+  - name: release_version
+    prompt: Product release version
+    default: "1.0"
+</pre> <section id="hashing-values-supplied-by-vars-prompt"> <h2>Hashing values supplied by <code>vars_prompt</code>
+</h2> <p>You can hash the entered value so you can use it, for example, with the user module to define a password:</p> <pre data-language="yaml">vars_prompt:
+
+  - name: my_password2
+    prompt: Enter password2
+    private: true
+    encrypt: sha512_crypt
+    confirm: true
+    salt_size: 7
+</pre> <p>If you have <a class="reference external" href="https://passlib.readthedocs.io/en/stable/">Passlib</a> installed, you can use any crypt scheme the library supports:</p> <ul class="simple"> <li>
+<em>des_crypt</em> - DES Crypt</li> <li>
+<em>bsdi_crypt</em> - BSDi Crypt</li> <li>
+<em>bigcrypt</em> - BigCrypt</li> <li>
+<em>crypt16</em> - Crypt16</li> <li>
+<em>md5_crypt</em> - MD5 Crypt</li> <li>
+<em>bcrypt</em> - BCrypt</li> <li>
+<em>sha1_crypt</em> - SHA-1 Crypt</li> <li>
+<em>sun_md5_crypt</em> - Sun MD5 Crypt</li> <li>
+<em>sha256_crypt</em> - SHA-256 Crypt</li> <li>
+<em>sha512_crypt</em> - SHA-512 Crypt</li> <li>
+<em>apr_md5_crypt</em> - Apache’s MD5-Crypt variant</li> <li>
+<em>phpass</em> - PHPass’ Portable Hash</li> <li>
+<em>pbkdf2_digest</em> - Generic PBKDF2 Hashes</li> <li>
+<em>cta_pbkdf2_sha1</em> - Cryptacular’s PBKDF2 hash</li> <li>
+<em>dlitz_pbkdf2_sha1</em> - Dwayne Litzenberger’s PBKDF2 hash</li> <li>
+<em>scram</em> - SCRAM Hash</li> <li>
+<em>bsd_nthash</em> - FreeBSD’s MCF-compatible nthash encoding</li> </ul> <p>The only parameters accepted are ‘salt’ or ‘salt_size’. You can use your own salt by defining ‘salt’, or have one generated automatically using ‘salt_size’. By default, Ansible generates a salt of size 8.</p> <div class="versionadded"> <p><span class="versionmodified added">New in version 2.7.</span></p> </div> <p>If you do not have Passlib installed, Ansible uses the <a class="reference external" href="https://docs.python.org/3/library/crypt.html">crypt</a> library as a fallback. Ansible supports at most four crypt schemes, depending on your platform at most the following crypt schemes are supported:</p> <ul class="simple"> <li>
+<em>bcrypt</em> - BCrypt</li> <li>
+<em>md5_crypt</em> - MD5 Crypt</li> <li>
+<em>sha256_crypt</em> - SHA-256 Crypt</li> <li>
+<em>sha512_crypt</em> - SHA-512 Crypt</li> </ul> <div class="versionadded"> <p><span class="versionmodified added">New in version 2.8.</span></p> </div> </section> <section id="allowing-special-characters-in-vars-prompt-values"> <h2 id="unsafe-prompts">Allowing special characters in <code>vars_prompt</code> values</h2> <p>Some special characters, such as <code>{</code> and <code>%</code> can create templating errors. If you need to accept special characters, use the <code>unsafe</code> option:</p> <pre data-language="yaml">vars_prompt:
+  - name: my_password_with_weird_chars
+    prompt: Enter password
+    unsafe: true
+    private: true
+</pre> <div class="admonition seealso"> <p class="admonition-title">See also</p> <dl class="simple"> <dt><a class="reference internal" href="playbooks_intro#playbooks-intro"><span class="std std-ref">Ansible playbooks</span></a></dt>
+<dd>
+<p>An introduction to playbooks</p> </dd> <dt><a class="reference internal" href="playbooks_conditionals#playbooks-conditionals"><span class="std std-ref">Conditionals</span></a></dt>
+<dd>
+<p>Conditional statements in playbooks</p> </dd> <dt><a class="reference internal" href="playbooks_variables#playbooks-variables"><span class="std std-ref">Using variables</span></a></dt>
+<dd>
+<p>All about variables</p> </dd> <dt><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/communication.html#communication"><span class="std std-ref">Communication</span></a></dt>
+<dd>
+<p>Got questions? Need help? Want to share your ideas? Visit the Ansible communication guide</p> </dd> </dl> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2012–2018 Michael DeHaan<br>© 2018–2025 Red Hat, Inc.<br>Licensed under the GNU General Public License version 3.<br>
+    <a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_prompts.html" class="_attribution-link">https://docs.ansible.com/ansible/latest/user_guide/playbooks_prompts.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Lookups - Ansible - W3cubDocs</title>
+  
+  <meta name="description" content="Lookup plugins retrieve data from outside sources such as files, databases, key&#47;value stores, APIs, and other services. Like all templating, &hellip;">
+  <meta name="keywords" content="lookups, ansible">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ansible/playbook_guide/playbooks_lookups.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ansible.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ansible/" class="_nav-link" title="" style="margin-left:0;">Ansible</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="lookups"> <h1 id="playbooks-lookups">Lookups</h1> <p>Lookup plugins retrieve data from outside sources such as files, databases, key/value stores, APIs, and other services. Like all templating, lookups execute and are evaluated on the Ansible control machine. Ansible makes the data returned by a lookup plugin available using the standard templating system. Before Ansible 2.5, lookups were mostly used indirectly in <code>with_&lt;lookup&gt;</code> constructs for looping. Starting with Ansible 2.5, lookups are used more explicitly as part of Jinja2 expressions fed into the <code>loop</code> keyword.</p> <section id="the-lookup-function"> <h2 id="lookups-and-variables">The lookup function</h2> <p>You can use the <code>lookup</code> function to populate variables dynamically. Ansible evaluates the value each time it is executed in a task (or template).</p> <pre data-language="yaml+jinja">vars:
+  motd_value: "{{ lookup('file', '/etc/motd') }}"
+tasks:
+  - debug:
+      msg: "motd value is {{ motd_value }}"
+</pre> <p>The first argument to the <code>lookup</code> function is required and specifies the name of the lookup plugin. If the lookup plugin is in a collection, the fully qualified name must be provided, since the <a class="reference internal" href="../collections_guide/collections_using_playbooks#collections-keyword"><span class="std std-ref">collections keyword</span></a> does not apply to lookup plugins.</p> <p>The <code>lookup</code> function also accepts an optional boolean keyword <code>wantlist</code>, which defaults to <code>False</code>. When <code>True</code>, the result of the lookup is ensured to be a list.</p> <p>Refer to the lookup plugin’s documentation to see plugin-specific arguments and keywords.</p> </section> <section id="the-query-q-function"> <h2 id="lookups-and-variables-query">The query/q function</h2> <p>This function is shorthand for <code>lookup(..., wantlist=True)</code>. These are equivalent:</p> <pre data-language="yaml+jinja">block:
+  - debug:
+      msg: "{{ item }}"
+    loop: "{{ lookup('ns.col.lookup_items', wantlist=True) }}"
+
+  - debug:
+      msg: "{{ item }}"
+    loop: "{{ q('ns.col.lookup_items') }}"
+</pre> <p>For more details and a list of lookup plugins in ansible-core, see <a class="reference internal" href="../plugins/plugins#plugins-lookup"><span class="std std-ref">Working with plugins</span></a>. You may also find lookup plugins in collections. You can review a list of lookup plugins installed on your control machine with the command <code>ansible-doc -l -t lookup</code>.</p> <div class="admonition seealso"> <p class="admonition-title">See also</p> <dl class="simple"> <dt><a class="reference internal" href="playbooks#working-with-playbooks"><span class="std std-ref">Working with playbooks</span></a></dt>
+<dd>
+<p>An introduction to playbooks</p> </dd> <dt><a class="reference internal" href="playbooks_conditionals#playbooks-conditionals"><span class="std std-ref">Conditionals</span></a></dt>
+<dd>
+<p>Conditional statements in playbooks</p> </dd> <dt><a class="reference internal" href="playbooks_variables#playbooks-variables"><span class="std std-ref">Using variables</span></a></dt>
+<dd>
+<p>All about variables</p> </dd> <dt><a class="reference internal" href="playbooks_loops#playbooks-loops"><span class="std std-ref">Loops</span></a></dt>
+<dd>
+<p>Looping in playbooks</p> </dd> <dt><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/communication.html#communication"><span class="std std-ref">Communication</span></a></dt>
+<dd>
+<p>Got questions? Need help? Want to share your ideas? Visit the Ansible communication guide</p> </dd> </dl> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2012–2018 Michael DeHaan<br>© 2018–2025 Red Hat, Inc.<br>Licensed under the GNU General Public License version 3.<br>
+    <a href="https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_lookups.html" class="_attribution-link">https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_lookups.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

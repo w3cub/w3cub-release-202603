@@ -1,0 +1,172 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Using Collections in a Playbook - Ansible - W3cubDocs</title>
+  
+  <meta name="description" content=" Once installed, you can reference a collection content by its fully qualified collection name (FQCN)&#58; ">
+  <meta name="keywords" content="using, collections, playbook, ansible">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ansible/collections_guide/collections_using_playbooks.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ansible.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ansible/" class="_nav-link" title="" style="margin-left:0;">Ansible</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="using-collections-in-a-playbook"> <h1 id="using-collections">Using collections in a playbook</h1> <p>Once installed, you can reference a collection content by its fully qualified collection name (FQCN):</p> <pre data-language="yaml">- name: Reference a collection content using its FQCN
+  hosts: all
+  tasks:
+
+    - name: Call a module using FQCN
+      my_namespace.my_collection.my_module:
+        option1: value
+</pre> <p>This works for roles or any type of plugin distributed within the collection:</p> <pre data-language="yaml+jinja">- name: Reference collections contents using their FQCNs
+  hosts: all
+  tasks:
+
+    - name: Import a role
+      ansible.builtin.import_role:
+        name: my_namespace.my_collection.role1
+
+    - name: Call a module
+      my_namespace.mycollection.my_module:
+        option1: value
+
+    - name: Call a debug task
+      ansible.builtin.debug:
+        msg: '{{ lookup("my_namespace.my_collection.lookup1", "param1") | my_namespace.my_collection.filter1 }}'
+</pre> <section id="simplifying-module-names-with-the-collections-keyword"> <h2>Simplifying module names with the <code>collections</code> keyword</h2> <p>The <code>collections</code> keyword lets you define a list of collections that your role or playbook should search for unqualified module and action names. So you can use the <code>collections</code> keyword, then simply refer to modules and action plugins by their short-form names throughout that role or playbook.</p> <div class="admonition warning"> <p class="admonition-title">Warning</p> <p>If your playbook uses both the <code>collections</code> keyword and one or more roles, the roles do not inherit the collections set by the playbook. This is one of the reasons we recommend you always use FQCN. See below for roles details.</p> </div> </section> <section id="using-collections-in-roles"> <h2>Using <code>collections</code> in roles</h2> <p>Within a role, you can control which collections Ansible searches for the tasks inside the role using the <code>collections</code> keyword in the role’s <code>meta/main.yml</code>. Ansible will use the collections list defined inside the role even if the playbook that calls the role defines different collections in a separate <code>collections</code> keyword entry. Roles defined inside a collection always implicitly search their own collection first, so you don’t need to use the <code>collections</code> keyword to access modules, actions, or other roles contained in the same collection.</p> <pre data-language="yaml"># myrole/meta/main.yml
+collections:
+  - my_namespace.first_collection
+  - my_namespace.second_collection
+  - other_namespace.other_collection
+</pre> </section> <section id="using-collections-in-playbooks"> <h2 id="collections-keyword">Using <code>collections</code> in playbooks</h2> <p>In a playbook, you can control the collections Ansible searches for modules and action plugins to execute. However, any roles you call in your playbook define their own collections search order; they do not inherit the calling playbook’s settings. This is true even if the role does not define its own <code>collections</code> keyword.</p> <pre data-language="yaml+jinja">- name: Run a play using the collections keyword
+  hosts: all
+  collections:
+    - my_namespace.my_collection
+
+  tasks:
+
+    - name: Import a role
+      ansible.builtin.import_role:
+        name: role1
+
+    - name: Run a module not specifying FQCN
+      my_module:
+        option1: value
+
+    - name: Run a debug task
+      ansible.builtin.debug:
+        msg: '{{ lookup("my_namespace.my_collection.lookup1", "param1")| my_namespace.my_collection.filter1 }}'
+</pre> <p>The <code>collections</code> keyword merely creates an ordered ‘search path’ for non-namespaced plugins and role references. It does not install content or otherwise change Ansible’s behavior around the loading of plugins or roles. Note that an FQCN is still required for non-action or module plugins (for example, lookups, filters, and tests).</p> <p>When using the <code>collections</code> keyword, it is not necessary to add in <code>ansible.builtin</code> as part of the search list. When left omitted, the following content is available by default:</p> <ol class="arabic simple"> <li>Standard ansible modules and plugins available through <code>ansible-base</code>/<code>ansible-core</code>
+</li> <li>Support for older 3rd party plugin paths</li> </ol> <p>In general, it is preferable to use a module or plugin’s FQCN over the <code>collections</code> keyword.</p> </section> <section id="using-a-playbook-from-a-collection"> <h2>Using a playbook from a collection</h2> <div class="versionadded"> <p><span class="versionmodified added">New in version 2.11.</span></p> </div> <p>You can also distribute playbooks in your collection and invoke them using the same semantics you use for plugins:</p> <pre data-language="shell">ansible-playbook my_namespace.my_collection.playbook1 -i ./myinventory
+</pre> <p>From inside a playbook:</p> <pre data-language="yaml">- name: Import a playbook
+  ansible.builtin.import_playbook: my_namespace.my_collection.playbookX
+</pre> <p>A few recommendations when creating such playbooks, <code>hosts:</code> should be generic or at least have a variable input.</p> <pre data-language="yaml+jinja">- hosts: all  # Use --limit or customized inventory to restrict hosts targeted
+
+- hosts: localhost  # For things you want to restrict to the control node
+
+- hosts: '{{target|default("webservers")}}'  # Assumes inventory provides a 'webservers' group, but can also use ``-e 'target=host1,host2'``
+</pre> <p>This will have an implied entry in the <code>collections:</code> keyword of <code>my_namespace.my_collection</code> just as with roles.</p> <div class="admonition note"> <p class="admonition-title">Note</p> <ul class="simple"> <li>Playbook names, like other collection resources, have a restricted set of valid characters. Names can contain only lowercase alphanumeric characters, plus _ and must start with an alpha character. The dash <code>-</code> character is not valid for playbook names in collections. Playbooks whose names contain invalid characters are not addressable: this is a limitation of the Python importer that is used to load collection resources.</li> <li>Playbooks in collections do not support ‘adjacent’ plugins, all plugins must be in the collection-specific directories.</li> </ul> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2012–2018 Michael DeHaan<br>© 2018–2025 Red Hat, Inc.<br>Licensed under the GNU General Public License version 3.<br>
+    <a href="https://docs.ansible.com/ansible/latest/collections_guide/collections_using_playbooks.html" class="_attribution-link">https://docs.ansible.com/ansible/latest/collections_guide/collections_using_playbooks.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
