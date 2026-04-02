@@ -1,0 +1,264 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mocking Classes - Vitest - W3cubDocs</title>
+  
+  <meta name="description" content=" You can mock an entire class with a single vi.fn call. ">
+  <meta name="keywords" content="mocking, classes, vitest">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vitest/guide/mocking/classes.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vitest.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vitest/" class="_nav-link" title="" style="margin-left:0;">Vitest</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<div style="display:none;" hidden="true" aria-hidden="true">Are you an LLM? You can read better optimized documentation at /guide/mocking/classes.md for this page in Markdown format</div>
+<h1 id="mocking-classes" tabindex="-1">Mocking Classes </h1>
+<p>You can mock an entire class with a single <a href="../../api/vi#fn"><code>vi.fn</code></a> call.</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">class Dog {
+  name: string
+
+  constructor(name: string) {
+    this.name = name
+  }
+
+  static getType(): string {
+    return 'animal'
+  }
+
+  greet = (): string =&gt; {
+    return `Hi! My name is ${this.name}!`
+  }
+
+  speak(): string {
+    return 'bark!'
+  }
+
+  isHungry() {}
+  feed() {}
+}</pre>
+</div>
+<p>We can re-create this class with <code>vi.fn</code> (or <code>vi.spyOn().mockImplementation()</code>):</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">const Dog = vi.fn(class {
+  static getType = vi.fn(() =&gt; 'mocked animal')
+
+  constructor(name) {
+    this.name = name
+  }
+
+  greet = vi.fn(() =&gt; `Hi! My name is ${this.name}!`)
+  speak = vi.fn(() =&gt; 'loud bark!')
+  feed = vi.fn()
+})</pre>
+</div>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p>If a non-primitive is returned from the constructor function, that value will become the result of the new expression. In this case the <code>[[Prototype]]</code> may not be correctly bound:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">const CorrectDogClass = vi.fn(function (name) {
+  this.name = name
+})
+
+const IncorrectDogClass = vi.fn(name =&gt; ({
+  name
+}))
+
+const Marti = new CorrectDogClass('Marti')
+const Newt = new IncorrectDogClass('Newt')
+
+Marti instanceof CorrectDogClass // ✅ true
+Newt instanceof IncorrectDogClass // ❌ false!</pre>
+</div>
+<p>If you are mocking classes, prefer the class syntax over the function.</p>
+</div>
+<div class="tip custom-block">
+<strong class="custom-block-title">WHEN TO USE?</strong><p>Generally speaking, you would re-create a class like this inside the module factory if the class is re-exported from another module:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { Dog } from './dog.js'
+
+vi.mock(import('./dog.js'), () =&gt; {
+  const Dog = vi.fn(class {
+    feed = vi.fn()
+    // ... other mocks
+  })
+  return { Dog }
+})</pre>
+</div>
+<p>This method can also be used to pass an instance of a class to a function that accepts the same interface:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="src/feed.ts">src/feed.ts</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">function feed(dog: Dog) {
+  // ...
+}</pre>
+</div>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="tests/dog.test.ts">tests/dog.test.ts</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { expect, test, vi } from 'vitest'
+import { feed } from '../src/feed.js'
+
+const Dog = vi.fn(class {
+  feed = vi.fn()
+})
+
+test('can feed dogs', () =&gt; {
+  const dogMax = new Dog('Max')
+
+  feed(dogMax)
+
+  expect(dogMax.feed).toHaveBeenCalled()
+  expect(dogMax.isHungry()).toBe(false)
+})</pre>
+</div>
+</div>
+</div>
+<p>Now, when we create a new instance of the <code>Dog</code> class its <code>speak</code> method (alongside <code>feed</code> and <code>greet</code>) is already mocked:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">const Cooper = new Dog('Cooper')
+Cooper.speak() // loud bark!
+Cooper.greet() // Hi! My name is Cooper!
+
+// you can use built-in assertions to check the validity of the call
+expect(Cooper.speak).toHaveBeenCalled()
+expect(Cooper.greet).toHaveBeenCalled()
+
+const Max = new Dog('Max')
+
+// methods are not shared between instances if you assigned them directly
+expect(Max.speak).not.toHaveBeenCalled()
+expect(Max.greet).not.toHaveBeenCalled()</pre>
+</div>
+<p>We can reassign the return value for a specific instance:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">const dog = new Dog('Cooper')
+
+// "vi.mocked" is a type helper, since
+// TypeScript doesn't know that Dog is a mocked class,
+// it wraps any function in a Mock&lt;T&gt; type
+// without validating if the function is a mock
+vi.mocked(dog.speak).mockReturnValue('woof woof')
+
+dog.speak() // woof woof</pre>
+</div>
+<p>To mock the property, we can use the <code>vi.spyOn(dog, 'name', 'get')</code> method. This makes it possible to use spy assertions on the mocked property:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">const dog = new Dog('Cooper')
+
+const nameSpy = vi.spyOn(dog, 'name', 'get').mockReturnValue('Max')
+
+expect(dog.name).toBe('Max')
+expect(nameSpy).toHaveBeenCalledTimes(1)</pre>
+</div>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>You can also spy on getters and setters using the same method.</p>
+</div>
+<div class="danger custom-block">
+<strong class="custom-block-title custom-block-title-default">DANGER</strong><p>Using classes with <code>vi.fn()</code> was introduced in Vitest 4. Previously, you had to use <code>function</code> and <code>prototype</code> inheritence directly. See <a href="https://v3.vitest.dev/guide/mocking#classes" rel="noreferrer" target="_blank">v3 guide</a>.</p>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2021-Present VoidZero Inc. and Vitest contributors<br>Licensed under the MIT License.<br>
+    <a href="https://vitest.dev/guide/mocking/classes" class="_attribution-link">https://vitest.dev/guide/mocking/classes</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

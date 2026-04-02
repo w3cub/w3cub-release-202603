@@ -1,0 +1,249 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Profiling Test Performance - Vitest - W3cubDocs</title>
+  
+  <meta name="description" content=" When you run Vitest it reports multiple time metrics of your tests&#58; ">
+  <meta name="keywords" content="profiling, test, performance, vitest">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vitest/guide/profiling-test-performance.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vitest.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vitest/" class="_nav-link" title="" style="margin-left:0;">Vitest</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<div style="display:none;" hidden="true" aria-hidden="true">Are you an LLM? You can read better optimized documentation at /guide/profiling-test-performance.md for this page in Markdown format</div>
+<h1 id="profiling-test-performance" tabindex="-1">Profiling Test Performance </h1>
+<p>When you run Vitest it reports multiple time metrics of your tests:</p>
+<blockquote><div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">RUN  v2.1.1 /x/vitest/examples/profiling
+
+✓ test/prime-number.test.ts (1) 4517ms
+  ✓ generate prime number 4517ms
+
+Test Files  1 passed (1)
+     Tests  1 passed (1)
+  Start at  09:32:53
+  Duration  4.80s (transform 44ms, setup 0ms, import 35ms, tests 4.52s, environment 0ms)
+  # Time metrics ^^</pre>
+</div></blockquote>
+<ul>
+<li>Transform: How much time was spent transforming the files. See <a href="#file-transform">File Transform</a>.</li>
+<li>Setup: Time spent for running the <a href="../config/setupfiles"><code>setupFiles</code></a> files.</li>
+<li>Import: Time it took to import your test files and their dependencies. This also includes the time spent collecting all tests. Note that this doesn't include dynamic imports inside of tests.</li>
+<li>Tests: Time spent for actually running the test cases.</li>
+<li>Environment: Time spent for setting up the test <a href="../config/index#environment"><code>environment</code></a>, for example JSDOM.</li>
+</ul>
+<h2 id="test-runner" tabindex="-1">Test Runner </h2>
+<p>In cases where your test execution time is high, you can generate a profile of the test runner. See NodeJS documentation for following options:</p>
+<ul>
+<li><a href="https://nodejs.org/api/cli.html#--cpu-prof" target="_blank" rel="noreferrer"><code>--cpu-prof</code></a></li>
+<li><a href="https://nodejs.org/api/cli.html#--heap-prof" target="_blank" rel="noreferrer"><code>--heap-prof</code></a></li>
+<li><a href="https://nodejs.org/api/cli.html#--prof" target="_blank" rel="noreferrer"><code>--prof</code></a></li>
+</ul>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p>The <code>--prof</code> option does not work with <code>pool: 'threads'</code> due to <code>node:worker_threads</code> limitations.</p>
+</div>
+<p>To pass these options to Vitest's test runner, define <code>execArgv</code> in your Vitest configuration:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    fileParallelism: false,
+    execArgv: [
+      '--cpu-prof',
+      '--cpu-prof-dir=test-runner-profile',
+      '--heap-prof',
+      '--heap-prof-dir=test-runner-profile'
+    ],
+  },
+})</pre>
+</div>
+<p>After the tests have run there should be a <code>test-runner-profile/*.cpuprofile</code> and <code>test-runner-profile/*.heapprofile</code> files generated. See <a href="#inspecting-profiling-records">Inspecting profiling records</a> for instructions how to analyze these files.</p>
+<p>See <a href="https://github.com/vitest-dev/vitest/tree/main/examples/profiling" target="_blank" rel="noreferrer">Profiling | Examples</a> for example.</p>
+<h2 id="main-thread" tabindex="-1">Main Thread </h2>
+<p>Profiling main thread is useful for debugging Vitest's Vite usage and <a href="../config/index#globalsetup"><code>globalSetup</code></a> files. This is also where your Vite plugins are running.</p>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>See <a href="https://vitejs.dev/guide/performance.html" target="_blank" rel="noreferrer">Performance | Vite</a> for more tips about Vite specific profiling.</p>
+<p>We recommend <a href="https://github.com/antfu-collective/vite-plugin-inspect" target="_blank" rel="noreferrer"><code>vite-plugin-inspect</code></a> for profiling your Vite plugin performance.</p>
+</div>
+<p>To do this you'll need to pass arguments to the Node process that runs Vitest.</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">$ node --cpu-prof --cpu-prof-dir=main-profile ./node_modules/vitest/vitest.mjs --run
+#      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                  ^^^^^
+#               NodeJS arguments                                           Vitest arguments</pre>
+</div>
+<p>After the tests have run there should be a <code>main-profile/*.cpuprofile</code> file generated. See <a href="#inspecting-profiling-records">Inspecting profiling records</a> for instructions how to analyze these files.</p>
+<h2 id="file-transform" tabindex="-1">File Transform </h2>
+<p>This profiling strategy is a good way to identify unnecessary transforms caused by <a href="https://vitejs.dev/guide/performance.html#avoid-barrel-files" target="_blank" rel="noreferrer">barrel files</a>. If these logs contain files that should not be loaded when your test is run, you might have barrel files that are importing files unnecessarily.</p>
+<p>You can also use <a href="ui">Vitest UI</a> to debug slowness caused by barrel file. The example below shows how importing files without barrel file reduces amount of transformed files by ~85%.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language- active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">├── src
+│   └── utils
+│       ├── currency.ts
+│       ├── formatters.ts  &lt;-- File to test
+│       ├── index.ts
+│       ├── location.ts
+│       ├── math.ts
+│       ├── time.ts
+│       └── users.ts
+├── test
+│   └── formatters.test.ts
+└── vitest.config.ts</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark has-diff" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { expect, test } from 'vitest'
+import { formatter } from '../src/utils'
+import { formatter } from '../src/utils/formatters'
+
+test('formatter works', () =&gt; {
+  expect(formatter).not.toThrow()
+})</pre>
+</div>
+</div></div>
+<img src="https://vitest.dev/module-graph-barrel-file.png" alt="Vitest UI demonstrating barrel file issues"><p>To see how files are transformed, you can use <code>VITEST_DEBUG_DUMP</code> environment variable to write transformed files in the file system:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">$ VITEST_DEBUG_DUMP=true vitest --run
+
+ RUN  v2.1.1 /x/vitest/examples/profiling
+...
+
+$ ls .vitest-dump/
+_x_examples_profiling_global-setup_ts-1292904907.js
+_x_examples_profiling_test_prime-number_test_ts-1413378098.js
+_src_prime-number_ts-525172412.js</pre>
+</div>
+<h2 id="code-coverage" tabindex="-1">Code Coverage </h2>
+<p>If code coverage generation is slow on your project you can use <code>DEBUG=vitest:coverage</code> environment variable to enable performance logging.</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark has-highlighted" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">$ DEBUG=vitest:coverage vitest --run --coverage
+
+ RUN  v3.1.1 /x/vitest-example
+
+  vitest:coverage Reading coverage results 2/2
+  vitest:coverage Converting 1/2
+  vitest:coverage 4 ms /x/src/multiply.ts
+  vitest:coverage Converting 2/2
+  vitest:coverage 552 ms /x/src/add.ts
+  vitest:coverage Uncovered files 1/2
+  vitest:coverage File "/x/src/large-file.ts" is taking longer than 3s
+  vitest:coverage 3027 ms /x/src/large-file.ts
+  vitest:coverage Uncovered files 2/2
+  vitest:coverage 4 ms /x/src/untested-file.ts
+  vitest:coverage Generate coverage total time 3521 ms</pre>
+</div>
+<p>This profiling approach is great for detecting large files that are accidentally picked by coverage providers. For example if your configuration is accidentally including large built minified Javascript files in code coverage, they should appear in logs. In these cases you might want to adjust your <a href="../config/index#coverage-include"><code>coverage.include</code></a> and <a href="../config/index#coverage-exclude"><code>coverage.exclude</code></a> options.</p>
+<h2 id="inspecting-profiling-records" tabindex="-1">Inspecting Profiling Records </h2>
+<p>You can inspect the contents of <code>*.cpuprofile</code> and <code>*.heapprofile</code> with various tools. See list below for examples.</p>
+<ul>
+<li><a href="https://www.speedscope.app/" target="_blank" rel="noreferrer">Speedscope</a></li>
+<li><a href="https://code.visualstudio.com/docs/nodejs/profiling#_analyzing-a-profile" target="_blank" rel="noreferrer">Performance Profiling JavaScript in Visual Studio Code</a></li>
+<li><a href="https://developer.chrome.com/docs/devtools/performance/nodejs#analyze" target="_blank" rel="noreferrer">Profile Node.js performance with the Performance panel | developer.chrome.com</a></li>
+<li><a href="https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#view_snapshots" target="_blank" rel="noreferrer">Memory panel overview | developer.chrome.com</a></li>
+</ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2021-Present VoidZero Inc. and Vitest contributors<br>Licensed under the MIT License.<br>
+    <a href="https://vitest.dev/guide/profiling-test-performance" class="_attribution-link">https://vitest.dev/guide/profiling-test-performance</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

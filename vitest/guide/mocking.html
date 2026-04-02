@@ -1,0 +1,337 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mocking - Vitest - W3cubDocs</title>
+  
+  <meta name="description" content="When writing tests it&#39;s only a matter of time before you need to create a &#34;fake&#34; version of an internal — or external — service. This is &hellip;">
+  <meta name="keywords" content="mocking, vitest">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vitest/guide/mocking.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vitest.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vitest/" class="_nav-link" title="" style="margin-left:0;">Vitest</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<div style="display:none;" hidden="true" aria-hidden="true">Are you an LLM? You can read better optimized documentation at /guide/mocking.md for this page in Markdown format</div>
+<h1 id="mocking" tabindex="-1">Mocking </h1>
+<p>When writing tests it's only a matter of time before you need to create a "fake" version of an internal — or external — service. This is commonly referred to as <strong>mocking</strong>. Vitest provides utility functions to help you out through its <code>vi</code> helper. You can import it from <code>vitest</code> or access it globally if <a href="../config/index#globals"><code>global</code> configuration</a> is enabled.</p>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p>Always remember to clear or restore mocks before or after each test run to undo mock state changes between runs! See <a href="../api/mock#mockreset"><code>mockReset</code></a> docs for more info.</p>
+</div>
+<p>If you are not familiar with <code>vi.fn</code>, <code>vi.mock</code> or <code>vi.spyOn</code> methods, check the <a href="../api/vi">API section</a> first.</p>
+<p>Vitest has a comprehensive list of guides regarding mocking:</p>
+<ul>
+<li><a href="mocking/classes">Mocking Classes</a></li>
+<li><a href="mocking/dates">Mocking Dates</a></li>
+<li><a href="mocking/file-system">Mocking the File System</a></li>
+<li><a href="mocking/functions">Mocking Functions</a></li>
+<li><a href="mocking/globals">Mocking Globals</a></li>
+<li><a href="mocking/modules">Mocking Modules</a></li>
+<li><a href="mocking/requests">Mocking Requests</a></li>
+<li><a href="mocking/timers">Mocking Timers</a></li>
+</ul>
+<p>For a simpler and quicker way to get started with mocking, you can check the Cheat Sheet below.</p>
+<h2 id="cheat-sheet" tabindex="-1">Cheat Sheet </h2>
+<p>I want to…</p>
+<h3 id="mock-exported-variables" tabindex="-1">Mock exported variables </h3>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="example.js">example.js</span></div>
+<div class="language-js">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export const getter = 'variable'</pre>
+</div>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="example.test.ts">example.test.ts</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import * as exports from './example.js'
+
+vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')</pre>
+</div>
+</div>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p>This will not work in the Browser Mode. For a workaround, see <a href="browser/index#spying-on-module-exports">Limitations</a>.</p>
+</div>
+<h3 id="mock-an-exported-function" tabindex="-1">Mock an exported function </h3>
+<ol><li>Example with <code>vi.mock</code>:</li></ol>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p>Don't forget that a <code>vi.mock</code> call is hoisted to top of the file. It will always be executed before all imports.</p>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="example.js">example.js</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export function method() {}</pre>
+</div>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { method } from './example.js'
+
+vi.mock('./example.js', () =&gt; ({
+  method: vi.fn()
+}))</pre>
+</div>
+<ol start="2"><li>Example with <code>vi.spyOn</code>:</li></ol>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import * as exports from './example.js'
+
+vi.spyOn(exports, 'method').mockImplementation(() =&gt; {})</pre>
+</div>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p><code>vi.spyOn</code> example will not work in the Browser Mode. For a workaround, see <a href="browser/index#spying-on-module-exports">Limitations</a>.</p>
+</div>
+<h3 id="mock-an-exported-class-implementation" tabindex="-1">Mock an exported class implementation </h3>
+<ol><li>Example with a fake <code>class</code>:</li></ol>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="example.js">example.js</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export class SomeClass {}</pre>
+</div>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { SomeClass } from './example.js'
+
+vi.mock(import('./example.js'), () =&gt; {
+  const SomeClass = vi.fn(class FakeClass {
+    someMethod = vi.fn()
+  })
+  return { SomeClass }
+})</pre>
+</div>
+<ol start="2"><li>Example with <code>vi.spyOn</code>:</li></ol>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import * as mod from './example.js'
+
+vi.spyOn(mod, 'SomeClass').mockImplementation(class FakeClass {
+  someMethod = vi.fn()
+})</pre>
+</div>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p><code>vi.spyOn</code> example will not work in the Browser Mode. For a workaround, see <a href="browser/index#spying-on-module-exports">Limitations</a>.</p>
+</div>
+<h3 id="spy-on-an-object-returned-from-a-function" tabindex="-1">Spy on an object returned from a function </h3>
+<ol><li>Example using cache:</li></ol>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="example.js">example.js</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export function useObject() {
+  return { method: () =&gt; true }
+}</pre>
+</div>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="useObject.js">useObject.js</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { useObject } from './example.js'
+
+const obj = useObject()
+obj.method()</pre>
+</div>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="useObject.test.js">useObject.test.js</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { useObject } from './example.js'
+
+vi.mock(import('./example.js'), () =&gt; {
+  let _cache
+  const useObject = () =&gt; {
+    if (!_cache) {
+      _cache = {
+        method: vi.fn(),
+      }
+    }
+    // now every time that useObject() is called it will
+    // return the same object reference
+    return _cache
+  }
+  return { useObject }
+})
+
+const obj = useObject()
+// obj.method was called inside some-path
+expect(obj.method).toHaveBeenCalled()</pre>
+</div>
+</div>
+<h3 id="mock-part-of-a-module" tabindex="-1">Mock part of a module </h3>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { mocked, original } from './some-path.js'
+
+vi.mock(import('./some-path.js'), async (importOriginal) =&gt; {
+  const mod = await importOriginal()
+  return {
+    ...mod,
+    mocked: vi.fn()
+  }
+})
+original() // has original behaviour
+mocked() // is a spy function</pre>
+</div>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p>Don't forget that this only <a href="#mocking-pitfalls">mocks <em>external</em> access</a>. In this example, if <code>original</code> calls <code>mocked</code> internally, it will always call the function defined in the module, not in the mock factory.</p>
+</div>
+<h3 id="mock-the-current-date" tabindex="-1">Mock the current date </h3>
+<p>To mock <code>Date</code>'s time, you can use <code>vi.setSystemTime</code> helper function. This value will <strong>not</strong> automatically reset between different tests.</p>
+<p>Beware that using <code>vi.useFakeTimers</code> also changes the <code>Date</code>'s time.</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">const mockDate = new Date(2022, 0, 1)
+vi.setSystemTime(mockDate)
+const now = new Date()
+expect(now.valueOf()).toBe(mockDate.valueOf())
+// reset mocked time
+vi.useRealTimers()</pre>
+</div>
+<h3 id="mock-a-global-variable" tabindex="-1">Mock a global variable </h3>
+<p>You can set global variable by assigning a value to <code>globalThis</code> or using <a href="../api/vi#vi-stubglobal"><code>vi.stubGlobal</code></a> helper. When using <code>vi.stubGlobal</code>, it will <strong>not</strong> automatically reset between different tests, unless you enable <a href="../config/index#unstubglobals"><code>unstubGlobals</code></a> config option or call <a href="../api/vi#vi-unstuballglobals"><code>vi.unstubAllGlobals</code></a>.</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">vi.stubGlobal('__VERSION__', '1.0.0')
+expect(__VERSION__).toBe('1.0.0')</pre>
+</div>
+<h3 id="mock-import-meta-env" tabindex="-1">Mock <code>import.meta.env</code> </h3>
+<ol><li>To change environmental variable, you can just assign a new value to it.</li></ol>
+<div class="warning custom-block">
+<strong class="custom-block-title custom-block-title-default">WARNING</strong><p>The environmental variable value will <strong><em>not</em></strong> automatically reset between different tests.</p>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { beforeEach, expect, it } from 'vitest'
+
+// you can reset it in beforeEach hook manually
+const originalViteEnv = import.meta.env.VITE_ENV
+
+beforeEach(() =&gt; {
+  import.meta.env.VITE_ENV = originalViteEnv
+})
+
+it('changes value', () =&gt; {
+  import.meta.env.VITE_ENV = 'staging'
+  expect(import.meta.env.VITE_ENV).toBe('staging')
+})</pre>
+</div>
+<ol start="2"><li>If you want to automatically reset the value(s), you can use the <code>vi.stubEnv</code> helper with the <a href="../config/index#unstubenvs"><code>unstubEnvs</code></a> config option enabled (or call <a href="../api/vi#vi-unstuballenvs"><code>vi.unstubAllEnvs</code></a> manually in a <code>beforeEach</code> hook):</li></ol>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { expect, it, vi } from 'vitest'
+
+// before running tests "VITE_ENV" is "test"
+import.meta.env.VITE_ENV === 'test'
+
+it('changes value', () =&gt; {
+  vi.stubEnv('VITE_ENV', 'staging')
+  expect(import.meta.env.VITE_ENV).toBe('staging')
+})
+
+it('the value is restored before running an other test', () =&gt; {
+  expect(import.meta.env.VITE_ENV).toBe('test')
+})</pre>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="vitest.config.ts">vitest.config.ts</span></div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    unstubEnvs: true,
+  },
+})</pre>
+</div>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2021-Present VoidZero Inc. and Vitest contributors<br>Licensed under the MIT License.<br>
+    <a href="https://vitest.dev/guide/mocking" class="_attribution-link">https://vitest.dev/guide/mocking</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

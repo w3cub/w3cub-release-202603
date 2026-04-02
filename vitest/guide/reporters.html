@@ -1,0 +1,621 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Reporters - Vitest - W3cubDocs</title>
+  
+  <meta name="description" content="Vitest provides several built-in reporters to display test output in different formats, as well as the ability to use custom reporters. You can &hellip;">
+  <meta name="keywords" content="reporters, vitest">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vitest/guide/reporters.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vitest.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vitest/" class="_nav-link" title="" style="margin-left:0;">Vitest</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<div style="display:none;" hidden="true" aria-hidden="true">Are you an LLM? You can read better optimized documentation at /guide/reporters.md for this page in Markdown format</div>
+<h1 id="reporters" tabindex="-1">Reporters </h1>
+<p>Vitest provides several built-in reporters to display test output in different formats, as well as the ability to use custom reporters. You can select different reporters either by using the <code>--reporter</code> command line option, or by including a <code>reporters</code> property in your <a href="../config/index#reporters">configuration file</a>. If no reporter is specified, Vitest will use the <code>default</code> reporter as described below.</p>
+<p>Using reporters via command line:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=verbose</pre>
+</div>
+<p>Using reporters via <a href="../config/index"><code>vitest.config.ts</code></a>:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    reporters: ['verbose']
+  },
+})</pre>
+</div>
+<p>Some reporters can be customized by passing additional options to them. Reporter specific options are described in sections below.</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: [
+      'default',
+      ['junit', { suiteName: 'UI tests' }]
+    ],
+  },
+})</pre>
+</div>
+<h2 id="reporter-output" tabindex="-1">Reporter Output </h2>
+<p>By default, Vitest's reporters will print their output to the terminal. When using the <code>json</code>, <code>html</code> or <code>junit</code> reporters, you can instead write your tests' output to a file by including an <code>outputFile</code> <a href="../config/index#outputfile">configuration option</a> either in your Vite configuration file or via CLI.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=json --outputFile=./test-output.json</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['json'],
+    outputFile: './test-output.json'
+  },
+})</pre>
+</div>
+</div></div>
+<h2 id="combining-reporters" tabindex="-1">Combining Reporters </h2>
+<p>You can use multiple reporters simultaneously to print your test results in different formats. For example:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=json --reporter=default</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['json', 'default'],
+    outputFile: './test-output.json'
+  },
+})</pre>
+</div>
+<p>The above example will both print the test results to the terminal in the default style and write them as JSON to the designated output file.</p>
+<p>When using multiple reporters, it's also possible to designate multiple output files, as follows:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['junit', 'json', 'verbose'],
+    outputFile: {
+      junit: './junit-report.xml',
+      json: './json-report.json',
+    },
+  },
+})</pre>
+</div>
+<p>This example will write separate JSON and XML reports as well as printing a verbose report to the terminal.</p>
+<h2 id="built-in-reporters" tabindex="-1">Built-in Reporters </h2>
+<h3 id="default-reporter" tabindex="-1">Default Reporter </h3>
+<p>By default (i.e. if no reporter is specified), Vitest will display summary of running tests and their status at the bottom. Once a suite passes, its status will be reported on top of the summary.</p>
+<p>You can disable the summary by configuring the reporter:</p>
+<div class="vp-code-group"><div class="blocks"><div class="language-ts active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: [
+      ['default', { summary: false }]
+    ]
+  },
+})</pre>
+</div></div></div>
+<p>Example output for tests in progress:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">✓ test/example-1.test.ts (5 tests | 1 skipped) 306ms
+ ✓ test/example-2.test.ts (5 tests | 1 skipped) 307ms
+
+ ❯ test/example-3.test.ts 3/5
+ ❯ test/example-4.test.ts 1/5
+
+ Test Files 2 passed (4)
+      Tests 10 passed | 3 skipped (65)
+   Start at 11:01:36
+   Duration 2.00s</pre>
+</div>
+<p>Final output after tests have finished:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">✓ test/example-1.test.ts (5 tests | 1 skipped) 306ms
+ ✓ test/example-2.test.ts (5 tests | 1 skipped) 307ms
+ ✓ test/example-3.test.ts (5 tests | 1 skipped) 307ms
+ ✓ test/example-4.test.ts (5 tests | 1 skipped) 307ms
+
+ Test Files  4 passed (4)
+      Tests  16 passed | 4 skipped (20)
+   Start at  12:34:32
+   Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)</pre>
+</div>
+<p>If there is only one test file running, Vitest will output the full test tree of that file, similar to the <a href="#tree-reporter"><code>tree</code></a> reporter. The default reporter will also print the test tree if there is at least one failed test in the file.</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">✓ __tests__/file1.test.ts (2) 725ms
+   ✓ first test file (2) 725ms
+     ✓ 2 + 2 should equal 4
+     ✓ 4 - 2 should equal 2
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  12:34:32
+   Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)</pre>
+</div>
+<h3 id="verbose-reporter" tabindex="-1">Verbose Reporter </h3>
+<p>The verbose reporter prints every test case once it is finished. It does not report suites or files separately. If <code>--includeTaskLocation</code> is enabled, it will also include the location of each test in the output. Similar to <code>default</code> reporter, you can disable the summary by configuring the reporter.</p>
+<p>In addition to this, the <code>verbose</code> reporter prints test error messages right away. The full test error is reported when the test run is finished.</p>
+<p>This is the only terminal reporter that reports <a href="test-annotations">annotations</a> when the test doesn't fail.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=verbose</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: [
+      ['verbose', { summary: false }]
+    ]
+  },
+})</pre>
+</div>
+</div></div>
+<p>Example output:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">✓ __tests__/file1.test.ts &gt; first test file &gt; 2 + 2 should equal 4 1ms
+✓ __tests__/file1.test.ts &gt; first test file &gt; 4 - 2 should equal 2 1ms
+✓ __tests__/file2.test.ts &gt; second test file &gt; 1 + 1 should equal 2 1ms
+✓ __tests__/file2.test.ts &gt; second test file &gt; 2 - 1 should equal 1 1ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  12:34:32
+   Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)</pre>
+</div>
+<p>An example with <code>--includeTaskLocation</code>:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">✓ __tests__/file1.test.ts:2:1 &gt; first test file &gt; 2 + 2 should equal 4 1ms
+✓ __tests__/file1.test.ts:3:1 &gt; first test file &gt; 4 - 2 should equal 2 1ms
+✓ __tests__/file2.test.ts:2:1 &gt; second test file &gt; 1 + 1 should equal 2 1ms
+✓ __tests__/file2.test.ts:3:1 &gt; second test file &gt; 2 - 1 should equal 1 1ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  12:34:32
+   Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)</pre>
+</div>
+<h3 id="tree-reporter" tabindex="-1">Tree Reporter </h3>
+<p>The tree reporter is same as <code>default</code> reporter, but it also displays each individual test after the suite has finished. Similar to <code>default</code> reporter, you can disable the summary by configuring the reporter.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=tree</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: [
+      ['tree', { summary: false }]
+    ]
+  },
+})</pre>
+</div>
+</div></div>
+<p>Example output for tests in progress with default <code>slowTestThreshold: 300</code>:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">✓ __tests__/example-1.test.ts (2) 725ms
+   ✓ first test file (2) 725ms
+     ✓ 2 + 2 should equal 4
+     ✓ 4 - 2 should equal 2
+
+ ❯ test/example-2.test.ts 3/5
+   ↳ should run longer than three seconds 1.57s
+ ❯ test/example-3.test.ts 1/5
+
+ Test Files 2 passed (4)
+      Tests 10 passed | 3 skipped (65)
+   Start at 11:01:36
+   Duration 2.00s</pre>
+</div>
+<p>Example of final terminal output for a passing test suite:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">✓ __tests__/file1.test.ts (2) 725ms
+   ✓ first test file (2) 725ms
+     ✓ 2 + 2 should equal 4
+     ✓ 4 - 2 should equal 2
+✓ __tests__/file2.test.ts (2) 746ms
+  ✓ second test file (2) 746ms
+    ✓ 1 + 1 should equal 2
+    ✓ 2 - 1 should equal 1
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  12:34:32
+   Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)</pre>
+</div>
+<h3 id="dot-reporter" tabindex="-1">Dot Reporter </h3>
+<p>Prints a single dot for each completed test to provide minimal output while still showing all tests that have run. Details are only provided for failed tests, along with the summary for the suite.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=dot</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['dot']
+  },
+})</pre>
+</div>
+</div></div>
+<p>Example terminal output for a passing test suite:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">....
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  12:34:32
+   Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)</pre>
+</div>
+<h3 id="junit-reporter" tabindex="-1">JUnit Reporter </h3>
+<p>Outputs a report of the test results in JUnit XML format. Can either be printed to the terminal or written to an XML file using the <a href="../config/index#outputfile"><code>outputFile</code></a> configuration option.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=junit</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['junit']
+  },
+})</pre>
+</div>
+</div></div>
+<p>Example of a JUnit XML report:</p>
+<div class="language-xml">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;testsuites name="vitest tests" tests="2" failures="1" errors="0" time="0.503"&gt;
+    &lt;testsuite name="__tests__/test-file-1.test.ts" timestamp="2023-10-19T17:41:58.580Z" hostname="My-Computer.local" tests="2" failures="1" errors="0" skipped="0" time="0.013"&gt;
+        &lt;testcase classname="__tests__/test-file-1.test.ts" name="first test file &amp;gt; 2 + 2 should equal 4" time="0.01"&gt;
+            &lt;failure message="expected 5 to be 4 // Object.is equality" type="AssertionError"&gt;
+AssertionError: expected 5 to be 4 // Object.is equality
+ ❯ __tests__/test-file-1.test.ts:20:28
+            &lt;/failure&gt;
+        &lt;/testcase&gt;
+        &lt;testcase classname="__tests__/test-file-1.test.ts" name="first test file &amp;gt; 4 - 2 should equal 2" time="0"&gt;
+        &lt;/testcase&gt;
+    &lt;/testsuite&gt;
+&lt;/testsuites&gt;</pre>
+</div>
+<p>The outputted XML contains nested <code>testsuites</code> and <code>testcase</code> tags. These can also be customized via reporter options <code>suiteName</code> and <code>classnameTemplate</code>. <code>classnameTemplate</code> can either be a template string or a function.</p>
+<p>The supported placeholders for the <code>classnameTemplate</code> option are:</p>
+<ul>
+<li>filename</li>
+<li>filepath</li>
+</ul>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: [
+      ['junit', { suiteName: 'custom suite name', classnameTemplate: 'filename:{filename} - filepath:{filepath}' }]
+    ]
+  },
+})</pre>
+</div>
+<h3 id="json-reporter" tabindex="-1">JSON Reporter </h3>
+<p>Generates a report of the test results in a JSON format compatible with Jest's <code>--json</code> option. Can either be printed to the terminal or written to a file using the <a href="../config/index#outputfile"><code>outputFile</code></a> configuration option.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=json</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['json']
+  },
+})</pre>
+</div>
+</div></div>
+<p>Example of a JSON report:</p>
+<div class="language-json">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">{
+  "numTotalTestSuites": 4,
+  "numPassedTestSuites": 2,
+  "numFailedTestSuites": 1,
+  "numPendingTestSuites": 1,
+  "numTotalTests": 4,
+  "numPassedTests": 1,
+  "numFailedTests": 1,
+  "numPendingTests": 1,
+  "numTodoTests": 1,
+  "startTime": 1697737019307,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "",
+            "first test file"
+          ],
+          "fullName": " first test file 2 + 2 should equal 4",
+          "status": "failed",
+          "title": "2 + 2 should equal 4",
+          "duration": 9,
+          "failureMessages": [
+            "expected 5 to be 4 // Object.is equality"
+          ],
+          "location": {
+            "line": 20,
+            "column": 28
+          },
+          "meta": {}
+        }
+      ],
+      "startTime": 1697737019787,
+      "endTime": 1697737019797,
+      "status": "failed",
+      "message": "",
+      "name": "/root-directory/__tests__/test-file-1.test.ts"
+    }
+  ],
+  "coverageMap": {}
+}</pre>
+</div>
+<div class="info custom-block">
+<strong class="custom-block-title custom-block-title-default">INFO</strong><p>Since Vitest 3, the JSON reporter includes coverage information in <code>coverageMap</code> if coverage is enabled.</p>
+</div>
+<h3 id="html-reporter" tabindex="-1">HTML Reporter </h3>
+<p>Generates an HTML file to view test results through an interactive <a href="ui">GUI</a>. After the file has been generated, Vitest will keep a local development server running and provide a link to view the report in a browser.</p>
+<p>Output file can be specified using the <a href="../config/index#outputfile"><code>outputFile</code></a> configuration option. If no <code>outputFile</code> option is provided, a new HTML file will be created.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=html</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['html']
+  },
+})</pre>
+</div>
+</div></div>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>This reporter requires installed <a href="ui"><code>@vitest/ui</code></a> package.</p>
+</div>
+<h3 id="tap-reporter" tabindex="-1">TAP Reporter </h3>
+<p>Outputs a report following <a href="https://testanything.org/" target="_blank" rel="noreferrer">Test Anything Protocol</a> (TAP).</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=tap</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['tap']
+  },
+})</pre>
+</div>
+</div></div>
+<p>Example of a TAP report:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">TAP version 13
+1..1
+not ok 1 - __tests__/test-file-1.test.ts # time=14.00ms {
+    1..1
+    not ok 1 - first test file # time=13.00ms {
+        1..2
+        not ok 1 - 2 + 2 should equal 4 # time=11.00ms
+            ---
+            error:
+                name: "AssertionError"
+                message: "expected 5 to be 4 // Object.is equality"
+            at: "/root-directory/__tests__/test-file-1.test.ts:20:28"
+            actual: "5"
+            expected: "4"
+            ...
+        ok 2 - 4 - 2 should equal 2 # time=1.00ms
+    }
+}</pre>
+</div>
+<h3 id="tap-flat-reporter" tabindex="-1">TAP Flat Reporter </h3>
+<p>Outputs a TAP flat report. Like the <code>tap</code> reporter, test results are formatted to follow TAP standards, but test suites are formatted as a flat list rather than a nested hierarchy.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=tap-flat</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['tap-flat']
+  },
+})</pre>
+</div>
+</div></div>
+<p>Example of a TAP flat report:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">TAP version 13
+1..2
+not ok 1 - __tests__/test-file-1.test.ts &gt; first test file &gt; 2 + 2 should equal 4 # time=11.00ms
+    ---
+    error:
+        name: "AssertionError"
+        message: "expected 5 to be 4 // Object.is equality"
+    at: "/root-directory/__tests__/test-file-1.test.ts:20:28"
+    actual: "5"
+    expected: "4"
+    ...
+ok 2 - __tests__/test-file-1.test.ts &gt; first test file &gt; 4 - 2 should equal 2 # time=0.00ms</pre>
+</div>
+<h3 id="hanging-process-reporter" tabindex="-1">Hanging Process Reporter </h3>
+<p>Displays a list of hanging processes, if any are preventing Vitest from exiting safely. The <code>hanging-process</code> reporter does not itself display test results, but can be used in conjunction with another reporter to monitor processes while tests run. Using this reporter can be resource-intensive, so should generally be reserved for debugging purposes in situations where Vitest consistently cannot exit the process.</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=hanging-process</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['hanging-process']
+  },
+})</pre>
+</div>
+</div></div>
+<h3 id="github-actions-reporter" tabindex="-1">GitHub Actions Reporter </h3>
+<p>Output <a href="https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-error-message" target="_blank" rel="noreferrer">workflow commands</a> to provide annotations for test failures. This reporter is automatically enabled with a <a href="#default-reporter"><code>default</code></a> reporter when <code>process.env.GITHUB_ACTIONS === 'true'</code>.</p>
+<img alt="GitHub Actions" img-dark src="https://github.com/vitest-dev/vitest/assets/4232207/336cddc2-df6b-4b8a-8e72-4d00010e37f5"><img alt="GitHub Actions" img-light src="https://github.com/vitest-dev/vitest/assets/4232207/ce8447c1-0eab-4fe1-abef-d0d322290dca"><p>If you configure non-default reporters, you need to explicitly add <code>github-actions</code>.</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
+  },
+})</pre>
+</div>
+<p>You can customize the file paths that are printed in <a href="https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions" target="_blank" rel="noreferrer">GitHub's annotation command format</a> by using the <code>onWritePath</code> option. This is useful when running Vitest in a containerized environment, such as Docker, where the file paths may not match the paths in the GitHub Actions environment.</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: process.env.GITHUB_ACTIONS
+      ? [
+          'default',
+          ['github-actions', { onWritePath(path) {
+            return path.replace(/^\/app\//, `${process.env.GITHUB_WORKSPACE}/`)
+          } }],
+        ]
+      : ['default'],
+  },
+})</pre>
+</div>
+<p>If you are using <a href="test-annotations">Annotations API</a>, the reporter will automatically inline them in the GitHub UI. You can disable this by setting <code>displayAnnotations</code> option to <code>false</code>:</p>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: [
+      ['github-actions', { displayAnnotations: false }],
+    ],
+  },
+})</pre>
+</div>
+<h3 id="blob-reporter" tabindex="-1">Blob Reporter </h3>
+<p>Stores test results on the machine so they can be later merged using <a href="cli#merge-reports"><code>--merge-reports</code></a> command. By default, stores all results in <code>.vitest-reports</code> folder, but can be overridden with <code>--outputFile</code> or <code>--outputFile.blob</code> flags.</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=blob --outputFile=reports/blob-1.json</pre>
+</div>
+<p>We recommend using this reporter if you are running Vitest on different machines with the <a href="cli#shard"><code>--shard</code></a> flag. All blob reports can be merged into any report by using <code>--merge-reports</code> command at the end of your CI pipeline:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --merge-reports=reports --reporter=json --reporter=default</pre>
+</div>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>Both <code>--reporter=blob</code> and <code>--merge-reports</code> do not work in watch mode.</p>
+</div>
+<h2 id="custom-reporters" tabindex="-1">Custom Reporters </h2>
+<p>You can use third-party custom reporters installed from NPM by specifying their package name in the reporters' option:</p>
+<div class="vp-code-group"><div class="blocks">
+<div class="language-bash active">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=some-published-vitest-reporter</pre>
+</div>
+<div class="language-ts">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">export default defineConfig({
+  test: {
+    reporters: ['some-published-vitest-reporter']
+  },
+})</pre>
+</div>
+</div></div>
+<p>Additionally, you can define your own <a href="advanced/reporters">custom reporters</a> and use them by specifying their file path:</p>
+<div class="language-bash">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;" tabindex="0" dir="ltr" data-language="javascript">npx vitest --reporter=./path/to/reporter.ts</pre>
+</div>
+<p>Custom reporters should implement the <a href="https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/types/reporter.ts" target="_blank" rel="noreferrer">Reporter interface</a>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2021-Present VoidZero Inc. and Vitest contributors<br>Licensed under the MIT License.<br>
+    <a href="https://vitest.dev/guide/reporters" class="_attribution-link">https://vitest.dev/guide/reporters</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
