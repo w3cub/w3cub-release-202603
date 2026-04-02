@@ -1,0 +1,200 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>useMatches - React Router - W3cubDocs</title>
+  
+  <meta name="description" content="Returns the current route matches on the page. This is most useful for creating abstractions in parent layouts to get access to their child route&# &hellip;">
+  <meta name="keywords" content="usematches, react, router, react_router">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/react_router/hooks/use-matches.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/react_router.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/react_router/" class="_nav-link" title="" style="margin-left:0;">React Router</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="usematches">
+<code>useMatches</code>
+</h1>
+<p>Returns the current route matches on the page. This is most useful for creating abstractions in parent layouts to get access to their child route's data.</p>
+<div><pre data-line-numbers="true" data-lang="js" style="color: var(--base05);background-color: var(--base00)" data-language="javascript">import { useMatches } from "react-router-dom";
+
+function SomeComponent() {
+  const matches = useMatches();
+  // [match1, match2, ...]
+}
+</pre></div>
+<p>A <code>match</code> has the following shape:</p>
+<div><pre data-line-numbers="true" data-lang="js" style="color: var(--base05);background-color: var(--base00)" data-language="javascript">{
+  // route id
+  id,
+
+  // the portion of the URL the route matched
+  pathname,
+
+  // the data from the loader
+  data,
+
+  // the parsed params from the URL
+  params,
+
+  // the &lt;Route handle&gt; with any app specific data
+  handle,
+};
+</pre></div>
+<p>Pairing <code>&lt;Route handle&gt;</code> with <code>useMatches</code> gets very powerful since you can put whatever you want on a route <code>handle</code> and have access to <code>useMatches</code> anywhere.</p>
+<p><docs-warning><code>useMatches</code> only works with a data router like <a href="../routers/create-browser-router"><code>createBrowserRouter</code></a>, since they know the full route tree up front and can provide all of the current matches. Additionally, <code>useMatches</code> will not match down into any descendant route trees since the router isn't aware of the descendant routes.</docs-warning></p>
+<h2 id="breadcrumbs">
+Breadcrumbs</h2>
+<p>The proverbial use case here is adding breadcrumbs to a parent layout that uses data from the child routes.</p>
+<div><pre data-filename="app.jsx" data-line-numbers="true" data-lang="jsx" style="color: var(--base05);background-color: var(--base00)" data-language="javascript">&lt;Route element={&lt;Root /&gt;}&gt;
+  &lt;Route
+    path="messages"
+    element={&lt;Messages /&gt;}
+    loader={loadMessages}
+    handle={{
+      // you can put whatever you want on a route handle
+      // here we use "crumb" and return some elements,
+      // this is what we'll render in the breadcrumbs
+      // for this route
+      crumb: () =&gt; &lt;Link to="/message"&gt;Messages&lt;/Link&gt;,
+    }}
+  &gt;
+    &lt;Route
+      path="conversation/:id"
+      element={&lt;Thread /&gt;}
+      loader={loadThread}
+      handle={{
+        // `crumb` is your own abstraction, we decided
+        // to make this one a function so we can pass
+        // the data from the loader to it so that our
+        // breadcrumb is made up of dynamic content
+        crumb: (data) =&gt; &lt;span&gt;{data.threadName}&lt;/span&gt;,
+      }}
+    /&gt;
+  &lt;/Route&gt;
+&lt;/Route&gt;
+</pre></div>
+<p>Now we can create a <code>Breadcrumbs</code> component that takes advantage of our home-grown <code>crumb</code> abstraction with <code>useMatches</code> and <code>handle</code>.</p>
+<div><pre data-filename="components/breadcrumbs.jsx" data-line-numbers="true" data-lang="tsx" style="color: var(--base05);background-color: var(--base00)" data-language="javascript">function Breadcrumbs() {
+  let matches = useMatches();
+  let crumbs = matches
+    // first get rid of any matches that don't have handle and crumb
+    .filter((match) =&gt; Boolean(match.handle?.crumb))
+    // now map them into an array of elements, passing the loader
+    // data to each one
+    .map((match) =&gt; match.handle.crumb(match.data));
+
+  return (
+    &lt;ol&gt;
+      {crumbs.map((crumb, index) =&gt; (
+        &lt;li key={index}&gt;{crumb}&lt;/li&gt;
+      ))}
+    &lt;/ol&gt;
+  );
+}
+</pre></div>
+<p>Now you can render <code>&lt;Breadcrumbs/&gt;</code> anywhere you want, probably in the root component.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © React Training 2015-2019<br>© Remix Software 2020-2022<br>Licensed under the MIT License (MIT).<br>
+    <a href="https://reactrouterdotcom.fly.dev/docs/en/v6/hooks/use-matches" class="_attribution-link">https://reactrouterdotcom.fly.dev/docs/en/v6/hooks/use-matches</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
