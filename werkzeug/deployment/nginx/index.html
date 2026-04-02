@@ -1,0 +1,134 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Nginx - Werkzeug - W3cubDocs</title>
+  
+  <meta name="description" content="nginx is a fast, production level HTTP server. When serving your application with one of the WSGI servers listed in Deploying to Production, it is &hellip;">
+  <meta name="keywords" content="nginx, werkzeug">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/werkzeug/deployment/nginx/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/werkzeug.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/werkzeug/" class="_nav-link" title="" style="margin-left:0;">Werkzeug</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>nginx</h1> <p><a class="reference external" href="https://nginx.org/">nginx</a> is a fast, production level HTTP server. When serving your application with one of the WSGI servers listed in <a class="reference internal" href="../index"><span class="doc">Deploying to Production</span></a>, it is often good or necessary to put a dedicated HTTP server in front of it. This “reverse proxy” can handle incoming requests, TLS, and other security and performance concerns better than the WSGI server.</p> <p>Nginx can be installed using your system package manager, or a pre-built executable for Windows. Installing and running Nginx itself is outside the scope of this doc. This page outlines the basics of configuring Nginx to proxy your application. Be sure to read its documentation to understand what features are available.</p> <section id="domain-name"> <h2>Domain Name</h2> <p>Acquiring and configuring a domain name is outside the scope of this doc. In general, you will buy a domain name from a registrar, pay for server space with a hosting provider, and then point your registrar at the hosting provider’s name servers.</p> <p>To simulate this, you can also edit your <code>hosts</code> file, located at <code>/etc/hosts</code> on Linux. Add a line that associates a name with the local IP.</p> <p>Modern Linux systems may be configured to treat any domain name that ends with <code>.localhost</code> like this without adding it to the <code>hosts</code> file.</p> <div class="literal-block-wrapper docutils container" id="id2"> <div class="code-block-caption"><span class="caption-text"><code>/etc/hosts</code></span></div> <pre data-language="python">127.0.0.1 hello.localhost
+</pre> </div> </section> <section id="configuration"> <h2>Configuration</h2> <p>The nginx configuration is located at <code>/etc/nginx/nginx.conf</code> on Linux. It may be different depending on your operating system. Check the docs and look for <code>nginx.conf</code>.</p> <p>Remove or comment out any existing <code>server</code> section. Add a <code>server</code> section and use the <code>proxy_pass</code> directive to point to the address the WSGI server is listening on. We’ll assume the WSGI server is listening locally at <code>http://127.0.0.1:8000</code>.</p> <div class="literal-block-wrapper docutils container" id="id3"> <div class="code-block-caption"><span class="caption-text"><code>/etc/nginx.conf</code></span></div> <pre data-language="nginx">server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Prefix /;
+    }
+}
+</pre> </div> <p>Then <a class="reference internal" href="../proxy_fix/index"><span class="doc">Tell Werkzeug it is Behind a Proxy</span></a> so that your application uses these headers.</p> </section> <section id="static-files"> <h2>Static Files</h2> <p>If your application has static files such as JavaScript, CSS, and images, it will be more efficient to let Nginx serve them directly rather than going through the Python application.</p> <p>Assuming the static files are expected to be available under the <code>/static/</code> URL, and are stored at <code>/home/project/static/</code>, add the following to the <code>server</code> block above.</p> <pre data-language="nginx">location /static {
+    alias /home/project/static;
+}
+</pre> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2007 Pallets<br>Licensed under the BSD 3-clause License.<br>
+    <a href="https://werkzeug.palletsprojects.com/en/latest/deployment/nginx/" class="_attribution-link">https://werkzeug.palletsprojects.com/en/latest/deployment/nginx/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
