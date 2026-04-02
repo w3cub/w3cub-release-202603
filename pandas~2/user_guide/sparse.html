@@ -1,0 +1,416 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Sparse Data Structures - Pandas 2 - W3cubDocs</title>
+  
+  <meta name="description" content="pandas provides data structures for efficiently storing sparse data. These are not necessarily sparse in the typical “mostly 0”. Rather, you can &hellip;">
+  <meta name="keywords" content="sparse, data, structures, pandas, pandas~2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pandas~2/user_guide/sparse.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pandas~2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pandas~2/" class="_nav-link" title="" style="margin-left:0;">pandas 2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Sparse data structures</h1> <p>pandas provides data structures for efficiently storing sparse data. These are not necessarily sparse in the typical “mostly 0”. Rather, you can view these objects as being “compressed” where any data matching a specific value (<code class="docutils literal notranslate"><span class="pre">NaN</span></code> / missing value, though any value can be chosen, including 0) is omitted. The compressed values are not actually stored in the array.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [1]: arr = np.random.randn(10)
+
+In [2]: arr[2:-2] = np.nan
+
+In [3]: ts = pd.Series(pd.arrays.SparseArray(arr))
+
+In [4]: ts
+Out[4]: 
+0    0.469112
+1   -0.282863
+2         NaN
+3         NaN
+4         NaN
+5         NaN
+6         NaN
+7         NaN
+8   -0.861849
+9   -2.104569
+dtype: Sparse[float64, nan]
+</pre></div> </div> <p>Notice the dtype, <code class="docutils literal notranslate"><span class="pre">Sparse[float64,</span> <span class="pre">nan]</span></code>. The <code class="docutils literal notranslate"><span class="pre">nan</span></code> means that elements in the array that are <code class="docutils literal notranslate"><span class="pre">nan</span></code> aren’t actually stored, only the non-<code class="docutils literal notranslate"><span class="pre">nan</span></code> elements are. Those non-<code class="docutils literal notranslate"><span class="pre">nan</span></code> elements have a <code class="docutils literal notranslate"><span class="pre">float64</span></code> dtype.</p> <p>The sparse objects exist for memory efficiency reasons. Suppose you had a large, mostly NA <a class="reference internal" href="../reference/api/pandas.dataframe#pandas.DataFrame" title="pandas.DataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>:</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [5]: df = pd.DataFrame(np.random.randn(10000, 4))
+
+In [6]: df.iloc[:9998] = np.nan
+
+In [7]: sdf = df.astype(pd.SparseDtype("float", np.nan))
+
+In [8]: sdf.head()
+Out[8]: 
+     0    1    2    3
+0  NaN  NaN  NaN  NaN
+1  NaN  NaN  NaN  NaN
+2  NaN  NaN  NaN  NaN
+3  NaN  NaN  NaN  NaN
+4  NaN  NaN  NaN  NaN
+
+In [9]: sdf.dtypes
+Out[9]: 
+0    Sparse[float64, nan]
+1    Sparse[float64, nan]
+2    Sparse[float64, nan]
+3    Sparse[float64, nan]
+dtype: object
+
+In [10]: sdf.sparse.density
+Out[10]: 0.0002
+</pre></div> </div> <p>As you can see, the density (% of values that have not been “compressed”) is extremely low. This sparse object takes up much less memory on disk (pickled) and in the Python interpreter.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [11]: 'dense : {:0.2f} bytes'.format(df.memory_usage().sum() / 1e3)
+Out[11]: 'dense : 320.13 bytes'
+
+In [12]: 'sparse: {:0.2f} bytes'.format(sdf.memory_usage().sum() / 1e3)
+Out[12]: 'sparse: 0.22 bytes'
+</pre></div> </div> <p>Functionally, their behavior should be nearly identical to their dense counterparts.</p> <section id="sparsearray"> <h2>SparseArray</h2> <p><a class="reference internal" href="../reference/api/pandas.arrays.sparsearray#pandas.arrays.SparseArray" title="pandas.arrays.SparseArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">arrays.SparseArray</span></code></a> is a <a class="reference internal" href="../reference/api/pandas.api.extensions.extensionarray#pandas.api.extensions.ExtensionArray" title="pandas.api.extensions.ExtensionArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtensionArray</span></code></a> for storing an array of sparse values (see <a class="reference internal" href="basics#basics-dtypes"><span class="std std-ref">dtypes</span></a> for more on extension arrays). It is a 1-dimensional ndarray-like object storing only values distinct from the <code class="docutils literal notranslate"><span class="pre">fill_value</span></code>:</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [13]: arr = np.random.randn(10)
+
+In [14]: arr[2:5] = np.nan
+
+In [15]: arr[7:8] = np.nan
+
+In [16]: sparr = pd.arrays.SparseArray(arr)
+
+In [17]: sparr
+Out[17]: 
+[-1.9556635297215477, -1.6588664275960427, nan, nan, nan, 1.1589328886422277, 0.14529711373305043, nan, 0.6060271905134522, 1.3342113401317768]
+Fill: nan
+IntIndex
+Indices: array([0, 1, 5, 6, 8, 9], dtype=int32)
+</pre></div> </div> <p>A sparse array can be converted to a regular (dense) ndarray with <code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.asarray()</span></code></p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [18]: np.asarray(sparr)
+Out[18]: 
+array([-1.9557, -1.6589,     nan,     nan,     nan,  1.1589,  0.1453,
+           nan,  0.606 ,  1.3342])
+</pre></div> </div> </section> <section id="sparsedtype"> <h2>SparseDtype</h2> <p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">SparseArray.dtype</span></code> property stores two pieces of information</p> <ol class="arabic simple"> <li><p>The dtype of the non-sparse values</p></li> <li><p>The scalar fill value</p></li> </ol> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [19]: sparr.dtype
+Out[19]: Sparse[float64, nan]
+</pre></div> </div> <p>A <a class="reference internal" href="../reference/api/pandas.sparsedtype#pandas.SparseDtype" title="pandas.SparseDtype"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseDtype</span></code></a> may be constructed by passing only a dtype</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [20]: pd.SparseDtype(np.dtype('datetime64[ns]'))
+Out[20]: Sparse[datetime64[ns], numpy.datetime64('NaT')]
+</pre></div> </div> <p>in which case a default fill value will be used (for NumPy dtypes this is often the “missing” value for that dtype). To override this default an explicit fill value may be passed instead</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [21]: pd.SparseDtype(np.dtype('datetime64[ns]'),
+   ....:                fill_value=pd.Timestamp('2017-01-01'))
+   ....: 
+Out[21]: Sparse[datetime64[ns], Timestamp('2017-01-01 00:00:00')]
+</pre></div> </div> <p>Finally, the string alias <code class="docutils literal notranslate"><span class="pre">'Sparse[dtype]'</span></code> may be used to specify a sparse dtype in many places</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [22]: pd.array([1, 0, 0, 2], dtype='Sparse[int]')
+Out[22]: 
+[1, 0, 0, 2]
+Fill: 0
+IntIndex
+Indices: array([0, 3], dtype=int32)
+</pre></div> </div> </section> <section id="sparse-accessor"> <h2>Sparse accessor</h2> <p>pandas provides a <code class="docutils literal notranslate"><span class="pre">.sparse</span></code> accessor, similar to <code class="docutils literal notranslate"><span class="pre">.str</span></code> for string data, <code class="docutils literal notranslate"><span class="pre">.cat</span></code> for categorical data, and <code class="docutils literal notranslate"><span class="pre">.dt</span></code> for datetime-like data. This namespace provides attributes and methods that are specific to sparse data.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [23]: s = pd.Series([0, 0, 1, 2], dtype="Sparse[int]")
+
+In [24]: s.sparse.density
+Out[24]: 0.5
+
+In [25]: s.sparse.fill_value
+Out[25]: 0
+</pre></div> </div> <p>This accessor is available only on data with <code class="docutils literal notranslate"><span class="pre">SparseDtype</span></code>, and on the <a class="reference internal" href="../reference/api/pandas.series#pandas.Series" title="pandas.Series"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> class itself for creating a Series with sparse data from a scipy COO matrix with.</p> <p>A <code class="docutils literal notranslate"><span class="pre">.sparse</span></code> accessor has been added for <a class="reference internal" href="../reference/api/pandas.dataframe#pandas.DataFrame" title="pandas.DataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> as well. See <a class="reference internal" href="../reference/frame#api-frame-sparse"><span class="std std-ref">Sparse accessor</span></a> for more.</p> </section> <section id="sparse-calculation"> <h2>Sparse calculation</h2> <p>You can apply NumPy <a class="reference external" href="https://numpy.org/doc/stable/reference/ufuncs.html">ufuncs</a> to <a class="reference internal" href="../reference/api/pandas.arrays.sparsearray#pandas.arrays.SparseArray" title="pandas.arrays.SparseArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">arrays.SparseArray</span></code></a> and get a <a class="reference internal" href="../reference/api/pandas.arrays.sparsearray#pandas.arrays.SparseArray" title="pandas.arrays.SparseArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">arrays.SparseArray</span></code></a> as a result.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [26]: arr = pd.arrays.SparseArray([1., np.nan, np.nan, -2., np.nan])
+
+In [27]: np.abs(arr)
+Out[27]: 
+[1.0, nan, nan, 2.0, nan]
+Fill: nan
+IntIndex
+Indices: array([0, 3], dtype=int32)
+</pre></div> </div> <p>The <em>ufunc</em> is also applied to <code class="docutils literal notranslate"><span class="pre">fill_value</span></code>. This is needed to get the correct dense result.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [28]: arr = pd.arrays.SparseArray([1., -1, -1, -2., -1], fill_value=-1)
+
+In [29]: np.abs(arr)
+Out[29]: 
+[1, 1, 1, 2.0, 1]
+Fill: 1
+IntIndex
+Indices: array([3], dtype=int32)
+
+In [30]: np.abs(arr).to_dense()
+Out[30]: array([1., 1., 1., 2., 1.])
+</pre></div> </div> <p><strong>Conversion</strong></p> <p>To convert data from sparse to dense, use the <code class="docutils literal notranslate"><span class="pre">.sparse</span></code> accessors</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [31]: sdf.sparse.to_dense()
+Out[31]: 
+             0         1         2         3
+0          NaN       NaN       NaN       NaN
+1          NaN       NaN       NaN       NaN
+2          NaN       NaN       NaN       NaN
+3          NaN       NaN       NaN       NaN
+4          NaN       NaN       NaN       NaN
+...        ...       ...       ...       ...
+9995       NaN       NaN       NaN       NaN
+9996       NaN       NaN       NaN       NaN
+9997       NaN       NaN       NaN       NaN
+9998  0.509184 -0.774928 -1.369894 -0.382141
+9999  0.280249 -1.648493  1.490865 -0.890819
+
+[10000 rows x 4 columns]
+</pre></div> </div> <p>From dense to sparse, use <a class="reference internal" href="../reference/api/pandas.dataframe.astype#pandas.DataFrame.astype" title="pandas.DataFrame.astype"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.astype()</span></code></a> with a <a class="reference internal" href="../reference/api/pandas.sparsedtype#pandas.SparseDtype" title="pandas.SparseDtype"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseDtype</span></code></a>.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [32]: dense = pd.DataFrame({"A": [1, 0, 0, 1]})
+
+In [33]: dtype = pd.SparseDtype(int, fill_value=0)
+
+In [34]: dense.astype(dtype)
+Out[34]: 
+   A
+0  1
+1  0
+2  0
+3  1
+</pre></div> </div> </section> <section id="interaction-with-scipy-sparse"> <h2>Interaction with <em>scipy.sparse</em>
+</h2> <p>Use <a class="reference internal" href="../reference/api/pandas.dataframe.sparse.from_spmatrix#pandas.DataFrame.sparse.from_spmatrix" title="pandas.DataFrame.sparse.from_spmatrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.sparse.from_spmatrix()</span></code></a> to create a <a class="reference internal" href="../reference/api/pandas.dataframe#pandas.DataFrame" title="pandas.DataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with sparse values from a sparse matrix.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [35]: from scipy.sparse import csr_matrix
+
+In [36]: arr = np.random.random(size=(1000, 5))
+
+In [37]: arr[arr &lt; .9] = 0
+
+In [38]: sp_arr = csr_matrix(arr)
+
+In [39]: sp_arr
+Out[39]: 
+&lt;Compressed Sparse Row sparse matrix of dtype 'float64'
+	with 517 stored elements and shape (1000, 5)&gt;
+
+In [40]: sdf = pd.DataFrame.sparse.from_spmatrix(sp_arr)
+
+In [41]: sdf.head()
+Out[41]: 
+          0  1  2         3  4
+0   0.95638  0  0         0  0
+1         0  0  0         0  0
+2         0  0  0         0  0
+3         0  0  0         0  0
+4  0.999552  0  0  0.956153  0
+
+In [42]: sdf.dtypes
+Out[42]: 
+0    Sparse[float64, 0]
+1    Sparse[float64, 0]
+2    Sparse[float64, 0]
+3    Sparse[float64, 0]
+4    Sparse[float64, 0]
+dtype: object
+</pre></div> </div> <p>All sparse formats are supported, but matrices that are not in <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.15.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">COOrdinate</span></code></a> format will be converted, copying data as needed. To convert back to sparse SciPy matrix in COO format, you can use the <a class="reference internal" href="../reference/api/pandas.dataframe.sparse.to_coo#pandas.DataFrame.sparse.to_coo" title="pandas.DataFrame.sparse.to_coo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.sparse.to_coo()</span></code></a> method:</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [43]: sdf.sparse.to_coo()
+Out[43]: 
+&lt;COOrdinate sparse matrix of dtype 'float64'
+	with 517 stored elements and shape (1000, 5)&gt;
+</pre></div> </div> <p><a class="reference internal" href="../reference/api/pandas.series.sparse.to_coo#pandas.Series.sparse.to_coo" title="pandas.Series.sparse.to_coo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.sparse.to_coo()</span></code></a> is implemented for transforming a <a class="reference internal" href="../reference/api/pandas.series#pandas.Series" title="pandas.Series"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> with sparse values indexed by a <a class="reference internal" href="../reference/api/pandas.multiindex#pandas.MultiIndex" title="pandas.MultiIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiIndex</span></code></a> to a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="(in SciPy v1.15.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.coo_matrix</span></code></a>.</p> <p>The method requires a <a class="reference internal" href="../reference/api/pandas.multiindex#pandas.MultiIndex" title="pandas.MultiIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiIndex</span></code></a> with two or more levels.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [44]: s = pd.Series([3.0, np.nan, 1.0, 3.0, np.nan, np.nan])
+
+In [45]: s.index = pd.MultiIndex.from_tuples(
+   ....:     [
+   ....:         (1, 2, "a", 0),
+   ....:         (1, 2, "a", 1),
+   ....:         (1, 1, "b", 0),
+   ....:         (1, 1, "b", 1),
+   ....:         (2, 1, "b", 0),
+   ....:         (2, 1, "b", 1),
+   ....:     ],
+   ....:     names=["A", "B", "C", "D"],
+   ....: )
+   ....: 
+
+In [46]: ss = s.astype('Sparse')
+
+In [47]: ss
+Out[47]: 
+A  B  C  D
+1  2  a  0    3.0
+         1    NaN
+   1  b  0    1.0
+         1    3.0
+2  1  b  0    NaN
+         1    NaN
+dtype: Sparse[float64, nan]
+</pre></div> </div> <p>In the example below, we transform the <a class="reference internal" href="../reference/api/pandas.series#pandas.Series" title="pandas.Series"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> to a sparse representation of a 2-d array by specifying that the first and second <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code> levels define labels for the rows and the third and fourth levels define labels for the columns. We also specify that the column and row labels should be sorted in the final sparse representation.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [48]: A, rows, columns = ss.sparse.to_coo(
+   ....:     row_levels=["A", "B"], column_levels=["C", "D"], sort_labels=True
+   ....: )
+   ....: 
+
+In [49]: A
+Out[49]: 
+&lt;COOrdinate sparse matrix of dtype 'float64'
+	with 3 stored elements and shape (3, 4)&gt;
+
+In [50]: A.todense()
+Out[50]: 
+matrix([[0., 0., 1., 3.],
+        [3., 0., 0., 0.],
+        [0., 0., 0., 0.]])
+
+In [51]: rows
+Out[51]: [(1, 1), (1, 2), (2, 1)]
+
+In [52]: columns
+Out[52]: [('a', 0), ('a', 1), ('b', 0), ('b', 1)]
+</pre></div> </div> <p>Specifying different row and column labels (and not sorting them) yields a different sparse matrix:</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [53]: A, rows, columns = ss.sparse.to_coo(
+   ....:     row_levels=["A", "B", "C"], column_levels=["D"], sort_labels=False
+   ....: )
+   ....: 
+
+In [54]: A
+Out[54]: 
+&lt;COOrdinate sparse matrix of dtype 'float64'
+	with 3 stored elements and shape (3, 2)&gt;
+
+In [55]: A.todense()
+Out[55]: 
+matrix([[3., 0.],
+        [1., 3.],
+        [0., 0.]])
+
+In [56]: rows
+Out[56]: [(1, 2, 'a'), (1, 1, 'b'), (2, 1, 'b')]
+
+In [57]: columns
+Out[57]: [(0,), (1,)]
+</pre></div> </div> <p>A convenience method <a class="reference internal" href="../reference/api/pandas.series.sparse.from_coo#pandas.Series.sparse.from_coo" title="pandas.Series.sparse.from_coo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.sparse.from_coo()</span></code></a> is implemented for creating a <a class="reference internal" href="../reference/api/pandas.series#pandas.Series" title="pandas.Series"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> with sparse values from a <code class="docutils literal notranslate"><span class="pre">scipy.sparse.coo_matrix</span></code>.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [58]: from scipy import sparse
+
+In [59]: A = sparse.coo_matrix(([3.0, 1.0, 2.0], ([1, 0, 0], [0, 2, 3])), shape=(3, 4))
+
+In [60]: A
+Out[60]: 
+&lt;COOrdinate sparse matrix of dtype 'float64'
+	with 3 stored elements and shape (3, 4)&gt;
+
+In [61]: A.todense()
+Out[61]: 
+matrix([[0., 0., 1., 2.],
+        [3., 0., 0., 0.],
+        [0., 0., 0., 0.]])
+</pre></div> </div> <p>The default behaviour (with <code class="docutils literal notranslate"><span class="pre">dense_index=False</span></code>) simply returns a <a class="reference internal" href="../reference/api/pandas.series#pandas.Series" title="pandas.Series"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> containing only the non-null entries.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [62]: ss = pd.Series.sparse.from_coo(A)
+
+In [63]: ss
+Out[63]: 
+0  2    1.0
+   3    2.0
+1  0    3.0
+dtype: Sparse[float64, nan]
+</pre></div> </div> <p>Specifying <code class="docutils literal notranslate"><span class="pre">dense_index=True</span></code> will result in an index that is the Cartesian product of the row and columns coordinates of the matrix. Note that this will consume a significant amount of memory (relative to <code class="docutils literal notranslate"><span class="pre">dense_index=False</span></code>) if the sparse matrix is large (and sparse) enough.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [64]: ss_dense = pd.Series.sparse.from_coo(A, dense_index=True)
+
+In [65]: ss_dense
+Out[65]: 
+1  0    3.0
+   2    NaN
+   3    NaN
+0  0    NaN
+   2    1.0
+   3    2.0
+   0    NaN
+   2    1.0
+   3    2.0
+dtype: Sparse[float64, nan]
+</pre></div> </div> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2008–2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team<br>© 2011–2025, Open source contributors<br>Licensed under the 3-clause BSD License.<br>
+    <a href="https://pandas.pydata.org/pandas-docs/version/2.3.0/user_guide/sparse.html" class="_attribution-link">https://pandas.pydata.org/pandas-docs/version/2.3.0/user_guide/sparse.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

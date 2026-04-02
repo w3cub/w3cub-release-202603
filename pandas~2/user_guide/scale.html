@@ -1,0 +1,325 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Scaling to Large Datasets - Pandas 2 - W3cubDocs</title>
+  
+  <meta name="description" content="pandas provides data structures for in-memory analytics, which makes using pandas to analyze datasets that are larger than memory datasets somewhat &hellip;">
+  <meta name="keywords" content="scaling, large, datasets, pandas, pandas~2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pandas~2/user_guide/scale.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pandas~2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pandas~2/" class="_nav-link" title="" style="margin-left:0;">pandas 2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Scaling to large datasets</h1> <p>pandas provides data structures for in-memory analytics, which makes using pandas to analyze datasets that are larger than memory datasets somewhat tricky. Even datasets that are a sizable fraction of memory become unwieldy, as some pandas operations need to make intermediate copies.</p> <p>This document provides a few recommendations for scaling your analysis to larger datasets. It’s a complement to <a class="reference internal" href="enhancingperf#enhancingperf"><span class="std std-ref">Enhancing performance</span></a>, which focuses on speeding up analysis for datasets that fit in memory.</p> <section id="load-less-data"> <h2>Load less data</h2> <p>Suppose our raw dataset on disk has many columns.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [1]: import pandas as pd
+
+In [2]: import numpy as np
+
+In [3]: def make_timeseries(start="2000-01-01", end="2000-12-31", freq="1D", seed=None):
+   ...:     index = pd.date_range(start=start, end=end, freq=freq, name="timestamp")
+   ...:     n = len(index)
+   ...:     state = np.random.RandomState(seed)
+   ...:     columns = {
+   ...:         "name": state.choice(["Alice", "Bob", "Charlie"], size=n),
+   ...:         "id": state.poisson(1000, size=n),
+   ...:         "x": state.rand(n) * 2 - 1,
+   ...:         "y": state.rand(n) * 2 - 1,
+   ...:     }
+   ...:     df = pd.DataFrame(columns, index=index, columns=sorted(columns))
+   ...:     if df.index[-1] == end:
+   ...:         df = df.iloc[:-1]
+   ...:     return df
+   ...: 
+
+In [4]: timeseries = [
+   ...:     make_timeseries(freq="1min", seed=i).rename(columns=lambda x: f"{x}_{i}")
+   ...:     for i in range(10)
+   ...: ]
+   ...: 
+
+In [5]: ts_wide = pd.concat(timeseries, axis=1)
+
+In [6]: ts_wide.head()
+Out[6]: 
+                     id_0 name_0       x_0  ...   name_9       x_9       y_9
+timestamp                                   ...                             
+2000-01-01 00:00:00   977  Alice -0.821225  ...  Charlie -0.957208 -0.757508
+2000-01-01 00:01:00  1018    Bob -0.219182  ...    Alice -0.414445 -0.100298
+2000-01-01 00:02:00   927  Alice  0.660908  ...  Charlie -0.325838  0.581859
+2000-01-01 00:03:00   997    Bob -0.852458  ...      Bob  0.992033 -0.686692
+2000-01-01 00:04:00   965    Bob  0.717283  ...  Charlie -0.924556 -0.184161
+
+[5 rows x 40 columns]
+
+In [7]: ts_wide.to_parquet("timeseries_wide.parquet")
+</pre></div> </div> <p>To load the columns we want, we have two options. Option 1 loads in all the data and then filters to what we need.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [8]: columns = ["id_0", "name_0", "x_0", "y_0"]
+
+In [9]: pd.read_parquet("timeseries_wide.parquet")[columns]
+Out[9]: 
+                     id_0 name_0       x_0       y_0
+timestamp                                           
+2000-01-01 00:00:00   977  Alice -0.821225  0.906222
+2000-01-01 00:01:00  1018    Bob -0.219182  0.350855
+2000-01-01 00:02:00   927  Alice  0.660908 -0.798511
+2000-01-01 00:03:00   997    Bob -0.852458  0.735260
+2000-01-01 00:04:00   965    Bob  0.717283  0.393391
+...                   ...    ...       ...       ...
+2000-12-30 23:56:00  1037    Bob -0.814321  0.612836
+2000-12-30 23:57:00   980    Bob  0.232195 -0.618828
+2000-12-30 23:58:00   965  Alice -0.231131  0.026310
+2000-12-30 23:59:00   984  Alice  0.942819  0.853128
+2000-12-31 00:00:00  1003  Alice  0.201125 -0.136655
+
+[525601 rows x 4 columns]
+</pre></div> </div> <p>Option 2 only loads the columns we request.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [10]: pd.read_parquet("timeseries_wide.parquet", columns=columns)
+Out[10]: 
+                     id_0 name_0       x_0       y_0
+timestamp                                           
+2000-01-01 00:00:00   977  Alice -0.821225  0.906222
+2000-01-01 00:01:00  1018    Bob -0.219182  0.350855
+2000-01-01 00:02:00   927  Alice  0.660908 -0.798511
+2000-01-01 00:03:00   997    Bob -0.852458  0.735260
+2000-01-01 00:04:00   965    Bob  0.717283  0.393391
+...                   ...    ...       ...       ...
+2000-12-30 23:56:00  1037    Bob -0.814321  0.612836
+2000-12-30 23:57:00   980    Bob  0.232195 -0.618828
+2000-12-30 23:58:00   965  Alice -0.231131  0.026310
+2000-12-30 23:59:00   984  Alice  0.942819  0.853128
+2000-12-31 00:00:00  1003  Alice  0.201125 -0.136655
+
+[525601 rows x 4 columns]
+</pre></div> </div> <p>If we were to measure the memory usage of the two calls, we’d see that specifying <code class="docutils literal notranslate"><span class="pre">columns</span></code> uses about 1/10th the memory in this case.</p> <p>With <a class="reference internal" href="../reference/api/pandas.read_csv#pandas.read_csv" title="pandas.read_csv"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code></a>, you can specify <code class="docutils literal notranslate"><span class="pre">usecols</span></code> to limit the columns read into memory. Not all file formats that can be read by pandas provide an option to read a subset of columns.</p> </section> <section id="use-efficient-datatypes"> <h2>Use efficient datatypes</h2> <p>The default pandas data types are not the most memory efficient. This is especially true for text data columns with relatively few unique values (commonly referred to as “low-cardinality” data). By using more efficient data types, you can store larger datasets in memory.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [11]: ts = make_timeseries(freq="30s", seed=0)
+
+In [12]: ts.to_parquet("timeseries.parquet")
+
+In [13]: ts = pd.read_parquet("timeseries.parquet")
+
+In [14]: ts
+Out[14]: 
+                       id     name         x         y
+timestamp                                             
+2000-01-01 00:00:00  1041    Alice  0.889987  0.281011
+2000-01-01 00:00:30   988      Bob -0.455299  0.488153
+2000-01-01 00:01:00  1018    Alice  0.096061  0.580473
+2000-01-01 00:01:30   992      Bob  0.142482  0.041665
+2000-01-01 00:02:00   960      Bob -0.036235  0.802159
+...                   ...      ...       ...       ...
+2000-12-30 23:58:00  1022    Alice  0.266191  0.875579
+2000-12-30 23:58:30   974    Alice -0.009826  0.413686
+2000-12-30 23:59:00  1028  Charlie  0.307108 -0.656789
+2000-12-30 23:59:30  1002    Alice  0.202602  0.541335
+2000-12-31 00:00:00   987    Alice  0.200832  0.615972
+
+[1051201 rows x 4 columns]
+</pre></div> </div> <p>Now, let’s inspect the data types and memory usage to see where we should focus our attention.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [15]: ts.dtypes
+Out[15]: 
+id        int64
+name     object
+x       float64
+y       float64
+dtype: object
+</pre></div> </div> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [16]: ts.memory_usage(deep=True)  # memory usage in bytes
+Out[16]: 
+Index     8409608
+id        8409608
+name     65176434
+x         8409608
+y         8409608
+dtype: int64
+</pre></div> </div> <p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> column is taking up much more memory than any other. It has just a few unique values, so it’s a good candidate for converting to a <a class="reference internal" href="../reference/api/pandas.categorical#pandas.Categorical" title="pandas.Categorical"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Categorical</span></code></a>. With a <a class="reference internal" href="../reference/api/pandas.categorical#pandas.Categorical" title="pandas.Categorical"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Categorical</span></code></a>, we store each unique name once and use space-efficient integers to know which specific name is used in each row.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [17]: ts2 = ts.copy()
+
+In [18]: ts2["name"] = ts2["name"].astype("category")
+
+In [19]: ts2.memory_usage(deep=True)
+Out[19]: 
+Index    8409608
+id       8409608
+name     1051495
+x        8409608
+y        8409608
+dtype: int64
+</pre></div> </div> <p>We can go a bit further and downcast the numeric columns to their smallest types using <a class="reference internal" href="../reference/api/pandas.to_numeric#pandas.to_numeric" title="pandas.to_numeric"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.to_numeric()</span></code></a>.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [20]: ts2["id"] = pd.to_numeric(ts2["id"], downcast="unsigned")
+
+In [21]: ts2[["x", "y"]] = ts2[["x", "y"]].apply(pd.to_numeric, downcast="float")
+
+In [22]: ts2.dtypes
+Out[22]: 
+id        uint16
+name    category
+x        float32
+y        float32
+dtype: object
+</pre></div> </div> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [23]: ts2.memory_usage(deep=True)
+Out[23]: 
+Index    8409608
+id       2102402
+name     1051495
+x        4204804
+y        4204804
+dtype: int64
+</pre></div> </div> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [24]: reduction = ts2.memory_usage(deep=True).sum() / ts.memory_usage(deep=True).sum()
+
+In [25]: print(f"{reduction:0.2f}")
+0.20
+</pre></div> </div> <p>In all, we’ve reduced the in-memory footprint of this dataset to 1/5 of its original size.</p> <p>See <a class="reference internal" href="categorical#categorical"><span class="std std-ref">Categorical data</span></a> for more on <a class="reference internal" href="../reference/api/pandas.categorical#pandas.Categorical" title="pandas.Categorical"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Categorical</span></code></a> and <a class="reference internal" href="basics#basics-dtypes"><span class="std std-ref">dtypes</span></a> for an overview of all of pandas’ dtypes.</p> </section> <section id="use-chunking"> <h2>Use chunking</h2> <p>Some workloads can be achieved with chunking by splitting a large problem into a bunch of small problems. For example, converting an individual CSV file into a Parquet file and repeating that for each file in a directory. As long as each chunk fits in memory, you can work with datasets that are much larger than memory.</p> <div class="admonition note"> <p class="admonition-title">Note</p> <p>Chunking works well when the operation you’re performing requires zero or minimal coordination between chunks. For more complicated workflows, you’re better off <a class="reference internal" href="#scale-other-libraries"><span class="std std-ref">using other libraries</span></a>.</p> </div> <p>Suppose we have an even larger “logical dataset” on disk that’s a directory of parquet files. Each file in the directory represents a different year of the entire dataset.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [26]: import pathlib
+
+In [27]: N = 12
+
+In [28]: starts = [f"20{i:&gt;02d}-01-01" for i in range(N)]
+
+In [29]: ends = [f"20{i:&gt;02d}-12-13" for i in range(N)]
+
+In [30]: pathlib.Path("data/timeseries").mkdir(exist_ok=True)
+
+In [31]: for i, (start, end) in enumerate(zip(starts, ends)):
+   ....:     ts = make_timeseries(start=start, end=end, freq="1min", seed=i)
+   ....:     ts.to_parquet(f"data/timeseries/ts-{i:0&gt;2d}.parquet")
+   ....: 
+</pre></div> </div> <div class="highlight-default notranslate">
+<div class="highlight"><pre data-language="python">data
+└── timeseries
+    ├── ts-00.parquet
+    ├── ts-01.parquet
+    ├── ts-02.parquet
+    ├── ts-03.parquet
+    ├── ts-04.parquet
+    ├── ts-05.parquet
+    ├── ts-06.parquet
+    ├── ts-07.parquet
+    ├── ts-08.parquet
+    ├── ts-09.parquet
+    ├── ts-10.parquet
+    └── ts-11.parquet
+</pre></div> </div> <p>Now we’ll implement an out-of-core <a class="reference internal" href="../reference/api/pandas.series.value_counts#pandas.Series.value_counts" title="pandas.Series.value_counts"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.Series.value_counts()</span></code></a>. The peak memory usage of this workflow is the single largest chunk, plus a small series storing the unique value counts up to this point. As long as each individual file fits in memory, this will work for arbitrary-sized datasets.</p> <div class="highlight-ipython notranslate">
+<div class="highlight"><pre data-language="python">In [32]: %%time
+   ....: files = pathlib.Path("data/timeseries/").glob("ts*.parquet")
+   ....: counts = pd.Series(dtype=int)
+   ....: for path in files:
+   ....:     df = pd.read_parquet(path)
+   ....:     counts = counts.add(df["name"].value_counts(), fill_value=0)
+   ....: counts.astype(int)
+   ....: 
+CPU times: user 1.01 s, sys: 37.3 ms, total: 1.04 s
+Wall time: 1.03 s
+Out[32]: 
+name
+Alice      1994645
+Bob        1993692
+Charlie    1994875
+dtype: int64
+</pre></div> </div> <p>Some readers, like <a class="reference internal" href="../reference/api/pandas.read_csv#pandas.read_csv" title="pandas.read_csv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code></a>, offer parameters to control the <code class="docutils literal notranslate"><span class="pre">chunksize</span></code> when reading a single file.</p> <p>Manually chunking is an OK option for workflows that don’t require too sophisticated of operations. Some operations, like <a class="reference internal" href="../reference/api/pandas.dataframe.groupby#pandas.DataFrame.groupby" title="pandas.DataFrame.groupby"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.DataFrame.groupby()</span></code></a>, are much harder to do chunkwise. In these cases, you may be better switching to a different library that implements these out-of-core algorithms for you.</p> </section> <section id="use-other-libraries"> <h2>Use Other Libraries</h2> <p>There are other libraries which provide similar APIs to pandas and work nicely with pandas DataFrame, and can give you the ability to scale your large dataset processing and analytics by parallel runtime, distributed memory, clustering, etc. You can find more information in <a class="reference external" href="https://pandas.pydata.org/community/ecosystem.html#out-of-core">the ecosystem page</a>.</p> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2008–2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team<br>© 2011–2025, Open source contributors<br>Licensed under the 3-clause BSD License.<br>
+    <a href="https://pandas.pydata.org/pandas-docs/version/2.3.0/user_guide/scale.html" class="_attribution-link">https://pandas.pydata.org/pandas-docs/version/2.3.0/user_guide/scale.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
