@@ -1,0 +1,157 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rendering&#58; Server Components - Next.js - W3cubDocs</title>
+  
+  <meta name="description" content="React Server Components allow you to write UI that can be rendered and optionally cached on the server. In Next.js, the rendering work is further &hellip;">
+  <meta name="keywords" content="server, components, rendering, next, js, nextjs">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/nextjs/app/building-your-application/rendering/server-components.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/nextjs.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/nextjs/" class="_nav-link" title="" style="margin-left:0;">Next.js</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 class="break-words">Server Components</h1>
+<p>React Server Components allow you to write UI that can be rendered and optionally cached on the server. In Next.js, the rendering work is further split by route segments to enable streaming and partial rendering, and there are three different server rendering strategies:</p> <ul> <li><a href="#static-rendering-default">Static Rendering</a></li> <li><a href="#dynamic-rendering">Dynamic Rendering</a></li> <li><a href="#streaming">Streaming</a></li> </ul> <p>This page will go through how Server Components work, when you might use them, and the different server rendering strategies.</p> <h2 id="benefits-of-server-rendering" data-docs-heading="">Benefits of Server Rendering     </h2> <p>There are a couple of benefits to doing the rendering work on the server, including:</p> <ul> <li>
+<strong>Data Fetching</strong>: Server Components allow you to move data fetching to the server, closer to your data source. This can improve performance by reducing time it takes to fetch data needed for rendering, and the number of requests the client needs to make.</li> <li>
+<strong>Security</strong>: Server Components allow you to keep sensitive data and logic on the server, such as tokens and API keys, without the risk of exposing them to the client.</li> <li>
+<strong>Caching</strong>: By rendering on the server, the result can be cached and reused on subsequent requests and across users. This can improve performance and reduce cost by reducing the amount of rendering and data fetching done on each request.</li> <li>
+<strong>Performance</strong>: Server Components give you additional tools to optimize performance from the baseline. For example, if you start with an app composed of entirely Client Components, moving non-interactive pieces of your UI to Server Components can reduce the amount of client-side JavaScript needed. This is beneficial for users with slower internet or less powerful devices, as the browser has less client-side JavaScript to download, parse, and execute.</li> <li>
+<strong>Initial Page Load and <a href="https://web.dev/fcp/" rel="noopener noreferrer nofollow" target="_blank">First Contentful Paint (FCP)</a></strong>: On the server, we can generate HTML to allow users to view the page immediately, without waiting for the client to download, parse and execute the JavaScript needed to render the page.</li> <li>
+<strong>Search Engine Optimization and Social Network Shareability</strong>: The rendered HTML can be used by search engine bots to index your pages and social network bots to generate social card previews for your pages.</li> <li>
+<strong>Streaming</strong>: Server Components allow you to split the rendering work into chunks and stream them to the client as they become ready. This allows the user to see parts of the page earlier without having to wait for the entire page to be rendered on the server.</li> </ul> <h2 id="using-server-components-in-nextjs" data-docs-heading="">Using Server Components in Next.js     </h2> <p>By default, Next.js uses Server Components. This allows you to automatically implement server rendering with no additional configuration, and you can opt into using Client Components when needed, see <a href="client-components">Client Components</a>.</p> <h2 id="how-are-server-components-rendered" data-docs-heading="">How are Server Components rendered?     </h2> <p>On the server, Next.js uses React's APIs to orchestrate rendering. The rendering work is split into chunks: by individual route segments and <a href="https://react.dev/reference/react/Suspense" rel="noopener noreferrer nofollow" target="_blank">Suspense Boundaries</a>.</p> <p>Each chunk is rendered in two steps:</p> <ol> <li>React renders Server Components into a special data format called the <strong>React Server Component Payload (RSC Payload)</strong>.</li> <li>Next.js uses the RSC Payload and Client Component JavaScript instructions to render <strong>HTML</strong> on the server.</li> </ol>  <p>Then, on the client:</p> <ol> <li>The HTML is used to immediately show a fast non-interactive preview of the route - this is for the initial page load only.</li> <li>The React Server Components Payload is used to reconcile the Client and Server Component trees, and update the DOM.</li> <li>The JavaScript instructions are used to <a href="https://react.dev/reference/react-dom/client/hydrateRoot" rel="noopener noreferrer nofollow" target="_blank">hydrate</a> Client Components and make the application interactive.</li> </ol> <blockquote class="p-3 text-sm"> <p><strong>What is the React Server Component Payload (RSC)?</strong></p> <p>The RSC Payload is a compact binary representation of the rendered React Server Components tree. It's used by React on the client to update the browser's DOM. The RSC Payload contains:</p> <ul> <li>The rendered result of Server Components</li> <li>Placeholders for where Client Components should be rendered and references to their JavaScript files</li> <li>Any props passed from a Server Component to a Client Component</li> </ul> </blockquote> <h2 id="server-rendering-strategies" data-docs-heading="">Server Rendering Strategies     </h2> <p>There are three subsets of server rendering: Static, Dynamic, and Streaming.</p> <h3 id="static-rendering-default" data-docs-heading="">Static Rendering (Default)     </h3>  <p>With Static Rendering, routes are rendered at <strong>build time</strong>, or in the background after <a href="../data-fetching/fetching-caching-and-revalidating#revalidating-data">data revalidation</a>. The result is cached and can be pushed to a <a href="https://developer.mozilla.org/docs/Glossary/CDN" rel="noopener noreferrer nofollow" target="_blank">Content Delivery Network (CDN)</a>. This optimization allows you to share the result of the rendering work between users and server requests.</p> <p>Static rendering is useful when a route has data that is not personalized to the user and can be known at build time, such as a static blog post or a product page.</p> <h3 id="dynamic-rendering" data-docs-heading="">Dynamic Rendering     </h3>  <p>With Dynamic Rendering, routes are rendered for each user at <strong>request time</strong>.</p> <p>Dynamic rendering is useful when a route has data that is personalized to the user or has information that can only be known at request time, such as cookies or the URL's search params.</p> <blockquote class="p-3 text-sm"> <p><strong>Dynamic Routes with Cached Data</strong></p> <p>In most websites, routes are not fully static or fully dynamic - it's a spectrum. For example, you can have an e-commerce page that uses cached product data that's revalidated at an interval, but also has uncached, personalized customer data.</p> <p>In Next.js, you can have dynamically rendered routes that have both cached and uncached data. This is because the RSC Payload and data are cached separately. This allows you to opt into dynamic rendering without worrying about the performance impact of fetching all the data at request time.</p> <p>Learn more about the <a href="../caching#full-route-cache">full-route cache</a> and <a href="../caching#data-cache">Data Cache</a>.</p> </blockquote> <h4 id="switching-to-dynamic-rendering" data-docs-heading="">Switching to Dynamic Rendering     </h4> <p>During rendering, if a <a href="#dynamic-functions">dynamic function</a> or <a href="../data-fetching/fetching-caching-and-revalidating#opting-out-of-data-caching">uncached data request</a> is discovered, Next.js will switch to dynamically rendering the whole route. This table summarizes how dynamic functions and data caching affect whether a route is statically or dynamically rendered:</p> <div class="overflow-x-auto"><table class="w-full table-auto">
+<thead><tr>
+<th>Dynamic Functions</th>
+<th>Data</th>
+<th>Route</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>No</td>
+<td>Cached</td>
+<td>Statically Rendered</td>
+</tr>
+<tr>
+<td>Yes</td>
+<td>Cached</td>
+<td>Dynamically Rendered</td>
+</tr>
+<tr>
+<td>No</td>
+<td>Not Cached</td>
+<td>Dynamically Rendered</td>
+</tr>
+<tr>
+<td>Yes</td>
+<td>Not Cached</td>
+<td>Dynamically Rendered</td>
+</tr>
+</tbody>
+</table></div> <p>In the table above, for a route to be fully static, all data must be cached. However, you can have a dynamically rendered route that uses both cached and uncached data fetches.</p> <p>As a developer, you do not need to choose between static and dynamic rendering as Next.js will automatically choose the best rendering strategy for each route based on the features and APIs used. Instead, you choose when to <a href="../data-fetching/fetching-caching-and-revalidating">cache or revalidate specific data</a>, and you may choose to <a href="#streaming">stream</a> parts of your UI.</p> <h4 id="dynamic-functions" data-docs-heading="">Dynamic Functions     </h4> <p>Dynamic functions rely on information that can only be known at request time such as a user's cookies, current requests headers, or the URL's search params. In Next.js, these dynamic functions are:</p> <ul> <li>
+<strong><a href="../../api-reference/functions/cookies"><code>cookies()</code></a> and <a href="../../api-reference/functions/headers"><code>headers()</code></a></strong>: Using these in a Server Component will opt the whole route into dynamic rendering at request time.</li> <li>
+<strong><a href="../../api-reference/file-conventions/page#searchparams-optional"><code>searchParams</code></a></strong>: Using the <code>searchParams</code> prop on a <a href="../../api-reference/file-conventions/page">Page</a> will opt the page into dynamic rendering at request time.</li> </ul> <p>Using any of these functions will opt the whole route into dynamic rendering at request time.</p> <h3 id="streaming" data-docs-heading="">Streaming     </h3> <figure><img alt="Diagram showing parallelization of route segments during streaming, showing data fetching, rendering, and hydration of individual chunks." loading="lazy" width="1600" height="525" decoding="async" data-nimg="1" class="block rounded-md border border-gray-200 bg-gray-100 dark:hidden" style="color:transparent" srcset="/_next/image?url=%2Fdocs%2Flight%2Fsequential-parallel-data-fetching.png&amp;w=1920&amp;q=75 1x, /_next/image?url=%2Fdocs%2Flight%2Fsequential-parallel-data-fetching.png&amp;w=3840&amp;q=75 2x" src="https://nextjs.org/_next/image?url=%2Fdocs%2Flight%2Fsequential-parallel-data-fetching.png&amp;w=3840&amp;q=75"><img alt="Diagram showing parallelization of route segments during streaming, showing data fetching, rendering, and hydration of individual chunks." loading="lazy" width="1600" height="525" decoding="async" data-nimg="1" class="hidden rounded-md border border-gray-200 bg-gray-100 dark:block" style="color:transparent" srcset="/_next/image?url=%2Fdocs%2Fdark%2Fsequential-parallel-data-fetching.png&amp;w=1920&amp;q=75 1x, /_next/image?url=%2Fdocs%2Fdark%2Fsequential-parallel-data-fetching.png&amp;w=3840&amp;q=75 2x" src="https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fsequential-parallel-data-fetching.png&amp;w=3840&amp;q=75"></figure> <p>Streaming enables you to progressively render UI from the server. Work is split into chunks and streamed to the client as it becomes ready. This allows the user to see parts of the page immediately, before the entire content has finished rendering.</p> <figure><img alt="Diagram showing partially rendered page on the client, with loading UI for chunks that are being streamed." loading="lazy" width="1600" height="785" decoding="async" data-nimg="1" class="block rounded-md border border-gray-200 bg-gray-100 dark:hidden" style="color:transparent" srcset="/_next/image?url=%2Fdocs%2Flight%2Fserver-rendering-with-streaming.png&amp;w=1920&amp;q=75 1x, /_next/image?url=%2Fdocs%2Flight%2Fserver-rendering-with-streaming.png&amp;w=3840&amp;q=75 2x" src="https://nextjs.org/_next/image?url=%2Fdocs%2Flight%2Fserver-rendering-with-streaming.png&amp;w=3840&amp;q=75"><img alt="Diagram showing partially rendered page on the client, with loading UI for chunks that are being streamed." loading="lazy" width="1600" height="785" decoding="async" data-nimg="1" class="hidden rounded-md border border-gray-200 bg-gray-100 dark:block" style="color:transparent" srcset="/_next/image?url=%2Fdocs%2Fdark%2Fserver-rendering-with-streaming.png&amp;w=1920&amp;q=75 1x, /_next/image?url=%2Fdocs%2Fdark%2Fserver-rendering-with-streaming.png&amp;w=3840&amp;q=75 2x" src="https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fserver-rendering-with-streaming.png&amp;w=3840&amp;q=75"></figure> <p>Streaming is built into the Next.js App Router by default. This helps improve both the initial page loading performance, as well as UI that depends on slower data fetches that would block rendering the whole route. For example, reviews on a product page.</p> <p>You can start streaming route segments using <code>loading.js</code> and UI components with <a href="../routing/loading-ui-and-streaming">React Suspense</a>. See the <a href="../routing/loading-ui-and-streaming">Loading UI and Streaming</a> section for more information.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2024 Vercel, Inc.<br>Licensed under the MIT License.<br>
+    <a href="https://nextjs.org/docs/app/building-your-application/rendering/server-components" class="_attribution-link">https://nextjs.org/docs/app/building-your-application/rendering/server-components</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
