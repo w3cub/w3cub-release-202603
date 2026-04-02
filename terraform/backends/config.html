@@ -1,0 +1,143 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Backend Configuration - Terraform - W3cubDocs</title>
+  
+  <meta name="description" content=" Backends are configured directly in Terraform files in the terraform section. After configuring a backend, it has to be initialized. ">
+  <meta name="keywords" content="backend, configuration, terraform">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/terraform/backends/config.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/terraform.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/terraform/" class="_nav-link" title="" style="margin-left:0;">Terraform</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _terraform">
+				
+				
+<h1 id="backend-configuration">  Backend Configuration </h1> <p>Backends are configured directly in Terraform files in the <code>terraform</code> section. After configuring a backend, it has to be <a href="init">initialized</a>.</p> <p>Below, we show a complete example configuring the "consul" backend:</p> <pre data-language="ruby">terraform {
+  backend "consul" {
+    address = "demo.consul.io"
+    scheme  = "https"
+    path    = "example_app/terraform_state"
+  }
+}
+</pre>
+<p>You specify the backend type as a key to the <code>backend</code> stanza. Within the stanza are backend-specific configuration keys. The list of supported backends and their configuration is in the sidebar to the left.</p> <p>Only one backend may be specified and the configuration <strong>may not contain interpolations</strong>. Terraform will validate this.</p> <h2 id="first-time-configuration">  First Time Configuration </h2> <p>When configuring a backend for the first time (moving from no defined backend to explicitly configuring one), Terraform will give you the option to migrate your state to the new backend. This lets you adopt backends without losing any existing state.</p> <p>To be extra careful, we always recommend manually backing up your state as well. You can do this by simply copying your <code>terraform.tfstate</code> file to another location. The initialization process should create a backup as well, but it never hurts to be safe!</p> <p>Configuring a backend for the first time is no different than changing a configuration in the future: create the new configuration and run <code>terraform init</code>. Terraform will guide you the rest of the way.</p> <h2 id="partial-configuration">  Partial Configuration </h2> <p>You do not need to specify every required argument in the backend configuration. Omitting certain arguments may be desirable to avoid storing secrets, such as access keys, within the main configuration. When some or all of the arguments are omitted, we call this a <em>partial configuration</em>.</p> <p>With a partial configuration, the remaining configuration arguments must be provided as part of <a href="init#backend-initialization">the initialization process</a>. There are several ways to supply the remaining arguments:</p> <ul> <li>
+<p><strong>Interactively</strong>: Terraform will interactively ask you for the required values, unless interactive input is disabled. Terraform will not prompt for optional values.</p> </li> <li>
+<p><strong>File</strong>: A configuration file may be specified via the <code>init</code> command line. To specify a file, use the <code>-backend-config=PATH</code> option when running <code>terraform init</code>. If the file contains secrets it may be kept in a secure data store, such as <a href="https://www.vaultproject.io/">Vault</a>, in which case it must be downloaded to the local disk before running Terraform.</p> </li> <li>
+<p><strong>Command-line key/value pairs</strong>: Key/value pairs can be specified via the <code>init</code> command line. Note that many shells retain command-line flags in a history file, so this isn't recommended for secrets. To specify a single key/value pair, use the <code>-backend-config="KEY=VALUE"</code> option when running <code>terraform init</code>.</p> </li> </ul> <p>If backend settings are provided in multiple locations, the top-level settings are merged such that any command-line options override the settings in the main configuration and then the command-line options are processed in order, with later options overriding values set by earlier options.</p> <p>The final, merged configuration is stored on disk in the <code>.terraform</code> directory, which should be ignored from version control. This means that sensitive information can be omitted from version control, but it will be present in plain text on local disk when running Terraform.</p> <p>When using partial configuration, Terraform requires at a minimum that an empty backend configuration is specified in one of the root Terraform configuration files, to specify the backend type. For example:</p> <pre data-language="ruby">terraform {
+  backend "consul" {}
+}
+</pre>
+<p>A backend configuration file has the contents of the <code>backend</code> block as top-level attributes, without the need to wrap it in another <code>terraform</code> or <code>backend</code> block:</p> <pre data-language="ruby">address = "demo.consul.io"
+path    = "example_app/terraform_state"
+scheme  = "https"
+</pre>
+<p>The same settings can alternatively be specified on the command line as follows:</p> <pre>$ terraform init \
+    -backend-config="address=demo.consul.io" \
+    -backend-config="path=example_app/terraform_state" \
+    -backend-config="scheme=https"
+</pre>
+<h2 id="changing-configuration">  Changing Configuration </h2> <p>You can change your backend configuration at any time. You can change both the configuration itself as well as the type of backend (for example from "consul" to "s3").</p> <p>Terraform will automatically detect any changes in your configuration and request a <a href="init">reinitialization</a>. As part of the reinitialization process, Terraform will ask if you'd like to migrate your existing state to the new configuration. This allows you to easily switch from one backend to another.</p> <p>If you're using multiple <a href="../state/workspaces">workspaces</a>, Terraform can copy all workspaces to the destination. If Terraform detects you have multiple workspaces, it will ask if this is what you want to do.</p> <p>If you're just reconfiguring the same backend, Terraform will still ask if you want to migrate your state. You can respond "no" in this scenario.</p> <h2 id="unconfiguring-a-backend">  Unconfiguring a Backend </h2> <p>If you no longer want to use any backend, you can simply remove the configuration from the file. Terraform will detect this like any other change and prompt you to <a href="init">reinitialize</a>.</p> <p>As part of the reinitialization, Terraform will ask if you'd like to migrate your state back down to normal local state. Once this is complete then Terraform is back to behaving as it does by default.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 HashiCorpLicensed under the MPL 2.0 License.<br>
+    <a href="https://www.terraform.io/docs/backends/config.html" class="_attribution-link">https://www.terraform.io/docs/backends/config.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Random_id - Terraform - W3cubDocs</title>
+  
+  <meta name="description" content=" The resource random_id generates random numbers that are intended to be used as unique identifiers for other resources. ">
+  <meta name="keywords" content="random, id, terraform">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/terraform/providers/random/r/id.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/terraform.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/terraform/" class="_nav-link" title="" style="margin-left:0;">Terraform</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _terraform">
+				
+				
+<h1 id="random_id">  random_id </h1> <p>The resource <code>random_id</code> generates random numbers that are intended to be used as unique identifiers for other resources.</p> <p>Unlike other resources in the "random" provider, this resource <em>does</em> use a cryptographic random number generator in order to minimize the chance of collisions, making the results of this resource when a 32-byte identifier is requested of equivalent uniqueness to a type-4 UUID.</p> <p>This resource can be used in conjunction with resources that have, the <code>create_before_destroy</code> lifecycle flag set, to avoid conflicts with unique names during the brief period where both the old and new resources exist concurrently.</p> <h2 id="example-usage">  Example Usage </h2> <p>The following example shows how to generate a unique name for an AWS EC2 instance that changes each time a new AMI id is selected.</p> <pre data-language="ruby">resource "random_id" "server" {
+  keepers = {
+    # Generate a new id each time we switch to a new AMI id
+    ami_id = "${var.ami_id}"
+  }
+
+  byte_length = 8
+}
+
+resource "aws_instance" "server" {
+  tags = {
+    Name = "web-server ${random_id.server.hex}"
+  }
+
+  # Read the AMI id "through" the random_id resource to ensure that
+  # both will change together.
+  ami = "${random_id.server.keepers.ami_id}"
+
+  # ... (other aws_instance arguments) ...
+}
+</pre>
+<h2 id="argument-reference">  Argument Reference </h2> <p>The following arguments are supported:</p> <ul> <li>
+<p><a href="#byte_length"><code>byte_length</code></a> - (Required) The number of random bytes to produce. The minimum value is 1, which produces eight bits of randomness.</p> </li> <li>
+<p><a href="#keepers"><code>keepers</code></a> - (Optional) Arbitrary map of values that, when changed, will trigger a new id to be generated. See <a href="../index">the main provider documentation</a> for more information.</p> </li> <li>
+<p><a href="#prefix"><code>prefix</code></a> - (Optional) Arbitrary string to prefix the output value with. This string is supplied as-is, meaning it is not guaranteed to be URL-safe or base64 encoded.</p> </li> </ul> <h2 id="attributes-reference">  Attributes Reference </h2> <p>The following attributes are exported:</p> <ul> <li>
+<a href="#b64_url"><code>b64_url</code></a> - The generated id presented in base64, using the URL-friendly character set: case-sensitive letters, digits and the characters <code>_</code> and <code>-</code>. </li> <li>
+<a href="#b64_std"><code>b64_std</code></a> - The generated id presented in base64 without additional transformations. </li> <li>
+<a href="#hex"><code>hex</code></a> - The generated id presented in padded hexadecimal digits. This result will always be twice as long as the requested byte length. </li> <li>
+<a href="#dec"><code>dec</code></a> - The generated id presented in non-padded decimal digits. </li> </ul> <h2 id="import">  Import </h2> <p>Random Ids can be imported using the <code>b64_url</code> with an optional <code>prefix</code>. This can be used to replace a config value with a value interpolated from the random provider without experiencing diffs.</p> <p>Example with no prefix: <code>
+$ terraform import random_id.server p-9hUg
+</code></p> <p>Example with prefix (prefix is separated by a <code>,</code>): <code>
+$ terraform import random_id.server my-prefix-,p-9hUg
+</code></p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 HashiCorpLicensed under the MPL 2.0 License.<br>
+    <a href="https://www.terraform.io/docs/providers/random/r/id.html" class="_attribution-link">https://www.terraform.io/docs/providers/random/r/id.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

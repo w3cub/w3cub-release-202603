@@ -1,0 +1,188 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Aws_api_gateway_method - Terraform - W3cubDocs</title>
+  
+  <meta name="description" content=" Provides a HTTP Method for an API Gateway Resource. ">
+  <meta name="keywords" content="aws, api, gateway, method, terraform">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/terraform/providers/aws/r/api_gateway_method.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/terraform.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/terraform/" class="_nav-link" title="" style="margin-left:0;">Terraform</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _terraform">
+				
+				
+<h1 id="aws_api_gateway_method">  aws_api_gateway_method </h1> <p>Provides a HTTP Method for an API Gateway Resource.</p> <h2 id="example-usage">  Example Usage </h2> <pre data-language="ruby">resource "aws_api_gateway_rest_api" "MyDemoAPI" {
+  name        = "MyDemoAPI"
+  description = "This is my API for demonstration purposes"
+}
+
+resource "aws_api_gateway_resource" "MyDemoResource" {
+  rest_api_id = "${aws_api_gateway_rest_api.MyDemoAPI.id}"
+  parent_id   = "${aws_api_gateway_rest_api.MyDemoAPI.root_resource_id}"
+  path_part   = "mydemoresource"
+}
+
+resource "aws_api_gateway_method" "MyDemoMethod" {
+  rest_api_id   = "${aws_api_gateway_rest_api.MyDemoAPI.id}"
+  resource_id   = "${aws_api_gateway_resource.MyDemoResource.id}"
+  http_method   = "GET"
+  authorization = "NONE"
+}
+</pre>
+<h2 id="usage-with-cognito-user-pool-authorizer">  Usage with Cognito User Pool Authorizer </h2> <pre data-language="ruby">variable "cognito_user_pool_name" {}
+
+data "aws_cognito_user_pools" "this" {
+  name = "${var.cognito_user_pool_name}"
+}
+
+resource "aws_api_gateway_rest_api" "this" {
+  name        = "with-authorizer"
+}
+
+resource "aws_api_gateway_resource" "this" {
+  rest_api_id = "${aws_api_gateway_rest_api.this.id}"
+  parent_id   = "${aws_api_gateway_rest_api.this.root_resource_id}"
+  path_part   = "{proxy+}"
+}
+
+resource "aws_api_gateway_authorizer" "this" {
+  name          = "CognitoUserPoolAuthorizer"
+  type          = "COGNITO_USER_POOLS"
+  rest_api_id   = "${aws_api_gateway_rest_api.this.id}"
+  provider_arns = ["${data.aws_cognito_user_pools.this.arns}"]
+}
+
+resource "aws_api_gateway_method" "any" {
+  rest_api_id   = "${aws_api_gateway_rest_api.this.id}"
+  resource_id   = "${aws_api_gateway_resource.this.id}"
+  http_method   = "ANY"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = "${aws_api_gateway_authorizer.this.id}"
+
+  request_parameters = {
+    "method.request.path.proxy" = true
+  }
+}
+</pre>
+<h2 id="argument-reference">  Argument Reference </h2> <p>The following arguments are supported:</p> <ul> <li>
+<a href="#rest_api_id"><code>rest_api_id</code></a> - (Required) The ID of the associated REST API </li> <li>
+<a href="#resource_id"><code>resource_id</code></a> - (Required) The API resource ID </li> <li>
+<a href="#http_method"><code>http_method</code></a> - (Required) The HTTP Method (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>ANY</code>) </li> <li>
+<a href="#authorization"><code>authorization</code></a> - (Required) The type of authorization used for the method (<code>NONE</code>, <code>CUSTOM</code>, <code>AWS_IAM</code>, <code>COGNITO_USER_POOLS</code>) </li> <li>
+<a href="#authorizer_id"><code>authorizer_id</code></a> - (Optional) The authorizer id to be used when the authorization is <code>CUSTOM</code> or <code>COGNITO_USER_POOLS</code> </li> <li>
+<a href="#authorization_scopes"><code>authorization_scopes</code></a> - (Optional) The authorization scopes used when the authorization is <code>COGNITO_USER_POOLS</code> </li> <li>
+<a href="#api_key_required"><code>api_key_required</code></a> - (Optional) Specify if the method requires an API key </li> <li>
+<a href="#request_models"><code>request_models</code></a> - (Optional) A map of the API models used for the request's content type where key is the content type (e.g. <code>application/json</code>) and value is either <code>Error</code>, <code>Empty</code> (built-in models) or <code>aws_api_gateway_model</code>'s <code>name</code>. </li> <li>
+<a href="#request_validator_id"><code>request_validator_id</code></a> - (Optional) The ID of a <code>aws_api_gateway_request_validator</code> </li> <li>
+<a href="#request_parameters"><code>request_parameters</code></a> - (Optional) A map of request query string parameters and headers that should be passed to the integration. For example: <code>hcl
+request_parameters = {
+"method.request.header.X-Some-Header" = true,
+"method.request.querystring.some-query-param"  = true,
+}
+</code> would define that the header <code>X-Some-Header</code> and the query string <code>some-query-param</code> must be provided on the request, or </li> <li>
+<a href="#request_parameters_in_json"><code>request_parameters_in_json</code></a> - <strong>Deprecated</strong>, use <code>request_parameters</code> instead. </li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 HashiCorpLicensed under the MPL 2.0 License.<br>
+    <a href="https://www.terraform.io/docs/providers/aws/r/api_gateway_method.html" class="_attribution-link">https://www.terraform.io/docs/providers/aws/r/api_gateway_method.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

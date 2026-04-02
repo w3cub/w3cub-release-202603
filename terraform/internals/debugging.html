@@ -1,0 +1,144 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Debugging Terraform - Terraform - W3cubDocs</title>
+  
+  <meta name="description" content="Terraform has detailed logs which can be enabled by setting the TF_LOG environment variable to any value. This will cause detailed logs to appear on &hellip;">
+  <meta name="keywords" content="debugging, terraform">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/terraform/internals/debugging.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/terraform.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/terraform/" class="_nav-link" title="" style="margin-left:0;">Terraform</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _terraform">
+				
+				
+<h1 id="debugging-terraform">  Debugging Terraform </h1> <p>Terraform has detailed logs which can be enabled by setting the <code>TF_LOG</code> environment variable to any value. This will cause detailed logs to appear on stderr.</p> <p>You can set <code>TF_LOG</code> to one of the log levels <code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code> or <code>ERROR</code> to change the verbosity of the logs. <code>TRACE</code> is the most verbose and it is the default if <code>TF_LOG</code> is set to something other than a log level name.</p> <p>To persist logged output you can set <code>TF_LOG_PATH</code> in order to force the log to always be appended to a specific file when logging is enabled. Note that even when <code>TF_LOG_PATH</code> is set, <code>TF_LOG</code> must be set in order for any logging to be enabled.</p> <p>If you find a bug with Terraform, please include the detailed log by using a service such as gist.</p> <h2 id="interpreting-a-crash-log">  Interpreting a Crash Log </h2> <p>If Terraform ever crashes (a "panic" in the Go runtime), it saves a log file with the debug logs from the session as well as the panic message and backtrace to <code>crash.log</code>. Generally speaking, this log file is meant to be passed along to the developers via a GitHub Issue. As a user, you're not required to dig into this file.</p> <p>However, if you are interested in figuring out what might have gone wrong before filing an issue, here are the basic details of how to read a crash log.</p> <p>The most interesting part of a crash log is the panic message itself and the backtrace immediately following. So the first thing to do is to search the file for <code>panic:</code>, which should jump you right to this message. It will look something like this:</p> <pre>panic: runtime error: invalid memory address or nil pointer dereference
+
+goroutine 123 [running]:
+panic(0xabc100, 0xd93000a0a0)
+    /opt/go/src/runtime/panic.go:464 +0x3e6
+github.com/hashicorp/terraform/builtin/providers/aws.resourceAwsSomeResourceCreate(...)
+    /opt/gopath/src/github.com/hashicorp/terraform/builtin/providers/aws/resource_aws_some_resource.go:123 +0x123
+github.com/hashicorp/terraform/helper/schema.(*Resource).Refresh(...)
+    /opt/gopath/src/github.com/hashicorp/terraform/helper/schema/resource.go:209 +0x123
+github.com/hashicorp/terraform/helper/schema.(*Provider).Refresh(...)
+    /opt/gopath/src/github.com/hashicorp/terraform/helper/schema/provider.go:187 +0x123
+github.com/hashicorp/terraform/rpc.(*ResourceProviderServer).Refresh(...)
+    /opt/gopath/src/github.com/hashicorp/terraform/rpc/resource_provider.go:345 +0x6a
+reflect.Value.call(...)
+    /opt/go/src/reflect/value.go:435 +0x120d
+reflect.Value.Call(...)
+    /opt/go/src/reflect/value.go:303 +0xb1
+net/rpc.(*service).call(...)
+    /opt/go/src/net/rpc/server.go:383 +0x1c2
+created by net/rpc.(*Server).ServeCodec
+    /opt/go/src/net/rpc/server.go:477 +0x49d
+</pre>
+<p>The key part of this message is the first two lines that involve <code>hashicorp/terraform</code>. In this example:</p> <pre>github.com/hashicorp/terraform/builtin/providers/aws.resourceAwsSomeResourceCreate(...)
+    /opt/gopath/src/github.com/hashicorp/terraform/builtin/providers/aws/resource_aws_some_resource.go:123 +0x123
+</pre>
+<p>The first line tells us that the method that failed is <code>resourceAwsSomeResourceCreate</code>, which we can deduce that involves the creation of a (fictional) <code>aws_some_resource</code>.</p> <p>The second line points to the exact line of code that caused the panic, which--combined with the panic message itself--is normally enough for a developer to quickly figure out the cause of the issue.</p> <p>As a user, this information can help work around the problem in a pinch, since it should hopefully point to the area of the code base in which the crash is happening.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 HashiCorpLicensed under the MPL 2.0 License.<br>
+    <a href="https://www.terraform.io/docs/internals/debugging.html" class="_attribution-link">https://www.terraform.io/docs/internals/debugging.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
