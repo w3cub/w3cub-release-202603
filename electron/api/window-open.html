@@ -1,0 +1,194 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Opening Windows From the Renderer - Electron - W3cubDocs</title>
+  
+  <meta name="description" content="There are several ways to control how windows are created from trusted or untrusted content within a renderer. Windows can be created from the &hellip;">
+  <meta name="keywords" content="opening, windows, from, renderer, electron">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/electron/api/window-open.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/electron.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/electron/" class="_nav-link" title="" style="margin-left:0;">Electron</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Opening windows from the renderer</h1>
+<p>There are several ways to control how windows are created from trusted or untrusted content within a renderer. Windows can be created from the renderer in two ways:</p>
+<ul>
+<li>clicking on links or submitting forms adorned with <code>target=_blank</code>
+</li>
+<li>JavaScript calling <code>window.open()</code>
+</li>
+</ul>
+<p>For same-origin content, the new window is created within the same process, enabling the parent to access the child window directly. This can be very useful for app sub-windows that act as preference panels, or similar, as the parent can render to the sub-window directly, as if it were a <code>div</code> in the parent. This is the same behavior as in the browser.</p>
+<p>Electron pairs this native Chrome <code>Window</code> with a BrowserWindow under the hood. You can take advantage of all the customization available when creating a BrowserWindow in the main process by using <code>webContents.setWindowOpenHandler()</code> for renderer-created windows.</p>
+<p>BrowserWindow constructor options are set by, in increasing precedence order: parsed options from the <code>features</code> string from <code>window.open()</code>, security-related webPreferences inherited from the parent, and options given by <a href="web-contents#contentssetwindowopenhandlerhandler"><code>webContents.setWindowOpenHandler</code></a>. Note that <code>webContents.setWindowOpenHandler</code> has final say and full privilege because it is invoked in the main process.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="windowopenurl-framename-features">
+<code>window.open(url[, frameName][, features])</code><a class="hash-link" href="#windowopenurl-framename-features" title="Direct link to heading">​</a>
+</h3>
+<ul>
+<li>
+<code>url</code> string</li>
+<li>
+<code>frameName</code> string (optional)</li>
+<li>
+<code>features</code> string (optional)</li>
+</ul>
+<p>Returns <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window" target="_blank" rel="noopener noreferrer"><code>Window</code></a> | null</p>
+<p><code>features</code> is a comma-separated key-value list, following the standard format of the browser. Electron will parse <code>BrowserWindowConstructorOptions</code> out of this list where possible, for convenience. For full control and better ergonomics, consider using <code>webContents.setWindowOpenHandler</code> to customize the BrowserWindow creation.</p>
+<p>A subset of <code>WebPreferences</code> can be set directly, unnested, from the features string: <code>zoomFactor</code>, <code>nodeIntegration</code>, <code>preload</code>, <code>javascript</code>, <code>contextIsolation</code>, and <code>webviewTag</code>.</p>
+<p>For example:</p>
+<div class="language-js codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-js codeBlock_bY9V thin-scrollbar" data-language="javascript">window.open('https://github.com', '_blank', 'top=500,left=200,frame=false,nodeIntegration=no')</pre>
+
+</div></div>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Node integration will always be disabled in the opened <code>window</code> if it is disabled on the parent window.</li>
+<li>Context isolation will always be enabled in the opened <code>window</code> if it is enabled on the parent window.</li>
+<li>JavaScript will always be disabled in the opened <code>window</code> if it is disabled on the parent window.</li>
+<li>Non-standard features (that are not handled by Chromium or Electron) given in <code>features</code> will be passed to any registered <code>webContents</code>'s <code>did-create-window</code> event handler in the <code>options</code> argument.</li>
+<li>
+<code>frameName</code> follows the specification of <code>windowName</code> located in the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/open#parameters" target="_blank" rel="noopener noreferrer">native documentation</a>.</li>
+<li>When opening <code>about:blank</code>, the child window's <code>WebPreferences</code> will be copied from the parent window, and there is no way to override it because Chromium skips browser side navigation in this case.</li>
+</ul>
+<p>To customize or cancel the creation of the window, you can optionally set an override handler with <code>webContents.setWindowOpenHandler()</code> from the main process. Returning <code>{ action: 'deny' }</code> cancels the window. Returning <code>{
+action: 'allow', overrideBrowserWindowOptions: { ... } }</code> will allow opening the window and setting the <code>BrowserWindowConstructorOptions</code> to be used when creating the window. Note that this is more powerful than passing options through the feature string, as the renderer has more limited privileges in deciding security preferences than the main process.</p>
+<p>In addition to passing in <code>action</code> and <code>overrideBrowserWindowOptions</code>, <code>outlivesOpener</code> can be passed like: <code>{ action: 'allow', outlivesOpener: true,
+overrideBrowserWindowOptions: { ... } }</code>. If set to <code>true</code>, the newly created window will not close when the opener window closes. The default value is <code>false</code>.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="native-window-example">Native <code>Window</code> example<a class="hash-link" href="#native-window-example" title="Direct link to heading">​</a>
+</h3>
+<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" data-language="javascript">// main.js
+const mainWindow = new BrowserWindow()
+
+// In this example, only windows with the `about:blank` url will be created.
+// All other urls will be blocked.
+mainWindow.webContents.setWindowOpenHandler(({ url }) =&gt; {
+  if (url === 'about:blank') {
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        frame: false,
+        fullscreenable: false,
+        backgroundColor: 'black',
+        webPreferences: {
+          preload: 'my-child-window-preload-script.js'
+        }
+      }
+    }
+  }
+  return { action: 'deny' }
+})</pre>
+
+</div></div>
+<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" data-language="javascript">// renderer process (mainWindow)
+const childWindow = window.open('', 'modal')
+childWindow.document.write('&lt;h1&gt;Hello&lt;/h1&gt;')</pre>
+
+</div></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © GitHub Inc.<br>Licensed under the MIT license.<br>
+    <a href="https://www.electronjs.org/docs/latest/api/window-open" class="_attribution-link">https://www.electronjs.org/docs/latest/api/window-open</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

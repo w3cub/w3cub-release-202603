@@ -1,0 +1,286 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>webFrameMain - Electron - W3cubDocs</title>
+  
+  <meta name="description" content=" Control web pages and iframes. ">
+  <meta name="keywords" content="webframemain, electron">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/electron/api/web-frame-main.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/electron.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/electron/" class="_nav-link" title="" style="margin-left:0;">Electron</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>webFrameMain</h1>
+<blockquote><p>Control web pages and iframes.</p></blockquote>
+<p>Process: <a href="../glossary#main-process">Main</a></p>
+<p>The <code>webFrameMain</code> module can be used to lookup frames across existing <a href="web-contents"><code>WebContents</code></a> instances. Navigation events are the common use case.</p>
+<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" data-language="javascript">const { BrowserWindow, webFrameMain } = require('electron')
+
+const win = new BrowserWindow({ width: 800, height: 1500 })
+win.loadURL('https://twitter.com')
+
+win.webContents.on(
+  'did-frame-navigate',
+  (event, url, httpResponseCode, httpStatusText, isMainFrame, frameProcessId, frameRoutingId) =&gt; {
+    const frame = webFrameMain.fromId(frameProcessId, frameRoutingId)
+    if (frame) {
+      const code = 'document.body.innerHTML = document.body.innerHTML.replaceAll("heck", "h*ck")'
+      frame.executeJavaScript(code)
+    }
+  }
+)</pre>
+
+</div></div>
+<p>You can also access frames of existing pages by using the <code>mainFrame</code> property of <a href="web-contents"><code>WebContents</code></a>.</p>
+<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" data-language="javascript">const { BrowserWindow } = require('electron')
+
+async function main () {
+  const win = new BrowserWindow({ width: 800, height: 600 })
+  await win.loadURL('https://reddit.com')
+
+  const youtubeEmbeds = win.webContents.mainFrame.frames.filter((frame) =&gt; {
+    try {
+      const url = new URL(frame.url)
+      return url.host === 'www.youtube.com'
+    } catch {
+      return false
+    }
+  })
+
+  console.log(youtubeEmbeds)
+}
+
+main()</pre>
+
+</div></div>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="methods">Methods<a class="hash-link" href="#methods" title="Direct link to heading">​</a>
+</h2>
+<p>These methods can be accessed from the <code>webFrameMain</code> module:</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="webframemainfromidprocessid-routingid">
+<code>webFrameMain.fromId(processId, routingId)</code><a class="hash-link" href="#webframemainfromidprocessid-routingid" title="Direct link to heading">​</a>
+</h3>
+<ul>
+<li>
+<code>processId</code> Integer - An <code>Integer</code> representing the internal ID of the process which owns the frame.</li>
+<li>
+<code>routingId</code> Integer - An <code>Integer</code> representing the unique frame ID in the current renderer process. Routing IDs can be retrieved from <code>WebFrameMain</code> instances (<code>frame.routingId</code>) and are also passed by frame specific <code>WebContents</code> navigation events (e.g. <code>did-frame-navigate</code>).</li>
+</ul>
+<p>Returns <code>WebFrameMain | undefined</code> - A frame with the given process and routing IDs, or <code>undefined</code> if there is no WebFrameMain associated with the given IDs.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="class-webframemain">Class: WebFrameMain<a class="hash-link" href="#class-webframemain" title="Direct link to heading">​</a>
+</h2>
+<p>Process: <a href="../glossary#main-process">Main</a><br> <em>This class is not exported from the <code>'electron'</code> module. It is only available as a return value of other methods in the Electron API.</em></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="instance-events">Instance Events<a class="hash-link" href="#instance-events" title="Direct link to heading">​</a>
+</h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="event-dom-ready">Event: 'dom-ready'<a class="hash-link" href="#event-dom-ready" title="Direct link to heading">​</a>
+</h4>
+<p>Emitted when the document is loaded.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="instance-methods">Instance Methods<a class="hash-link" href="#instance-methods" title="Direct link to heading">​</a>
+</h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameexecutejavascriptcode-usergesture">
+<code>frame.executeJavaScript(code[, userGesture])</code><a class="hash-link" href="#frameexecutejavascriptcode-usergesture" title="Direct link to heading">​</a>
+</h4>
+<ul>
+<li>
+<code>code</code> string</li>
+<li>
+<code>userGesture</code> boolean (optional) - Default is <code>false</code>.</li>
+</ul>
+<p>Returns <code>Promise&lt;unknown&gt;</code> - A promise that resolves with the result of the executed code or is rejected if execution throws or results in a rejected promise.</p>
+<p>Evaluates <code>code</code> in page.</p>
+<p>In the browser window some HTML APIs like <code>requestFullScreen</code> can only be invoked by a gesture from the user. Setting <code>userGesture</code> to <code>true</code> will remove this limitation.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="framereload">
+<code>frame.reload()</code><a class="hash-link" href="#framereload" title="Direct link to heading">​</a>
+</h4>
+<p>Returns <code>boolean</code> - Whether the reload was initiated successfully. Only results in <code>false</code> when the frame has no history.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="framesendchannel-args">
+<code>frame.send(channel, ...args)</code><a class="hash-link" href="#framesendchannel-args" title="Direct link to heading">​</a>
+</h4>
+<ul>
+<li>
+<code>channel</code> string</li>
+<li>
+<code>...args</code> any[]</li>
+</ul>
+<p>Send an asynchronous message to the renderer process via <code>channel</code>, along with arguments. Arguments will be serialized with the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm" target="_blank" rel="noopener noreferrer">Structured Clone Algorithm</a>, just like <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" target="_blank" rel="noopener noreferrer"><code>postMessage</code></a>, so prototype chains will not be included. Sending Functions, Promises, Symbols, WeakMaps, or WeakSets will throw an exception.</p>
+<p>The renderer process can handle the message by listening to <code>channel</code> with the <a href="ipc-renderer"><code>ipcRenderer</code></a> module.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="framepostmessagechannel-message-transfer">
+<code>frame.postMessage(channel, message, [transfer])</code><a class="hash-link" href="#framepostmessagechannel-message-transfer" title="Direct link to heading">​</a>
+</h4>
+<ul>
+<li>
+<code>channel</code> string</li>
+<li>
+<code>message</code> any</li>
+<li>
+<code>transfer</code> MessagePortMain[] (optional)</li>
+</ul>
+<p>Send a message to the renderer process, optionally transferring ownership of zero or more [<code>MessagePortMain</code>][] objects.</p>
+<p>The transferred <code>MessagePortMain</code> objects will be available in the renderer process by accessing the <code>ports</code> property of the emitted event. When they arrive in the renderer, they will be native DOM <code>MessagePort</code> objects.</p>
+<p>For example:</p>
+<div class="language-js codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-js codeBlock_bY9V thin-scrollbar" data-language="javascript">// Main process
+const { port1, port2 } = new MessageChannelMain()
+webContents.mainFrame.postMessage('port', { message: 'hello' }, [port1])
+
+// Renderer process
+ipcRenderer.on('port', (e, msg) =&gt; {
+  const [port] = e.ports
+  // ...
+})</pre>
+
+</div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="instance-properties">Instance Properties<a class="hash-link" href="#instance-properties" title="Direct link to heading">​</a>
+</h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameurl-readonly">
+<code>frame.url</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameurl-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>A <code>string</code> representing the current URL of the frame.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frametop-readonly">
+<code>frame.top</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frametop-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>A <code>WebFrameMain | null</code> representing top frame in the frame hierarchy to which <code>frame</code> belongs.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameparent-readonly">
+<code>frame.parent</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameparent-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>A <code>WebFrameMain | null</code> representing parent frame of <code>frame</code>, the property would be <code>null</code> if <code>frame</code> is the top frame in the frame hierarchy.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameframes-readonly">
+<code>frame.frames</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameframes-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>A <code>WebFrameMain[]</code> collection containing the direct descendents of <code>frame</code>.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameframesinsubtree-readonly">
+<code>frame.framesInSubtree</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameframesinsubtree-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>A <code>WebFrameMain[]</code> collection containing every frame in the subtree of <code>frame</code>, including itself. This can be useful when traversing through all frames.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameframetreenodeid-readonly">
+<code>frame.frameTreeNodeId</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameframetreenodeid-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>An <code>Integer</code> representing the id of the frame's internal FrameTreeNode instance. This id is browser-global and uniquely identifies a frame that hosts content. The identifier is fixed at the creation of the frame and stays constant for the lifetime of the frame. When the frame is removed, the id is not used again.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="framename-readonly">
+<code>frame.name</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#framename-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>A <code>string</code> representing the frame name.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameosprocessid-readonly">
+<code>frame.osProcessId</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameosprocessid-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>An <code>Integer</code> representing the operating system <code>pid</code> of the process which owns this frame.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameprocessid-readonly">
+<code>frame.processId</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameprocessid-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>An <code>Integer</code> representing the Chromium internal <code>pid</code> of the process which owns this frame. This is not the same as the OS process ID; to read that use <code>frame.osProcessId</code>.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="frameroutingid-readonly">
+<code>frame.routingId</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#frameroutingid-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>An <code>Integer</code> representing the unique frame id in the current renderer process. Distinct <code>WebFrameMain</code> instances that refer to the same underlying frame will have the same <code>routingId</code>.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="framevisibilitystate-readonly">
+<code>frame.visibilityState</code> <em class="badge badge--info">Readonly</em><a class="hash-link" href="#framevisibilitystate-readonly" title="Direct link to heading">​</a>
+</h4>
+<p>A <code>string</code> representing the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilityState" target="_blank" rel="noopener noreferrer">visibility state</a> of the frame.</p>
+<p>See also how the <a href="browser-window#page-visibility">Page Visibility API</a> is affected by other Electron APIs.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © GitHub Inc.<br>Licensed under the MIT license.<br>
+    <a href="https://www.electronjs.org/docs/latest/api/web-frame-main" class="_attribution-link">https://www.electronjs.org/docs/latest/api/web-frame-main</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

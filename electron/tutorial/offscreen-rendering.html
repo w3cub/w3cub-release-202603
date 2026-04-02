@@ -1,0 +1,183 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Offscreen Rendering - Electron - W3cubDocs</title>
+  
+  <meta name="description" content="Offscreen rendering lets you obtain the content of a BrowserWindow in a bitmap, so it can be rendered anywhere, for example, on texture in a 3D &hellip;">
+  <meta name="keywords" content="offscreen, rendering, electron">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/electron/tutorial/offscreen-rendering.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/electron.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/electron/" class="_nav-link" title="" style="margin-left:0;">Electron</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Offscreen Rendering</h1>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="overview">Overview<a class="hash-link" href="#overview" title="Direct link to heading">​</a>
+</h2>
+<p>Offscreen rendering lets you obtain the content of a <code>BrowserWindow</code> in a bitmap, so it can be rendered anywhere, for example, on texture in a 3D scene. The offscreen rendering in Electron uses a similar approach to that of the <a href="https://bitbucket.org/chromiumembedded/cef" target="_blank" rel="noopener noreferrer">Chromium Embedded Framework</a> project.</p>
+<p><em>Notes</em>:</p>
+<ul>
+<li>There are two rendering modes that can be used (see the section below) and only the dirty area is passed to the <code>paint</code> event to be more efficient.</li>
+<li>You can stop/continue the rendering as well as set the frame rate.</li>
+<li>The maximum frame rate is 240 because greater values bring only performance losses with no benefits.</li>
+<li>When nothing is happening on a webpage, no frames are generated.</li>
+<li>An offscreen window is always created as a <a href="window-customization">Frameless Window</a>..</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="rendering-modes">Rendering Modes<a class="hash-link" href="#rendering-modes" title="Direct link to heading">​</a>
+</h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="gpu-accelerated">GPU accelerated<a class="hash-link" href="#gpu-accelerated" title="Direct link to heading">​</a>
+</h4>
+<p>GPU accelerated rendering means that the GPU is used for composition. Because of that, the frame has to be copied from the GPU which requires more resources, thus this mode is slower than the Software output device. The benefit of this mode is that WebGL and 3D CSS animations are supported.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="software-output-device">Software output device<a class="hash-link" href="#software-output-device" title="Direct link to heading">​</a>
+</h4>
+<p>This mode uses a software output device for rendering in the CPU, so the frame generation is much faster. As a result, this mode is preferred over the GPU accelerated one.</p>
+<p>To enable this mode, GPU acceleration has to be disabled by calling the <a href="../api/app#appdisablehardwareacceleration"><code>app.disableHardwareAcceleration()</code></a> API.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="example">Example<a class="hash-link" href="#example" title="Direct link to heading">​</a>
+</h2>
+<div class="editorWindow_ZQWz">
+<div class="editorWindowHeader_GqG7">
+
+<a class="editorTitle_buME" href="https://github.com/electron/electron/tree/v20.1.0/docs/fiddles/features/offscreen-rendering">docs/fiddles/features/offscreen-rendering (20.1.0)</a><a target="_blank" class="button button--primary button--md" href="https://fiddle.electronjs.org/launch?target=electron/v20.1.0/docs/fiddles/features/offscreen-rendering" rel="noreferrer">Open in Fiddle</a>
+</div>
+<div class="editorWindowBody_R11m"><div class="tabs-container tabList__CuJ">
+<ul role="tablist" aria-orientation="horizontal" class="tabs"><li role="tab" tabindex="0" aria-selected="true" class="tabs__item tabItem_LNqP tabs__item--active">main.js</li></ul>
+<div class="margin-top--md"><div role="tabpanel" class="tabItem_Ymn6"><div class="language-js codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-js codeBlock_bY9V thin-scrollbar" data-language="javascript">const { app, BrowserWindow } = require('electron')
+const fs = require('fs')
+const path = require('path')
+
+app.disableHardwareAcceleration()
+
+let win
+
+app.whenReady().then(() =&gt; {
+  win = new BrowserWindow({ webPreferences: { offscreen: true } })
+  win.loadURL('https://github.com')
+  win.webContents.on('paint', (event, dirty, image) =&gt; {
+    fs.writeFileSync('ex.png', image.toPNG())
+  })
+  win.webContents.setFrameRate(60)
+  console.log(`The screenshot has been successfully saved to ${path.join(process.cwd(), 'ex.png')}`)
+})
+
+app.on('window-all-closed', () =&gt; {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('activate', () =&gt; {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
+  }
+})</pre>
+
+</div></div></div></div>
+</div></div>
+</div>
+<p>After launching the Electron application, navigate to your application's working folder, where you'll find the rendered image.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © GitHub Inc.<br>Licensed under the MIT license.<br>
+    <a href="https://www.electronjs.org/docs/latest/tutorial/offscreen-rendering" class="_attribution-link">https://www.electronjs.org/docs/latest/tutorial/offscreen-rendering</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
