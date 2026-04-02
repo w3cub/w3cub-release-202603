@@ -1,0 +1,225 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Network Layer - Relay 10 - W3cubDocs</title>
+  
+  <meta name="description" content="In order to know how to access your GraphQL server, Relay Modern requires developers to provide an object implementing the NetworkLayer interface &hellip;">
+  <meta name="keywords" content="network, layer, relay, relay~10">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/relay~10/network-layer.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/relay~10.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/relay~10/" class="_nav-link" title="" style="margin-left:0;">Relay 10</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="__docusaurus" class="postHeaderTitle">Network Layer</h1>
+<article><div><span><p>In order to know how to access your GraphQL server, Relay Modern requires developers to provide an object implementing the <code>NetworkLayer</code> interface when creating an instance of a <a href="relay-environment">Relay Environment</a>. The environment uses this network layer to execute queries, mutations, and (if your server supports them) subscriptions. This allows developers to use whatever transport (HTTP, WebSockets, etc) and authentication is most appropriate for their application, decoupling the environment from the particulars of each application's network configuration.</p> <p>Currently the easiest way to create a network layer is via a helper from the <code>relay-runtime</code> package:</p> <pre data-language="javascript" class="highlight"><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> {
+  Environment,
+  Network,
+  RecordSource,
+  Store,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'relay-runtime'</span>;
+
+<span class="hljs-comment">// Define a function that fetches the results of an operation (query/mutation/etc)</span>
+<span class="hljs-comment">// and returns its results as a Promise:</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fetchQuery</span>(<span class="hljs-params">
+  operation,
+  variables,
+  cacheConfig,
+  uploadables,
+</span>) </span>{
+  <span class="hljs-keyword">return</span> fetch(<span class="hljs-string">'/graphql'</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>,
+    <span class="hljs-attr">headers</span>: {
+      <span class="hljs-comment">// Add authentication and other headers here</span>
+      <span class="hljs-string">'content-type'</span>: <span class="hljs-string">'application/json'</span>
+    },
+    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+      <span class="hljs-attr">query</span>: operation.text, <span class="hljs-comment">// GraphQL text from input</span>
+      variables,
+    }),
+  }).then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> response.json();
+  });
+}
+
+<span class="hljs-comment">// Create a network layer from the fetch function</span>
+<span class="hljs-keyword">const</span> network = Network.create(fetchQuery);
+<span class="hljs-keyword">const</span> store = <span class="hljs-keyword">new</span> Store(<span class="hljs-keyword">new</span> RecordSource())
+
+<span class="hljs-keyword">const</span> environment = <span class="hljs-keyword">new</span> Environment({
+  network,
+  store
+  <span class="hljs-comment">// ... other options</span>
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> environment;
+</code></pre> <p>Note that this is a basic example to help you get started. This example could be extended with additional features such as request/response caching (enabled e.g. when <code>cacheConfig.force</code> is false) and uploading form data for mutations (the <code>uploadables</code> parameter).</p> <h2 id="caching">
+Caching</h2> <p>Relay modern makes no assumptions about what to cache and will garbage collect any data that is no longer referenced.</p> <p>You have to implement your own cache strategy. A simple solution is to use <code>QueryResponseCache</code> (an in-memory cache):</p> <pre data-language="javascript" class="highlight"><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> {
+  Environment,
+  Network,
+  QueryResponseCache,
+  RecordSource,
+  Store,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'relay-runtime'</span>;
+
+<span class="hljs-keyword">const</span> oneMinute = <span class="hljs-number">60</span> * <span class="hljs-number">1000</span>;
+<span class="hljs-keyword">const</span> cache = <span class="hljs-keyword">new</span> QueryResponseCache({ <span class="hljs-attr">size</span>: <span class="hljs-number">250</span>, <span class="hljs-attr">ttl</span>: oneMinute });
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fetchQuery</span>(<span class="hljs-params">
+  operation,
+  variables,
+  cacheConfig,
+</span>) </span>{
+  <span class="hljs-keyword">const</span> queryID = operation.text;
+  <span class="hljs-keyword">const</span> isMutation = operation.operationKind === <span class="hljs-string">'mutation'</span>;
+  <span class="hljs-keyword">const</span> isQuery = operation.operationKind === <span class="hljs-string">'query'</span>;
+  <span class="hljs-keyword">const</span> forceFetch = cacheConfig &amp;&amp; cacheConfig.force;
+
+  <span class="hljs-comment">// Try to get data from cache on queries</span>
+  <span class="hljs-keyword">const</span> fromCache = cache.get(queryID, variables);
+  <span class="hljs-keyword">if</span> (
+    isQuery &amp;&amp;
+    fromCache !== <span class="hljs-literal">null</span> &amp;&amp;
+    !forceFetch
+  ) {
+    <span class="hljs-keyword">return</span> fromCache;
+  }
+
+  <span class="hljs-comment">// Otherwise, fetch data from server</span>
+  <span class="hljs-keyword">return</span> fetch(<span class="hljs-string">'/graphql'</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>,
+    <span class="hljs-attr">headers</span>: {
+      <span class="hljs-string">'Content-Type'</span>: <span class="hljs-string">'application/json'</span>,
+    },
+    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+      <span class="hljs-attr">query</span>: operation.text,
+      variables,
+    }),
+  }).then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> response.json();
+  }).then(<span class="hljs-function"><span class="hljs-params">json</span> =&gt;</span> {
+    <span class="hljs-comment">// Update cache on queries</span>
+    <span class="hljs-keyword">if</span> (isQuery &amp;&amp; json) {
+      cache.set(queryID, variables, json);
+    }
+    <span class="hljs-comment">// Clear cache on mutations</span>
+    <span class="hljs-keyword">if</span> (isMutation) {
+      cache.clear();
+    }
+
+    <span class="hljs-keyword">return</span> json;
+  });
+}
+
+<span class="hljs-keyword">const</span> environment = <span class="hljs-keyword">new</span> Environment({
+  <span class="hljs-attr">network</span>: Network.create(fetchQuery),
+  <span class="hljs-attr">store</span>: <span class="hljs-keyword">new</span> Store(<span class="hljs-keyword">new</span> RecordSource()),
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> environment;
+</code></pre> <h2 id="custom-open-source-implementations">
+Custom open-source implementations</h2> <p><strong><a href="https://github.com/relay-tools/react-relay-network-modern">react-relay-network-modern</a></strong> on <a href="https://www.npmjs.com/package/react-relay-network-modern">npm</a> - is a Network Layer for Relay Modern which has built-in highly customizable middlewares for commonly used scenarios: batching query requests, caching, authentication, request retrying, logging. Moreover, you may write your own middlewares with custom logic.</p> </span></div></article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2020–present Facebook Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://relay.dev/docs/en/network-layer.html" class="_attribution-link">https://relay.dev/docs/en/network-layer.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
