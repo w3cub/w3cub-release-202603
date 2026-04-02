@@ -1,0 +1,173 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Exec Protocol - Yarn - W3cubDocs</title>
+  
+  <meta name="description" content="The exec&#58; protocol executes a Node.js script inside a temporary directory at fetch-time with a preconfigured runtime environment. This script is &hellip;">
+  <meta name="keywords" content="exec, protocol, yarn">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/yarn/protocol/exec.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/yarn.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/yarn/" class="_nav-link" title="" style="margin-left:0;">Yarn</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<header><h1>Exec Protocol</h1></header><p>The <code>exec:</code> protocol executes a Node.js script inside a temporary directory at fetch-time with a preconfigured runtime environment. This script is then expected to populate a special directory defined in the environment, and exit once the generation has finished.</p>  <h2 class="anchor anchorWithStickyNavbar_hhKX" id="why-would-you-want-that">Why would you want that<a href="#why-would-you-want-that" class="hash-link" aria-label="Direct link to Why would you want that" title="Direct link to Why would you want that">​</a>
+</h2> <p>Typical Yarn fetchers download packages from the internet - this works fine if the project you want to use got packaged beforehand, but fails short as soon as you need to bundle it yourself. Yarn's builtin mechanism allows you to run the <code>prepare</code> script on compatible git repositories and use the result as final package, but even that isn't always enough - you may need to clone a specific branch, go into a specific directory, run a specific build script ... all things that makes it hard for us to support every single use case.</p> <p>The <code>exec:</code> protocol represents a way to define yourself how the specified package should be fetched. In a sense, it can be seen as a more high-level version of the <a href="../advanced/lexicon#fetcher">Fetcher API</a> that Yarn provides.</p> <h2 class="anchor anchorWithStickyNavbar_hhKX" id="generator-scripts--require">Generator scripts &amp; <code>require</code><a href="#generator-scripts--require" class="hash-link" aria-label="Direct link to generator-scripts--require" title="Direct link to generator-scripts--require">​</a>
+</h2> <p>Because the generator will be called in a very special context (before any package has been installed on the disk), it won't be able to call the <code>require</code> function (not even with relative paths). Should you need very complex generators, just bundle them up beforehand in a single script using tools such as Webpack or Rollup.</p> <p>Because of this restriction, and because generators will pretty much always need to use the Node builtin modules, those are made available in the global scope - in a very similar way to what the Node REPL already does. As a result, no need to manually require the <code>fs</code> module: it's available through the global <code>fs</code> variable!</p> <h2 class="anchor anchorWithStickyNavbar_hhKX" id="runtime-environment">Runtime environment<a href="#runtime-environment" class="hash-link" aria-label="Direct link to Runtime environment" title="Direct link to Runtime environment">​</a>
+</h2> <p>In order to let the script knows about the various predefined folders involved in the generation process, Yarn will inject a special <code>execEnv</code> global variable available to the script. This object's <a href="https://yarnpkg.com/api/plugin-exec/interface/ExecEnv">interface</a> is defined as such:</p> <table>
+<thead><tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>tempDir</code></td>
+<td><code>string</code></td>
+<td>Absolute path of an empty temporary directory that the script is free to use. Automatically created before the script is invoked.</td>
+</tr>
+<tr>
+<td><code>buildDir</code></td>
+<td><code>string</code></td>
+<td>Absolute path of an empty directory where the script is expected to generate the package files. Automatically created before the script is invoked.</td>
+</tr>
+<tr>
+<td><code>locator</code></td>
+<td><code>string</code></td>
+<td>Stringified <a href="../advanced/lexicon#locator">locator</a> identifying the generator package.</td>
+</tr>
+</tbody>
+</table> <p>You're free to do whatever you want inside <code>execEnv.tempDir</code> but, at the end of the execution, Yarn will expect <code>execEnv.buildDir</code> to contain the files that can be compressed into an archive and stored within the cache.</p> <h2 class="anchor anchorWithStickyNavbar_hhKX" id="examples">Examples<a href="#examples" class="hash-link" aria-label="Direct link to Examples" title="Direct link to Examples">​</a>
+</h2> <p>Generate an hello world package:</p> <div class="language-ts codeBlockContainer_iUqV theme-code-block"><div class="codeBlockContent_Xs1n">
+<pre tabindex="0" class="prism-code language-ts codeBlock_hDG7 thin-scrollbar" data-language="ts">fs.writeFileSync(path.join(execEnv.buildDir, 'package.json'), JSON.stringify({
+  name: 'hello-world',
+  version: '1.0.0',
+}));
+
+fs.writeFileSync(path.join(execEnv.buildDir, 'index.js'), `
+  module.exports = 'hello world!';
+`);</pre>
+<div class="buttonGroup_ipu6"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_FbbJ" aria-hidden="true"><svg viewbox="0 0 24 24" class="copyButtonIcon_Nh6j"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewbox="0 0 24 24" class="copyButtonSuccessIcon_wXPl"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div>
+</div></div> <p>Clone a monorepo and build a specific package:</p> <div class="language-ts codeBlockContainer_iUqV theme-code-block"><div class="codeBlockContent_Xs1n">
+<pre tabindex="0" class="prism-code language-ts codeBlock_hDG7 thin-scrollbar" data-language="ts">const pathToRepo = path.join(execEnv.tempDir, 'repo');
+const pathToArchive = path.join(execEnv.tempDir, 'archive.tgz');
+const pathToSubpackage = path.join(pathToRepo, 'packages/foobar');
+
+// Clone the repository
+child_process.execFileSync(`git`, [`clone`, `git@github.com:foo/bar`, pathToRepo]);
+
+// Install the dependencies
+child_process.execFileSync(`yarn`, [`install`], {cwd: pathToRepo});
+
+// Pack a specific workspace
+child_process.execFileSync(`yarn`, [`pack`, `--out`, pathToArchive], {cwd: pathToSubpackage});
+
+// Send the package content into the build directory
+child_process.execFileSync(`tar`, [`-x`, `-z`, `--strip-components=1`, `-f`, pathToArchive, `-C`, execEnv.buildDir]);</pre>
+<div class="buttonGroup_ipu6"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_FbbJ" aria-hidden="true"><svg viewbox="0 0 24 24" class="copyButtonIcon_Nh6j"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewbox="0 0 24 24" class="copyButtonSuccessIcon_wXPl"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div>
+</div></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2016–present Yarn Contributors<br>Licensed under the BSD License.<br>
+    <a href="https://yarnpkg.com/protocol/exec" class="_attribution-link">https://yarnpkg.com/protocol/exec</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
