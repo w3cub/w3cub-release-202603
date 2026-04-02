@@ -1,0 +1,201 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Data Modeling in TypeScript - Deno 2 - W3cubDocs</title>
+  
+  <meta name="description" content=" ">
+  <meta name="keywords" content="data, modeling, typescript, deno, deno~2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/deno~2/deploy/kv/manual/data_modeling_typescript.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/deno~2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/deno~2/" class="_nav-link" title="" style="margin-left:0;">Deno 2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Data Modeling in TypeScript</h1>
+<div>
+<p><deno-admonition></deno-admonition></p> <p>In TypeScript applications, it is usually desirable to create strongly-typed, well-documented objects to contain the data that your application operates on. Using <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html">interfaces</a> or <a href="https://www.typescriptlang.org/docs/handbook/2/classes.html">classes</a>, you can describe both the shape and behavior of objects in your programs.</p> <p>If you are using Deno KV, however, there is a bit of extra work required to persist and retrieve objects that are strongly typed. In this guide, we'll cover strategies for working with strongly typed objects going into and back out from Deno KV.</p> <h2 id="using-interfaces-and-type-assertions" tabindex="-1">Using interfaces and type assertions </h2> <p>When storing and retrieving application data in Deno KV, you might want to begin by describing the shape of your data using TypeScript interfaces. Below is an object model which describes some key components of a blogging system:</p> <div>
+<div class="markdownBlockTitle">model.ts</div>
+<div class="relative">
+<pre><code data-language="ts"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">Author</span> <span class="token punctuation">{</span>
+  username<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  fullName<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">Post</span> <span class="token punctuation">{</span>
+  slug<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  body<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  author<span class="token operator">:</span> Author<span class="token punctuation">;</span>
+  createdAt<span class="token operator">:</span> Date<span class="token punctuation">;</span>
+  updatedAt<span class="token operator">:</span> Date<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>  </div>
+</div>
+<p>This object model describes a blog post and an associated author.</p> <p>With Deno KV, you can use these TypeScript interfaces like <a href="https://martinfowler.com/bliki/LocalDTO.html">data transfer objects (DTOs)</a> - a strongly typed wrapper around the otherwise untyped objects you might send to or receive from Deno KV.</p> <p>Without any additional work, you can happily store the contents of one of these DTOs in Deno KV.</p> <div class="relative">
+<pre><code data-language="ts"><span class="token keyword">import</span> <span class="token punctuation">{</span> Author <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./model.ts"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> kv <span class="token operator">=</span> <span class="token keyword">await</span> Deno<span class="token punctuation">.</span><span class="token function">openKv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> a<span class="token operator">:</span> Author <span class="token operator">=</span> <span class="token punctuation">{</span>
+  username<span class="token operator">:</span> <span class="token string">"acdoyle"</span><span class="token punctuation">,</span>
+  fullName<span class="token operator">:</span> <span class="token string">"Arthur Conan Doyle"</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"authors"</span><span class="token punctuation">,</span> a<span class="token punctuation">.</span>username<span class="token punctuation">]</span><span class="token punctuation">,</span> a<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>  </div>
+<p>When retrieving this same object from Deno KV, however, it won't by default have type information associated with it. If you know the shape of the object that was stored for the key, however, you can use <a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions">type assertion</a> to inform the TypeScript compiler about the shape of an object.</p> <div class="relative">
+<pre><code data-language="ts"><span class="token keyword">import</span> <span class="token punctuation">{</span> Author <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./model.ts"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> kv <span class="token operator">=</span> <span class="token keyword">await</span> Deno<span class="token punctuation">.</span><span class="token function">openKv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> r <span class="token operator">=</span> <span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"authors"</span><span class="token punctuation">,</span> <span class="token string">"acdoyle"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> ac <span class="token operator">=</span> r<span class="token punctuation">.</span>value <span class="token keyword">as</span> Author<span class="token punctuation">;</span>
+
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>ac<span class="token punctuation">.</span>fullName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>  </div>
+<p>You can also specify an optional <a href="../../../api/deno/~/deno.kv.prototype.get">type parameter</a> for <code data-language="ts">get</code>:</p> <div class="relative">
+<pre><code data-language="ts"><span class="token keyword">import</span> <span class="token punctuation">{</span> Author <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./model.ts"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> kv <span class="token operator">=</span> <span class="token keyword">await</span> Deno<span class="token punctuation">.</span><span class="token function">openKv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> r <span class="token operator">=</span> <span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">get</span><span class="token generic class-name"><span class="token operator">&lt;</span>Author<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"authors"</span><span class="token punctuation">,</span> <span class="token string">"acdoyle"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>value<span class="token punctuation">.</span>fullName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>  </div>
+<p>For simpler data structures, this technique may be sufficient. But often, you will want or need to apply some business logic when creating or accessing your domain objects. When this need arises, you can develop a set of pure functions that can operate on your DTOs.</p> <h2 id="encapsulating-business-logic-with-a-service-layer" tabindex="-1">Encapsulating business logic with a service layer </h2> <p>When your application's persistence needs become more complex - such as when you need to create <a href="secondary_indexes">secondary indexes</a> to query your data by different keys, or maintain relationships between objects - you will want to create a set of functions to sit on top of your DTOs to ensure that the data being passed around is valid (and not merely typed correctly).</p> <p>From our business objects above, the <code data-language="ts">Post</code> object is complex enough where it is likely to need a small layer of code to save and retrieve an instance of the object. Below is an example of two functions that wrap the underlying Deno KV APIs, and return strongly typed object instances for the <code data-language="ts">Post</code> interface.</p> <p>Notably, we need to store an identifier for an <code data-language="ts">Author</code> object, so we can retrieve author information from KV later.</p> <div class="relative">
+<pre><code data-language="ts"><span class="token keyword">import</span> <span class="token punctuation">{</span> Author<span class="token punctuation">,</span> Post <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./model.ts"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> kv <span class="token operator">=</span> <span class="token keyword">await</span> Deno<span class="token punctuation">.</span><span class="token function">openKv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">RawPost</span> <span class="token keyword">extends</span> <span class="token class-name">Post</span> <span class="token punctuation">{</span>
+  authorUsername<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">savePost</span><span class="token punctuation">(</span>p<span class="token operator">:</span> Post<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>Post<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> postData<span class="token operator">:</span> RawPost <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> p<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    authorUsername<span class="token operator">:</span> p<span class="token punctuation">.</span>author<span class="token punctuation">.</span>username<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"posts"</span><span class="token punctuation">,</span> p<span class="token punctuation">.</span>slug<span class="token punctuation">]</span><span class="token punctuation">,</span> postData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> p<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">getPost</span><span class="token punctuation">(</span>slug<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>Post<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> postResponse <span class="token operator">=</span> <span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"posts"</span><span class="token punctuation">,</span> slug<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> rawPost <span class="token operator">=</span> postResponse<span class="token punctuation">.</span>value <span class="token keyword">as</span> RawPost<span class="token punctuation">;</span>
+  <span class="token keyword">const</span> authorResponse <span class="token operator">=</span> <span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"authors"</span><span class="token punctuation">,</span> rawPost<span class="token punctuation">.</span>authorUsername<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> author <span class="token operator">=</span> authorResponse<span class="token punctuation">.</span>value <span class="token keyword">as</span> Author<span class="token punctuation">;</span>
+  <span class="token keyword">const</span> post <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> postResponse<span class="token punctuation">.</span>value<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    author<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token keyword">as</span> Post<span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> post<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>  </div>
+<p>This thin layer uses a <code data-language="ts">RawPost</code> interface, which extends the actual <code data-language="ts">Post</code> interface, to include some additional data that is used to reference data at another index (the associated <code data-language="ts">Author</code> object).</p> <p>The <code data-language="ts">savePost</code> and <code data-language="ts">getPost</code> functions take the place of a direct Deno KV <code data-language="ts">get</code> or <code data-language="ts">set</code> operation, so that they can properly serialize and "hydrate" model objects for us with appropriate types and associations.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018–2025 the Deno authors<br>Licensed under the MIT License.<br>
+    <a href="https://docs.deno.com/deploy/kv/manual/data_modeling_typescript" class="_attribution-link">https://docs.deno.com/deploy/kv/manual/data_modeling_typescript</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

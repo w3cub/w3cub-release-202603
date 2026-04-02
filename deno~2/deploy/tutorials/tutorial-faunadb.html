@@ -1,0 +1,416 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>API Server With FaunaDB - Deno 2 - W3cubDocs</title>
+  
+  <meta name="description" content="FaunaDB calls itself &#34;The data API for modern applications&#34;. It&#39;s a database with a GraphQL interface that enables you to use GraphQL to &hellip;">
+  <meta name="keywords" content="api, server, with, faunadb, deno, deno~2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/deno~2/deploy/tutorials/tutorial-faunadb.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/deno~2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/deno~2/" class="_nav-link" title="" style="margin-left:0;">Deno 2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>API server with FaunaDB</h1>
+<div>
+<p>FaunaDB calls itself "The data API for modern applications". It's a database with a GraphQL interface that enables you to use GraphQL to interact with it. Since we communicate with it using HTTP requests, we don't need to manage connections which suits very well for serverless applications.</p> <p>The tutorial assumes that you have <a href="https://fauna.com">FaunaDB</a> and Deno Deploy accounts, Deno Deploy CLI installed, and some basic knowledge of GraphQL.</p> <ul> <li><a href="#overview">Overview</a></li> <li><a href="#build-the-api-endpoints">Build the API Endpoints</a></li> <li><a href="#use-faunadb-for-persistence">Use FaunaDB for Persistence</a></li> <li><a href="#deploy-the-api">Deploy the API</a></li> </ul> <h2 id="overview" tabindex="-1">Overview </h2> <p>In this tutorial, let's build a small quotes API with endpoints to insert and retrieve quotes. And later use FaunaDB to persist the quotes.</p> <p>Let's start by defining the API endpoints.</p> <div class="relative">
+<pre><code data-language="sh"><span class="token comment"># A POST request to the endpoint should insert the quote to the list.</span>
+POST /quotes/
+<span class="token comment"># Body of the request.</span>
+<span class="token punctuation">{</span>
+  <span class="token string">"quote"</span><span class="token builtin class-name">:</span> <span class="token string">"Don't judge each day by the harvest you reap but by the seeds that you plant."</span>,
+  <span class="token string">"author"</span><span class="token builtin class-name">:</span> <span class="token string">"Robert Louis Stevenson"</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># A GET request to the endpoint should return all the quotes from the database.</span>
+GET /quotes/
+<span class="token comment"># Response of the request.</span>
+<span class="token punctuation">{</span>
+  <span class="token string">"quotes"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">"quote"</span><span class="token builtin class-name">:</span> <span class="token string">"Don't judge each day by the harvest you reap but by the seeds that you plant."</span>,
+      <span class="token string">"author"</span><span class="token builtin class-name">:</span> <span class="token string">"Robert Louis Stevenson"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>  </div>
+<p>Now that we understand how the endpoint should behave, let's proceed to build it.</p> <h2 id="build-the-api-endpoints" tabindex="-1">Build the API Endpoints </h2> <p>First, create a file named <code data-language="ts">quotes.ts</code> and paste the following content.</p> <p>Read through the comments in the code to understand what's happening.</p> <div class="relative">
+<pre><code data-language="ts"><span class="token keyword">import</span> <span class="token punctuation">{</span>
+  json<span class="token punctuation">,</span>
+  serve<span class="token punctuation">,</span>
+  validateRequest<span class="token punctuation">,</span>
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"https://deno.land/x/sift@0.6.0/mod.ts"</span><span class="token punctuation">;</span>
+
+<span class="token function">serve</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token string-property property">"/quotes"</span><span class="token operator">:</span> handleQuotes<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// To get started, let's just use a global array of quotes.</span>
+<span class="token keyword">const</span> quotes <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    quote<span class="token operator">:</span> <span class="token string">"Those who can imagine anything, can create the impossible."</span><span class="token punctuation">,</span>
+    author<span class="token operator">:</span> <span class="token string">"Alan Turing"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    quote<span class="token operator">:</span> <span class="token string">"Any sufficiently advanced technology is equivalent to magic."</span><span class="token punctuation">,</span>
+    author<span class="token operator">:</span> <span class="token string">"Arthur C. Clarke"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">handleQuotes</span><span class="token punctuation">(</span>request<span class="token operator">:</span> Request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// Make sure the request is a GET request.</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> error <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">validateRequest</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token constant">GET</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// validateRequest populates the error if the request doesn't meet</span>
+  <span class="token comment">// the schema we defined.</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">{</span> error<span class="token operator">:</span> error<span class="token punctuation">.</span>message <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> status<span class="token operator">:</span> error<span class="token punctuation">.</span>status <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// Return all the quotes.</span>
+  <span class="token keyword">return</span> <span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">{</span> quotes <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>  </div>
+<p>Run the above program using <a href="https://deno.land">the Deno CLI</a>.</p> <div class="relative">
+<pre><code data-language="sh">deno run --allow-net<span class="token operator">=</span>:8000 ./path/to/quotes.ts
+<span class="token comment"># Listening on http://0.0.0.0:8000/</span>
+</code></pre>  </div>
+<p>And curl the endpoint to see some quotes.</p> <div class="relative">
+<pre><code data-language="sh"><span class="token function">curl</span> http://127.0.0.1:8000/quotes
+<span class="token comment"># {"quotes":[</span>
+<span class="token comment"># {"quote":"Those who can imagine anything, can create the impossible.", "author":"Alan Turing"},</span>
+<span class="token comment"># {"quote":"Any sufficiently advanced technology is equivalent to magic.","author":"Arthur C. Clarke"}</span>
+<span class="token comment"># ]}</span>
+</code></pre>  </div>
+<p>Let's proceed to handle the POST request.</p> <p>Update the <code data-language="ts">validateRequest</code> function to make sure a POST request follows the provided body scheme.</p> <div class="relative">
+<pre><code data-language="diff"><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line">  const { error } = await validateRequest(request, {
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">  const { error, body } = await validateRequest(request, {
+</span></span><span class="token unchanged"><span class="token line">   GET: {},
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">   POST: {
+</span><span class="token prefix inserted">+</span><span class="token line">      body: ["quote", "author"]
+</span><span class="token prefix inserted">+</span><span class="token line">   }
+</span></span><span class="token unchanged"><span class="token line"> });
+</span></span></code></pre>  </div>
+<p>Handle the POST request by updating <code data-language="ts">handleQuotes</code> function with the following code.</p> <div class="relative">
+<pre><code data-language="diff">async function handleQuotes(request: Request) {
+<span class="token unchanged"><span class="token line"> const { error, body } = await validateRequest(request, {
+</span><span class="token line">   GET: {},
+</span><span class="token line">   POST: {
+</span><span class="token line">     body: ["quote", "author"],
+</span><span class="token line">   },
+</span><span class="token line"> });
+</span><span class="token line"> if (error) {
+</span><span class="token line">   return json({ error: error.message }, { status: error.status });
+</span><span class="token line"> }
+</span></span>
+<span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">  // Handle POST requests.
+</span><span class="token prefix inserted">+</span><span class="token line">  if (request.method === "POST") {
+</span><span class="token prefix inserted">+</span><span class="token line">    const { quote, author } = body as { quote: string; author: string };
+</span><span class="token prefix inserted">+</span><span class="token line">    quotes.push({ quote, author });
+</span><span class="token prefix inserted">+</span><span class="token line">    return json({ quote, author }, { status: 201 });
+</span><span class="token prefix inserted">+</span><span class="token line">  }
+</span></span>
+<span class="token unchanged"><span class="token line"> return json({ quotes });
+</span></span>}
+</code></pre>  </div>
+<p>Let's test it by inserting some data.</p> <div class="relative">
+<pre><code data-language="sh"><span class="token function">curl</span> --dump-header - <span class="token parameter variable">--request</span> POST <span class="token parameter variable">--data</span> <span class="token string">'{"quote": "A program that has not been tested does not work.", "author": "Bjarne Stroustrup"}'</span> http://127.0.0.1:8000/quotes
+</code></pre>  </div>
+<p>The output might look like something below.</p> <div class="relative">
+<pre><code data-language="console">HTTP/1.1 201 Created
+transfer-encoding: chunked
+content-type: application/json; charset=utf-8
+
+{"quote":"A program that has not been tested does not work.","author":"Bjarne Stroustrup"}
+</code></pre>  </div>
+<p>Awesome! We built our API endpoint, and it's working as expected. Since the data is stored in memory, it will be lost after a restart. Let's use FaunaDB to persist our quotes.</p> <h2 id="use-faunadb-for-persistence" tabindex="-1">Use FaunaDB for Persistence </h2> <p>Let's define our database schema using GraphQL Schema.</p> <div class="relative">
+<pre><code data-language="gql"># We're creating a new type named `Quote` to represent a quote and its author.
+type Quote {
+  quote: String!
+  author: String!
+}
+
+type Query {
+  # A new field in the Query operation to retrieve all quotes.
+  allQuotes: [Quote!]
+}
+</code></pre>  </div>
+<p>Fauna has a graphql endpoint for its database, and it generates essential mutations like create, update, delete for a data type defined in the schema. For example, fauna will generate a mutation named <code data-language="ts">createQuote</code> to create a new quote in the database for the data type <code data-language="ts">Quote</code>. And we're additionally defining a query field named <code data-language="ts">allQuotes</code> that returns all the quotes in the database.</p> <p>Let's get to writing the code to interact with fauna from Deno Deploy applications.</p> <p>To interact with fauna, we need to make a POST request to its graphql endpoint with appropriate query and parameters to get the data in return. So let's construct a generic function that will handle those things.</p> <div class="relative">
+<pre><code data-language="typescript"><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">queryFauna</span><span class="token punctuation">(</span>
+  query<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
+  variables<span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">unknown</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token punctuation">{</span>
+  data<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">;</span>
+  error<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token comment">// Grab the secret from the environment.</span>
+  <span class="token keyword">const</span> token <span class="token operator">=</span> Deno<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"FAUNA_SECRET"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>token<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">"environment variable FAUNA_SECRET not set"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Make a POST request to fauna's graphql endpoint with body being</span>
+    <span class="token comment">// the query and its variables.</span>
+    <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">"https://graphql.fauna.com/graphql"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+      method<span class="token operator">:</span> <span class="token string">"POST"</span><span class="token punctuation">,</span>
+      headers<span class="token operator">:</span> <span class="token punctuation">{</span>
+        authorization<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Bearer </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>token<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+        <span class="token string-property property">"content-type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      body<span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        query<span class="token punctuation">,</span>
+        variables<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> <span class="token punctuation">{</span> data<span class="token punctuation">,</span> errors <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">await</span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>errors<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// Return the first error if there are any.</span>
+      <span class="token keyword">return</span> <span class="token punctuation">{</span> data<span class="token punctuation">,</span> error<span class="token operator">:</span> errors<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> data <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> error <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>  </div>
+<p>Add this code to the <code data-language="ts">quotes.ts</code> file. Now let's proceed to update the endpoint to use fauna.</p> <div class="relative">
+<pre><code data-language="diff">async function handleQuotes(request: Request) {
+<span class="token unchanged"><span class="token line"> const { error, body } = await validateRequest(request, {
+</span><span class="token line">   GET: {},
+</span><span class="token line">   POST: {
+</span><span class="token line">     body: ["quote", "author"],
+</span><span class="token line">   },
+</span><span class="token line"> });
+</span><span class="token line"> if (error) {
+</span><span class="token line">   return json({ error: error.message }, { status: error.status });
+</span><span class="token line"> }
+</span></span>
+<span class="token unchanged"><span class="token line"> if (request.method === "POST") {
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">    const { quote, author, error } = await createQuote(
+</span><span class="token prefix inserted">+</span><span class="token line">      body as { quote: string; author: string }
+</span><span class="token prefix inserted">+</span><span class="token line">    );
+</span><span class="token prefix inserted">+</span><span class="token line">    if (error) {
+</span><span class="token prefix inserted">+</span><span class="token line">      return json({ error: "couldn't create the quote" }, { status: 500 });
+</span><span class="token prefix inserted">+</span><span class="token line">    }
+</span></span>
+<span class="token unchanged"><span class="token line">   return json({ quote, author }, { status: 201 });
+</span><span class="token line"> }
+</span></span>
+<span class="token unchanged"><span class="token line"> return json({ quotes });
+</span></span>}
+
+<span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">async function createQuote({
+</span><span class="token prefix inserted">+</span><span class="token line">  quote,
+</span><span class="token prefix inserted">+</span><span class="token line">  author,
+</span><span class="token prefix inserted">+</span><span class="token line">}: {
+</span><span class="token prefix inserted">+</span><span class="token line">  quote: string;
+</span><span class="token prefix inserted">+</span><span class="token line">  author: string;
+</span><span class="token prefix inserted">+</span><span class="token line">}): Promise&lt;{ quote?: string; author?: string; error?: string }&gt; {
+</span><span class="token prefix inserted">+</span><span class="token line">  const query = `
+</span><span class="token prefix inserted">+</span><span class="token line">    mutation($quote: String!, $author: String!) {
+</span><span class="token prefix inserted">+</span><span class="token line">      createQuote(data: { quote: $quote, author: $author }) {
+</span><span class="token prefix inserted">+</span><span class="token line">        quote
+</span><span class="token prefix inserted">+</span><span class="token line">        author
+</span><span class="token prefix inserted">+</span><span class="token line">      }
+</span><span class="token prefix inserted">+</span><span class="token line">    }
+</span><span class="token prefix inserted">+</span><span class="token line">  `;
+</span><span class="token prefix inserted">+</span><span class="token prefix inserted">+</span><span class="token line">  const { data, error } = await queryFauna(query, { quote, author });
+</span><span class="token prefix inserted">+</span><span class="token line">  if (error) {
+</span><span class="token prefix inserted">+</span><span class="token line">    return { error };
+</span><span class="token prefix inserted">+</span><span class="token line">  }
+</span><span class="token prefix inserted">+</span><span class="token prefix inserted">+</span><span class="token line">  return data;
+</span><span class="token prefix inserted">+</span><span class="token line">}
+</span></span></code></pre>  </div>
+<p>Now that we've updated the code to insert new quotes let's set up a fauna database before proceeding to test the code.</p> <p>Create a new database:</p> <ol> <li>Go to <a href="https://dashboard.fauna.com">https://dashboard.fauna.com</a> (login if required) and click on <strong>New Database</strong>
+</li> <li>Fill the <strong>Database Name</strong> field and click on <strong>Save</strong>.</li> <li>Click on <strong>GraphQL</strong> section visible on the left sidebar.</li> <li>Create a file ending with <code data-language="ts">.gql</code> extension with the content being the schema we defined above.</li> </ol> <p>Generate a secret to access the database:</p> <ol> <li>Click on <strong>Security</strong> section and click on <strong>New Key</strong>.</li> <li>Select <strong>Server</strong> role and click on <strong>Save</strong>. Copy the secret.</li> </ol> <p>Let's now run the application with the secret.</p> <div class="relative">
+<pre><code data-language="sh"><span class="token assign-left variable">FAUNA_SECRET</span><span class="token operator">=</span><span class="token operator">&lt;</span>the_secret_you_just_obtained<span class="token operator">&gt;</span> deno run --allow-net<span class="token operator">=</span>:8000 <span class="token parameter variable">--watch</span> quotes.ts
+<span class="token comment"># Listening on http://0.0.0.0:8000</span>
+</code></pre>  </div>
+<div class="relative">
+<pre><code data-language="sh"><span class="token function">curl</span> --dump-header - <span class="token parameter variable">--request</span> POST <span class="token parameter variable">--data</span> <span class="token string">'{"quote": "A program that has not been tested does not work.", "author": "Bjarne Stroustrup"}'</span> http://127.0.0.1:8000/quotes
+</code></pre>  </div>
+<p>Notice how the quote was added to your collection in FaunaDB.</p> <p>Let's write a new function to get all the quotes.</p> <div class="relative">
+<pre><code data-language="ts"><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">getAllQuotes</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> query <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    query {
+      allQuotes {
+        data {
+          quote
+          author
+        }
+      }
+    }
+  </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> <span class="token punctuation">{</span>
+    data<span class="token operator">:</span> <span class="token punctuation">{</span>
+      allQuotes<span class="token operator">:</span> <span class="token punctuation">{</span> data<span class="token operator">:</span> quotes <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    error<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">queryFauna</span><span class="token punctuation">(</span>query<span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> error <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> quotes <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>  </div>
+<p>And update the <code data-language="ts">handleQuotes</code> function with the following code.</p> <div class="relative">
+<pre><code data-language="diff"><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line">// To get started, let's just use a global array of quotes.
+</span><span class="token prefix deleted">-</span><span class="token line">const quotes = [
+</span><span class="token prefix deleted">-</span><span class="token line">  {
+</span><span class="token prefix deleted">-</span><span class="token line">    quote: "Those who can imagine anything, can create the impossible.",
+</span><span class="token prefix deleted">-</span><span class="token line">    author: "Alan Turing",
+</span><span class="token prefix deleted">-</span><span class="token line">  },
+</span><span class="token prefix deleted">-</span><span class="token line">  {
+</span><span class="token prefix deleted">-</span><span class="token line">    quote: "Any sufficiently advanced technology is equivalent to magic.",
+</span><span class="token prefix deleted">-</span><span class="token line">    author: "Arthur C. Clarke",
+</span><span class="token prefix deleted">-</span><span class="token line">  },
+</span><span class="token prefix deleted">-</span><span class="token line">];
+</span></span>
+async function handleQuotes(request: Request) {
+<span class="token unchanged"><span class="token line"> const { error, body } = await validateRequest(request, {
+</span><span class="token line">   GET: {},
+</span><span class="token line">   POST: {
+</span><span class="token line">     body: ["quote", "author"],
+</span><span class="token line">   },
+</span><span class="token line"> });
+</span><span class="token line"> if (error) {
+</span><span class="token line">   return json({ error: error.message }, { status: error.status });
+</span><span class="token line"> }
+</span></span>
+<span class="token unchanged"><span class="token line"> if (request.method === "POST") {
+</span><span class="token line">   const { quote, author, error } = await createQuote(
+</span><span class="token line">     body as { quote: string; author: string },
+</span><span class="token line">   );
+</span><span class="token line">   if (error) {
+</span><span class="token line">     return json({ error: "couldn't create the quote" }, { status: 500 });
+</span><span class="token line">   }
+</span></span>
+<span class="token unchanged"><span class="token line">   return json({ quote, author }, { status: 201 });
+</span><span class="token line"> }
+</span></span>
+<span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">  // It's assumed that the request method is "GET".
+</span><span class="token prefix inserted">+</span><span class="token line">  {
+</span><span class="token prefix inserted">+</span><span class="token line">    const { quotes, error } = await getAllQuotes();
+</span><span class="token prefix inserted">+</span><span class="token line">    if (error) {
+</span><span class="token prefix inserted">+</span><span class="token line">      return json({ error: "couldn't fetch the quotes" }, { status: 500 });
+</span><span class="token prefix inserted">+</span><span class="token line">    }
+</span><span class="token prefix inserted">+</span><span class="token prefix inserted">+</span><span class="token line">    return json({ quotes });
+</span><span class="token prefix inserted">+</span><span class="token line">  }
+</span></span>}
+</code></pre>  </div>
+<div class="relative">
+<pre><code data-language="sh"><span class="token function">curl</span> http://127.0.0.1:8000/quotes
+</code></pre>  </div>
+<p>You should see all the quotes we've inserted into the database. The final code of the API is available at <a href="https://deno.com/examples/fauna.ts">https://deno.com/examples/fauna.ts</a>.</p> <h2 id="deploy-the-api" tabindex="-1">Deploy the API </h2> <p>Now that we have everything in place, let's deploy your new API!</p> <ol> <li>In your browser, visit <a href="https://dash.deno.com/new_project">Deno Deploy</a> and link your GitHub account.</li> <li>Select the repository which contains your new API.</li> <li>You can give your project a name or allow Deno to generate one for you</li> <li>Select <code data-language="ts">index.ts</code> in the Entrypoint dropdown</li> <li>Click <strong>Deploy Project</strong>
+</li> </ol> <p>In order for your Application to work, we will need to configure its environment variables.</p> <p>On your project's success page, or in your project dashboard, click on <strong>Add environmental variables</strong>. Under Environment Variables, click <strong>+ Add Variable</strong>. Create a new variable called <code data-language="ts">FAUNA_SECRET</code> - The value should be the secret we created earlier.</p> <p>Click to save the variables.</p> <p>On your project overview, click <strong>View</strong> to view the project in your browser, add <code data-language="ts">/quotes</code> to the end of the url to see the content of your FaunaDB.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018–2025 the Deno authors<br>Licensed under the MIT License.<br>
+    <a href="https://docs.deno.com/deploy/tutorials/tutorial-faunadb" class="_attribution-link">https://docs.deno.com/deploy/tutorials/tutorial-faunadb</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

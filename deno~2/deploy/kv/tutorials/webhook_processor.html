@@ -1,0 +1,161 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Offload Webhook Processing to a Queue - Deno 2 - W3cubDocs</title>
+  
+  <meta name="description" content="In a web application, it is often desirable to offload processing of async tasks for which a client doesn&#39;t need an immediate response to a &hellip;">
+  <meta name="keywords" content="offload, webhook, processing, queue, deno, deno~2">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/deno~2/deploy/kv/tutorials/webhook_processor.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/deno~2.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/deno~2/" class="_nav-link" title="" style="margin-left:0;">Deno 2</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Offload webhook processing to a queue</h1>
+<div>
+<p>In a web application, it is often desirable to offload processing of async tasks for which a client doesn't need an immediate response to a queue. Doing so can keep your web app fast and responsive, instead of taking up valuable resources waiting for long-running processes to complete.</p> <p>One instance where you might want to deploy this technique is when <a href="https://en.wikipedia.org/wiki/Webhook">handling webhooks</a>. Immediately upon receiving the webhook request from a non-human client that doesn't need a response, you can offload that work to a queue where it can be handled more efficiently.</p> <p>In this tutorial, we'll show you how to execute this technique when <a href="https://docs.github.com/en/webhooks/about-webhooks-for-repositories">handling webhook requests for a GitHub repo</a>.</p> <h2 id="try-in-a-playground" tabindex="-1">Try in a playground </h2> <p>✏️ <a href="https://dash.deno.com/playground/github-webhook-example"><strong>Check out the this playground, which implements a GitHub repo webhook handler</strong></a>.</p> <p>Using Deno Deploy <a href="../../manual/playgrounds">playgrounds</a>, you can instantly deploy your own GitHub webhook handler that uses both queues and Deno KV. We'll walk through what this code does in a moment.</p> <h2 id="configuring-github-webhooks-for-a-repository" tabindex="-1">Configuring GitHub webhooks for a repository </h2> <p>To try out the webhook you just launched in a playground, set up a new webhook configuration for a GitHub repository you control. You can find webhook configuration under "Settings" for your repository.</p> <p><img src="https://docs.deno.com/deploy/kv/tutorials/images/github_webhook.png" alt="configure a github webhook"></p> <h2 id="code-walkthrough" tabindex="-1">Code walkthrough </h2> <p>Our webhook handler function is relatively simple - without comments, it's only 23 lines of code total. It connects to a Deno KV database, sets up a queue listener to process incoming messages, and sets up a simple server with <a href="../../../api/deno/~/deno.serve"><code data-language="ts">Deno.serve</code></a> which responds to incoming webhook requests.</p> <p>Read along with the comments below to see what's happening at each step.</p> <div>
+<div class="markdownBlockTitle">server.ts</div>
+<div class="relative">
+<pre><code data-language="ts"><span class="token comment">// Get a handle for a Deno KV database instance. KV is built in to the Deno</span>
+<span class="token comment">// runtime, and is available with zero config both locally and on Deno Deploy</span>
+<span class="token keyword">const</span> kv <span class="token operator">=</span> <span class="token keyword">await</span> Deno<span class="token punctuation">.</span><span class="token function">openKv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Set up a listener that will handle work that is offloaded from our server.</span>
+<span class="token comment">// In this case, it's just going to add incoming webhook payloads to a KV</span>
+<span class="token comment">// database, with a timestamp.</span>
+kv<span class="token punctuation">.</span><span class="token function">listenQueue</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span>message<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"github"</span><span class="token punctuation">,</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// This is a simple HTTP server that will handle incoming POST requests from</span>
+<span class="token comment">// GitHub webhooks.</span>
+Deno<span class="token punctuation">.</span><span class="token function">serve</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span>req<span class="token operator">:</span> Request<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>req<span class="token punctuation">.</span>method <span class="token operator">===</span> <span class="token string">"POST"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// GitHub sends webhook requests as POST requests to your server. You can</span>
+    <span class="token comment">// configure GitHub to send JSON in the POST body, which you can then parse</span>
+    <span class="token comment">// from the request object.</span>
+    <span class="token keyword">const</span> payload <span class="token operator">=</span> <span class="token keyword">await</span> req<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> kv<span class="token punctuation">.</span><span class="token function">enqueue</span><span class="token punctuation">(</span>payload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> status<span class="token operator">:</span> <span class="token number">200</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token comment">// If the server is handling a GET request, this will just list out all the</span>
+    <span class="token comment">// webhook events that have been recorded in our KV database.</span>
+    <span class="token keyword">const</span> iter <span class="token operator">=</span> kv<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">list</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">{</span> prefix<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"github"</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> github <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token keyword">await</span> <span class="token punctuation">(</span><span class="token keyword">const</span> res <span class="token keyword">of</span> iter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      github<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        timestamp<span class="token operator">:</span> res<span class="token punctuation">.</span>key<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        payload<span class="token operator">:</span> res<span class="token punctuation">.</span>value<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>github<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>  </div>
+</div>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018–2025 the Deno authors<br>Licensed under the MIT License.<br>
+    <a href="https://docs.deno.com/deploy/kv/tutorials/webhook_processor" class="_attribution-link">https://docs.deno.com/deploy/kv/tutorials/webhook_processor</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
