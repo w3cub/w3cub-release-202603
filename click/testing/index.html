@@ -1,0 +1,190 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Testing - Click - W3cubDocs</title>
+  
+  <meta name="description" content="For basic testing, Click provides the click.testing module which provides test functionality that helps you invoke command line applications and &hellip;">
+  <meta name="keywords" content="testing, click, applications">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/click/testing/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/click.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/click/" class="_nav-link" title="" style="margin-left:0;">click</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Testing Click Applications</h1> <p>For basic testing, Click provides the <code>click.testing</code> module which provides test functionality that helps you invoke command line applications and check their behavior.</p> <p>These tools should really only be used for testing as they change the entire interpreter state for simplicity and are not in any way thread-safe!</p> <section id="basic-testing"> <h2>Basic Testing</h2> <p>The basic functionality for testing Click applications is the <a class="reference internal" href="../api/index#click.testing.CliRunner" title="click.testing.CliRunner"><code>CliRunner</code></a> which can invoke commands as command line scripts. The <a class="reference internal" href="../api/index#click.testing.CliRunner.invoke" title="click.testing.CliRunner.invoke"><code>CliRunner.invoke()</code></a> method runs the command line script in isolation and captures the output as both bytes and binary data.</p> <p>The return value is a <a class="reference internal" href="../api/index#click.testing.Result" title="click.testing.Result"><code>Result</code></a> object, which has the captured output data, exit code, and optional exception attached:</p> <div class="literal-block-wrapper docutils container" id="id1"> <div class="code-block-caption"><span class="caption-text">hello.py</span></div> <pre data-language="python">import click
+
+@click.command()
+@click.argument('name')
+def hello(name):
+   click.echo(f'Hello {name}!')
+</pre> </div> <div class="literal-block-wrapper docutils container" id="id2"> <div class="code-block-caption"><span class="caption-text">test_hello.py</span></div> <pre data-language="python">from click.testing import CliRunner
+from hello import hello
+
+def test_hello_world():
+  runner = CliRunner()
+  result = runner.invoke(hello, ['Peter'])
+  assert result.exit_code == 0
+  assert result.output == 'Hello Peter!\n'
+</pre> </div> <p>For subcommand testing, a subcommand name must be specified in the <code>args</code> parameter of <a class="reference internal" href="../api/index#click.testing.CliRunner.invoke" title="click.testing.CliRunner.invoke"><code>CliRunner.invoke()</code></a> method:</p> <div class="literal-block-wrapper docutils container" id="id3"> <div class="code-block-caption"><span class="caption-text">sync.py</span></div> <pre data-language="python">import click
+
+@click.group()
+@click.option('--debug/--no-debug', default=False)
+def cli(debug):
+   click.echo(f"Debug mode is {'on' if debug else 'off'}")
+
+@cli.command()
+def sync():
+   click.echo('Syncing')
+</pre> </div> <div class="literal-block-wrapper docutils container" id="id4"> <div class="code-block-caption"><span class="caption-text">test_sync.py</span></div> <pre data-language="python">from click.testing import CliRunner
+from sync import cli
+
+def test_sync():
+  runner = CliRunner()
+  result = runner.invoke(cli, ['--debug', 'sync'])
+  assert result.exit_code == 0
+  assert 'Debug mode is on' in result.output
+  assert 'Syncing' in result.output
+</pre> </div> <p>Additional keyword arguments passed to <code>.invoke()</code> will be used to construct the initial Context object. For example, if you want to run your tests against a fixed terminal width you can use the following:</p> <pre data-language="python">runner = CliRunner()
+result = runner.invoke(cli, ['--debug', 'sync'], terminal_width=60)
+</pre> </section> <section id="file-system-isolation"> <h2>File System Isolation</h2> <p>For basic command line tools with file system operations, the <a class="reference internal" href="../api/index#click.testing.CliRunner.isolated_filesystem" title="click.testing.CliRunner.isolated_filesystem"><code>CliRunner.isolated_filesystem()</code></a> method is useful for setting the current working directory to a new, empty folder.</p> <div class="literal-block-wrapper docutils container" id="id5"> <div class="code-block-caption"><span class="caption-text">cat.py</span></div> <pre data-language="python">import click
+
+@click.command()
+@click.argument('f', type=click.File())
+def cat(f):
+   click.echo(f.read())
+</pre> </div> <div class="literal-block-wrapper docutils container" id="id6"> <div class="code-block-caption"><span class="caption-text">test_cat.py</span></div> <pre data-language="python">from click.testing import CliRunner
+from cat import cat
+
+def test_cat():
+   runner = CliRunner()
+   with runner.isolated_filesystem():
+      with open('hello.txt', 'w') as f:
+          f.write('Hello World!')
+
+      result = runner.invoke(cat, ['hello.txt'])
+      assert result.exit_code == 0
+      assert result.output == 'Hello World!\n'
+</pre> </div> <p>Pass <code>temp_dir</code> to control where the temporary directory is created. The directory will not be removed by Click in this case. This is useful to integrate with a framework like Pytest that manages temporary files.</p> <pre data-language="python">def test_keep_dir(tmp_path):
+    runner = CliRunner()
+
+    with runner.isolated_filesystem(temp_dir=tmp_path) as td:
+        ...
+</pre> </section> <section id="input-streams"> <h2>Input Streams</h2> <p>The test wrapper can also be used to provide input data for the input stream (stdin). This is very useful for testing prompts, for instance:</p> <div class="literal-block-wrapper docutils container" id="id7"> <div class="code-block-caption"><span class="caption-text">prompt.py</span></div> <pre data-language="python">import click
+
+@click.command()
+@click.option('--foo', prompt=True)
+def prompt(foo):
+   click.echo(f"foo={foo}")
+</pre> </div> <div class="literal-block-wrapper docutils container" id="id8"> <div class="code-block-caption"><span class="caption-text">test_prompt.py</span></div> <pre data-language="python">from click.testing import CliRunner
+from prompt import prompt
+
+def test_prompts():
+   runner = CliRunner()
+   result = runner.invoke(prompt, input='wau wau\n')
+   assert not result.exception
+   assert result.output == 'Foo: wau wau\nfoo=wau wau\n'
+</pre> </div> <p>Note that prompts will be emulated so that they write the input data to the output stream as well. If hidden input is expected then this obviously does not happen.</p> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2014 Pallets.<br>Licensed under the BSD 3-Clause License.<br>We are not supported nor endorsed by Pallets.<br>
+    <a href="https://click.palletsprojects.com/en/8.1.x/testing/" class="_attribution-link">https://click.palletsprojects.com/en/8.1.x/testing/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

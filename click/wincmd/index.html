@@ -1,0 +1,118 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Wincmd - Click - W3cubDocs</title>
+  
+  <meta name="description" content=" New in version 6.0. ">
+  <meta name="keywords" content="windows, console, notes, wincmd, click">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/click/wincmd/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/click.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/click/" class="_nav-link" title="" style="margin-left:0;">click</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Windows Console Notes</h1> <details class="changelog"> <summary>Changelog</summary><div class="versionadded"> <p><span class="versionmodified added">New in version 6.0.</span></p> </div> </details><p>Click emulates output streams on Windows to support unicode to the Windows console through separate APIs and we perform different decoding of parameters.</p> <p>Here is a brief overview of how this works and what it means to you.</p> <section id="unicode-arguments"> <h2>Unicode Arguments</h2> <p>Click internally is generally based on the concept that any argument can come in as either byte string or unicode string and conversion is performed to the type expected value as late as possible. This has some advantages as it allows us to accept the data in the most appropriate form for the operating system and Python version.</p> <p>This caused some problems on Windows where initially the wrong encoding was used and garbage ended up in your input data. We not only fixed the encoding part, but we also now extract unicode parameters from <code>sys.argv</code>.</p> <p>There is also another limitation with this: if <code>sys.argv</code> was modified prior to invoking a click handler, we have to fall back to the regular byte input in which case not all unicode values are available but only a subset of the codepage used for parameters.</p> </section> <section id="unicode-output-and-input"> <h2>Unicode Output and Input</h2> <p>Unicode output and input on Windows is implemented through the concept of a dispatching text stream. What this means is that when click first needs a text output (or input) stream on windows it goes through a few checks to figure out of a windows console is connected or not. If no Windows console is present then the text output stream is returned as such and the encoding for that stream is set to <code>utf-8</code> like on all platforms.</p> <p>However if a console is connected the stream will instead be emulated and use the cmd.exe unicode APIs to output text information. In this case the stream will also use <code>utf-16-le</code> as internal encoding. However there is some hackery going on that the underlying raw IO buffer is still bypassing the unicode APIs and byte output through an indirection is still possible.</p> <ul class="simple"> <li>This unicode support is limited to <code>click.echo</code>, <code>click.prompt</code> as well as <code>click.get_text_stream</code>.</li> <li>Depending on if unicode values or byte strings are passed the control flow goes completely different places internally which can have some odd artifacts if data partially ends up being buffered. Click attempts to protect against that by manually always flushing but if you are mixing and matching different string types to <code>stdout</code> or <code>stderr</code> you will need to manually flush.</li> <li>The raw output stream is set to binary mode, which is a global operation on Windows, so <code>print</code> calls will be affected. Prefer <code>click.echo</code> over <code>print</code>.</li> <li>On Windows 7 and below, there is a limitation where at most 64k characters can be written in one call in binary mode. In this situation, <code>sys.stdout</code> and <code>sys.stderr</code> are replaced with wrappers that work around the limitation.</li> </ul> <p>Another important thing to note is that the Windows console’s default fonts do not support a lot of characters which means that you are mostly limited to international letters but no emojis or special characters.</p> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © Copyright 2014 Pallets.<br>Licensed under the BSD 3-Clause License.<br>We are not supported nor endorsed by Pallets.<br>
+    <a href="https://click.palletsprojects.com/en/8.1.x/wincmd/" class="_attribution-link">https://click.palletsprojects.com/en/8.1.x/wincmd/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
