@@ -1,0 +1,190 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Migrating From LWRPs to Custom Resources - Chef 18 - W3cubDocs</title>
+  
+  <meta name="description" content=" [edit on GitHub] ">
+  <meta name="keywords" content="migrating, from, lwrps, custom, resources, chef, chef~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/chef~18/lwrp_to_custom_resources/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/chef~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/chef~18/" class="_nav-link" title="" style="margin-left:0;">Chef 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx_simple">
+				
+				
+<div id="col-content" data-swiftype-index="true"> <div id="migrating-from-lwrps-to-custom-resources"><h1>Migrating from LWRPs to Custom Resources</h1></div>  <div class="prose"> <p data-swiftype-index="false"> <a href="https://github.com/chef/chef-web-docs/blob/main/content/lwrp_to_custom_resources.md" alt="Link to page on GitHub repository">[edit on GitHub]</a> </p> <h2 id="overview">Overview</h2> <p>It is no longer recommended to write resources in the <strong>Light Weight Resource Provider (LWRP)</strong> format.</p> <p>This guide describes how to migrate from an existing LWRP to a Custom Resource.</p> <p>If you are creating a Custom Resource from scratch please see the <a href="../custom_resources/index">Custom Resource Getting Started Guide</a> instead.</p> <h2 id="convert-files-to-custom-resources-layout">Convert files to Custom Resources Layout</h2> <p>LWRPs consist of two library files: a resource and a provider for that resource.</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-text" data-lang="text">|- libraries
+  |- provider_rvm_ruby.rb
+  |- resource_rvm_ruby.rb
+</code></pre></div>
+<p>These files are merged into one, and moved into the resources directory.</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-text" data-lang="text">|- resources
+    |- rvm_ruby.rb
+</code></pre></div>
+<h2 id="drop-lwrp-classes">Drop LWRP classes</h2> <p>LWRPs used classes to separate Provider and Resource behaviors, but Custom Resources do not need this distinction. This means that we remove the class definitions in their entirety, as shown in the following example:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby"><span style="color:#60a0b0;font-style:italic">#rvm/libraries/resource_rvm_ruby.rb</span>
+<span style="color:#007020">require</span> <span style="color:#4070a0">'chef/resource/lwrp_base'</span>
+
+<span style="color:#007020;font-weight:700">class</span> <span style="color:#0e84b5;font-weight:700">Chef</span>
+  <span style="color:#007020;font-weight:700">class</span> <span style="color:#0e84b5;font-weight:700">Resource</span>
+    <span style="color:#007020;font-weight:700">class</span> <span style="color:#0e84b5;font-weight:700">RvmRuby</span> <span style="color:#666">&lt;</span> <span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Resource</span><span style="color:#666">::</span><span style="color:#60add5">LWRPBase</span>
+      provides <span style="color:#517918">:rvm_ruby</span>
+
+      <span style="color:#007020">self</span><span style="color:#666">.</span>resource_name <span style="color:#666">=</span> <span style="color:#517918">:rvm_ruby</span>
+      default_action <span style="color:#517918">:install</span>
+    <span style="color:#007020;font-weight:700">end</span>
+  <span style="color:#007020;font-weight:700">end</span>
+<span style="color:#007020;font-weight:700">end</span>
+
+<span style="color:#60a0b0;font-style:italic"># rvm/libraries/provider_rvm_ruby.rb</span>
+<span style="color:#007020">require</span> <span style="color:#4070a0">'chef/provider/lwrp_base'</span>
+
+<span style="color:#007020;font-weight:700">class</span> <span style="color:#0e84b5;font-weight:700">Chef</span>
+  <span style="color:#007020;font-weight:700">class</span> <span style="color:#0e84b5;font-weight:700">Provider</span>
+    <span style="color:#007020;font-weight:700">class</span> <span style="color:#0e84b5;font-weight:700">RvmRuby</span> <span style="color:#666">&lt;</span> <span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Provider</span><span style="color:#666">::</span><span style="color:#60add5">LWRPBase</span>
+      provides <span style="color:#517918">:rvm_ruby</span>
+
+      action <span style="color:#517918">:install</span> <span style="color:#007020;font-weight:700">do</span>
+        remote_file <span style="color:#4070a0">'rvm_installer'</span> <span style="color:#007020;font-weight:700">do</span>
+          path <span style="color:#4070a0">"</span><span style="color:#70a0d0;font-style:italic">#{</span><span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Config</span><span style="color:#666">[</span><span style="color:#517918">:file_cache_path</span><span style="color:#666">]</span><span style="color:#70a0d0;font-style:italic">}</span><span style="color:#4070a0">/rvm_installer.sh"</span>
+          source node<span style="color:#666">[</span><span style="color:#4070a0">'rvm'</span><span style="color:#666">][</span><span style="color:#4070a0">'installer_url'</span><span style="color:#666">]</span>
+          mode <span style="color:#4070a0">'755'</span>
+          not_if { <span style="color:#666">::</span><span style="color:#60add5">File</span><span style="color:#666">.</span>exist?(<span style="color:#4070a0">"</span><span style="color:#70a0d0;font-style:italic">#{</span><span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Config</span><span style="color:#666">[</span><span style="color:#517918">:file_cache_path</span><span style="color:#666">]</span><span style="color:#70a0d0;font-style:italic">}</span><span style="color:#4070a0">/rvm_installer.sh"</span>) }
+          action <span style="color:#517918">:create</span>
+        <span style="color:#007020;font-weight:700">end</span>
+      <span style="color:#007020;font-weight:700">end</span>
+    <span style="color:#007020;font-weight:700">end</span>
+  <span style="color:#007020;font-weight:700">end</span>
+<span style="color:#007020;font-weight:700">end</span>
+</code></pre></div>
+<p>Replace the above files with a singular resource:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby"><span style="color:#60a0b0;font-style:italic">#rvm/resources/rvm_ruby.rb</span>
+provides <span style="color:#517918">:rvm_ruby</span>
+default_action <span style="color:#517918">:install</span>
+
+action <span style="color:#517918">:install</span> <span style="color:#007020;font-weight:700">do</span>
+  remote_file <span style="color:#4070a0">'rvm_installer'</span> <span style="color:#007020;font-weight:700">do</span>
+    path <span style="color:#4070a0">"</span><span style="color:#70a0d0;font-style:italic">#{</span><span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Config</span><span style="color:#666">[</span><span style="color:#517918">:file_cache_path</span><span style="color:#666">]</span><span style="color:#70a0d0;font-style:italic">}</span><span style="color:#4070a0">/rvm_installer.sh"</span>
+    source node<span style="color:#666">[</span><span style="color:#4070a0">'rvm'</span><span style="color:#666">][</span><span style="color:#4070a0">'installer_url'</span><span style="color:#666">]</span>
+    mode <span style="color:#4070a0">'755'</span>
+    not_if { <span style="color:#666">::</span><span style="color:#60add5">File</span><span style="color:#666">.</span>exist?(<span style="color:#4070a0">"</span><span style="color:#70a0d0;font-style:italic">#{</span><span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Config</span><span style="color:#666">[</span><span style="color:#517918">:file_cache_path</span><span style="color:#666">]</span><span style="color:#70a0d0;font-style:italic">}</span><span style="color:#4070a0">/rvm_installer.sh"</span>) }
+    action <span style="color:#517918">:create</span>
+  <span style="color:#007020;font-weight:700">end</span>
+<span style="color:#007020;font-weight:700">end</span>
+</code></pre></div>
+<h2 id="remove-attributes">Remove Attributes</h2> <p>It is best practice to use properties to change the behavior of resources.</p> <p>In the previous example example we used an attribute to change the <code>installer_url</code>.</p> <p>Instead, we should use a property that we can perform checks on. In this case, we can make sure we only accept a String.</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby"><span style="color:#60a0b0;font-style:italic">#rvm/resources/rvm_ruby.rb</span>
+provides <span style="color:#517918">:rvm_ruby</span>
+default_action <span style="color:#517918">:install</span>
+
+property installer_url, <span style="color:#007020">String</span>, <span style="color:#517918">default</span>: <span style="color:#4070a0">'https://raw.githubusercontent.com/rvm/rvm/master/binscripts/rvm-installer'</span>
+
+action <span style="color:#517918">:install</span> <span style="color:#007020;font-weight:700">do</span>
+  remote_file <span style="color:#4070a0">'rvm_installer'</span> <span style="color:#007020;font-weight:700">do</span>
+    path <span style="color:#4070a0">"</span><span style="color:#70a0d0;font-style:italic">#{</span><span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Config</span><span style="color:#666">[</span><span style="color:#517918">:file_cache_path</span><span style="color:#666">]</span><span style="color:#70a0d0;font-style:italic">}</span><span style="color:#4070a0">/rvm_installer.sh"</span>
+    source new_resource<span style="color:#666">.</span>installer_url
+    mode <span style="color:#4070a0">'755'</span>
+    not_if { <span style="color:#666">::</span><span style="color:#60add5">File</span><span style="color:#666">.</span>exist?(<span style="color:#4070a0">"</span><span style="color:#70a0d0;font-style:italic">#{</span><span style="color:#60add5">Chef</span><span style="color:#666">::</span><span style="color:#60add5">Config</span><span style="color:#666">[</span><span style="color:#517918">:file_cache_path</span><span style="color:#666">]</span><span style="color:#70a0d0;font-style:italic">}</span><span style="color:#4070a0">/rvm_installer.sh"</span>) }
+    action <span style="color:#517918">:create</span>
+  <span style="color:#007020;font-weight:700">end</span>
+<span style="color:#007020;font-weight:700">end</span>
+</code></pre></div> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Chef Software, Inc.<br>Licensed under the Creative Commons Attribution 3.0 Unported License.<br>The Chef™ Mark and Chef Logo are either registered trademarks/service marks or trademarks/servicemarks of Chef, in the United States and other countries and are used with Chef Inc's permission.<br>We are not affiliated with, endorsed or sponsored by Chef Inc.<br>
+    <a href="https://docs.chef.io/lwrp_to_custom_resources/" class="_attribution-link">https://docs.chef.io/lwrp_to_custom_resources/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

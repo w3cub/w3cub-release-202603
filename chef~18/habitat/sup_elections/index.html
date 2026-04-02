@@ -1,0 +1,119 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Leader Elections - Chef 18 - W3cubDocs</title>
+  
+  <meta name="description" content=" [edit on GitHub] ">
+  <meta name="keywords" content="leader, elections, chef, chef~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/chef~18/habitat/sup_elections/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/chef~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/chef~18/" class="_nav-link" title="" style="margin-left:0;">Chef 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx_simple">
+				
+				
+<div id="col-content" data-swiftype-index="true"> <div id="leader-elections"><h1>Leader Elections</h1></div> <div class="prose"> <p data-swiftype-index="false"> <a href="https://github.com/habitat-sh/habitat/tree/main/components/docs-chef-io/content/habitat/sup_elections.md" alt="Link to page on GitHub repository">[edit on GitHub]</a> </p> <p>The Chef Habitat Supervisor performs leader election natively for service groups <a href="../service_group_topologies/index">topologies</a> that require one, such as <em>leader-follower</em>.</p> <p>Because Chef Habitat is an eventually-consistent distributed system, the role of the leader is different than in strongly-consistent systems. It only serves as the leader for <em>application level semantics</em>, e.g. a database write leader. The fact that a Supervisor is a leader has no bearing upon other operations in the Chef Habitat system, including rumor dissemination for configuration updates. It is <em>not</em> akin to a <a href="https://raft.github.io/">Raft</a> leader, through which writes must all be funneled. This allows for very high scalability of the Chef Habitat Supervisor ring.</p> <p>Services grouped using a leader need to have a minimum of three supervisors in order to break ties. It is also strongly recommended that you do not run the service group with an even number of members. Otherwise, in the event of a network partition with equal members on each side, both sides will elect a new leader, causing a full split-brain from which the algorithm cannot recover. Supervisors in a service group will warn you if you are using leader election and have an even number of supervisors.</p> <h3 id="protocol-for-electing-a-leader">Protocol for electing a leader</h3> <p>When a service group starts in a leader topology, it will wait until there are sufficient members to form a quorum (at least three). At this point, an election cycle can happen. Each Supervisor injects an election rumor into ring, targeted at the service group, with the <em>exact same</em> rumor, which demands an election and insists that the peer itself is the leader. This algorithm is known as <a href="https://en.wikipedia.org/wiki/Bully_algorithm">Bully</a>.</p> <p>Every peer that receives this rumor does a simple lexicographic comparison of its GUID with the GUID of the peer contained in that rumor. The winner is the peer whose GUID is higher. The peer then adds a vote for the GUID of the winner, and shares the rumor with others, including the total number of votes of anyone who previously voted for this winner.</p> <p>An election ends when a candidate peer X gets a rumor back from the ring saying that it (X) is the winner, with all members voting. At this point, it sends out a rumor saying it is the declared winner, and the election cycle ends.</p> <h3 id="related-reading">Related reading</h3> <ul> <li>For more information about the Bully algorithm, see <a href="http://dl.acm.org/citation.cfm?id=1309451">Elections in a Distributed Computing System</a> by Héctor García-Molina.</li> </ul> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Chef Software, Inc.<br>Licensed under the Creative Commons Attribution 3.0 Unported License.<br>The Chef™ Mark and Chef Logo are either registered trademarks/service marks or trademarks/servicemarks of Chef, in the United States and other countries and are used with Chef Inc's permission.<br>We are not affiliated with, endorsed or sponsored by Chef Inc.<br>
+    <a href="https://docs.chef.io/habitat/sup_elections/" class="_attribution-link">https://docs.chef.io/habitat/sup_elections/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Server Tuning - Chef 18 - W3cubDocs</title>
+  
+  <meta name="description" content=" [edit on GitHub] ">
+  <meta name="keywords" content="server, tuning, chef, chef~18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/chef~18/server/server_tuning/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/chef~18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/chef~18/" class="_nav-link" title="" style="margin-left:0;">Chef 18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx_simple">
+				
+				
+<div id="col-content" data-swiftype-index="true"> <div id="server-tuning"><h1>Server Tuning</h1></div>  <div class="prose"> <p data-swiftype-index="false"> <a href="https://github.com/chef/chef-server/blob/main/docs-chef-io/content/server/server_tuning.md" alt="Link to page on GitHub repository">[edit on GitHub]</a> </p> <p>The server configuration file contains a list of all configuration options that are available for the Chef Infra Server. Some of these values should be modified for large-scale installations.</p> <div class="admonition-note"> <p class="admonition-note-title">Note</p> <div class="admonition-note-text"> This topic contains general information about how settings can be tuned. In many cases, this topic suggests specific values to be used for tuning. That said, every organization and configuration is different, so please don’t hesitate to contact Chef support to discuss your tuning effort so as to help ensure the right value is identified for any particular setting. </div> </div> <h2 id="customize-the-config-file">Customize the Config File</h2> <p>The <code>/etc/opscode/chef-server.rb</code> file contains all of the non-default configuration settings used by the Chef Infra Server. The default settings are built into the Chef Infra Server configuration and should only be added to the <code>chef-server.rb</code> file to apply non-default values. These configuration settings are processed when the <code>chef-server-ctl reconfigure</code> command is run. The <code>chef-server.rb</code> file is a Ruby file, which means that conditional statements can be used within it.</p> <h3 id="use-conditions">Use Conditions</h3> <p>Use a <code>case</code> statement to apply different values based on whether the setting exists on the front-end or back-end servers. Add code to the server configuration file similar to the following:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby">role_name <span style="color:#666">=</span> <span style="color:#60add5">ChefServer</span><span style="color:#666">[</span><span style="color:#4070a0">'servers'</span><span style="color:#666">][</span>node<span style="color:#666">[</span><span style="color:#4070a0">'fqdn'</span><span style="color:#666">]][</span><span style="color:#4070a0">'role'</span><span style="color:#666">]</span>
+<span style="color:#007020;font-weight:700">case</span> role_name
+<span style="color:#007020;font-weight:700">when</span> <span style="color:#4070a0">'backend'</span>
+  <span style="color:#60a0b0;font-style:italic"># backend-specific configuration here</span>
+<span style="color:#007020;font-weight:700">when</span> <span style="color:#4070a0">'frontend'</span>
+  <span style="color:#60a0b0;font-style:italic"># frontend-specific configuration here</span>
+<span style="color:#007020;font-weight:700">end</span>
+</code></pre></div>
+<h2 id="recommended-settings">Recommended Settings</h2> <p>The following settings are typically added to the server configuration file (no equal sign is necessary to set the value):</p> <dl> <dt><code>api_fqdn</code></dt> <dd> <p>The FQDN for the Chef Infra Server. This setting is not in the server configuration file by default. When added, its value should be equal to the FQDN for the service URI used by the Chef Infra Server. For example: <code>api_fqdn "chef.example.com"</code>.</p> </dd> <dt><code>bootstrap</code></dt> <dd> <p>Default value: <code>true</code>.</p> </dd> <dt><code>ip_version</code></dt> <dd> <p>Use to set the IP version: <code>"ipv4"</code> or <code>"ipv6"</code>. When set to <code>"ipv6"</code>, the API listens on IPv6 and front end and back end services communicate via IPv6 when a high availability configuration is used. When configuring for IPv6 in a high availability configuration, be sure to set the netmask on the IPv6 <code>backend_vip</code> attribute. Default value: <code>"ipv4"</code>.</p> </dd> <dt><code>notification_email</code></dt> <dd> <p>Default value: <code>info@example.com</code>.</p> </dd> </dl> <h3 id="ssl-protocols">SSL Protocols</h3> <p>The following settings are often modified from the default as part of the tuning effort for the <strong>nginx</strong> service and to configure the Chef Infra Server to use SSL certificates:</p> <dl> <dt><code>nginx['ssl_certificate']</code></dt> <dd> <p>The SSL certificate used to verify communication over HTTPS. Default value: <code>nil</code>.</p> </dd> <dt><code>nginx['ssl_certificate_key']</code></dt> <dd> <p>The certificate key used for SSL communication. Default value: <code>nil</code>.</p> </dd> <dt><code>nginx['ssl_ciphers']</code></dt> <dd> <p>The list of supported cipher suites that are used to establish a secure connection. To favor AES256 with ECDHE forward security, drop the <code>RC4-SHA:RC4-MD5:RC4:RSA</code> prefix. For example:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby">nginx<span style="color:#666">[</span><span style="color:#4070a0">'ssl_ciphers'</span><span style="color:#666">]</span> <span style="color:#666">=</span>  <span style="color:#4070a0">"HIGH:MEDIUM:!LOW:!kEDH: \
+</span><span style="color:#4070a0">                         !aNULL:!ADH:!eNULL:!EXP: \
+</span><span style="color:#4070a0">                         !SSLv2:!SEED:!CAMELLIA: \
+</span><span style="color:#4070a0">                         !PSK"</span>
+</code></pre></div>
+</dd> <dt><code>nginx['ssl_protocols']</code></dt> <dd> <p>The SSL protocol versions that are enabled for the Chef Infra Server API. For enhanced security set this value to <code>'TLSv1.2'</code>. TLS 1.2 is supported on Chef Infra Client 10.16.4 and later on Linux, Unix, and macOS, and on Chef Infra Client 12.8 and later on Windows. If it is necessary to support these older end-of-life Chef Infra Client releases, set this value to <code>'TLSv1.1 TLSv1.2'</code>. For example:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby">nginx<span style="color:#666">[</span><span style="color:#4070a0">'ssl_protocols'</span><span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#4070a0">'TLSv1.2'</span>
+</code></pre></div>
+</dd> </dl> <div class="admonition-note"> <p class="admonition-note-title">Note</p> <div class="admonition-note-text"> <p>See <a href="https://www.openssl.org/docs/man1.0.2/man1/ciphers.html">https://www.openssl.org/docs/man1.0.2/man1/ciphers.html</a> for more information about the values used with the <code>nginx['ssl_ciphers']</code> and <code>nginx['ssl_protocols']</code> settings.</p> </div> </div> <p>For example, after copying the SSL certificate files to the Chef Infra Server, update the <code>nginx['ssl_certificate']</code> and <code>nginx['ssl_certificate_key']</code> settings to specify the paths to those files, and then (optionally) update the <code>nginx['ssl_ciphers']</code> and <code>nginx['ssl_protocols']</code> settings to reflect the desired level of hardness for the Chef Infra Server:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby">nginx<span style="color:#666">[</span><span style="color:#4070a0">'ssl_certificate'</span><span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#4070a0">'/etc/pki/tls/private/name.of.pem'</span>
+nginx<span style="color:#666">[</span><span style="color:#4070a0">'ssl_certificate_key'</span><span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#4070a0">'/etc/pki/tls/private/name.of.key'</span>
+nginx<span style="color:#666">[</span><span style="color:#4070a0">'ssl_ciphers'</span><span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#4070a0">'HIGH:MEDIUM:!LOW:!kEDH:!aNULL:!ADH:!eNULL:!EXP:!SSLv2:!SEED:!CAMELLIA:!PSK'</span>
+nginx<span style="color:#666">[</span><span style="color:#4070a0">'ssl_protocols'</span><span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#4070a0">'TLSv1 TLSv1.1 TLSv1.2'</span>
+</code></pre></div>
+<h2 id="optional-services-tuning">Optional Services Tuning</h2> <p>The following settings are often used to for performance tuning of the Chef Infra Server in larger installations.</p> <div class="admonition-note"> <p class="admonition-note-title">Note</p> <div class="admonition-note-text"> <p>When changes are made to the chef-server.rb file the Chef Infra Server must be reconfigured by running the following command:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-bash" data-lang="bash">chef-server-ctl reconfigure
+</code></pre></div> </div> </div> <h3 id="bookshelf">bookshelf</h3> <p>The following setting is often modified from the default as part of the tuning effort for the <strong>bookshelf</strong> service:</p> <dl> <dt><code>bookshelf['vip']</code></dt> <dd> <p>The virtual IP address. Default value: <code>node['fqdn']</code>.</p> </dd> </dl> <h3 id="opscode-erchef">opscode-erchef</h3> <p>The following settings are often modified from the default as part of the tuning effort for the <strong>opscode-erchef</strong> service:</p> <dl> <dt><code>opscode_erchef['db_pool_size']</code></dt> <dd> <p>The number of open connections to PostgreSQL that are maintained by the service. If failures indicate that the <strong>opscode-erchef</strong> service ran out of connections, try increasing the <code>postgresql['max_connections']</code> setting. If failures persist, then increase this value (in small increments) and also increase the value for <code>postgresql['max_connections']</code>. Default value: <code>20</code>.</p> </dd> <dt><code>opscode_erchef['s3_url_ttl']</code></dt> <dd> <p>The amount of time (in seconds) before connections to the server expire. If Chef Infra Client runs are timing out, increase this setting to <code>3600</code>, and then adjust again if necessary. Default value: <code>900</code>.</p> </dd> <dt><code>opscode_erchef['strict_search_result_acls']</code></dt> <dd> <p>Use to specify that search results only return objects to which an actor </p>
+</dd> </dl> <p>(user, client, etc.) has read access, as determined by ACL settings. This affects all searches. When <code>true</code>, the performance of the Chef management console may increase because it enables the Chef management console to skip redundant ACL checks. To ensure the Chef management console is configured properly, after this setting has been applied with a <code>chef-server-ctl reconfigure</code> run <code>chef-manage-ctl reconfigure</code> to ensure the Chef management console also picks up the setting. Default value: <code>false</code>.</p> <div class="admonition-warning"> <p class="admonition-warning-title">Warning</p> <div class="admonition-warning-text"> <p>When <code>true</code>, <code>opscode_erchef['strict_search_result_acls']</code> affects all search results and any actor (user, client, etc.) that does not have read access to a search result will not be able to view it. For example, this could affect search results returned during a Chef Infra Client runs if a Chef Infra Client does not have permission to read the information.</p> </div> </div> <h3 id="postgresql">postgresql</h3> <p>The following setting is often modified from the default as part of the tuning effort for the <strong>postgresql</strong> service:</p> <dl> <dt><code>postgresql['max_connections']</code></dt> <dd> <p>The maximum number of allowed concurrent connections. This value should only be tuned when the <code>opscode_erchef['db_pool_size']</code> value used by the <strong>opscode-erchef</strong> service is modified. Default value: <code>350</code>. If there are more than two front end machines in a cluster, the <code>postgresql['max_connections']</code> setting should be increased. The increased value depends on the number of machines in the front end, but also the number of services that are running on each of these machines.</p> <ul> <li>Each front end machine always runs the <strong>oc_bifrost</strong> and <strong>opscode-erchef</strong> services.</li> <li>The Reporting add-on adds the <strong>reporting</strong> service.</li> </ul> <p>Each of these services requires 25 connections, above the default value.</p> <p>Use the following formula to help determine what the increased value should be:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby">new_value <span style="color:#666">=</span> current_value <span style="color:#666">+</span> <span style="color:#666">[</span>
+            (<span style="color:#60a0b0;font-style:italic"># of front end machines - 2) * (25 * # of services)</span>
+         <span style="color:#666">]</span>
+</code></pre></div>
+<p>For example, if the current value is 350, there are four front end machines, and all add-ons are installed, then the formula looks like:</p> <div class="highlight"><pre tabindex="0" class="highlight" data-language="ruby"><code class="language-ruby" data-lang="ruby"><span style="color:#40a070">550</span> <span style="color:#666">=</span> <span style="color:#40a070">350</span> <span style="color:#666">+</span> <span style="color:#666">[</span>(<span style="color:#40a070">4</span> <span style="color:#666">-</span> <span style="color:#40a070">2</span>) <span style="color:#666">*</span> (<span style="color:#40a070">25</span> <span style="color:#666">*</span> <span style="color:#40a070">4</span>)<span style="color:#666">]</span>
+</code></pre></div>
+</dd> </dl> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Chef Software, Inc.<br>Licensed under the Creative Commons Attribution 3.0 Unported License.<br>The Chef™ Mark and Chef Logo are either registered trademarks/service marks or trademarks/servicemarks of Chef, in the United States and other countries and are used with Chef Inc's permission.<br>We are not affiliated with, endorsed or sponsored by Chef Inc.<br>
+    <a href="https://docs.chef.io/server/server_tuning/" class="_attribution-link">https://docs.chef.io/server/server_tuning/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
