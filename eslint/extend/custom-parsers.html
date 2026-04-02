@@ -1,0 +1,213 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Custom Parsers - ESLint - W3cubDocs</title>
+  
+  <meta name="description" content="ESLint custom parsers let you extend ESLint to support linting new non-standard JavaScript language features or custom syntax in your code. A parser &hellip;">
+  <meta name="keywords" content="custom, parsers, eslint">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/eslint/extend/custom-parsers.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/eslint.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/eslint/" class="_nav-link" title="" style="margin-left:0;">ESLint</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Custom Parsers</h1>  <p>ESLint custom parsers let you extend ESLint to support linting new non-standard JavaScript language features or custom syntax in your code. A parser is responsible for taking your code and transforming it into an abstract syntax tree (AST) that ESLint can then analyze and lint.</p> <h2 id="create-a-custom-parser" tabindex="-1">Create a Custom Parser</h2> <h3 id="methods-in-custom-parsers" tabindex="-1">Methods in Custom Parsers</h3> <p>A custom parser is a JavaScript object with either a <code>parse()</code> or <code>parseForESLint()</code> method. The <code>parse</code> method only returns the AST, whereas <code>parseForESLint()</code> also returns additional values that let the parser customize the behavior of ESLint even more.</p> <p>Both methods should be instance (own) properties and take in the source code as the first argument, and an optional configuration object as the second argument, which is provided as <a href="custom-parsers../use/configure/language-options#specify-parser-options"><code>parserOptions</code></a> in a configuration file.</p> <div class="code-wrapper"> <pre class="language-javascript line-numbers-mode"><code><span class="token comment">// customParser.js</span>
+
+<span class="token keyword">const</span> espree <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"espree"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Logs the duration it takes to parse each file.</span>
+<span class="token keyword">function</span> <span class="token function">parse</span><span class="token punctuation">(</span><span class="token parameter">code<span class="token punctuation">,</span> options</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">const</span> label <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Parsing file "</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>options<span class="token punctuation">.</span>filePath<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">"</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+	console<span class="token punctuation">.</span><span class="token function">time</span><span class="token punctuation">(</span>label<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">const</span> ast <span class="token operator">=</span> espree<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	console<span class="token punctuation">.</span><span class="token function">timeEnd</span><span class="token punctuation">(</span>label<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> ast<span class="token punctuation">;</span> <span class="token comment">// Only the AST is returned.</span>
+<span class="token punctuation">}</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span> parse <span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <h3 id="parse-return-object" tabindex="-1">
+<code>parse</code> Return Object</h3> <p>The <code>parse</code> method should simply return the <a href="#ast-specification">AST</a> object.</p> <h3 id="parseforeslint-return-object" tabindex="-1">
+<code>parseForESLint</code> Return Object</h3> <p>The <code>parseForESLint</code> method should return an object that contains the required property <code>ast</code> and optional properties <code>services</code>, <code>scopeManager</code>, and <code>visitorKeys</code>.</p> <ul> <li>
+<code>ast</code> should contain the <a href="#ast-specification">AST</a> object.</li> <li>
+<code>services</code> can contain any parser-dependent services (such as type checkers for nodes). The value of the <code>services</code> property is available to rules as <code>context.sourceCode.parserServices</code>. Default is an empty object.</li> <li>
+<code>scopeManager</code> can be a <a href="custom-parsers./scope-manager-interface">ScopeManager</a> object. Custom parsers can use customized scope analysis for experimental/enhancement syntaxes. The default is the <code>ScopeManager</code> object which is created by <a href="https://github.com/eslint/js/tree/main/packages/eslint-scope">eslint-scope</a>. <ul> <li>Support for <code>scopeManager</code> was added in ESLint v4.14.0. ESLint versions that support <code>scopeManager</code> will provide an <code>eslintScopeManager: true</code> property in <code>parserOptions</code>, which can be used for feature detection.</li> <li>As of ESLint v10.0.0, <code>ScopeManager</code> must automatically resolve references to global variables declared in the code, and provide an instance method <code>addGlobals(names: string[])</code> that creates variables with the given names in the global scope and resolves references to them.</li> </ul> </li> <li>
+<code>visitorKeys</code> can be an object to customize AST traversal. The keys of the object are the type of AST nodes. Each value is an array of the property names which should be traversed. The default is <a href="https://github.com/eslint/js/tree/main/packages/eslint-visitor-keys#evkkeys">KEYS of <code>eslint-visitor-keys</code></a>. <ul> <li>Support for <code>visitorKeys</code> was added in ESLint v4.14.0. ESLint versions that support <code>visitorKeys</code> will provide an <code>eslintVisitorKeys: true</code> property in <code>parserOptions</code>, which can be used for feature detection.</li> </ul> </li> </ul> <h3 id="meta-data-in-custom-parsers" tabindex="-1">Meta Data in Custom Parsers</h3> <p>For easier debugging and more effective caching of custom parsers, it’s recommended to provide a name and version in a <code>meta</code> object at the root of your custom parsers, like this:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// preferred location of name and version</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">meta</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+		<span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"eslint-parser-custom"</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">version</span><span class="token operator">:</span> <span class="token string">"1.2.3"</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>The <code>meta.name</code> property should match the npm package name for your custom parser and the <code>meta.version</code> property should match the npm package version for your custom parser. The easiest way to accomplish this is by reading this information from your <code>package.json</code>.</p> <h2 id="ast-specification" tabindex="-1">AST Specification</h2> <p>The AST that custom parsers should create is based on <a href="https://github.com/estree/estree">ESTree</a>. The AST requires some additional properties about detail information of the source code.</p> <h3 id="all-nodes" tabindex="-1">All Nodes</h3> <p>All nodes must have <code>range</code> property.</p> <ul> <li>
+<code>range</code> (<code>number[]</code>) is an array of two numbers. Both numbers are a 0-based index which is the position in the array of source code characters. The first is the start position of the node, the second is the end position of the node. <code>code.slice(node.range[0], node.range[1])</code> must be the text of the node. This range does not include spaces/parentheses which are around the node.</li> <li>
+<code>loc</code> (<code>SourceLocation</code>) must not be <code>null</code>. <a href="https://github.com/estree/estree/blob/25834f7247d44d3156030f8e8a2d07644d771fdb/es5.md#node-objects">The <code>loc</code> property is defined as nullable by ESTree</a>, but ESLint requires this property. The <code>SourceLocation#source</code> property can be <code>undefined</code>. ESLint does not use the <code>SourceLocation#source</code> property.</li> </ul> <p>The <code>parent</code> property of all nodes must be rewritable. Before any rules have access to the AST, ESLint sets each node’s <code>parent</code> property to its parent node while traversing.</p> <h3 id="the-program-node" tabindex="-1">The <code>Program</code> Node</h3> <p>The <code>Program</code> node must have <code>tokens</code> and <code>comments</code> properties. Both properties are an array of the below <code>Token</code> interface.</p> <div class="code-wrapper"> <pre class="language-ts line-numbers-mode"><code><span class="token keyword">interface</span> <span class="token class-name">Token</span> <span class="token punctuation">{</span>
+	type<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+	loc<span class="token operator">:</span> SourceLocation<span class="token punctuation">;</span>
+	<span class="token comment">// See the "All Nodes" section for details of the `range` property.</span>
+	range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token builtin">number</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	value<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <ul> <li>
+<code>tokens</code> (<code>Token[]</code>) is the array of tokens which affect the behavior of programs. Arbitrary spaces can exist between tokens, so rules check the <code>Token#range</code> to detect spaces between tokens. This must be sorted by <code>Token#range[0]</code>.</li> <li>
+<code>comments</code> (<code>Token[]</code>) is the array of comment tokens. This must be sorted by <code>Token#range[0]</code>.</li> </ul> <p>The range indexes of all tokens and comments must not overlap with the range of other tokens and comments.</p> <h3 id="the-literal-node" tabindex="-1">The <code>Literal</code> Node</h3> <p>The <code>Literal</code> node must have <code>raw</code> property.</p> <ul> <li>
+<code>raw</code> (<code>string</code>) is the source code of this literal. This is the same as <code>code.slice(node.range[0], node.range[1])</code>.</li> </ul> <h2 id="packaging-a-custom-parser" tabindex="-1">Packaging a Custom Parser</h2> <p>To publish your custom parser to npm, perform the following:</p> <ol> <li>Create a custom parser following the <a href="#create-a-custom-parser">Create a Custom Parser</a> section above.</li> <li>
+<a href="https://docs.npmjs.com/creating-node-js-modules">Create an npm package</a> for the custom parser.</li> <li>In your <code>package.json</code> file, set the <a href="https://docs.npmjs.com/cli/v9/configuring-npm/package-json#main"><code>main</code></a> field as the file that exports your custom parser.</li> <li><a href="https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages">Publish the npm package.</a></li> </ol> <p>For more information on publishing an npm package, refer to the <a href="https://docs.npmjs.com/">npm documentation</a>.</p> <p>Once you’ve published the npm package, you can use it by adding the package to your project. For example:</p> <div class="c-tabs" data-tabs> <div class="c-tabs__tablist" data-tablist hidden> <button class="c-tabs__tab" data-tab>npm</button> <button class="c-tabs__tab" data-tab>yarn</button> <button class="c-tabs__tab" data-tab>pnpm</button> <button class="c-tabs__tab" data-tab>bun</button> </div> <div class="c-tabs__tabpanel" data-tabpanel> <h3 class="h6 c-tabs__tabpanel__title">npm</h3> <div class="code-wrapper"> <pre class="language-shell line-numbers-mode"><code><span class="token function">npm</span> <span class="token function">install</span> --save-dev eslint-parser-myparser
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> 
+</div> <div class="c-tabs__tabpanel" data-tabpanel> <h3 class="h6 c-tabs__tabpanel__title">yarn</h3> <div class="code-wrapper"> <pre class="language-shell line-numbers-mode"><code><span class="token function">yarn</span> <span class="token function">add</span> <span class="token parameter variable">--dev</span> eslint-parser-myparser
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> </div> <div class="c-tabs__tabpanel" data-tabpanel> <h3 class="h6 c-tabs__tabpanel__title">pnpm</h3> <div class="code-wrapper"> <pre class="language-shell line-numbers-mode"><code><span class="token function">pnpm</span> <span class="token function">add</span> --save-dev eslint-parser-myparser
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> </div> <div class="c-tabs__tabpanel" data-tabpanel> <h3 class="h6 c-tabs__tabpanel__title">bun</h3> <div class="code-wrapper"> <pre class="language-shell line-numbers-mode"><code>bun <span class="token function">add</span> <span class="token parameter variable">--dev</span> eslint-parser-myparser
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> </div> </div> <p>Then add the custom parser to your ESLint configuration file with the <code>languageOptions.parser</code> property. For example:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// eslint.config.js</span>
+
+<span class="token keyword">const</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"eslint/config"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> myparser <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"eslint-parser-myparser"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+	<span class="token punctuation">{</span>
+		<span class="token literal-property property">languageOptions</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token literal-property property">parser</span><span class="token operator">:</span> myparser<span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token comment">// ... rest of configuration</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>When using legacy configuration, specify the <code>parser</code> property as a string:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// .eslintrc.js</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">parser</span><span class="token operator">:</span> <span class="token string">"eslint-parser-myparser"</span><span class="token punctuation">,</span>
+	<span class="token comment">// ... rest of configuration</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>To learn more about using ESLint parsers in your project, refer to <a href="custom-parsers../use/configure/parser">Configure a Parser</a>.</p> <h2 id="example" tabindex="-1">Example</h2> <p>For a complex example of a custom parser, refer to the <a href="https://github.com/typescript-eslint/typescript-eslint/tree/main/packages/parser"><code>@typescript-eslint/parser</code></a> source code.</p> <p>A simple custom parser that provides a <code>context.sourceCode.parserServices.foo()</code> method to rules.</p> <div class="code-wrapper"> <pre class="language-javascript line-numbers-mode"><code><span class="token comment">// awesome-custom-parser.js</span>
+<span class="token keyword">var</span> espree <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"espree"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">function</span> <span class="token function">parseForESLint</span><span class="token punctuation">(</span><span class="token parameter">code<span class="token punctuation">,</span> options</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">return</span> <span class="token punctuation">{</span>
+		<span class="token literal-property property">ast</span><span class="token operator">:</span> espree<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">services</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token function-variable function">foo</span><span class="token operator">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+				console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"foo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">scopeManager</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">visitorKeys</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span> parseForESLint <span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>Include the custom parser in an ESLint configuration file:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// eslint.config.js</span>
+<span class="token keyword">const</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"eslint/config"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+	<span class="token punctuation">{</span>
+		<span class="token literal-property property">languageOptions</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token literal-property property">parser</span><span class="token operator">:</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"./path/to/awesome-custom-parser"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>Or if using legacy configuration:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// .eslintrc.json</span>
+<span class="token punctuation">{</span>
+    <span class="token string-property property">"parser"</span><span class="token operator">:</span> <span class="token string">"./path/to/awesome-custom-parser.js"</span>
+<span class="token punctuation">}</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © OpenJS Foundation and other contributors<br>Licensed under the MIT License.<br>
+    <a href="https://eslint.org/docs/latest/extend/custom-parsers" class="_attribution-link">https://eslint.org/docs/latest/extend/custom-parsers</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

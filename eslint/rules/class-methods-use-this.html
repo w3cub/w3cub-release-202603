@@ -1,0 +1,375 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Class-methods-use-this - ESLint - W3cubDocs</title>
+  
+  <meta name="description" content=" Enforce that class methods utilize this ">
+  <meta name="keywords" content="class-methods-use-this, eslint">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/eslint/rules/class-methods-use-this.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/eslint.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/eslint/" class="_nav-link" title="" style="margin-left:0;">ESLint</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>class-methods-use-this</h1> 
+<p>Enforce that class methods utilize <code>this</code></p>   <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes">Classes</a> are often used to encapsulate reusable logic, especially stateful logic, into an object where each instance’s state is accessed via <code>this</code>. When an API is written with an instance method, it signals to consumers:</p> <ul> <li> <p>The method’s outcome is related to the object on which it’s invoked, including possibly its state.</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> array1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> array2 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Using the `includes()` method on different objects gives different results:</span>
+array1<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// true</span>
+array2<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// false</span>
+
+<span class="token comment">// Modifying the state of an object may change the outcome of its instance methods:</span>
+array2<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+array2<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// true</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> </li> <li> <p>The method doesn’t make sense to be used without an associated object. (For example, it doesn’t make sense to call <code>Array#includes()</code> without an array to operate on.)</p> </li> </ul> <p>It’s possible to have a class method which doesn’t use <code>this</code>, such as:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">class</span> <span class="token class-name">Person</span> <span class="token punctuation">{</span>
+    <span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Hi!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> person <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+person<span class="token punctuation">.</span><span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// =&gt; "Hi!"</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>If a class instance method does not use <code>this</code>, that normally means that it does not access any instance state and therefore doesn’t need to be a method. Therefore, it can <em>sometimes</em> be refactored into an <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions">ordinary function</a> or a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/static">static method</a>, which may better communicate intent to users of the API.</p> <p>In the example above, the <code>sayHi</code> method doesn’t use <code>this</code>, so we can make it an ordinary function:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// Ordinary function</span>
+<span class="token keyword">function</span> <span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Hi!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// No need for `Person` class or any instance thereof</span>
+<span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// =&gt; "Hi!"</span>
+
+<span class="token comment">// Alternately, a static method may be used if it offers a more natural API</span>
+<span class="token keyword">class</span> <span class="token class-name">Person</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Hi!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+Person<span class="token punctuation">.</span><span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// =&gt; "Hi!"</span>
+
+<span class="token comment">// Keep in mind that, either way, the following now throws an error,</span>
+<span class="token comment">// since sayHi() is no longer an instance method!</span>
+<span class="token comment">//</span>
+<span class="token comment">// const person = new Person();</span>
+<span class="token comment">// person.sayHi();</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>It’s also possible the author forgot to use some piece of instance data that they intended to include.</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">class</span> <span class="token class-name">Person</span> <span class="token punctuation">{</span>
+	<span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Hi from </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">this</span><span class="token punctuation">.</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> alice <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token string">'Alice'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+alice<span class="token punctuation">.</span><span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// =&gt; 'Hi from Alice!'</span>
+
+<span class="token keyword">const</span> bob <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token string">'Bob'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+bob<span class="token punctuation">.</span><span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// =&gt; 'Hi from Bob!'</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <h2 id="rule-details" tabindex="-1">Rule Details</h2> <p>This rule flags class instance methods that do not use <code>this</code>.</p> <p>Examples of <strong>incorrect</strong> code for this rule:</p> <div class="incorrect"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJ0ZXh0IjoiLyplc2xpbnQgY2xhc3MtbWV0aG9kcy11c2UtdGhpczogXCJlcnJvclwiKi9cblxuY2xhc3MgQSB7XG4gICAgZm9vKCkge1xuICAgICAgICBjb25zb2xlLmxvZyhcIkhlbGxvIFdvcmxkXCIpOyAvKiBlcnJvciBFeHBlY3RlZCAndGhpcycgdG8gYmUgdXNlZCBieSBjbGFzcyBtZXRob2QgJ2ZvbycuICovXG4gICAgfVxufSJ9" target="_blank"> Open in Playground </a><pre class="language-js line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: "error"*/</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+    <span class="token eslint-marked eslint-message-id-1" title="Expected 'this' to be used by class method 'foo'."><span class="token function">foo</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Hello World"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">/* error Expected 'this' to be used by class method 'foo'. */</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> code for this rule:</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJ0ZXh0IjoiLyplc2xpbnQgY2xhc3MtbWV0aG9kcy11c2UtdGhpczogXCJlcnJvclwiKi9cblxuY2xhc3MgQSB7XG4gICAgZm9vKCkge1xuICAgICAgICB0aGlzLmJhciA9IFwiSGVsbG8gV29ybGRcIjsgLy8gT0ssIGB0aGlzYCBpcyB1c2VkXG4gICAgfVxufVxuXG5jbGFzcyBCIHtcbiAgICBjb25zdHJ1Y3RvcigpIHtcbiAgICAgICAgLy8gT0suIGNvbnN0cnVjdG9yIGlzIGV4ZW1wdFxuICAgIH1cbn1cblxuY2xhc3MgQyB7XG4gICAgc3RhdGljIGZvbygpIHtcbiAgICAgICAgLy8gT0suIHN0YXRpYyBtZXRob2RzIGFyZW4ndCBleHBlY3RlZCB0byB1c2UgdGhpcy5cbiAgICB9XG5cbiAgICBzdGF0aWMge1xuICAgICAgICAvLyBPSy4gc3RhdGljIGJsb2NrcyBhcmUgZXhlbXB0LlxuICAgIH1cbn0ifQ==" target="_blank"> Open in Playground </a><pre class="language-js line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: "error"*/</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+    <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>bar <span class="token operator">=</span> <span class="token string">"Hello World"</span><span class="token punctuation">;</span> <span class="token comment">// OK, `this` is used</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">B</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// OK. constructor is exempt</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">C</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// OK. static methods aren't expected to use this.</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        <span class="token comment">// OK. static blocks are exempt.</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<h2 id="options" tabindex="-1">Options</h2> <p>This rule has four options:</p> <ul> <li>
+<code>"exceptMethods"</code> allows specified method names to be ignored with this rule.</li> <li>
+<code>"enforceForClassFields"</code> enforces that arrow functions and function expressions used as instance field initializers utilize <code>this</code>. This also applies to auto-accessor fields (fields declared with the <code>accessor</code> keyword) which are part of the <a href="https://github.com/tc39/proposal-decorators">stage 3 decorators proposal</a>. (default: <code>true</code>)</li> <li>
+<code>"ignoreOverrideMethods"</code> ignores members that are marked with the <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html#override-and-the---noimplicitoverride-flag"><code>override</code> modifier</a>. (TypeScript only, default: <code>false</code>)</li> <li>
+<code>"ignoreClassesWithImplements"</code> ignores class members that are defined within a class that <a href="https://www.typescriptlang.org/docs/handbook/2/classes.html#implements-clauses"><code>implements</code></a> an interface. (TypeScript only)</li> </ul> <h3 id="exceptmethods" tabindex="-1">exceptMethods</h3> <div class="code-wrapper"> <pre class="language-ts line-numbers-mode"><code><span class="token string-property property">"class-methods-use-this"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span>enabled<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token string-property property">"exceptMethods"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span><span class="token operator">...</span>exceptions<span class="token operator">&gt;</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>The <code>"exceptMethods"</code> option allows you to pass an array of method names for which you would like to ignore warnings. For example, you might have a spec from an external library that requires you to overwrite a method as a regular function (and not as a static method) and does not use <code>this</code> inside the function body. In this case, you can add that method to ignore in the warnings.</p> <p>Examples of <strong>incorrect</strong> code for this rule when used without <code>"exceptMethods"</code>:</p> <div class="incorrect"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJ0ZXh0IjoiLyplc2xpbnQgY2xhc3MtbWV0aG9kcy11c2UtdGhpczogXCJlcnJvclwiKi9cblxuY2xhc3MgQSB7XG4gICAgZm9vKCkge1xuICAgIH1cbn0ifQ==" target="_blank"> Open in Playground </a><pre class="language-js line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: "error"*/</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+    <span class="token eslint-marked eslint-message-id-1" title="Expected 'this' to be used by class method 'foo'."><span class="token function">foo</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> code for this rule when used with exceptMethods:</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJ0ZXh0IjoiLyplc2xpbnQgY2xhc3MtbWV0aG9kcy11c2UtdGhpczogW1wiZXJyb3JcIiwgeyBcImV4Y2VwdE1ldGhvZHNcIjogW1wiZm9vXCIsIFwiI2JhclwiXSB9XSAqL1xuXG5jbGFzcyBBIHtcbiAgICBmb28oKSB7XG4gICAgfVxuICAgICNiYXIoKSB7XG4gICAgfVxufSJ9" target="_blank"> Open in Playground </a><pre class="language-js line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "exceptMethods": ["foo", "#bar"] }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+    <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">#bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<h3 id="enforceforclassfields" tabindex="-1">enforceForClassFields</h3> <div class="code-wrapper"> <pre class="language-ts line-numbers-mode"><code><span class="token string-property property">"class-methods-use-this"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span>enabled<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token string-property property">"enforceForClassFields"</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token operator">|</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>The <code>enforceForClassFields</code> option enforces that arrow functions and function expressions used as instance field initializers utilize <code>this</code>. This also applies to auto-accessor fields (fields declared with the <code>accessor</code> keyword) which are part of the <a href="https://github.com/tc39/proposal-decorators">stage 3 decorators proposal</a>. (default: <code>true</code>)</p> <p>Examples of <strong>incorrect</strong> code for this rule with the <code>{ "enforceForClassFields": true }</code> option (default):</p> <div class="incorrect"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJ0ZXh0IjoiLyplc2xpbnQgY2xhc3MtbWV0aG9kcy11c2UtdGhpczogW1wiZXJyb3JcIiwgeyBcImVuZm9yY2VGb3JDbGFzc0ZpZWxkc1wiOiB0cnVlIH1dICovXG5cbmNsYXNzIEEge1xuICAgIGZvbyA9ICgpID0+IHt9XG59In0=" target="_blank"> Open in Playground </a><pre class="language-js line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "enforceForClassFields": true }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+    <span class="token eslint-marked eslint-message-id-1" title="Expected 'this' to be used by class method 'foo'."><span class="token function-variable function">foo</span> <span class="token operator">=</span> </span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> code for this rule with the <code>{ "enforceForClassFields": true }</code> option (default):</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJ0ZXh0IjoiLyplc2xpbnQgY2xhc3MtbWV0aG9kcy11c2UtdGhpczogW1wiZXJyb3JcIiwgeyBcImVuZm9yY2VGb3JDbGFzc0ZpZWxkc1wiOiB0cnVlIH1dICovXG5cbmNsYXNzIEEge1xuICAgIGZvbyA9ICgpID0+IHt0aGlzO31cbn0ifQ==" target="_blank"> Open in Playground </a><pre class="language-js line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "enforceForClassFields": true }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> code for this rule with the <code>{ "enforceForClassFields": false }</code> option:</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJ0ZXh0IjoiLyplc2xpbnQgY2xhc3MtbWV0aG9kcy11c2UtdGhpczogW1wiZXJyb3JcIiwgeyBcImVuZm9yY2VGb3JDbGFzc0ZpZWxkc1wiOiBmYWxzZSB9XSAqL1xuXG5jbGFzcyBBIHtcbiAgICBmb28gPSAoKSA9PiB7fVxufSJ9" target="_blank"> Open in Playground </a><pre class="language-js line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "enforceForClassFields": false }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>incorrect</strong> TypeScript code for this rule with the <code>{ "enforceForClassFields": true }</code> option (default):</p> <div class="incorrect"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiZW5mb3JjZUZvckNsYXNzRmllbGRzXCI6IHRydWUgfV0gKi9cblxuY2xhc3MgQSB7XG4gICAgZm9vID0gKCkgPT4ge31cbiAgICBhY2Nlc3NvciBiYXIgPSAoKSA9PiB7fVxufSJ9" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "enforceForClassFields": true }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name"><span class="token constant">A</span></span> <span class="token punctuation">{</span>
+    <span class="token eslint-marked eslint-message-id-1" title="Expected 'this' to be used by class method 'foo'."><span class="token function-variable function">foo</span> <span class="token operator">=</span> </span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    accessor <span class="token function-variable function">bar</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token eslint-marked eslint-message-id-2" title="Expected 'this' to be used by class arrow function."><span class="token operator">=&gt;</span></span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> TypeScript code for this rule with the <code>{ "enforceForClassFields": true }</code> option (default):</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiZW5mb3JjZUZvckNsYXNzRmllbGRzXCI6IHRydWUgfV0gKi9cblxuY2xhc3MgQSB7XG4gICAgZm9vID0gKCkgPT4ge3RoaXM7fVxuICAgIGFjY2Vzc29yIGJhciA9ICgpID0+IHt0aGlzO31cbn0ifQ==" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "enforceForClassFields": true }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name"><span class="token constant">A</span></span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+    accessor <span class="token function-variable function">bar</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> TypeScript code for this rule with the <code>{ "enforceForClassFields": false }</code> option:</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiZW5mb3JjZUZvckNsYXNzRmllbGRzXCI6IGZhbHNlIH1dICovXG5cbmNsYXNzIEEge1xuICAgIGZvbyA9ICgpID0+IHt9XG4gICAgYWNjZXNzb3IgYmFyID0gKCkgPT4ge31cbn0ifQ==" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "enforceForClassFields": false }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name"><span class="token constant">A</span></span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    accessor <span class="token function-variable function">bar</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<h3 id="ignoreoverridemethods" tabindex="-1">ignoreOverrideMethods</h3> <div class="code-wrapper"> <pre class="language-ts line-numbers-mode"><code><span class="token string-property property">"class-methods-use-this"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span>enabled<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token string-property property">"ignoreOverrideMethods"</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token operator">|</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>The <code>ignoreOverrideMethods</code> option ignores members that are marked with the <code>override</code> modifier. (default: <code>false</code>)</p> <p>Examples of <strong>incorrect</strong> TypeScript code for this rule with the <code>{ "ignoreOverrideMethods": false }</code> option (default):</p> <div class="incorrect"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiaWdub3JlT3ZlcnJpZGVNZXRob2RzXCI6IGZhbHNlIH1dICovXG5cbmFic3RyYWN0IGNsYXNzIEJhc2Uge1xuICAgIGFic3RyYWN0IG1ldGhvZCgpOiB2b2lkO1xuICAgIGFic3RyYWN0IHByb3BlcnR5OiAoKSA9PiB2b2lkO1xufVxuXG5jbGFzcyBEZXJpdmVkIGV4dGVuZHMgQmFzZSB7XG4gICAgb3ZlcnJpZGUgbWV0aG9kKCkge31cbiAgICBvdmVycmlkZSBwcm9wZXJ0eSA9ICgpID0+IHt9O1xufSJ9" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "ignoreOverrideMethods": false }] */</span>
+
+<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token keyword">abstract</span> <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+    <span class="token keyword">abstract</span> <span class="token function-variable function">property</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Derived</span> <span class="token keyword">extends</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token eslint-marked eslint-message-id-1" title="Expected 'this' to be used by class method 'method'.">override <span class="token function">method</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token eslint-marked eslint-message-id-2" title="Expected 'this' to be used by class method 'property'.">override <span class="token function-variable function">property</span> <span class="token operator">=</span> </span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> TypeScript code for this rule with the <code>{ "ignoreOverrideMethods": false }</code> option (default):</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiaWdub3JlT3ZlcnJpZGVNZXRob2RzXCI6IGZhbHNlIH1dICovXG5cbmFic3RyYWN0IGNsYXNzIEJhc2Uge1xuICAgIGFic3RyYWN0IG1ldGhvZCgpOiB2b2lkO1xuICAgIGFic3RyYWN0IHByb3BlcnR5OiAoKSA9PiB2b2lkO1xufVxuXG5jbGFzcyBEZXJpdmVkIGV4dGVuZHMgQmFzZSB7XG4gICAgb3ZlcnJpZGUgbWV0aG9kKCkge1xuICAgICAgICB0aGlzLmZvbyA9IFwiSGVsbG8gV29ybGRcIjtcbiAgICB9O1xuICAgIG92ZXJyaWRlIHByb3BlcnR5ID0gKCkgPT4ge1xuICAgICAgICB0aGlzO1xuICAgIH07XG59In0=" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "ignoreOverrideMethods": false }] */</span>
+
+<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token keyword">abstract</span> <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+    <span class="token keyword">abstract</span> <span class="token function-variable function">property</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Derived</span> <span class="token keyword">extends</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    override <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>foo <span class="token operator">=</span> <span class="token string">"Hello World"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    override <span class="token function-variable function">property</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> TypeScript code for this rule with the <code>{ "ignoreOverrideMethods": true }</code> option:</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiaWdub3JlT3ZlcnJpZGVNZXRob2RzXCI6IHRydWUgfV0gKi9cblxuYWJzdHJhY3QgY2xhc3MgQmFzZSB7XG4gICAgYWJzdHJhY3QgbWV0aG9kKCk6IHZvaWQ7XG4gICAgYWJzdHJhY3QgcHJvcGVydHk6ICgpID0+IHZvaWQ7XG59XG5cbmNsYXNzIERlcml2ZWQgZXh0ZW5kcyBCYXNlIHtcbiAgICBvdmVycmlkZSBtZXRob2QoKSB7fVxuICAgIG92ZXJyaWRlIHByb3BlcnR5ID0gKCkgPT4ge307XG59In0=" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "ignoreOverrideMethods": true }] */</span>
+
+<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token keyword">abstract</span> <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+    <span class="token keyword">abstract</span> <span class="token function-variable function">property</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Derived</span> <span class="token keyword">extends</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    override <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    override <span class="token function-variable function">property</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<h3 id="ignoreclasseswithimplements" tabindex="-1">ignoreClassesWithImplements</h3> <div class="code-wrapper"> <pre class="language-ts line-numbers-mode"><code><span class="token string-property property">"class-methods-use-this"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">&lt;</span>enabled<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token string-property property">"ignoreClassesWithImplements"</span><span class="token operator">:</span> <span class="token string">"all"</span> <span class="token operator">|</span> <span class="token string">"public-fields"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>The <code>ignoreClassesWithImplements</code> ignores class members that are defined within a class that <code>implements</code> an interface. The option accepts two possible values:</p> <ul> <li>
+<code>"all"</code> - Ignores all classes that implement interfaces</li> <li>
+<code>"public-fields"</code> - Only ignores public fields in classes that implement interfaces</li> </ul> <p>Examples of <strong>incorrect</strong> TypeScript code for this rule with the <code>{ "ignoreClassesWithImplements": "all" }</code>:</p> <div class="incorrect"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiaWdub3JlQ2xhc3Nlc1dpdGhJbXBsZW1lbnRzXCI6IFwiYWxsXCIgfV0gKi9cblxuY2xhc3MgU3RhbmRhbG9uZSB7XG4gICAgbWV0aG9kKCkge31cbiAgICBwcm9wZXJ0eSA9ICgpID0+IHt9O1xufSJ9" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "ignoreClassesWithImplements": "all" }] */</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Standalone</span> <span class="token punctuation">{</span>
+    <span class="token eslint-marked eslint-message-id-1" title="Expected 'this' to be used by class method 'method'."><span class="token function">method</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token eslint-marked eslint-message-id-2" title="Expected 'this' to be used by class method 'property'."><span class="token function-variable function">property</span> <span class="token operator">=</span> </span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> TypeScript code for this rule with the <code>{ "ignoreClassesWithImplements": "all" }</code> option:</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiaWdub3JlQ2xhc3Nlc1dpdGhJbXBsZW1lbnRzXCI6IFwiYWxsXCIgfV0gKi9cblxuaW50ZXJmYWNlIEJhc2Uge1xuICAgIG1ldGhvZCgpOiB2b2lkO1xufVxuXG5jbGFzcyBEZXJpdmVkIGltcGxlbWVudHMgQmFzZSB7XG4gICAgbWV0aG9kKCkge31cbiAgICBwcm9wZXJ0eSA9ICgpID0+IHt9O1xufSJ9" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "ignoreClassesWithImplements": "all" }] */</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Derived</span> <span class="token keyword">implements</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token function-variable function">property</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>incorrect</strong> TypeScript code for this rule with the <code>{ "ignoreClassesWithImplements": "public-fields" }</code> option:</p> <div class="incorrect"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiaWdub3JlQ2xhc3Nlc1dpdGhJbXBsZW1lbnRzXCI6IFwicHVibGljLWZpZWxkc1wiIH1dICovXG5cbmludGVyZmFjZSBCYXNlIHtcbiAgICBtZXRob2QoKTogdm9pZDtcbn1cblxuY2xhc3MgRGVyaXZlZCBpbXBsZW1lbnRzIEJhc2Uge1xuICAgIG1ldGhvZCgpIHt9XG4gICAgcHJvcGVydHkgPSAoKSA9PiB7fTtcblxuICAgIHByaXZhdGUgcHJpdmF0ZU1ldGhvZCgpIHt9XG4gICAgcHJpdmF0ZSBwcml2YXRlUHJvcGVydHkgPSAoKSA9PiB7fTtcblxuICAgIHByb3RlY3RlZCBwcm90ZWN0ZWRNZXRob2QoKSB7fVxuICAgIHByb3RlY3RlZCBwcm90ZWN0ZWRQcm9wZXJ0eSA9ICgpID0+IHt9O1xufSJ9" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "ignoreClassesWithImplements": "public-fields" }] */</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Derived</span> <span class="token keyword">implements</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token function-variable function">property</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token eslint-marked eslint-message-id-1" title="Expected 'this' to be used by class method 'privateMethod'."><span class="token keyword">private</span> <span class="token function">privateMethod</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token eslint-marked eslint-message-id-2" title="Expected 'this' to be used by class method 'privateProperty'."><span class="token keyword">private</span> <span class="token function-variable function">privateProperty</span> <span class="token operator">=</span> </span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token eslint-marked eslint-message-id-3" title="Expected 'this' to be used by class method 'protectedMethod'."><span class="token keyword">protected</span> <span class="token function">protectedMethod</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token eslint-marked eslint-message-id-4" title="Expected 'this' to be used by class method 'protectedProperty'."><span class="token keyword">protected</span> <span class="token function-variable function">protectedProperty</span> <span class="token operator">=</span> </span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p>Examples of <strong>correct</strong> TypeScript code for this rule with the <code>{ "ignoreClassesWithImplements": "public-fields" }</code> option:</p> <div class="correct"> <a class="c-btn c-btn--secondary c-btn--playground" href="https://eslint.org/play#eyJvcHRpb25zIjp7Imxhbmd1YWdlT3B0aW9ucyI6eyJwYXJzZXIiOiJAdHlwZXNjcmlwdC1lc2xpbnQvcGFyc2VyIiwicGFyc2VyT3B0aW9ucyI6eyJlY21hRmVhdHVyZXMiOnsianN4Ijp0cnVlfSwic291cmNlVHlwZSI6Im1vZHVsZSJ9fX0sInRleHQiOiIvKmVzbGludCBjbGFzcy1tZXRob2RzLXVzZS10aGlzOiBbXCJlcnJvclwiLCB7IFwiaWdub3JlQ2xhc3Nlc1dpdGhJbXBsZW1lbnRzXCI6IFwicHVibGljLWZpZWxkc1wiIH1dICovXG5cbmludGVyZmFjZSBCYXNlIHtcbiAgICBtZXRob2QoKTogdm9pZDtcbn1cblxuY2xhc3MgRGVyaXZlZCBpbXBsZW1lbnRzIEJhc2Uge1xuICAgIG1ldGhvZCgpIHt9XG4gICAgcHJvcGVydHkgPSAoKSA9PiB7fTtcbn0ifQ==" target="_blank"> Open in Playground </a><pre class="language-ts line-numbers-mode"><code><span class="token comment">/*eslint class-methods-use-this: ["error", { "ignoreClassesWithImplements": "public-fields" }] */</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Derived</span> <span class="token keyword">implements</span> <span class="token class-name">Base</span> <span class="token punctuation">{</span>
+    <span class="token function">method</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token function-variable function">property</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<h2 id="when-not-to-use-it" tabindex="-1">When Not To Use It</h2> <p>Fixing violations of this rule almost always is a breaking change, since it requires a change at every usage of the affected method. Therefore, if your project has downstream consumers you cannot break, or you do not wish to make invasive changes to every call site of a method, it likely does not make sense to address violations of this rule.</p> <h2 id="version">Version</h2> <p>This rule was introduced in ESLint v3.4.0.</p> <h2 id="further-reading">Further Reading</h2> <article class="resource">  <div class="resource__content"> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes" class="resource__title"> Classes - JavaScript | MDN </a><br>  </div> <svg class="c-icon resource__icon" width="13" height="12" viewbox="0 0 13 12" fill="none"> <path d="M1.5 11L11.5 1M11.5 1H1.5M11.5 1V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </article> <article class="resource">  <div class="resource__content"> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/static" class="resource__title"> static - JavaScript | MDN </a><br>  </div> <svg class="c-icon resource__icon" width="13" height="12" viewbox="0 0 13 12" fill="none"> <path d="M1.5 11L11.5 1M11.5 1H1.5M11.5 1V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </article> <h2 id="resources">Resources</h2> <ul> <li><a href="https://github.com/eslint/eslint/blob/main/lib/rules/class-methods-use-this.js">Rule source</a></li> <li><a href="https://github.com/eslint/eslint/blob/main/tests/lib/rules/class-methods-use-this.js">Tests source</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © OpenJS Foundation and other contributors<br>Licensed under the MIT License.<br>
+    <a href="https://eslint.org/docs/latest/rules/class-methods-use-this" class="_attribution-link">https://eslint.org/docs/latest/rules/class-methods-use-this</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

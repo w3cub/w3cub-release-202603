@@ -1,0 +1,331 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Plugin Migration to Flat Config - ESLint - W3cubDocs</title>
+  
+  <meta name="description" content="Beginning in ESLint v9.0.0, the default configuration system will be the new flat config system. In order for your plugins to work with flat config &hellip;">
+  <meta name="keywords" content="plugin, migration, flat, config, eslint">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/eslint/extend/plugin-migration-flat-config.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/eslint.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/eslint/" class="_nav-link" title="" style="margin-left:0;">ESLint</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Plugin Migration to Flat Config</h1>  <p>Beginning in ESLint v9.0.0, the default configuration system will be the new flat config system. In order for your plugins to work with flat config files, you’ll need to make some changes to your existing plugins.</p> <h2 id="recommended-plugin-structure" tabindex="-1">Recommended Plugin Structure</h2> <p>To make it easier to work with your plugin in the flat config system, it’s recommended that you switch your existing plugin entrypoint to look like this:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> plugin <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">meta</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">processors</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// for ESM</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> plugin<span class="token punctuation">;</span>
+
+<span class="token comment">// OR for CommonJS</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> plugin<span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>This structure allows the most flexibility when making other changes discussed on this page.</p> <h2 id="adding-plugin-meta-information" tabindex="-1">Adding Plugin Meta Information</h2> <p>With the old eslintrc configuration system, ESLint could pull information about the plugin from the package name, but with flat config, ESLint no longer has access to the name of the plugin package. To replace that missing information, you should add a <code>meta</code> key that contains at least a <code>name</code> key, and ideally, a <code>version</code> key, such as:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> plugin <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">meta</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+		<span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"eslint-plugin-example"</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">version</span><span class="token operator">:</span> <span class="token string">"1.0.0"</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">processors</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// for ESM</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> plugin<span class="token punctuation">;</span>
+
+<span class="token comment">// OR for CommonJS</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> plugin<span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>If your plugin is published as an npm package, the <code>name</code> and <code>version</code> should be the same as in your <code>package.json</code> file; otherwise, you can assign any value you’d like.</p> <p>Without this meta information, your plugin will not be usable with the <code>--cache</code> and <code>--print-config</code> command line options.</p> <h2 id="migrating-rules-for-flat-config" tabindex="-1">Migrating Rules for Flat Config</h2> <p>No changes are necessary for the <code>rules</code> key in your plugin. Everything works the same as with the old eslintrc configuration system.</p> <h2 id="migrating-processors-for-flat-config" tabindex="-1">Migrating Processors for Flat Config</h2> <p>Each processor should specify a <code>meta</code> object. For more information, see the <a href="plugin-migration-flat-configcustom-processors">full documentation</a>.</p> <p>No other changes are necessary for the <code>processors</code> key in your plugin as long as you aren’t using file extension-named processors. If you have any <a href="plugin-migration-flat-configcustom-processors-deprecated#file-extension-named-processor">file extension-named processors</a>, you must update the name to a valid identifier (numbers and letters). File extension-named processors were automatically applied in the old configuration system but are not automatically applied when using flat config. Here is an example of a file extension-named processor:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> plugin <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">processors</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+		<span class="token comment">// no longer supported</span>
+		<span class="token string-property property">".md"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token function">preprocess</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+			<span class="token function">postprocess</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// for ESM</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> plugin<span class="token punctuation">;</span>
+
+<span class="token comment">// OR for CommonJS</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> plugin<span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>The name <code>".md"</code> is no longer valid for a processor, so it must be replaced with a valid identifier such as <code>markdown</code>:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> plugin <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">processors</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+		<span class="token comment">// works in both old and new config systems</span>
+		<span class="token literal-property property">markdown</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token function">preprocess</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+			<span class="token function">postprocess</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// for ESM</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> plugin<span class="token punctuation">;</span>
+
+<span class="token comment">// OR for CommonJS</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> plugin<span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>In order to use this renamed processor, you’ll also need to manually specify it inside of a config, such as:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"eslint/config"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> example <span class="token keyword">from</span> <span class="token string">"eslint-plugin-example"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+	<span class="token punctuation">{</span>
+		<span class="token literal-property property">files</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"**/*.md"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			example<span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">processor</span><span class="token operator">:</span> <span class="token string">"example/markdown"</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>You should update your plugin’s documentation to advise your users if you have renamed a file extension-named processor.</p> <h2 id="migrating-configs-for-flat-config" tabindex="-1">Migrating Configs for Flat Config</h2> <p>If your plugin is exporting configs that refer back to your plugin, then you’ll need to update your configs to flat config format. As part of the migration, you’ll need to reference your plugin directly in the <code>plugins</code> key. For example, here is an exported config in the old configuration system format for a plugin named <code>eslint-plugin-example</code>:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// plugin name: eslint-plugin-example</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// the config referenced by example/recommended</span>
+        <span class="token literal-property property">recommended</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"example"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token string-property property">"example/rule1"</span><span class="token operator">:</span> <span class="token string">"error"</span><span class="token punctuation">,</span>
+                <span class="token string-property property">"example/rule2"</span><span class="token operator">:</span> <span class="token string">"error"</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">rule1</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">rule2</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>To migrate to flat config format, you’ll need to move the configs to after the definition of the <code>plugin</code> variable in the recommended plugin structure, like this:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> plugin <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">processors</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// assign configs here so we can reference `plugin`</span>
+Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>plugin<span class="token punctuation">.</span>configs<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">recommended</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+		<span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token literal-property property">example</span><span class="token operator">:</span> plugin<span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token string-property property">"example/rule1"</span><span class="token operator">:</span> <span class="token string">"error"</span><span class="token punctuation">,</span>
+			<span class="token string-property property">"example/rule2"</span><span class="token operator">:</span> <span class="token string">"error"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// for ESM</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> plugin<span class="token punctuation">;</span>
+
+<span class="token comment">// OR for CommonJS</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> plugin<span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>Your users can then use this exported config like this:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"eslint/config"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> example <span class="token keyword">from</span> <span class="token string">"eslint-plugin-example"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+	<span class="token comment">// use recommended config and provide your own overrides</span>
+	<span class="token punctuation">{</span>
+		<span class="token literal-property property">files</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"**/*.js"</span><span class="token punctuation">,</span> <span class="token string">"**/*.cjs"</span><span class="token punctuation">,</span> <span class="token string">"**/*.mjs"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			example<span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token keyword">extends</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"example/recommended"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token string-property property">"example/rule1"</span><span class="token operator">:</span> <span class="token string">"warn"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>If your config extends other configs, you can export an array:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> baseConfig <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"./base-config"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+		<span class="token literal-property property">extendedConfig</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+			baseConfig<span class="token punctuation">,</span>
+			<span class="token punctuation">{</span>
+				<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+					<span class="token string-property property">"example/rule1"</span><span class="token operator">:</span> <span class="token string">"error"</span><span class="token punctuation">,</span>
+					<span class="token string-property property">"example/rule2"</span><span class="token operator">:</span> <span class="token string">"error"</span><span class="token punctuation">,</span>
+				<span class="token punctuation">}</span><span class="token punctuation">,</span>
+			<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token punctuation">]</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>You should update your documentation so your plugin users know how to reference the exported configs.</p> <p>For more information, see the <a href="plugins#configs-in-plugins">full documentation</a>.</p> <h2 id="migrating-environments-for-flat-config" tabindex="-1">Migrating Environments for Flat Config</h2> <p>Environments are no longer supported in flat config, and so we recommend transitioning your environments into exported configs. For example, suppose you export a <code>mocha</code> environment like this:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token comment">// plugin name: eslint-plugin-example</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">environments</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">mocha</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">globals</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token literal-property property">it</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">xit</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">describe</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">xdescribe</span><span class="token operator">:</span> <span class="token boolean">true</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">rule1</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">rule2</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>To migrate this environment into a config, you need to add a new key in the <code>plugin.configs</code> object that has a flat config object containing the same information, like this:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">const</span> plugin <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">configs</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token literal-property property">processors</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// assign configs here so we can reference `plugin`</span>
+Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>plugin<span class="token punctuation">.</span>configs<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+	<span class="token literal-property property">mocha</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+		<span class="token literal-property property">languageOptions</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token literal-property property">globals</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+				<span class="token literal-property property">it</span><span class="token operator">:</span> <span class="token string">"writeable"</span><span class="token punctuation">,</span>
+				<span class="token literal-property property">xit</span><span class="token operator">:</span> <span class="token string">"writeable"</span><span class="token punctuation">,</span>
+				<span class="token literal-property property">describe</span><span class="token operator">:</span> <span class="token string">"writeable"</span><span class="token punctuation">,</span>
+				<span class="token literal-property property">xdescribe</span><span class="token operator">:</span> <span class="token string">"writeable"</span><span class="token punctuation">,</span>
+			<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// for ESM</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> plugin<span class="token punctuation">;</span>
+
+<span class="token comment">// OR for CommonJS</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> plugin<span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>Your users can then use this exported config like this:</p> <div class="code-wrapper"> <pre class="language-js line-numbers-mode"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"eslint/config"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> example <span class="token keyword">from</span> <span class="token string">"eslint-plugin-example"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+	<span class="token punctuation">{</span>
+		<span class="token literal-property property">files</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"**/tests/*.js"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+		<span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			example<span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+		<span class="token comment">// use the mocha globals</span>
+		<span class="token keyword">extends</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"example/mocha"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+
+		<span class="token comment">// and provide your own overrides</span>
+		<span class="token literal-property property">languageOptions</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+			<span class="token literal-property property">globals</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+				<span class="token literal-property property">it</span><span class="token operator">:</span> <span class="token string">"readonly"</span><span class="token punctuation">,</span>
+			<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre> <button class="copy-btn" aria-labelledby="copy-button-label"> <span hidden id="copy-button-label">Copy code to clipboard</span> <svg width="20" height="20" viewbox="0 0 20 20" role="img" aria-label="copy" fill="none" focusable="false"> <path d="M4.16667 12.5H3.33333C2.89131 12.5 2.46738 12.3244 2.15482 12.0118C1.84226 11.6993 1.66667 11.2754 1.66667 10.8333V3.33332C1.66667 2.8913 1.84226 2.46737 2.15482 2.15481C2.46738 1.84225 2.89131 1.66666 3.33333 1.66666H10.8333C11.2754 1.66666 11.6993 1.84225 12.0118 2.15481C12.3244 2.46737 12.5 2.8913 12.5 3.33332V4.16666M9.16667 7.49999H16.6667C17.5871 7.49999 18.3333 8.24618 18.3333 9.16666V16.6667C18.3333 17.5871 17.5871 18.3333 16.6667 18.3333H9.16667C8.24619 18.3333 7.5 17.5871 7.5 16.6667V9.16666C7.5 8.24618 8.24619 7.49999 9.16667 7.49999Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path> </svg> </button> </div> <p>You should update your documentation so your plugin users know how to reference the exported configs.</p> <h2 id="backwards-compatibility" tabindex="-1">Backwards Compatibility</h2> <p>If your plugin needs to work with both the old and new configuration systems, then you’ll need to:</p> <ol> <li>
+<strong>Export a CommonJS entrypoint.</strong> The old configuration system cannot load plugins that are published only in ESM format. If your source code is in ESM, then you’ll need to use a bundler that can generate a CommonJS version and use the <a href="https://nodejs.org/api/packages.html#package-entry-points"><code>exports</code></a> key in your <code>package.json</code> file to ensure the CommonJS version can be found by Node.js.</li> <li>
+<strong>Keep the <code>environments</code> key.</strong> If your plugin exports custom environments, you should keep those as they are and also export the equivalent flat configs as described above. The <code>environments</code> key is ignored when ESLint is running in flat config mode.</li> <li>
+<strong>Export both eslintrc and flat configs.</strong> The <code>configs</code> key is only validated when a config is used, so you can provide both formats of configs in the <code>configs</code> key. We recommend prefixing older format configs with <code>legacy-</code>. For example, if your primary config is called <code>recommended</code> and is in flat config format, then you can also have a config named <code>legacy-recommended</code> that is the eslintrc config format. If you don’t want to update the config name, you can also create an additional entry in the configs object prefixed with <code>"flat/"</code> (for example, <code>"flat/recommended"</code>). See <a href="plugin-migration-flat-configplugins#backwards-compatibility-for-legacy-configs">Backwards Compatibility for Legacy Configs</a> for more details.</li> </ol> <h2 id="further-reading" tabindex="-1">Further Reading</h2> <ul> <li><a href="https://eslint.org/blog/2022/08/new-config-system-part-2/">Overview of the flat config file format blog post</a></li> <li><a href="https://eslint.org/blog/2022/08/new-config-system-part-3/">API usage of new configuration system blog post</a></li> <li><a href="https://eslint.org/blog/2022/08/new-config-system-part-1/">Background to new configuration system blog post</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © OpenJS Foundation and other contributors<br>Licensed under the MIT License.<br>
+    <a href="https://eslint.org/docs/latest/extend/plugin-migration-flat-config" class="_attribution-link">https://eslint.org/docs/latest/extend/plugin-migration-flat-config</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
