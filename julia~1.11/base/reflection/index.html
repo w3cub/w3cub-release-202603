@@ -1,0 +1,206 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Reflection and Introspection - Julia 1.11 - W3cubDocs</title>
+  
+  <meta name="description" content=" Julia provides a variety of runtime reflection capabilities. ">
+  <meta name="keywords" content="reflection, and, introspection, julia, julia~1.11">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/julia~1.11/base/reflection/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/julia~1.11.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/julia~1.11/" class="_nav-link" title="" style="margin-left:0;">Julia 1.11</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _julia">
+				
+				
+<h1 id="Reflection-and-introspection">Reflection and introspection</h1>
+<p>Julia provides a variety of runtime reflection capabilities.</p>
+<h2 id="Module-bindings">
+<a class="docs-heading-anchor" href="#Module-bindings">Module bindings</a>
+</h2>
+<p>The public names for a <code>Module</code> are available using <a href="../base/index#Base.names"><code>names(m::Module)</code></a>, which will return an array of <a href="../base/index#Core.Symbol"><code>Symbol</code></a> elements representing the public bindings. <code>names(m::Module, all = true)</code> returns symbols for all bindings in <code>m</code>, regardless of public status.</p>
+<h2 id="DataType-fields">
+<a class="docs-heading-anchor" href="#DataType-fields">DataType fields</a>
+</h2>
+<p>The names of <code>DataType</code> fields may be interrogated using <a href="../base/index#Base.fieldnames"><code>fieldnames</code></a>. For example, given the following type, <code>fieldnames(Point)</code> returns a tuple of <a href="../base/index#Core.Symbol"><code>Symbol</code></a>s representing the field names:</p>
+<pre data-language="julia">julia&gt; struct Point
+           x::Int
+           y
+       end
+
+julia&gt; fieldnames(Point)
+(:x, :y)</pre>
+<p>The type of each field in a <code>Point</code> object is stored in the <code>types</code> field of the <code>Point</code> variable itself:</p>
+<pre data-language="julia">julia&gt; Point.types
+svec(Int64, Any)</pre>
+<p>While <code>x</code> is annotated as an <code>Int</code>, <code>y</code> was unannotated in the type definition, therefore <code>y</code> defaults to the <code>Any</code> type.</p>
+<p>Types are themselves represented as a structure called <code>DataType</code>:</p>
+<pre data-language="julia">julia&gt; typeof(Point)
+DataType</pre>
+<p>Note that <code>fieldnames(DataType)</code> gives the names for each field of <code>DataType</code> itself, and one of these fields is the <code>types</code> field observed in the example above.</p>
+<h2 id="Subtypes">
+<a class="docs-heading-anchor" href="#Subtypes">Subtypes</a>
+</h2>
+<p>The <em>direct</em> subtypes of any <code>DataType</code> may be listed using <a href="../../stdlib/interactiveutils/index#InteractiveUtils.subtypes"><code>subtypes</code></a>. For example, the abstract <code>DataType</code> <a href="../numbers/index#Core.AbstractFloat"><code>AbstractFloat</code></a> has four (concrete) subtypes:</p>
+<pre data-language="julia">julia&gt; InteractiveUtils.subtypes(AbstractFloat)
+5-element Vector{Any}:
+ BigFloat
+ Core.BFloat16
+ Float16
+ Float32
+ Float64</pre>
+<p>Any abstract subtype will also be included in this list, but further subtypes thereof will not; recursive application of <a href="../../stdlib/interactiveutils/index#InteractiveUtils.subtypes"><code>subtypes</code></a> may be used to inspect the full type tree.</p>
+<p>Note that <a href="../../stdlib/interactiveutils/index#InteractiveUtils.subtypes"><code>subtypes</code></a> is located inside <a href="../../stdlib/interactiveutils/index#man-interactive-utils"><code>InteractiveUtils</code></a> but is automatically exported when using the REPL.</p>
+<h2 id="DataType-layout">
+<a class="docs-heading-anchor" href="#DataType-layout">DataType layout</a>
+</h2>
+<p>The internal representation of a <code>DataType</code> is critically important when interfacing with C code and several functions are available to inspect these details. <a href="../base/index#Base.isbitstype"><code>isbitstype(T::DataType)</code></a> returns true if <code>T</code> is stored with C-compatible alignment. <a href="../base/index#Base.fieldoffset"><code>fieldoffset(T::DataType, i::Integer)</code></a> returns the (byte) offset for field <em>i</em> relative to the start of the type.</p>
+<h2 id="Function-methods">
+<a class="docs-heading-anchor" href="#Function-methods">Function methods</a>
+</h2>
+<p>The methods of any generic function may be listed using <a href="../base/index#Base.methods"><code>methods</code></a>. The method dispatch table may be searched for methods accepting a given type using <a href="../../stdlib/interactiveutils/index#InteractiveUtils.methodswith"><code>methodswith</code></a>.</p>
+<h2 id="Expansion-and-lowering">
+<a class="docs-heading-anchor" href="#Expansion-and-lowering">Expansion and lowering</a>
+</h2>
+<p>As discussed in the <a href="../../manual/metaprogramming/index#Metaprogramming">Metaprogramming</a> section, the <a href="../base/index#Base.macroexpand"><code>macroexpand</code></a> function gives the unquoted and interpolated expression (<a href="../base/index#Core.Expr"><code>Expr</code></a>) form for a given macro. To use <code>macroexpand</code>, <code>quote</code> the expression block itself (otherwise, the macro will be evaluated and the result will be passed instead!). For example:</p>
+<pre data-language="julia">julia&gt; InteractiveUtils.macroexpand(@__MODULE__, :(@edit println("")) )
+:(InteractiveUtils.edit(println, (Base.typesof)("")))</pre>
+<p>The functions <code>Base.Meta.show_sexpr</code> and <a href="../io-network/index#Base.dump"><code>dump</code></a> are used to display S-expr style views and depth-nested detail views for any expression.</p>
+<p>Finally, the <a href="../base/index#Base.Meta.lower"><code>Meta.lower</code></a> function gives the <code>lowered</code> form of any expression and is of particular interest for understanding how language constructs map to primitive operations such as assignments, branches, and calls:</p>
+<pre data-language="julia">julia&gt; Meta.lower(@__MODULE__, :( [1+2, sin(0.5)] ))
+:($(Expr(:thunk, CodeInfo(
+    @ none within `top-level scope`
+1 ─ %1 = 1 + 2
+│   %2 = sin(0.5)
+│   %3 = Base.vect(%1, %2)
+└──      return %3
+))))</pre>
+<h2 id="Intermediate-and-compiled-representations">
+<a class="docs-heading-anchor" href="#Intermediate-and-compiled-representations">Intermediate and compiled representations</a>
+</h2>
+<p>Inspecting the lowered form for functions requires selection of the specific method to display, because generic functions may have many methods with different type signatures. For this purpose, method-specific code-lowering is available using <a href="../base/index#Base.code_lowered"><code>code_lowered</code></a>, and the type-inferred form is available using <a href="../base/index#Base.code_typed"><code>code_typed</code></a>. <a href="../../stdlib/interactiveutils/index#InteractiveUtils.code_warntype"><code>code_warntype</code></a> adds highlighting to the output of <a href="../base/index#Base.code_typed"><code>code_typed</code></a>.</p>
+<p>Closer to the machine, the LLVM intermediate representation of a function may be printed using by <a href="../../stdlib/interactiveutils/index#InteractiveUtils.code_llvm"><code>code_llvm</code></a>, and finally the compiled machine code is available using <a href="../../stdlib/interactiveutils/index#InteractiveUtils.code_native"><code>code_native</code></a> (this will trigger JIT compilation/code generation for any function which has not previously been called).</p>
+<p>For convenience, there are macro versions of the above functions which take standard function calls and expand argument types automatically:</p>
+<pre data-language="julia">julia&gt; @code_llvm +(1,1)
+;  @ int.jl:87 within `+`
+; Function Attrs: sspstrong uwtable
+define i64 @"julia_+_476"(i64 signext %0, i64 signext %1) #0 {
+top:
+  %2 = add i64 %1, %0
+  ret i64 %2
+}</pre>
+<p>For more information see <a href="../../stdlib/interactiveutils/index#InteractiveUtils.@code_lowered"><code>@code_lowered</code></a>, <a href="../../stdlib/interactiveutils/index#InteractiveUtils.@code_typed"><code>@code_typed</code></a>, <a href="../../stdlib/interactiveutils/index#InteractiveUtils.@code_warntype"><code>@code_warntype</code></a>, <a href="../../stdlib/interactiveutils/index#InteractiveUtils.@code_llvm"><code>@code_llvm</code></a>, and <a href="../../stdlib/interactiveutils/index#InteractiveUtils.@code_native"><code>@code_native</code></a>.</p>
+<h3 id="Printing-of-debug-information">
+<a class="docs-heading-anchor" href="#Printing-of-debug-information">Printing of debug information</a>
+</h3>
+<p>The aforementioned functions and macros take the keyword argument <code>debuginfo</code> that controls the level debug information printed.</p>
+<pre data-language="julia">julia&gt; InteractiveUtils.@code_typed debuginfo=:source +(1,1)
+CodeInfo(
+    @ int.jl:87 within `+`
+1 ─ %1 = Base.add_int(x, y)::Int64
+└──      return %1
+) =&gt; Int64</pre>
+<p>Possible values for <code>debuginfo</code> are: <code>:none</code>, <code>:source</code>, and <code>:default</code>. Per default debug information is not printed, but that can be changed by setting <code>Base.IRShow.default_debuginfo[] = :source</code>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2024 Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and other contributors<br>Licensed under the MIT License.<br>
+    <a href="https://docs.julialang.org/en/v1.11/base/reflection/" class="_attribution-link">https://docs.julialang.org/en/v1.11/base/reflection/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
