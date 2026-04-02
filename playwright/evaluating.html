@@ -1,0 +1,189 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Evaluating JavaScript - Playwright - W3cubDocs</title>
+  
+  <meta name="description" content="Playwright scripts run in your Playwright environment. Your page scripts run in the browser page environment. Those environments don&#39;t intersect &hellip;">
+  <meta name="keywords" content="evaluating, javascript, playwright">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/playwright/evaluating.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/playwright.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/playwright/" class="_nav-link" title="" style="margin-left:0;">Playwright</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<header><h1>Evaluating JavaScript</h1></header><h2 id="introduction">Introduction<a href="#introduction" aria-label="Direct link to Introduction" title="Direct link to Introduction">​</a>
+</h2> <p>Playwright scripts run in your Playwright environment. Your page scripts run in the browser page environment. Those environments don't intersect, they are running in different virtual machines in different processes and even potentially on different computers.</p> <p>The <a href="api/class-page#page-evaluate">page.evaluate()</a> API can run a JavaScript function in the context of the web page and bring results back to the Playwright environment. Browser globals like <code>window</code> and <code>document</code> can be used in <code>evaluate</code>.</p> <pre tabindex="0" data-language="javascript">const href = await page.evaluate(() =&gt; document.location.href);</pre> <p>If the result is a Promise or if the function is asynchronous evaluate will automatically wait until it's resolved:</p> <pre tabindex="0" data-language="javascript">const status = await page.evaluate(async () =&gt; {
+  const response = await fetch(location.href);
+  return response.status;
+});</pre> <h2 id="different-environments">Different environments<a href="#different-environments" aria-label="Direct link to Different environments" title="Direct link to Different environments">​</a>
+</h2> <p>Evaluated scripts run in the browser environment, while your test runs in a testing environments. This means you cannot use variables from your test in the page and vice versa. Instead, you should pass them explicitly as an argument.</p> <p>The following snippet is <strong>WRONG</strong> because it uses the variable directly:</p> <pre tabindex="0" data-language="javascript">const data = 'some data';
+const result = await page.evaluate(() =&gt; {
+  // WRONG: there is no "data" in the web page.
+  window.myApp.use(data);
+});</pre> <p>The following snippet is <strong>CORRECT</strong> because it passes the value explicitly as an argument:</p> <pre tabindex="0" data-language="javascript">const data = 'some data';
+// Pass |data| as a parameter.
+const result = await page.evaluate(data =&gt; {
+  window.myApp.use(data);
+}, data);</pre> <h2 id="evaluation-argument">Evaluation Argument<a href="#evaluation-argument" aria-label="Direct link to Evaluation Argument" title="Direct link to Evaluation Argument">​</a>
+</h2> <p>Playwright evaluation methods like <a href="api/class-page#page-evaluate">page.evaluate()</a> take a single optional argument. This argument can be a mix of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#Description" target="_blank" rel="noopener noreferrer" title="Serializable">Serializable</a> values and <a title="JSHandle" href="api/class-jshandle">JSHandle</a> instances. Handles are automatically converted to the value they represent.</p> <pre tabindex="0" data-language="javascript">// A primitive value.
+await page.evaluate(num =&gt; num, 42);
+
+// An array.
+await page.evaluate(array =&gt; array.length, [1, 2, 3]);
+
+// An object.
+await page.evaluate(object =&gt; object.foo, { foo: 'bar' });
+
+// A single handle.
+const button = await page.evaluateHandle('window.button');
+await page.evaluate(button =&gt; button.textContent, button);
+
+// Alternative notation using JSHandle.evaluate.
+await button.evaluate((button, from) =&gt; button.textContent.substring(from), 5);
+
+// Object with multiple handles.
+const button1 = await page.evaluateHandle('window.button1');
+const button2 = await page.evaluateHandle('window.button2');
+await page.evaluate(
+    o =&gt; o.button1.textContent + o.button2.textContent,
+    { button1, button2 });
+
+// Object destructuring works. Note that property names must match
+// between the destructured object and the argument.
+// Also note the required parenthesis.
+await page.evaluate(
+    ({ button1, button2 }) =&gt; button1.textContent + button2.textContent,
+    { button1, button2 });
+
+// Array works as well. Arbitrary names can be used for destructuring.
+// Note the required parenthesis.
+await page.evaluate(
+    ([b1, b2]) =&gt; b1.textContent + b2.textContent,
+    [button1, button2]);
+
+// Any mix of serializables and handles works.
+await page.evaluate(
+    x =&gt; x.button1.textContent + x.list[0].textContent + String(x.foo),
+    { button1, list: [button2], foo: null });</pre> <h2 id="init-scripts">Init scripts<a href="#init-scripts" aria-label="Direct link to Init scripts" title="Direct link to Init scripts">​</a>
+</h2> <p>Sometimes it is convenient to evaluate something in the page before it starts loading. For example, you might want to setup some mocks or test data.</p> <p>In this case, use <a href="api/class-page#page-add-init-script">page.addInitScript()</a> or <a href="api/class-browsercontext#browser-context-add-init-script">browserContext.addInitScript()</a>. In the example below, we will replace <code>Math.random()</code> with a constant value.</p> <p>First, create a <code>preload.js</code> file that contains the mock.</p> <pre tabindex="0" data-language="javascript">// preload.js
+Math.random = () =&gt; 42;</pre> <p>Next, add init script to the page.</p> <pre tabindex="0" data-language="javascript">import { test, expect } from '@playwright/test';
+import path from 'path';
+
+test.beforeEach(async ({ page }) =&gt; {
+  // Add script for every test in the beforeEach hook.
+  // Make sure to correctly resolve the script path.
+  await page.addInitScript({ path: path.resolve(__dirname, '../mocks/preload.js') });
+});</pre>  <p>Alternatively, you can pass a function instead of creating a preload script file. This is more convenient for short or one-off scripts. You can also pass an argument this way.</p> <pre tabindex="0" data-language="javascript">import { test, expect } from '@playwright/test';
+
+// Add script for every test in the beforeEach hook.
+test.beforeEach(async ({ page }) =&gt; {
+  const value = 42;
+  await page.addInitScript(value =&gt; {
+    Math.random = () =&gt; value;
+  }, value);
+});</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+          © 2025 Microsoft<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://playwright.dev/docs/evaluating" class="_attribution-link">https://playwright.dev/docs/evaluating</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

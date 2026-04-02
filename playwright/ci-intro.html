@@ -1,0 +1,173 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Setting Up CI - Playwright - W3cubDocs</title>
+  
+  <meta name="description" content="Playwright tests can be run on any CI provider. This guide covers one way of running tests on GitHub using GitHub Actions. If you would like to &hellip;">
+  <meta name="keywords" content="setting, up, ci, playwright">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/playwright/ci-intro.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/playwright.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/playwright/" class="_nav-link" title="" style="margin-left:0;">Playwright</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<header><h1>Setting up CI</h1></header><h2 id="introduction">Introduction<a href="#introduction" aria-label="Direct link to Introduction" title="Direct link to Introduction">​</a>
+</h2> <p>Playwright tests can be run on any CI provider. This guide covers one way of running tests on GitHub using GitHub Actions. If you would like to learn more, or how to configure other CI providers, check out our detailed <a href="ci">doc on Continuous Integration</a>.</p> <h4 id="you-will-learn">You will learn<a href="#you-will-learn" aria-label="Direct link to You will learn" title="Direct link to You will learn">​</a>
+</h4> <ul> <li><a href="ci-intro#setting-up-github-actions">How to set up GitHub Actions</a></li> <li><a href="ci-intro#viewing-test-logs">How to view test logs</a></li> <li><a href="ci-intro#viewing-the-html-report">How to view the HTML report</a></li> <li><a href="ci-intro#viewing-the-trace">How to view the trace</a></li> <li><a href="ci-intro#publishing-report-on-the-web">How to publish report on the web</a></li> </ul> <h2 id="setting-up-github-actions">Setting up GitHub Actions<a href="#setting-up-github-actions" aria-label="Direct link to Setting up GitHub Actions" title="Direct link to Setting up GitHub Actions">​</a>
+</h2> <p>When <a href="index">installing Playwright</a> using the <a href="getting-started-vscode">VS Code extension</a> or with <code>npm init playwright@latest</code>, you are given the option to add a <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener noreferrer">GitHub Actions</a> workflow. This creates a <code>playwright.yml</code> file inside a <code>.github/workflows</code> folder containing everything you need so that your tests run on each push and pull request into the main/master branch. Here's how that file looks:</p> <pre tabindex="0" data-language="javascript">name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30</pre> <p>The workflow performs these steps:</p> <ol> <li>Clone your repository</li> <li>Install Node.js</li> <li>Install NPM Dependencies</li> <li>Install Playwright Browsers</li> <li>Run Playwright tests</li> <li>Upload HTML report to the GitHub UI</li> </ol> <p>To learn more about this, see <a href="https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions" target="_blank" rel="noopener noreferrer">"Understanding GitHub Actions"</a>.</p> <h2 id="create-a-repo-and-push-to-github">Create a Repo and Push to GitHub<a href="#create-a-repo-and-push-to-github" aria-label="Direct link to Create a Repo and Push to GitHub" title="Direct link to Create a Repo and Push to GitHub">​</a>
+</h2> <p>Once you have your <a href="#setting-up-github-actions">GitHub Actions workflow</a> setup, then all you need to do is <a href="https://docs.github.com/en/get-started/quickstart/create-a-repo" target="_blank" rel="noopener noreferrer">Create a repo on GitHub</a> or push your code to an existing repository. Follow the instructions on GitHub and don't forget to <a href="https://github.com/git-guides/git-init" target="_blank" rel="noopener noreferrer">initialize a git repository</a> using the <code>git init</code> command so you can <a href="https://github.com/git-guides/git-add" target="_blank" rel="noopener noreferrer">add</a>, <a href="https://github.com/git-guides/git-commit" target="_blank" rel="noopener noreferrer">commit</a>, and <a href="https://github.com/git-guides/git-push" target="_blank" rel="noopener noreferrer">push</a> your code.</p>  <img width="861" alt="Create a Repo and Push to GitHub" src="https://user-images.githubusercontent.com/13063165/183423254-d2735278-a2ab-4d63-bb99-48d8e5e447bc.png"> <h2 id="opening-the-workflows">Opening the Workflows<a href="#opening-the-workflows" aria-label="Direct link to Opening the Workflows" title="Direct link to Opening the Workflows">​</a>
+</h2> <p>Click on the <strong>Actions</strong> tab to see the workflows. Here you see if your tests have passed or failed.</p> <h6 id="-1"><a href="#-1" aria-label="Direct link to -1" title="Direct link to -1">​</a></h6> <p><img decoding="async" loading="lazy" src="https://user-images.githubusercontent.com/13063165/183423783-58bf2008-514e-4f96-9c12-c9a55703960c.png" alt="opening the workflow"></p> <h2 id="viewing-test-logs">Viewing Test Logs<a href="#viewing-test-logs" aria-label="Direct link to Viewing Test Logs" title="Direct link to Viewing Test Logs">​</a>
+</h2> <p>Clicking on the workflow run shows you all the actions that GitHub performed and clicking on <strong>Run Playwright tests</strong> shows the error messages, what was expected and what was received as well as the call log.</p> <h6 id="-2"><a href="#-2" aria-label="Direct link to -2" title="Direct link to -2">​</a></h6> <p><img decoding="async" loading="lazy" src="https://user-images.githubusercontent.com/13063165/183423783-58bf2008-514e-4f96-9c12-c9a55703960c.png" alt="Viewing Test Logs"></p> <h2 id="html-report">HTML Report<a href="#html-report" aria-label="Direct link to HTML Report" title="Direct link to HTML Report">​</a>
+</h2> <p>The HTML Report shows you a full report of your tests. You can filter the report by browsers, passed tests, failed tests, skipped tests, and flaky tests.</p> <h3 id="downloading-the-html-report">Downloading the HTML Report<a href="#downloading-the-html-report" aria-label="Direct link to Downloading the HTML Report" title="Direct link to Downloading the HTML Report">​</a>
+</h3> <p>In the Artifacts section, click on the <strong>playwright-report</strong> to download your report in the format of a zip file.</p> <img width="972" alt="Downloading the HTML Report" src="https://user-images.githubusercontent.com/13063165/183437023-524f1803-84e4-4862-9ce3-1d55af0e023e.png"> <h3 id="viewing-the-html-report">Viewing the HTML Report<a href="#viewing-the-html-report" aria-label="Direct link to Viewing the HTML Report" title="Direct link to Viewing the HTML Report">​</a>
+</h3> <p>Locally opening the report does not work as expected as you need a web server for everything to work correctly. First, extract the zip, preferably in a folder that already has Playwright installed. Using the command line, change into the directory where the report is and use <code>npx playwright show-report</code> followed by the name of the extracted folder. This serves up the report and enables you to view it in your browser.</p> <pre tabindex="0" data-language="javascript">npx playwright show-report name-of-my-extracted-playwright-report</pre> <p><img decoding="async" loading="lazy" src="https://github.com/microsoft/playwright/assets/13063165/c5f60e56-fb75-4a2d-a4b6-054b8c5d69c1" alt="viewing the HTML report"></p> <p>To learn more about reports, check out our detailed guide on <a href="test-reporters#html-reporter">HTML Reporter</a></p> <h2 id="viewing-the-trace">Viewing the Trace<a href="#viewing-the-trace" aria-label="Direct link to Viewing the Trace" title="Direct link to Viewing the Trace">​</a>
+</h2> <p>Once you have served the report using <code>npx playwright show-report</code>, click on the trace icon next to the test's file name as seen in the image above. You can then view the trace of your tests and inspect each action to try to find out why the tests are failing.</p> <p><img decoding="async" loading="lazy" src="https://github.com/microsoft/playwright/assets/13063165/10fe3585-8401-4051-b1c2-b2e92ac4c274" alt="playwright trace viewer"></p> <h2 id="publishing-report-on-the-web">Publishing report on the web<a href="#publishing-report-on-the-web" aria-label="Direct link to Publishing report on the web" title="Direct link to Publishing report on the web">​</a>
+</h2> <p>Downloading the HTML report as a zip file is not very convenient. However, we can utilize Azure Storage's static websites hosting capabilities to easily and efficiently serve HTML reports on the Internet, requiring minimal configuration.</p> <ol> <li> <p>Create an <a href="https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create" target="_blank" rel="noopener noreferrer">Azure Storage account</a>.</p> </li> <li> <p>Enable <a href="https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website-how-to#enable-static-website-hosting" target="_blank" rel="noopener noreferrer">Static website hosting</a> for the storage account.</p> </li> <li> <p>Create a Service Principal in Azure and grant it access to Azure Blob storage. Upon successful execution, the command will display the credentials which will be used in the next step.</p> <pre tabindex="0" data-language="javascript">az ad sp create-for-rbac --name "github-actions" --role "Storage Blob Data Contributor" --scopes /subscriptions/&lt;SUBSCRIPTION_ID&gt;/resourceGroups/&lt;RESOURCE_GROUP_NAME&gt;/providers/Microsoft.Storage/storageAccounts/&lt;STORAGE_ACCOUNT_NAME&gt;</pre> </li> <li> <p>Use the credentials from the previous step to set up encrypted secrets in your GitHub repository. Go to your repository's settings, under <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository" target="_blank" rel="noopener noreferrer">GitHub Actions secrets</a>, and add the following secrets:</p> <ul> <li><code>AZCOPY_SPA_APPLICATION_ID</code></li> <li><code>AZCOPY_SPA_CLIENT_SECRET</code></li> <li><code>AZCOPY_TENANT_ID</code></li> </ul> <p>For a detailed guide on how to authorize a service principal using a client secret, refer to <a href="https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-authorize-azure-active-directory#authorize-a-service-principal-by-using-a-client-secret" target="_blank" rel="noopener noreferrer">this Microsoft documentation</a>.</p> </li> <li> <p>Add a step that uploads the HTML report to Azure Storage.</p> <pre tabindex="0" data-language="javascript">...
+    - name: Upload HTML report to Azure
+      shell: bash
+      run: |
+        REPORT_DIR='run-${{ github.run_id }}-${{ github.run_attempt }}'
+        azcopy cp --recursive "./playwright-report/*" "https://&lt;STORAGE_ACCOUNT_NAME&gt;.blob.core.windows.net/\$web/$REPORT_DIR"
+        echo "::notice title=HTML report url::https://&lt;STORAGE_ACCOUNT_NAME&gt;.z1.web.core.windows.net/$REPORT_DIR/index.html"
+      env:
+        AZCOPY_AUTO_LOGIN_TYPE: SPN
+        AZCOPY_SPA_APPLICATION_ID: '${{ secrets.AZCOPY_SPA_APPLICATION_ID }}'
+        AZCOPY_SPA_CLIENT_SECRET: '${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}'
+        AZCOPY_TENANT_ID: '${{ secrets.AZCOPY_TENANT_ID }}'</pre> </li> </ol> <p>The contents of the <code>$web</code> storage container can be accessed from a browser by using the <a href="https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website-how-to?tabs=azure-portal#portal-find-url" target="_blank" rel="noopener noreferrer">public URL</a> of the website.</p> <blockquote>
+<div>
+note</div>
+<div><p>This step will not work for pull requests created from a forked repository because such workflow <a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow" target="_blank" rel="noopener noreferrer">doesn't have access to the secrets</a>.</p></div>
+</blockquote> <h2 id="properly-handling-secrets">Properly handling Secrets<a href="#properly-handling-secrets" aria-label="Direct link to Properly handling Secrets" title="Direct link to Properly handling Secrets">​</a>
+</h2> <p>Artifacts like trace files, HTML reports or even the console logs contain information about your test execution. They can contain sensitive data like user credentials for a test user, access tokens to a staging backend, testing source code, or sometimes even your application source code. Treat these files just as carefully as you treat that sensitive data. If you upload reports and traces as part of your CI workflow, make sure that you only upload them to trusted artifact stores, or that you encrypt the files before upload. The same is true for sharing artifacts with team members: Use a trusted file share or encrypt the files before sharing.</p> <h2 id="whats-next">What's Next<a href="#whats-next" aria-label="Direct link to What's Next" title="Direct link to What's Next">​</a>
+</h2> <ul> <li><a href="locators">Learn how to use Locators</a></li> <li><a href="input">Learn how to perform Actions</a></li> <li><a href="test-assertions">Learn how to write Assertions</a></li> <li><a href="trace-viewer">Learn more about the Trace Viewer</a></li> <li><a href="ci#github-actions">Learn more ways of running tests on GitHub Actions</a></li> <li><a href="ci">Learn more about running tests on other CI providers</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+          © 2025 Microsoft<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://playwright.dev/docs/ci-intro" class="_attribution-link">https://playwright.dev/docs/ci-intro</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

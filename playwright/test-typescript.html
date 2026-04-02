@@ -1,0 +1,172 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>TypeScript - Playwright - W3cubDocs</title>
+  
+  <meta name="description" content=" Playwright supports TypeScript out of the box. You just write tests in TypeScript, and Playwright will read them, transform to JavaScript and run. ">
+  <meta name="keywords" content="typescript, playwright">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/playwright/test-typescript.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/playwright.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/playwright/" class="_nav-link" title="" style="margin-left:0;">Playwright</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<header><h1>TypeScript</h1></header><h2 id="introduction">Introduction<a href="#introduction" aria-label="Direct link to Introduction" title="Direct link to Introduction">​</a>
+</h2> <p>Playwright supports TypeScript out of the box. You just write tests in TypeScript, and Playwright will read them, transform to JavaScript and run.</p> <p>Note that Playwright does not check the types and will run tests even if there are non-critical TypeScript compilation errors. We recommend you run TypeScript compiler alongside Playwright. For example on GitHub actions:</p> <pre tabindex="0" data-language="javascript">jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    ...
+    - name: Run type checks
+      run: npx tsc -p tsconfig.json --noEmit
+    - name: Run Playwright tests
+      run: npx playwright test</pre> <p>For local development, you can run <code>tsc</code> in <a href="https://www.typescriptlang.org/docs/handbook/configuring-watch.html" target="_blank" rel="noopener noreferrer">watch</a> mode like this:</p> <pre tabindex="0" data-language="javascript">npx tsc -p tsconfig.json --noEmit -w</pre> <h2 id="tsconfigjson">tsconfig.json<a href="#tsconfigjson" aria-label="Direct link to tsconfig.json" title="Direct link to tsconfig.json">​</a>
+</h2> <p>Playwright will pick up <code>tsconfig.json</code> for each source file it loads. Note that Playwright <strong>only supports</strong> the following tsconfig options: <code>allowJs</code>, <code>baseUrl</code>, <code>paths</code> and <code>references</code>.</p> <p>We recommend setting up a separate <code>tsconfig.json</code> in the tests directory so that you can change some preferences specifically for the tests. Here is an example directory structure.</p> <pre tabindex="0" data-language="javascript">src/
+    source.ts
+
+tests/
+    tsconfig.json  # test-specific tsconfig
+    example.spec.ts
+
+tsconfig.json  # generic tsconfig for all typescript sources
+
+playwright.config.ts</pre> <h3 id="tsconfig-path-mapping">tsconfig path mapping<a href="#tsconfig-path-mapping" aria-label="Direct link to tsconfig path mapping" title="Direct link to tsconfig path mapping">​</a>
+</h3> <p>Playwright supports <a href="https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping" target="_blank" rel="noopener noreferrer">path mapping</a> declared in the <code>tsconfig.json</code>.</p> <p>Here is an example <code>tsconfig.json</code> that works with Playwright:</p> <pre tabindex="0" data-language="javascript">{
+  "compilerOptions": {
+    "paths": {
+      "@myhelper/*": ["packages/myhelper/*"] // This mapping is relative to the tsconfig.
+    }
+  }
+}</pre> <p>You can now import using the mapped paths:</p> <pre tabindex="0" data-language="javascript">import { test, expect } from '@playwright/test';
+import { username, password } from '@myhelper/credentials';
+
+test('example', async ({ page }) =&gt; {
+  await page.getByLabel('User Name').fill(username);
+  await page.getByLabel('Password').fill(password);
+});</pre> <h3 id="tsconfig-resolution">tsconfig resolution<a href="#tsconfig-resolution" aria-label="Direct link to tsconfig resolution" title="Direct link to tsconfig resolution">​</a>
+</h3> <p>By default, Playwright will look up a closest tsconfig for each imported file by going up the directory structure and looking for <code>tsconfig.json</code> or <code>jsconfig.json</code>. This way, you can create a <code>tests/tsconfig.json</code> file that will be used only for your tests and Playwright will pick it up automatically.</p> <pre tabindex="0" data-language="javascript"># Playwright will choose tsconfig automatically
+npx playwright test</pre> <p>Alternatively, you can specify a single tsconfig file to use in the command line, and Playwright will use it for all imported files, not only test files.</p> <pre tabindex="0" data-language="javascript"># Pass a specific tsconfig
+npx playwright test --tsconfig=tsconfig.test.json</pre> <p>You can specify a single tsconfig file in the config file, that will be used for loading test files, reporters, etc. However, it will not be used while loading the playwright config itself or any files imported from it.</p> <pre tabindex="0" data-language="javascript">import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  tsconfig: './tsconfig.test.json',
+});</pre> <h2 id="manually-compile-tests-with-typescript">Manually compile tests with TypeScript<a href="#manually-compile-tests-with-typescript" aria-label="Direct link to Manually compile tests with TypeScript" title="Direct link to Manually compile tests with TypeScript">​</a>
+</h2> <p>Sometimes, Playwright Test will not be able to transform your TypeScript code correctly, for example when you are using experimental or very recent features of TypeScript, usually configured in <code>tsconfig.json</code>.</p> <p>In this case, you can perform your own TypeScript compilation before sending the tests to Playwright.</p> <p>First add a <code>tsconfig.json</code> file inside the tests directory:</p> <pre tabindex="0" data-language="javascript">{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "commonjs",
+        "moduleResolution": "Node",
+        "sourceMap": true,
+        "outDir": "../tests-out",
+    }
+}</pre> <p>In <code>package.json</code>, add two scripts:</p> <pre tabindex="0" data-language="javascript">{
+  "scripts": {
+    "pretest": "tsc --incremental -p tests/tsconfig.json",
+    "test": "playwright test -c tests-out"
+  }
+}</pre> <p>The <code>pretest</code> script runs typescript on the tests. <code>test</code> will run the tests that have been generated to the <code>tests-out</code> directory. The <code>-c</code> argument configures the test runner to look for tests inside the <code>tests-out</code> directory.</p> <p>Then <code>npm run test</code> will build the tests and run them.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+          © 2025 Microsoft<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://playwright.dev/docs/test-typescript" class="_attribution-link">https://playwright.dev/docs/test-typescript</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
