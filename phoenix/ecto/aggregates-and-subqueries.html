@@ -1,0 +1,194 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Aggregates - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content=" Now it&#39;s time to discuss aggregates and subqueries. As we will learn, one builds directly on the other. ">
+  <meta name="keywords" content="aggregates, phoenix">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/ecto/aggregates-and-subqueries.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span>Aggregates and subqueries</span> </h1> <p>Now it's time to discuss aggregates and subqueries. As we will learn, one builds directly on the other.</p>
+<h2 id="aggregates" class="section-heading">  Aggregates </h2> <p>Ecto includes a convenience function in repositories to calculate aggregates.</p>
+<p>For example, if we assume every post has an integer column named visits, we can find the average number of visits across all posts with:</p>
+<pre data-language="elixir">MyApp.Repo.aggregate(MyApp.Post, :avg, :visits)
+#=&gt; #Decimal&lt;1743&gt;</pre>
+<p>Behind the scenes, the query above translates to:</p>
+<pre data-language="elixir">MyApp.Repo.one(from p in MyApp.Post, select: avg(p.visits))</pre>
+<p>The <a href="ecto.repo#c:aggregate/4"><code class="inline">Ecto.Repo.aggregate/4</code></a> function supports any of the aggregate operations listed in the <a href="ecto.query.api"><code class="inline">Ecto.Query.API</code></a> module.</p>
+<p>At first, it looks like the implementation of <code class="inline">aggregate/4</code> is quite straight-forward. You could even start to wonder why it was added to Ecto in the first place. However, complexities start to arise on queries that rely on <code class="inline">limit</code>, <code class="inline">offset</code> or <code class="inline">distinct</code> clauses.</p>
+<p>Imagine that instead of calculating the average of all posts, you want the average of only the top 10. Your first try may be:</p>
+<pre data-language="elixir">MyApp.Repo.one(
+  from p in MyApp.Post,
+    order_by: [desc: :visits],
+    limit: 10,
+    select: avg(p.visits)
+)
+#=&gt; #Decimal&lt;1743&gt;</pre>
+<p>Oops. The query above returned the same value as the queries before. The option <code class="inline">limit: 10</code> has no effect here since it is limiting the aggregated result and queries with aggregates return only a single row anyway. In order to retrieve the correct result, we would need to first find the top 10 posts and only then aggregate. That's exactly what <code class="inline">aggregate/4</code> does:</p>
+<pre data-language="elixir">query =
+  from MyApp.Post,
+    order_by: [desc: :visits],
+    limit: 10
+
+MyApp.Repo.aggregate(query, :avg, :visits)
+#=&gt; #Decimal&lt;4682&gt;</pre>
+<p>When <code class="inline">limit</code>, <code class="inline">offset</code> or <code class="inline">distinct</code> is specified in the query, <code class="inline">aggregate/4</code> automatically wraps the given query in a subquery. Therefore the query executed by <code class="inline">aggregate/4</code> above is rather equivalent to:</p>
+<pre data-language="elixir">inner_query =
+  from MyApp.Post,
+    order_by: [desc: :visits],
+    limit: 10
+
+query =
+  from q in subquery(inner_query),
+  select: avg(q.visits)
+
+MyApp.Repo.one(query)</pre>
+<p>Let's take a closer look at subqueries.</p>
+<h2 id="subqueries" class="section-heading">  Subqueries </h2> <p>In the previous section we have already learned some queries that would be hard to express without support for subqueries. That's one of many examples that caused subqueries to be added to Ecto.</p>
+<p>Subqueries in Ecto are created by calling <a href="ecto.query#subquery/1"><code class="inline">Ecto.Query.subquery/1</code></a>. This function receives any data structure that can be converted to a query, via the <a href="ecto.queryable"><code class="inline">Ecto.Queryable</code></a> protocol, and returns a subquery construct (which is also queryable).</p>
+<p>In Ecto, it is allowed for a subquery to select a whole table (<code class="inline">p</code>) or a field (<code class="inline">p.field</code>). All fields selected in a subquery can be accessed from the parent query. Let's revisit the aggregate query we saw in the previous section:</p>
+<pre data-language="elixir">inner_query =
+  from MyApp.Post,
+    order_by: [desc: :visits],
+    limit: 10
+
+query =
+  from q in subquery(inner_query),
+    select: avg(q.visits)
+
+MyApp.Repo.one(query)</pre>
+<p>Because the query does not specify a <code class="inline">:select</code> clause, it will return <code class="inline">select: p</code> where <code class="inline">p</code> is controlled by <code class="inline">MyApp.Post</code> schema. Since the query will return all fields in <code class="inline">MyApp.Post</code>, when we convert it to a subquery, all of the fields from <code class="inline">MyApp.Post</code> will be available on the parent query, such as <code class="inline">q.visits</code>. In fact, Ecto will keep the schema properties across queries. For example, if you write <code class="inline">q.field_that_does_not_exist</code>, your Ecto query won't compile.</p>
+<p>Ecto also allows an Elixir map to be returned from a subquery, making the map keys directly available to the parent query.</p>
+<p>Let's see one last example. Imagine you manage a library (as in an actual library in the real world) and there is a table that logs every time the library lends a book. The "lendings" table uses an auto-incrementing primary key and can be backed by the following schema:</p>
+<pre data-language="elixir">defmodule Library.Lending do
+  use Ecto.Schema
+
+  schema "lendings" do
+    belongs_to :book, MyApp.Book       # defines book_id
+    belongs_to :visitor, MyApp.Visitor # defines visitor_id
+  end
+end</pre>
+<p>Now consider we want to retrieve the name of every book alongside the name of the last person the library has lent it to. To do so, we need to find the last lending ID of every book, and then join on the book and visitor tables. With subqueries, that's straight-forward:</p>
+<pre data-language="elixir">last_lendings =
+  from l in MyApp.Lending,
+    group_by: l.book_id,
+    select: %{
+      book_id: l.book_id,
+      last_lending_id: max(l.id)
+    }
+
+from l in Lending,
+  join: last in subquery(last_lendings),
+  on: last.last_lending_id == l.id,
+  join: b in assoc(l, :book),
+  join: v in assoc(l, :visitor),
+  select: {b.name, v.name}</pre> <div class="bottom-actions"> <div class="bottom-actions-item"> <a href="testing-with-ecto" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Testing with Ecto </span> </a> </div> <div class="bottom-actions-item"> <a href="composable-transactions-with-multi" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> Composable transactions with Multi </span> </a> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2013 Plataformatec<br>© 2020 Dashbit<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/ecto/aggregates-and-subqueries.html" class="_attribution-link">https://hexdocs.pm/ecto/aggregates-and-subqueries.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

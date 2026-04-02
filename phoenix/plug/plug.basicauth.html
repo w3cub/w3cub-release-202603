@@ -1,0 +1,177 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Plug.BasicAuth - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content=" Functionality for providing Basic HTTP authentication. ">
+  <meta name="keywords" content="summary, functions, plug, basicauth, phoenix">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/plug/plug.basicauth.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span translate="no">Plug.BasicAuth</span>  </h1> <section id="moduledoc"> <p>Functionality for providing Basic HTTP authentication.</p>
+<p>It is recommended to only use this module in production if SSL is enabled and enforced. See <a href="plug.ssl"><code class="inline">Plug.SSL</code></a> for more information.</p>
+<h2 id="module-compile-time-usage" class="section-heading">  Compile-time usage </h2> <p>If you have a single username and password, you can use the <a href="#basic_auth/2"><code class="inline">basic_auth/2</code></a> plug:</p>
+<pre data-language="elixir">import Plug.BasicAuth
+plug :basic_auth, username: "hello", password: "secret"</pre>
+<p>Or if you would rather put those in a config file:</p>
+<pre data-language="elixir"># lib/your_app.ex
+import Plug.BasicAuth
+plug :basic_auth, Application.compile_env(:my_app, :basic_auth)
+
+# config/config.exs
+config :my_app, :basic_auth, username: "hello", password: "secret"</pre>
+<p>Once the user first accesses the page, the request will be denied with reason 401 and the request is halted. The browser will then prompt the user for username and password. If they match, then the request succeeds.</p>
+<p>Both approaches shown above rely on static configuration. Let's see alternatives.</p>
+<h2 id="module-runtime-time-usage" class="section-heading">  Runtime-time usage </h2> <p>As any other Plug, we can use the <code class="inline">basic_auth</code> at runtime by simply wrapping it in a function:</p>
+<pre data-language="elixir">plug :auth
+
+defp auth(conn, opts) do
+  username = System.fetch_env!("AUTH_USERNAME")
+  password = System.fetch_env!("AUTH_PASSWORD")
+  Plug.BasicAuth.basic_auth(conn, username: username, password: password)
+end</pre>
+<p>This approach is useful when both username and password are specified upfront and available at runtime. However, you may also want to compute a different password for each different user. In those cases, we can use the low-level API.</p>
+<h2 id="module-low-level-usage" class="section-heading">  Low-level usage </h2> <p>If you want to provide your own authentication logic on top of Basic HTTP auth, you can use the low-level functions. As an example, we define <code class="inline">:auth</code> plug that extracts username and password from the request headers, compares them against the database, and either assigns a <code class="inline">:current_user</code> on success or responds with an error on failure.</p>
+<pre data-language="elixir">plug :auth
+
+defp auth(conn, _opts) do
+  with {user, pass} &lt;- Plug.BasicAuth.parse_basic_auth(conn),
+       %User{} = user &lt;- MyApp.Accounts.find_by_username_and_password(user, pass) do
+    assign(conn, :current_user, user)
+  else
+    _ -&gt; conn |&gt; Plug.BasicAuth.request_basic_auth() |&gt; halt()
+  end
+end</pre>
+<p>Keep in mind that:</p>
+<ul>
+<li><p>The supplied <code class="inline">user</code> and <code class="inline">pass</code> may be empty strings;</p></li>
+<li><p>If you are comparing the username and password with existing strings, do not use <a href="https://hexdocs.pm/elixir/Kernel.html#==/2"><code class="inline">==/2</code></a>. Use <a href="https://hexdocs.pm/plug_crypto/1.2.1/Plug.Crypto.html#secure_compare/2"><code class="inline">Plug.Crypto.secure_compare/2</code></a> instead.</p></li>
+</ul> </section> <section id="summary" class="details-list"> <h1 class="section-heading">  Summary </h1> <h2> Functions </h2>
+<dl class="summary-functions summary">  <div class="summary-row"> <dt class="summary-signature"> <a href="#basic_auth/2" translate="no">basic_auth(conn, options \\ [])</a> </dt> <dd class="summary-synopsis"><p>Higher level usage of Basic HTTP auth.</p></dd> </div> <div class="summary-row"> <dt class="summary-signature"> <a href="#encode_basic_auth/2" translate="no">encode_basic_auth(user, pass)</a> </dt> <dd class="summary-synopsis"><p>Encodes a basic authentication header.</p></dd> </div> <div class="summary-row"> <dt class="summary-signature"> <a href="#parse_basic_auth/1" translate="no">parse_basic_auth(conn)</a> </dt> <dd class="summary-synopsis"><p>Parses the request username and password from Basic HTTP auth.</p></dd> </div> <div class="summary-row"> <dt class="summary-signature"> <a href="#request_basic_auth/2" translate="no">request_basic_auth(conn, options \\ [])</a> </dt> <dd class="summary-synopsis"><p>Requests basic authentication from the client.</p></dd> </div> </dl> </section> <section id="functions" class="details-list"> <h1 class="section-heading">  Functions </h1> <div class="functions-list"> <section class="detail">  <h3 class="detail-header" id="basic_auth/2">basic_auth(conn, options \\ [])<a href="https://github.com/elixir-plug/plug/blob/v1.13.6/lib/plug/basic_auth.ex#L95" class="source">Source</a>
+</h3> <section class="docstring"> <p>Higher level usage of Basic HTTP auth.</p>
+<p>See the module docs for examples.</p>
+<h4 id="basic_auth/2-options" class="section-heading">  Options </h4> <ul>
+<li>
+<code class="inline">:username</code> - the expected username</li>
+<li>
+<code class="inline">:password</code> - the expected password</li>
+<li>
+<code class="inline">:realm</code> - the authentication realm. The value is not fully sanitized, so do not accept user input as the realm and use strings with only alphanumeric characters and space</li>
+</ul> </section> </section> <section class="detail"> <h3 class="detail-header" id="encode_basic_auth/2">encode_basic_auth(user, pass)<a href="https://github.com/elixir-plug/plug/blob/v1.13.6/lib/plug/basic_auth.ex#L137" class="source">Source</a>
+</h3> <section class="docstring"> <p>Encodes a basic authentication header.</p>
+<p>This can be used during tests:</p>
+<pre data-language="elixir">put_req_header(conn, "authorization", encode_basic_auth("hello", "world"))</pre> </section> </section> <section class="detail"> <h3 class="detail-header" id="parse_basic_auth/1">parse_basic_auth(conn)<a href="https://github.com/elixir-plug/plug/blob/v1.13.6/lib/plug/basic_auth.ex#L119" class="source">Source</a>
+</h3> <section class="docstring"> <p>Parses the request username and password from Basic HTTP auth.</p>
+<p>It returns either <code class="inline">{user, pass}</code> or <code class="inline">:error</code>. Note the username and password may be empty strings. When comparing the username and password with the expected values, be sure to use <a href="https://hexdocs.pm/plug_crypto/1.2.1/Plug.Crypto.html#secure_compare/2"><code class="inline">Plug.Crypto.secure_compare/2</code></a>.</p>
+<p>See the module docs for examples.</p> </section> </section> <section class="detail">  <h3 class="detail-header" id="request_basic_auth/2">request_basic_auth(conn, options \\ [])<a href="https://github.com/elixir-plug/plug/blob/v1.13.6/lib/plug/basic_auth.ex#L154" class="source">Source</a>
+</h3> <section class="docstring"> <p>Requests basic authentication from the client.</p>
+<p>It sets the response to status 401 with "Unauthorized" as body. The response is not sent though (nor the connection is halted), allowing developers to further customize it.</p>
+<h4 id="request_basic_auth/2-options" class="section-heading">  Options </h4> <ul><li>
+<code class="inline">:realm</code> - the authentication realm. The value is not fully sanitized, so do not accept user input as the realm and use strings with only alphanumeric characters and space</li></ul> </section> </section> </div> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2013 Plataformatec<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/plug/Plug.BasicAuth.html" class="_attribution-link">https://hexdocs.pm/plug/Plug.BasicAuth.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

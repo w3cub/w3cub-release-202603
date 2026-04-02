@@ -1,0 +1,223 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Self-referencing - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content="Ecto.Schema.many_to_many&#47;3 is used to establish the association between two schemas with a join table (or a join schema) tracking the &hellip;">
+  <meta name="keywords" content="self-referencing, phoenix">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/ecto/self-referencing-many-to-many.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span>Self-referencing many to many</span> </h1> <p><a href="ecto.schema#many_to_many/3"><code class="inline">Ecto.Schema.many_to_many/3</code></a> is used to establish the association between two schemas with a join table (or a join schema) tracking the relationship between them. But, what if we want the same table to reference itself? This is commonly used for symmetric relationships and is often referred to as a self-referencing <code class="inline">many_to_many</code> association.</p>
+<h2 id="people-relationships" class="section-heading">  People relationships </h2> <p>Let's imagine we are building a system that supports a model for relationships between people.</p>
+<pre data-language="elixir">defmodule MyApp.Accounts.Person do
+  use Ecto.Schema
+  
+  alias MyApp.Accounts.Person
+  alias MyApp.Relationships.Relationship
+
+  schema "people" do
+    field :name, :string
+
+    many_to_many :relationships,
+                 Person,
+                 join_through: Relationship,
+                 join_keys: [person_id: :id, relation_id: :id]
+
+    many_to_many :reverse_relationships,
+                 Person,
+                 join_through: Relationship,
+                 join_keys: [relation_id: :id, person_id: :id]
+
+    timestamps()
+  end
+end
+
+defmodule MyApp.Relationships.Relationship do
+  use Ecto.Schema
+
+  schema "relationships" do
+    field :person_id, :id
+    field :relation_id, :id
+    timestamps()
+  end
+end</pre>
+<p>In our example, we implement an intermediate schema, <code class="inline">MyApp.Relationships.Relationship</code>, on our <code class="inline">:join_through</code> option and pass in a pair of ids that we will be creating a unique index on in our database migration. By implementing an intermediate schema, we make it easy to add additional attributes and functionality to relationships in the future.</p>
+<p>We had to create an additional <code class="inline">many_to_many</code> <code class="inline">:reverse_relationships</code> call with an inverse of the <code class="inline">:join_keys</code> in order to finish the other half of the association. This ensures that both sides of the relationship will get added in the database when either side completes a successful relationship request. </p>
+<p>The person who is the inverse of the relationship will have the relationship struct stored in a list under the "reverse_relationships" key. We can then construct queries for both <code class="inline">:relationships</code> and <code class="inline">:reverse_relationships</code> with the proper <code class="inline">:preload</code>:</p>
+<pre data-language="elixir">iex&gt; preloads = [:relationships, :reverse_relationships]
+iex&gt; people = Repo.all from p in Person, preload: preloads
+[
+  MyApp.Accounts.Person&lt;
+    ...
+    relationships: [
+      MyApp.Accounts.Person&lt;
+        id: ...,
+        ...
+      &gt;
+    ]
+  &gt;,
+  MyApp.Accounts.Person&lt;
+    ...
+    reverse_relationships: [
+      MyApp.Accounts.Person&lt;
+        id: ...,
+        ...
+      &gt;
+    ]
+  &gt;
+]</pre>
+<p>In the example query above, we are assuming that we have two "people" that have entered into a relationship. Our query illustrates how one person is added on the <code class="inline">:relationships</code> side and the other on the <code class="inline">:reverse_relationships</code> side.</p>
+<p>It is also worth noticing that we are implementing separate parent modules for both our <code class="inline">Person</code> and <code class="inline">Relationship</code> modules. This separation of concerns helps improve code organization and maintainability by allowing us to isolate core functions for relationships in the <code class="inline">MyApp.Relationships</code> context and vice-versa.</p>
+<p>Let's take a look at our Ecto migration:</p>
+<pre data-language="elixir">def change do
+  create table(:relationships) do
+    add :person_id, references(:people)
+    add :relation_id, references(:people)
+    timestamps()
+  end
+
+  create index(:relationships, [:person_id])
+  create index(:relationships, [:relation_id])
+
+  create unique_index(
+    :relationships,
+    [:person_id, :relation_id],
+    name: :relationships_person_id_relation_id_index
+  )
+
+  create unique_index(
+    :relationships,
+    [:relation_id, :person_id],
+    name: :relationships_relation_id_person_id_index
+  )
+end</pre>
+<p>We create indexes on both the <code class="inline">:person_id</code> and <code class="inline">:relation_id</code> for quicker access in the future. Then, we create one unique index on the <code class="inline">:relationships</code> and another unique index on the inverse of <code class="inline">:relationships</code> to ensure that people cannot have duplicate relationships. Lastly, we pass a name to the <code class="inline">:name</code> option to help clarify the unique constraint when working with our changeset.</p>
+<pre data-language="elixir"># In MyApp.Relationships.Relationship
+@attrs [:person_id, :relation_id]
+
+def changeset(struct, params \\ %{}) do
+  struct
+  |&gt; Ecto.Changeset.cast(params, @attrs)
+  |&gt; Ecto.Changeset.unique_constraint(
+    [:person_id, :relation_id],
+    name: :relationships_person_id_relation_id_index
+  )
+  |&gt; Ecto.Changeset.unique_constraint(
+    [:relation_id, :person_id],
+    name: :relationships_relation_id_person_id_index
+  )
+end</pre>
+<p>Due to the self-referential nature, we will only need to cast the <code class="inline">:join_keys</code> in order for Ecto to correctly associate the two records in the database. When considering production applications, we will most likely want to add additional attributes and validations. This is where our isolation of modules will help us maintain and organize the increasing complexity.</p>
+<h2 id="summary" class="section-heading">  Summary </h2> <p>In this guide we used <code class="inline">many_to_many</code> associations to implement a self-referencing symmetric relationship. </p>
+<p>Our goal was to allow "people" to associate to different "people". Further, we wanted to lay a strong foundation for code organization and maintainability into the future. We have done this by creating intermediate tables, two separate functional core modules, a clear naming strategy, an inverse association, and by using <code class="inline">many_to_many</code> <code class="inline">:join_keys</code> to automatically manage those join tables.</p>
+<p>Overall, our code contains a small structural modification, when compared with a typical <code class="inline">many_to_many</code>, in order to implement an inverse join between our self-referenced table and schema.</p>
+<p>Where we go from here will depend greatly on the specific needs of our application. If we remember to adhere to our clear naming strategy with a strong separation of concerns, we will go a long way in keeping our self-referencing <code class="inline">many_to_many</code> association organized and easier to maintain.</p> <div class="bottom-actions"> <div class="bottom-actions-item"> <a href="multi-tenancy-with-foreign-keys" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Multi tenancy with foreign keys </span> </a> </div> <div class="bottom-actions-item"> <a href="polymorphic-associations-with-many-to-many" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> Polymorphic associations with many to many </span> </a> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2013 Plataformatec<br>© 2020 Dashbit<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/ecto/self-referencing-many-to-many.html" class="_attribution-link">https://hexdocs.pm/ecto/self-referencing-many-to-many.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

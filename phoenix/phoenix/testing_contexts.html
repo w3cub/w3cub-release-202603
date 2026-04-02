@@ -1,0 +1,228 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Testing - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content=" Requirement&#58; This guide expects that you have gone through the introductory guides and got a Phoenix application up and running. ">
+  <meta name="keywords" content="testing, phoenix">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/phoenix/testing_contexts.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span>Testing Contexts</span> </h1> <blockquote><p><strong>Requirement</strong>: This guide expects that you have gone through the <a href="installation">introductory guides</a> and got a Phoenix application <a href="up_and_running">up and running</a>.</p></blockquote>
+<blockquote><p><strong>Requirement</strong>: This guide expects that you have gone through the <a href="testing">Introduction to Testing guide</a>.</p></blockquote>
+<blockquote><p><strong>Requirement</strong>: This guide expects that you have gone through the <a href="contexts">Contexts guide</a>.</p></blockquote>
+<p>At the end of the Introduction to Testing guide, we generated an HTML resource for posts using the following command:</p>
+<pre data-language="elixir">$ mix phx.gen.html Blog Post posts title body:text
+</pre>
+<p>This gave us a number of modules for free, including a Blog context and a Post schema, alongside their respective test files. As we have learned in the Context guide, the Blog context is simply a module with functions to a particular area of our business domain, while Post schema maps to a particular table in our database.</p>
+<p>In this guide, we are going to explore the tests generated for our contexts and schemas. Before we do anything else, let's run <a href="https://hexdocs.pm/mix/Mix.Tasks.Test.html"><code class="inline">mix test</code></a> to make sure our test suite runs cleanly.</p>
+<pre data-language="elixir">$ mix test
+................
+
+Finished in 0.6 seconds
+19 tests, 0 failures
+
+Randomized with seed 638414
+</pre>
+<p>Great. We've got nineteen tests and they are all passing!</p>
+<h2 id="testing-posts" class="section-heading">  Testing posts </h2> <p>If you open up <code class="inline">test/hello/blog_test.exs</code>, you will see a file with the following:</p>
+<pre data-language="elixir">defmodule Hello.BlogTest do
+  use Hello.DataCase
+
+  alias Hello.Blog
+
+  describe "posts" do
+    alias Hello.Blog.Post
+
+    @valid_attrs %{body: "some body", title: "some title"}
+    @update_attrs %{body: "some updated body", title: "some updated title"}
+    @invalid_attrs %{body: nil, title: nil}
+
+    def post_fixture(attrs \\ %{}) do
+      {:ok, post} =
+        attrs
+        |&gt; Enum.into(@valid_attrs)
+        |&gt; Blog.create_post()
+
+      post
+    end
+
+    test "list_posts/0 returns all posts" do
+      post = post_fixture()
+      assert Blog.list_posts() == [post]
+    end
+
+    ...</pre>
+<p>As the top of the file we import <code class="inline">Hello.DataCase</code>, which as we will see soon, it is similar to <code class="inline">HelloWeb.ConnCase</code>. While <code class="inline">HelloWeb.ConnCase</code> sets up helpers for working with connections, which is useful when testing controllers and views, <code class="inline">Hello.DataCase</code> provides functionality for working with contexts and schemas.</p>
+<p>Next, we define an alias, so we can refer to <code class="inline">Hello.Blog</code> simply as <code class="inline">Blog</code>.</p>
+<p>Then we start a <code class="inline">describe "posts"</code> block. A <code class="inline">describe</code> block is a feature in ExUnit that allows us to group similar tests. The reason why we have grouped all post related tests together is because contexts in Phoenix are capable of grouping multiple schemas together. For example, if we ran this command:</p>
+<pre data-language="elixir">$ mix phx.gen.html Blog Comment comments post_id:references:posts body:text
+</pre>
+<p>We will get a bunch of new functions in the <code class="inline">Hello.Blog</code> context, plus a whole new <code class="inline">describe "comments"</code> block in our test file.</p>
+<p>The tests defined for our context are very straight-forward. They call the functions in our context and assert on their results. As you can see, some of those tests even create entries in the database:</p>
+<pre data-language="elixir">test "create_post/1 with valid data creates a post" do
+  assert {:ok, %Post{} = post} = Blog.create_post(@valid_attrs)
+  assert post.body == "some body"
+  assert post.title == "some title"
+end</pre>
+<p>At this point, you may wonder: how can Phoenix make sure the data created in one of the tests do not affect other tests? We are glad you asked. To answer this question, let's talk about the <code class="inline">DataCase</code>.</p>
+<h2 id="the-datacase" class="section-heading">  The DataCase </h2> <p>If you open up <code class="inline">test/support/data_case.ex</code>, you will find the following:</p>
+<pre data-language="elixir">defmodule Hello.DataCase do
+  use ExUnit.CaseTemplate
+
+  using do
+    quote do
+      alias Hello.Repo
+
+      import Ecto
+      import Ecto.Changeset
+      import Ecto.Query
+      import Hello.DataCase
+    end
+  end
+
+  setup tags do
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Demo.Repo, shared: not tags[:async])
+    on_exit(fn -&gt; Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    :ok
+  end
+
+  def errors_on(changeset) do
+    ...
+  end
+end</pre>
+<p><code class="inline">Hello.DataCase</code> is another <a href="https://hexdocs.pm/ex_unit/ExUnit.CaseTemplate.html"><code class="inline">ExUnit.CaseTemplate</code></a>. In the <code class="inline">using</code> block, we can see all of the aliases and imports <code class="inline">DataCase</code> brings into our tests. The <code class="inline">setup</code> chunk for <code class="inline">DataCase</code> is very similar to the one from <code class="inline">ConnCase</code>. As we can see, most of the <code class="inline">setup</code> block revolves around setting up a SQL Sandbox.</p>
+<p>The SQL Sandbox is precisely what allows our tests to write to the database without affecting any of the other tests. In a nutshell, at the beginning of every test, we start a transaction in the database. When the test is over, we automatically rollback the transaction, effectively erasing all of the data created in the test.</p>
+<p>Furthermore, the SQL Sandbox allows multiple tests to run concurrently, even if they talk to the database. This feature is provided for PostgreSQL databases and it can be used to further speed up your contexts and controllers tests by adding a <code class="inline">async: true</code> flag when using them:</p>
+<pre data-language="elixir">use Hello.DataCase, async: true</pre>
+<p>There are some considerations you need to have in mind when running asynchronous tests with the sandbox, so please refer to the <a href="https://hexdocs.pm/ecto_sql/Ecto.Adapters.SQL.Sandbox.html"><code class="inline">Ecto.Adapters.SQL.Sandbox</code></a> for more information.</p>
+<p>Finally at the end of the of the <code class="inline">DataCase</code> module we can find a function named <code class="inline">errors_on</code> with some examples of how to use it. This function is used for testing any validation we may want to add to our schemas. Let's give it a try by adding our own validations and then testing them.</p>
+<h2 id="testing-schemas" class="section-heading">  Testing schemas </h2> <p>When we generate our HTML Post resource, Phoenix generated a Blog context and a Post schema. It generated a test file for the context, but no test file for the schema. However, this doesn't mean we don't need to test the schema, it just means we did not have to test the schema so far.</p>
+<p>You may be wondering then: when do we test the context directly and when do we test the schema directly? The answer to this question is the same answer to the question of when do we add code to a context and when do we add it to the schema?</p>
+<p>The general guideline is to keep all side-effect free code in the schema. In other words, if you are simply working with data structures, schemas and changesets, put it in the schema. The context will typically have the code that creates and updates schemas and then write them to a database or an API.</p>
+<p>We'll be adding additional validations to the schema module, so that's a great opportunity to write some schema specific tests. Open up <code class="inline">lib/hello/blog/post.ex</code> and add the following validation to <code class="inline">def changeset</code>:</p>
+<pre data-language="elixir">def changeset(post, attrs) do
+  post
+  |&gt; cast(attrs, [:title, :body])
+  |&gt; validate_required([:title, :body])
+  |&gt; validate_length(:title, min: 2)
+end</pre>
+<p>The new validation says the title needs to have at least 2 characters. Let's write a test for this. Create a new file at <code class="inline">test/hello/blog/post_test.exs</code> with this:</p>
+<pre data-language="elixir">defmodule Hello.Blog.PostTest do
+  use Hello.DataCase, async: true
+  alias Hello.Blog.Post
+
+  test "title must be at least two characters long" do
+    changeset = Post.changeset(%Post{}, %{title: "I"})
+    assert %{title: ["should be at least 2 character(s)"]} = errors_on(changeset)
+  end
+end</pre>
+<p>And that's it. As our business domain grows, we have well-defined places to test our contexts and schemas.</p> <div class="bottom-actions"> <div class="bottom-actions-item"> <a href="testing" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Introduction to Testing </span> </a> </div> <div class="bottom-actions-item"> <a href="testing_controllers" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> Testing Controllers </span> </a> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014 Chris McCord<br>Licensed under the MIT License.<br>
+    <a href="https://hexdocs.pm/phoenix/testing_contexts.html" class="_attribution-link">https://hexdocs.pm/phoenix/testing_contexts.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

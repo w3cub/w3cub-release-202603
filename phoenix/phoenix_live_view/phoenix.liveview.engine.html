@@ -1,0 +1,162 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Phoenix.LiveView.Engine - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content=" An EEx template engine that tracks changes. ">
+  <meta name="keywords" content="phoenix, liveview, engine">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/phoenix_live_view/phoenix.liveview.engine.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span translate="no">Phoenix.LiveView.Engine</span>  </h1> <section id="moduledoc"> <p>An <a href="https://hexdocs.pm/eex/EEx.html"><code class="inline">EEx</code></a> template engine that tracks changes.</p>
+<p>This is often used by <a href="phoenix.liveview.htmlengine"><code class="inline">Phoenix.LiveView.HTMLEngine</code></a> which also adds HTML validation. In the documentation below, we will explain how it works internally. For user-facing documentation, see <a href="phoenix.liveview"><code class="inline">Phoenix.LiveView</code></a>.</p>
+<h2 id="module-phoenix-liveview-rendered" class="section-heading">  Phoenix.LiveView.Rendered </h2> <p>Whenever you render a live template, it returns a <a href="phoenix.liveview.rendered"><code class="inline">Phoenix.LiveView.Rendered</code></a> structure. This structure has three fields: <code class="inline">:static</code>, <code class="inline">:dynamic</code> and <code class="inline">:fingerprint</code>.</p>
+<p>The <code class="inline">:static</code> field is a list of literal strings. This allows the Elixir compiler to optimize this list and avoid allocating its strings on every render.</p>
+<p>The <code class="inline">:dynamic</code> field contains a function that takes a boolean argument (see "Tracking changes" below), and returns a list of dynamic content. Each element in the list is either one of:</p>
+<ol>
+<li>iodata - which is the dynamic content</li>
+<li>nil - the dynamic content did not change</li>
+<li>another <a href="phoenix.liveview.rendered"><code class="inline">Phoenix.LiveView.Rendered</code></a> struct, see "Nesting and fingerprinting" below</li>
+<li>a <a href="phoenix.liveview.comprehension"><code class="inline">Phoenix.LiveView.Comprehension</code></a> struct, see "Comprehensions" below</li>
+<li>a <a href="phoenix.liveview.component"><code class="inline">Phoenix.LiveView.Component</code></a> struct, see "Component" below</li>
+</ol>
+<p>When you render a live template, you can convert the rendered structure to iodata by alternating the static and dynamic fields, always starting with a static entry followed by a dynamic entry. The last entry will always be static too. So the following structure:</p>
+<pre data-language="elixir">%Phoenix.LiveView.Rendered{
+  static: ["foo", "bar", "baz"],
+  dynamic: fn track_changes? -&gt; ["left", "right"] end
+}</pre>
+<p>Results in the following content to be sent over the wire as iodata:</p>
+<pre data-language="elixir">["foo", "left", "bar", "right", "baz"]</pre>
+<p>This is also what calling <a href="https://hexdocs.pm/phoenix_html/3.2.0/Phoenix.HTML.Safe.html#to_iodata/1"><code class="inline">Phoenix.HTML.Safe.to_iodata/1</code></a> with a <a href="phoenix.liveview.rendered"><code class="inline">Phoenix.LiveView.Rendered</code></a> structure returns.</p>
+<p>Of course, the benefit of live templates is exactly that you do not need to send both static and dynamic segments every time. So let's talk about tracking changes.</p>
+<h2 id="module-tracking-changes" class="section-heading">  Tracking changes </h2> <p>By default, a live template does not track changes. Change tracking can be enabled by including a changed map in the assigns with the key <code class="inline">__changed__</code> and passing <code class="inline">true</code> to the dynamic parts. The map should contain the name of any changed field as key and the boolean true as value. If a field is not listed in <code class="inline">__changed__</code>, then it is always considered unchanged.</p>
+<p>If a field is unchanged and live believes a dynamic expression no longer needs to be computed, its value in the <code class="inline">dynamic</code> list will be <code class="inline">nil</code>. This information can be leveraged to avoid sending data to the client.</p>
+<h2 id="module-nesting-and-fingerprinting" class="section-heading">  Nesting and fingerprinting </h2> <p><a href="phoenix.liveview"><code class="inline">Phoenix.LiveView</code></a> also tracks changes across live templates. Therefore, if your view has this:</p>
+<pre data-language="elixir">&lt;%= render "form.html", assigns %&gt;</pre>
+<p>Phoenix will be able to track what is static and dynamic across templates, as well as what changed. A rendered nested <code class="inline">live</code> template will appear in the <code class="inline">dynamic</code> list as another <a href="phoenix.liveview.rendered"><code class="inline">Phoenix.LiveView.Rendered</code></a> structure, which must be handled recursively.</p>
+<p>However, because the rendering of live templates can be dynamic in itself, it is important to distinguish which live template was rendered. For example, imagine this code:</p>
+<pre data-language="elixir">&lt;%= if something?, do: render("one.html", assigns), else: render("other.html", assigns) %&gt;</pre>
+<p>To solve this, all <a href="phoenix.liveview.rendered"><code class="inline">Phoenix.LiveView.Rendered</code></a> structs also contain a fingerprint field that uniquely identifies it. If the fingerprints are equal, you have the same template, and therefore it is possible to only transmit its changes.</p>
+<h2 id="module-comprehensions" class="section-heading">  Comprehensions </h2> <p>Another optimization done by live templates is to track comprehensions. If your code has this:</p>
+<pre data-language="elixir">&lt;%= for point &lt;- @points do %&gt;
+  x: &lt;%= point.x %&gt;
+  y: &lt;%= point.y %&gt;
+&lt;% end %&gt;</pre>
+<p>Instead of rendering all points with both static and dynamic parts, it returns a <a href="phoenix.liveview.comprehension"><code class="inline">Phoenix.LiveView.Comprehension</code></a> struct with the static parts, that are shared across all points, and a list of dynamics to be interpolated inside the static parts. If <code class="inline">@points</code> is a list with <code class="inline">%{x: 1, y: 2}</code> and <code class="inline">%{x: 3, y: 4}</code>, the above expression would return:</p>
+<pre data-language="elixir">%Phoenix.LiveView.Comprehension{
+  static: ["\n  x: ", "\n  y: ", "\n"],
+  dynamics: [
+    ["1", "2"],
+    ["3", "4"]
+  ]
+}</pre>
+<p>This allows live templates to drastically optimize the data sent by comprehensions, as the static parts are emitted only once, regardless of the number of items.</p>
+<p>The list of dynamics is always a list of iodatas or components, as we don't perform change tracking inside the comprehensions themselves. Similarly, comprehensions do not have fingerprints because they are only optimized at the root, so conditional evaluation, as the one seen in rendering, is not possible. The only possible outcome for a dynamic field that returns a comprehension is <code class="inline">nil</code>.</p>
+<h2 id="module-components" class="section-heading">  Components </h2> <p>Live also supports stateful components defined with <a href="phoenix.livecomponent"><code class="inline">Phoenix.LiveComponent</code></a>. Since they are stateful, they are always handled lazily by the diff algorithm.</p> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 Chris McCord<br>Licensed under the MIT License.<br>
+    <a href="https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.Engine.html" class="_attribution-link">https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.Engine.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

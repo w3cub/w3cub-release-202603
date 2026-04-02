@@ -1,0 +1,168 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Plug.Debugger - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content=" A module (not a plug) for debugging in development. ">
+  <meta name="keywords" content="plug, debugger, phoenix">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/plug/plug.debugger.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span translate="no">Plug.Debugger</span>  </h1> <section id="moduledoc"> <p>A module (<strong>not a plug</strong>) for debugging in development.</p>
+<p>This module is commonly used within a <a href="plug.builder"><code class="inline">Plug.Builder</code></a> or a <a href="plug.router"><code class="inline">Plug.Router</code></a> and it wraps the <code class="inline">call/2</code> function.</p>
+<p>Notice <a href="plug.debugger#content"><code class="inline">Plug.Debugger</code></a> <em>does not</em> catch errors, as errors should still propagate so that the Elixir process finishes with the proper reason. This module does not perform any logging either, as all logging is done by the web server handler.</p>
+<p><strong>Note:</strong> If this module is used with <a href="plug.errorhandler"><code class="inline">Plug.ErrorHandler</code></a>, only one of them will effectively handle errors. For this reason, it is recommended that <a href="plug.debugger#content"><code class="inline">Plug.Debugger</code></a> is used before <a href="plug.errorhandler"><code class="inline">Plug.ErrorHandler</code></a> and only in particular environments, like <code class="inline">:dev</code>.</p>
+<p>In case of an error, the rendered page drops the <code class="inline">content-security-policy</code> header before rendering the error to ensure that the error is displayed correctly.</p>
+<h2 id="module-examples" class="section-heading">  Examples </h2> <pre data-language="elixir">defmodule MyApp do
+  use Plug.Builder
+
+  if Mix.env == :dev do
+    use Plug.Debugger, otp_app: :my_app
+  end
+
+  plug :boom
+
+  def boom(conn, _) do
+    # Error raised here will be caught and displayed in a debug page
+    # complete with a stacktrace and other helpful info.
+    raise "oops"
+  end
+end</pre>
+<h2 id="module-options" class="section-heading">  Options </h2> <ul>
+<li>
+<code class="inline">:otp_app</code> - the OTP application that is using Plug. This option is used to filter stacktraces that belong only to the given application.</li>
+<li>
+<code class="inline">:style</code> - custom styles (see below)</li>
+<li>
+<code class="inline">:banner</code> - the optional MFA (<code class="inline">{module, function, args}</code>) which receives exception details and returns banner contents to appear at the top of the page. May be any string, including markup.</li>
+</ul>
+<h2 id="module-custom-styles" class="section-heading">  Custom styles </h2> <p>You may pass a <code class="inline">:style</code> option to customize the look of the HTML page.</p>
+<pre data-language="elixir">use Plug.Debugger, style:
+  [primary: "#c0392b", logo: "data:image/png;base64,..."]</pre>
+<p>The following keys are available:</p>
+<ul>
+<li>
+<code class="inline">:primary</code> - primary color</li>
+<li>
+<code class="inline">:accent</code> - accent color</li>
+<li>
+<code class="inline">:logo</code> - logo URI, or <code class="inline">nil</code> to disable</li>
+</ul>
+<p>The <code class="inline">:logo</code> is preferred to be a base64-encoded data URI so not to make any external requests, though external URLs (eg, <code class="inline">https://...</code>) are supported.</p>
+<h2 id="module-custom-banners" class="section-heading">  Custom Banners </h2> <p>You may pass an MFA (<code class="inline">{module, function, args}</code>) to be invoked when an error is rendered which provides a custom banner at the top of the debugger page. The function receives the following arguments, with the passed <code class="inline">args</code> concatenated at the end:</p>
+<pre data-language="elixir">[conn, status, kind, reason, stacktrace]</pre>
+<p>For example, the following <code class="inline">:banner</code> option:</p>
+<pre data-language="elixir">use Plug.Debugger, banner: {MyModule, :debug_banner, []}</pre>
+<p>would invoke the function:</p>
+<pre data-language="elixir">MyModule.debug_banner(conn, status, kind, reason, stacktrace)</pre>
+<h2 id="module-links-to-the-text-editor" class="section-heading">  Links to the text editor </h2> <p>If a <code class="inline">PLUG_EDITOR</code> environment variable is set, <a href="plug.debugger#content"><code class="inline">Plug.Debugger</code></a> will use it to generate links to your text editor. The variable should be set with <code class="inline">__FILE__</code> and <code class="inline">__LINE__</code> placeholders which will be correctly replaced. For example (with the <a href="http://macromates.com">TextMate</a> editor):</p>
+<pre data-language="elixir">txmt://open/?url=file://__FILE__&amp;line=__LINE__</pre>
+<p>Or, using Visual Studio Code:</p>
+<pre data-language="elixir">vscode://file/__FILE__:__LINE__</pre> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2013 Plataformatec<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/plug/Plug.Debugger.html" class="_attribution-link">https://hexdocs.pm/plug/Plug.Debugger.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

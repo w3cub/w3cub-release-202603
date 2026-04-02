@@ -1,0 +1,203 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Testing - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content="After you have successfully set up your database connection with Ecto for your application, its usage for your tests requires further changes, &hellip;">
+  <meta name="keywords" content="testing, phoenix">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/ecto/testing-with-ecto.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span>Testing with Ecto</span> </h1> <p>After you have successfully set up your database connection with Ecto for your application, its usage for your tests requires further changes, especially if you want to leverage the <a href="https://hexdocs.pm/ecto_sql/Ecto.Adapters.SQL.Sandbox.html">Ecto SQL Sandbox</a> that allows you to run tests that talk to the database concurrently.</p>
+<p>Create the <code class="inline">config/test.exs</code> file or append the following content:</p>
+<pre data-language="elixir">use Mix.Config
+
+config :my_app, MyApp.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "myapp_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
+</pre>
+<p>Thereby, we configure the database connection for our test setup. In this case, we use a Postgres database and set it up to use the sandbox pool that will wrap each test in a transaction.</p>
+<p>Make sure we import the configuration for the test environment at the very bottom of <code class="inline">config/config.exs</code>:</p>
+<pre data-language="elixir">import_config "#{Mix.env()}.exs"</pre>
+<p>We also need to add an explicit statement to the end of <code class="inline">test/test_helper.exs</code> about the <code class="inline">sandbox</code> mode:</p>
+<pre data-language="elixir">Ecto.Adapters.SQL.Sandbox.mode(MyApp.Repo, :manual)</pre>
+<p>Lastly, you need to establish the database connection ahead of your tests. You can enable it either for all of your test cases by extending the <a href="https://hexdocs.pm/ex_unit/ExUnit.html"><code class="inline">ExUnit</code></a> template or by setting it up individually for each test. Let's start with the former and place it to the <code class="inline">test/support/repo_case.ex</code>:</p>
+<pre data-language="elixir">defmodule MyApp.RepoCase do
+  use ExUnit.CaseTemplate
+
+  using do
+    quote do
+      alias MyApp.Repo
+
+      import Ecto
+      import Ecto.Query
+      import MyApp.RepoCase
+
+      # and any other stuff
+    end
+  end
+
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(MyApp.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(MyApp.Repo, {:shared, self()})
+    end
+
+    :ok
+  end
+end</pre>
+<p>The case template above brings <a href="ecto"><code class="inline">Ecto</code></a> and <a href="ecto.query"><code class="inline">Ecto.Query</code></a> functions into your tests and checks-out a database connection. It also enables a shared sandbox connection mode in case the test is not running asynchronously. See <a href="https://hexdocs.pm/ecto_sql/Ecto.Adapters.SQL.Sandbox.html"><code class="inline">Ecto.Adapters.SQL.Sandbox</code></a> for more information.</p>
+<p>To add <code class="inline">test/support/</code> folder for compilation in test environment we need to update <code class="inline">mix.exs</code> configuration</p>
+<pre data-language="elixir">  def project do
+    [
+      # ...
+      elixirc_paths: elixirc_paths(Mix.env())
+    ]
+  end
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]</pre>
+<p>And then in each test that uses the repository:</p>
+<pre data-language="elixir">defmodule MyApp.MyTest do
+  use MyApp.RepoCase
+
+  # Tests etc...
+end</pre>
+<p>In case you don't want to define a "case template", you can checkout on each individual case:</p>
+<pre data-language="elixir">defmodule MyApp.MyTest do
+  use ExUnit.Case
+
+  setup do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(MyApp.Repo)
+  end
+
+  # Tests etc...
+end</pre>
+<p>For convenience reasons, you can also define <code class="inline">aliases</code> to automatically set up your database at the execution of your tests. Change the following content in your <code class="inline">mix.exs</code>.</p>
+<pre data-language="elixir">
+  def project do
+    [app: :my_app,
+
+     ...
+
+     aliases: aliases()]
+  end
+
+  defp aliases do
+    [ ...
+     "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+    ]
+  end</pre> <div class="bottom-actions"> <div class="bottom-actions-item"> <a href="embedded-schemas" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Embedded Schemas </span> </a> </div> <div class="bottom-actions-item"> <a href="aggregates-and-subqueries" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> Aggregates and subqueries </span> </a> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2013 Plataformatec<br>© 2020 Dashbit<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/ecto/testing-with-ecto.html" class="_attribution-link">https://hexdocs.pm/ecto/testing-with-ecto.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

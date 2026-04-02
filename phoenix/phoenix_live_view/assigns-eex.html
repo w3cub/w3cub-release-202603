@@ -1,0 +1,176 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Assigns - Phoenix - W3cubDocs</title>
+  
+  <meta name="description" content="All of the data in a LiveView is stored in the socket as assigns. The Phoenix.LiveView.assign&#47;2 and Phoenix.LiveView.assign&#47;3 functions help &hellip;">
+  <meta name="keywords" content="assigns, phoenix">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/phoenix/phoenix_live_view/assigns-eex.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/phoenix.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/phoenix/" class="_nav-link" title="" style="margin-left:0;">Phoenix</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<h1>   <span>Assigns and HEEx templates</span> </h1> <p>All of the data in a LiveView is stored in the socket as assigns. The <a href="phoenix.liveview#assign/2"><code class="inline">Phoenix.LiveView.assign/2</code></a> and <a href="phoenix.liveview#assign/3"><code class="inline">Phoenix.LiveView.assign/3</code></a> functions help store those values. Those values can be accessed in the LiveView as <code class="inline">socket.assigns.name</code> but they are accessed inside LiveView templates as <code class="inline">@name</code>.</p>
+<p>Phoenix template language is called HEEx (HTML+EEx). Those templates are either files with the <code class="inline">.heex</code> extension or they are created directly in source files via the <code class="inline">~H</code> sigil. You can learn more about the HEEx syntax by checking the docs for <a href="phoenix.liveview.helpers#sigil_H/2">the <code class="inline">~H</code> sigil</a>.</p>
+<p>In this section, we are going to cover how LiveView minimizes the payload over the wire by understanding the interplay between assigns and templates.</p>
+<h2 id="change-tracking" class="section-heading">  Change tracking </h2> <p>When you first render a <code class="inline">.heex</code> template, it will send all of the static and dynamic parts of the template to the client. Imagine the following template:</p>
+<pre data-language="elixir">&lt;h1&gt;&lt;%= expand_title(@title) %&gt;&lt;/h1&gt;</pre>
+<p>It has two static parts, <code class="inline">&lt;h1&gt;</code> and <code class="inline">&lt;/h1&gt;</code> and one dynamic part made of <code class="inline">expand_title(@title)</code>. Further rendering of this template won't resend the static parts and it will only resend the dynamic part if it changes.</p>
+<p>The tracking of changes is done via assigns. If the <code class="inline">@title</code> assign changes, then LiveView will execute <code class="inline">expand_title(@title)</code> and send the new content. If <code class="inline">@title</code> is the same, nothing is executed and nothing is sent.</p>
+<p>Change tracking also works when accessing map/struct fields. Take this template:</p>
+<pre data-language="elixir">&lt;div id={"user_#{@user.id}"}&gt;
+  &lt;%= @user.name %&gt;
+&lt;/div&gt;</pre>
+<p>If the <code class="inline">@user.name</code> changes but <code class="inline">@user.id</code> doesn't, then LiveView will re-render only <code class="inline">@user.name</code> and it will not execute or resend <code class="inline">@user.id</code> at all.</p>
+<p>The change tracking also works when rendering other templates as long as they are also <code class="inline">.heex</code> templates:</p>
+<pre data-language="elixir">&lt;%= render "child_template.html", assigns %&gt;</pre>
+<p>Or when using function components:</p>
+<pre data-language="elixir">&lt;.show_name name={@user.name} /&gt;</pre>
+<p>The assign tracking feature also implies that you MUST avoid performing direct operations in the template. For example, if you perform a database query in your template:</p>
+<pre data-language="elixir">&lt;%= for user &lt;- Repo.all(User) do %&gt;
+  &lt;%= user.name %&gt;
+&lt;% end %&gt;</pre>
+<p>Then Phoenix will never re-render the section above, even if the number of users in the database changes. Instead, you need to store the users as assigns in your LiveView before it renders the template:</p>
+<pre data-language="elixir">assign(socket, :users, Repo.all(User))</pre>
+<p>Generally speaking, <strong>data loading should never happen inside the template</strong>, regardless if you are using LiveView or not. The difference is that LiveView enforces this best practice.</p>
+<h2 id="pitfalls" class="section-heading">  Pitfalls </h2> <p>There are two common pitfalls to keep in mind when using the <code class="inline">~H</code> sigil or <code class="inline">.heex</code> templates inside LiveViews.</p>
+<p>When it comes to <code class="inline">do/end</code> blocks, change tracking is supported only on blocks given to Elixir's basic constructs, such as <code class="inline">if</code>, <code class="inline">case</code>, <code class="inline">for</code>, and similar. If the do/end block is given to a library function or user function, such as <code class="inline">content_tag</code>, change tracking won't work. For example, imagine the following template that renders a <code class="inline">div</code>:</p>
+<pre data-language="elixir">&lt;%= content_tag :div, id: "user_#{@id}" do %&gt;
+  &lt;%= @name %&gt;
+  &lt;%= @description %&gt;
+&lt;% end %&gt;</pre>
+<p>LiveView knows nothing about <code class="inline">content_tag</code>, which means the whole <code class="inline">div</code> will be sent whenever any of the assigns change. Luckily, HEEx templates provide a nice syntax for building tags, so there is rarely a need to use <code class="inline">content_tag</code> inside <code class="inline">.heex</code> templates:</p>
+<pre data-language="elixir">&lt;div id={"user_#{@id}"}&gt;
+  &lt;%= @name %&gt;
+  &lt;%= @description %&gt;
+&lt;/div&gt;</pre>
+<p>The next pitfall is related to variables. Due to the scope of variables, LiveView has to disable change tracking whenever variables are used in the template, with the exception of variables introduced by Elixir basic <code class="inline">case</code>, <code class="inline">for</code>, and other block constructs. Therefore, you <strong>must avoid</strong> code like this in your LiveView templates:</p>
+<pre data-language="elixir">&lt;% some_var = @x + @y %&gt;
+&lt;%= some_var %&gt;</pre>
+<p>Instead, use a function:</p>
+<pre data-language="elixir">&lt;%= sum(@x, @y) %&gt;</pre>
+<p>Similarly, <strong>do not</strong> define variables at the top of your <code class="inline">render</code> function:</p>
+<pre data-language="elixir">def render(assigns) do
+  sum = assigns.x + assigns.y
+
+  ~H"""
+  &lt;%= sum %&gt;
+  """
+end</pre>
+<p>Instead explicitly precompute the assign in your LiveView, outside of render:</p>
+<pre data-language="elixir">assign(socket, sum: socket.assigns.x + socket.assigns.y)</pre>
+<p>Generally speaking, avoid accessing variables inside LiveViews, as code that access variables is always executed on every render. This also applies to the <code class="inline">assigns</code> variable. The exception are variables introduced by Elixir's block constructs. For example, accessing the <code class="inline">post</code> variable defined by the comprehension below works as expected:</p>
+<pre data-language="elixir">&lt;%= for post &lt;- @posts do %&gt;
+  ...
+&lt;% end %&gt;</pre>
+<p>To sum up:</p>
+<ol>
+<li><p>Avoid passing block expressions to library and custom functions, instead prefer to use the conveniences in <code class="inline">HEEx</code> templates</p></li>
+<li><p>Avoid defining local variables, except within Elixir's constructs</p></li>
+</ol> <div class="bottom-actions"> <div class="bottom-actions-item"> <a href="installation" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Installation </span> </a> </div> <div class="bottom-actions-item"> <a href="error-handling" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> Error and exception handling </span> </a> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 Chris McCord<br>Licensed under the MIT License.<br>
+    <a href="https://hexdocs.pm/phoenix_live_view/assigns-eex.html" class="_attribution-link">https://hexdocs.pm/phoenix_live_view/assigns-eex.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
