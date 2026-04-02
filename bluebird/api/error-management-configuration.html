@@ -1,0 +1,160 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Error Management Configuration - Bluebird - W3cubDocs</title>
+  
+  <meta name="description" content="The default approach of bluebird is to immediately log the stack trace when there is an unhandled rejection. This is similar to how uncaught &hellip;">
+  <meta name="keywords" content="error, management, configuration, bluebird">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/bluebird/api/error-management-configuration.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/bluebird.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/bluebird/" class="_nav-link" title="" style="margin-left:0;">Bluebird</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="error-management-configuration">  Error management configuration </h1> <p>The default approach of bluebird is to immediately log the stack trace when there is an unhandled rejection. This is similar to how uncaught exceptions cause the stack trace to be logged so that you have something to work with when something is not working as expected.</p> <p>However because it is possible to handle a rejected promise at any time in the indeterminate future, some programming patterns will result in false positives. Because such programming patterns are not necessary and can always be refactored to never cause false positives, we recommend doing that to keep debugging as easy as possible . You may however feel differently so bluebird provides hooks to implement more complex failure policies.</p> <p>Such policies could include:</p> <ul> <li>Logging after the promise became GCd (requires a native node.js module)</li> <li>Showing a live list of rejected promises</li> <li>Using no hooks and using <a href="done"><code>.done</code></a> to manually to mark end points where rejections will not be handled</li> <li>Swallowing all errors (challenge your debugging skills)</li> <li>...</li> </ul>  <h3 id="global-rejection-events">  Global rejection events </h3> <p>Starting from 2.7.0 all bluebird instances also fire rejection events globally so that applications can register one universal hook for them.</p> <p>The global events are:</p> <ul> <li>
+<code>"unhandledRejection"</code> (corresponds to the local <a href="promise.onpossiblyunhandledrejection"><code>Promise.onPossiblyUnhandledRejection</code></a>)</li> <li>
+<code>"rejectionHandled"</code> (corresponds to the local <a href="promise.onunhandledrejectionhandled"><code>Promise.onUnhandledRejectionHandled</code></a>)</li> </ul> <p>Attaching global rejection event handlers in <strong>node.js</strong>:</p> <pre data-language="javascript">// NOTE: event name is camelCase as per node convention
+process.on("unhandledRejection", function(reason, promise) {
+    // See Promise.onPossiblyUnhandledRejection for parameter documentation
+});
+
+// NOTE: event name is camelCase as per node convention
+process.on("rejectionHandled", function(promise) {
+    // See Promise.onUnhandledRejectionHandled for parameter documentation
+});
+</pre> <p>Attaching global rejection event handlers in <strong>browsers</strong>:</p> <p>Using DOM3 <code>addEventListener</code> APIs (support starting from IE9+):</p> <pre data-language="javascript">// NOTE: event name is all lower case as per DOM convention
+window.addEventListener("unhandledrejection", function(e) {
+    // NOTE: e.preventDefault() must be manually called to prevent the default
+    // action which is currently to log the stack trace to console.warn
+    e.preventDefault();
+    // NOTE: parameters are properties of the event detail property
+    var reason = e.detail.reason;
+    var promise = e.detail.promise;
+    // See Promise.onPossiblyUnhandledRejection for parameter documentation
+});
+
+// NOTE: event name is all lower case as per DOM convention
+window.addEventListener("rejectionhandled", function(e) {
+    // NOTE: e.preventDefault() must be manually called prevent the default
+    // action which is currently unset (but might be set to something in the future)
+    e.preventDefault();
+    // NOTE: parameters are properties of the event detail property
+    var promise = e.detail.promise;
+    // See Promise.onUnhandledRejectionHandled for parameter documentation
+});
+</pre> <p>In Web Workers you may use <code>self.addEventListener</code>.</p> <p>Using legacy APIs (support starting from IE6+):</p> <pre data-language="javascript">// NOTE: event name is all lower case as per legacy convention
+window.onunhandledrejection = function(reason, promise) {
+    // See Promise.onPossiblyUnhandledRejection for parameter documentation
+};
+
+// NOTE: event name is all lower case as per legacy convention
+window.onrejectionhandled = function(promise) {
+    // See Promise.onUnhandledRejectionHandled for parameter documentation
+};
+</pre>     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2013–2018 Petka Antonov<br>Licensed under the MIT License.<br>
+    <a href="http://bluebirdjs.com/docs/api/error-management-configuration.html" class="_attribution-link">http://bluebirdjs.com/docs/api/error-management-configuration.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
