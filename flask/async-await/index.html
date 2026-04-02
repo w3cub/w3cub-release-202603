@@ -1,0 +1,129 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Using Async and Await - Flask - W3cubDocs</title>
+  
+  <meta name="description" content=" Added in version 2.0. ">
+  <meta name="keywords" content="using, async, and, await, flask">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/flask/async-await/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/flask.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/flask/" class="_nav-link" title="" style="margin-left:0;">Flask</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1 id="async-await">Using async and await</h1> <details class="changelog"> <summary>Changelog</summary><div class="versionadded"> <p><span class="versionmodified added">Added in version 2.0.</span></p> </div> </details><p>Routes, error handlers, before request, after request, and teardown functions can all be coroutine functions if Flask is installed with the <code>async</code> extra (<code>pip install flask[async]</code>). This allows views to be defined with <code>async def</code> and use <code>await</code>.</p> <pre data-language="python">@app.route("/get-data")
+async def get_data():
+    data = await async_db_query(...)
+    return jsonify(data)
+</pre> <p>Pluggable class-based views also support handlers that are implemented as coroutines. This applies to the <a class="reference internal" href="../api/index#flask.views.View.dispatch_request" title="flask.views.View.dispatch_request"><code>dispatch_request()</code></a> method in views that inherit from the <a class="reference internal" href="../api/index#flask.views.View" title="flask.views.View"><code>flask.views.View</code></a> class, as well as all the HTTP method handlers in views that inherit from the <a class="reference internal" href="../api/index#flask.views.MethodView" title="flask.views.MethodView"><code>flask.views.MethodView</code></a> class.</p> <div class="admonition-using-async-with-greenlet admonition"> <p class="admonition-title">Using <code>async</code> with greenlet</p> <p>When using gevent or eventlet to serve an application or patch the runtime, greenlet&gt;=1.0 is required. When using PyPy, PyPy&gt;=7.3.7 is required.</p> </div> <section id="performance"> <h2>Performance</h2> <p>Async functions require an event loop to run. Flask, as a WSGI application, uses one worker to handle one request/response cycle. When a request comes in to an async view, Flask will start an event loop in a thread, run the view function there, then return the result.</p> <p>Each request still ties up one worker, even for async views. The upside is that you can run async code within a view, for example to make multiple concurrent database queries, HTTP requests to an external API, etc. However, the number of requests your application can handle at one time will remain the same.</p> <p><strong>Async is not inherently faster than sync code.</strong> Async is beneficial when performing concurrent IO-bound tasks, but will probably not improve CPU-bound tasks. Traditional Flask views will still be appropriate for most use cases, but Flask’s async support enables writing and using code that wasn’t possible natively before.</p> </section> <section id="background-tasks"> <h2>Background tasks</h2> <p>Async functions will run in an event loop until they complete, at which stage the event loop will stop. This means any additional spawned tasks that haven’t completed when the async function completes will be cancelled. Therefore you cannot spawn background tasks, for example via <code>asyncio.create_task</code>.</p> <p>If you wish to use background tasks it is best to use a task queue to trigger background work, rather than spawn tasks in a view function. With that in mind you can spawn asyncio tasks by serving Flask with an ASGI server and utilising the asgiref WsgiToAsgi adapter as described in <a class="reference internal" href="../deploying/asgi/index"><span class="doc">ASGI</span></a>. This works as the adapter creates an event loop that runs continually.</p> </section> <section id="when-to-use-quart-instead"> <h2>When to use Quart instead</h2> <p>Flask’s async support is less performant than async-first frameworks due to the way it is implemented. If you have a mainly async codebase it would make sense to consider <a class="reference external" href="https://github.com/pallets/quart">Quart</a>. Quart is a reimplementation of Flask based on the <a class="reference external" href="https://asgi.readthedocs.io/en/latest/">ASGI</a> standard instead of WSGI. This allows it to handle many concurrent requests, long running requests, and websockets without requiring multiple worker processes or threads.</p> <p>It has also already been possible to run Flask with Gevent or Eventlet to get many of the benefits of async request handling. These libraries patch low-level Python functions to accomplish this, whereas <code>async</code>/ <code>await</code> and ASGI use standard, modern Python capabilities. Deciding whether you should use Flask, Quart, or something else is ultimately up to understanding the specific needs of your project.</p> </section> <section id="extensions"> <h2>Extensions</h2> <p>Flask extensions predating Flask’s async support do not expect async views. If they provide decorators to add functionality to views, those will probably not work with async views because they will not await the function or be awaitable. Other functions they provide will not be awaitable either and will probably be blocking if called within an async view.</p> <p>Extension authors can support async functions by utilising the <a class="reference internal" href="../api/index#flask.Flask.ensure_sync" title="flask.Flask.ensure_sync"><code>flask.Flask.ensure_sync()</code></a> method. For example, if the extension provides a view function decorator add <code>ensure_sync</code> before calling the decorated function,</p> <pre data-language="python">def extension(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        ...  # Extension logic
+        return current_app.ensure_sync(func)(*args, **kwargs)
+
+    return wrapper
+</pre> <p>Check the changelog of the extension you want to use to see if they’ve implemented async support, or make a feature request or PR to them.</p> </section> <section id="other-event-loops"> <h2>Other event loops</h2> <p>At the moment Flask only supports <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.13)"><code>asyncio</code></a>. It’s possible to override <a class="reference internal" href="../api/index#flask.Flask.ensure_sync" title="flask.Flask.ensure_sync"><code>flask.Flask.ensure_sync()</code></a> to change how async functions are wrapped to use a different library.</p> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 Pallets<br>Licensed under the BSD 3-clause License.<br>
+    <a href="https://flask.palletsprojects.com/en/stable/async-await/" class="_attribution-link">https://flask.palletsprojects.com/en/stable/async-await/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

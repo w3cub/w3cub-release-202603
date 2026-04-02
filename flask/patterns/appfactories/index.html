@@ -1,0 +1,151 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Application Factories - Flask - W3cubDocs</title>
+  
+  <meta name="description" content="If you are already using packages and blueprints for your application (Modular Applications with Blueprints) there are a couple of really nice ways &hellip;">
+  <meta name="keywords" content="application, factories, flask">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/flask/patterns/appfactories/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/flask.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/flask/" class="_nav-link" title="" style="margin-left:0;">Flask</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Application Factories</h1> <p>If you are already using packages and blueprints for your application (<a class="reference internal" href="../../blueprints/index"><span class="doc">Modular Applications with Blueprints</span></a>) there are a couple of really nice ways to further improve the experience. A common pattern is creating the application object when the blueprint is imported. But if you move the creation of this object into a function, you can then create multiple instances of this app later.</p> <p>So why would you want to do this?</p> <ol class="arabic simple"> <li>Testing. You can have instances of the application with different settings to test every case.</li> <li>Multiple instances. Imagine you want to run different versions of the same application. Of course you could have multiple instances with different configs set up in your webserver, but if you use factories, you can have multiple instances of the same application running in the same application process which can be handy.</li> </ol> <p>So how would you then actually implement that?</p> <section id="basic-factories"> <h2>Basic Factories</h2> <p>The idea is to set up the application in a function. Like this:</p> <pre data-language="python">def create_app(config_filename):
+    app = Flask(__name__)
+    app.config.from_pyfile(config_filename)
+
+    from yourapplication.model import db
+    db.init_app(app)
+
+    from yourapplication.views.admin import admin
+    from yourapplication.views.frontend import frontend
+    app.register_blueprint(admin)
+    app.register_blueprint(frontend)
+
+    return app
+</pre> <p>The downside is that you cannot use the application object in the blueprints at import time. You can however use it from within a request. How do you get access to the application with the config? Use <a class="reference internal" href="../../api/index#flask.current_app" title="flask.current_app"><code>current_app</code></a>:</p> <pre data-language="python">from flask import current_app, Blueprint, render_template
+admin = Blueprint('admin', __name__, url_prefix='/admin')
+
+@admin.route('/')
+def index():
+    return render_template(current_app.config['INDEX_TEMPLATE'])
+</pre> <p>Here we look up the name of a template in the config.</p> </section> <section id="factories-extensions"> <h2>Factories &amp; Extensions</h2> <p>It’s preferable to create your extensions and app factories so that the extension object does not initially get bound to the application.</p> <p>Using <a class="reference external" href="https://flask-sqlalchemy.palletsprojects.com/">Flask-SQLAlchemy</a>, as an example, you should not do something along those lines:</p> <pre data-language="python">def create_app(config_filename):
+    app = Flask(__name__)
+    app.config.from_pyfile(config_filename)
+
+    db = SQLAlchemy(app)
+</pre> <p>But, rather, in model.py (or equivalent):</p> <pre data-language="python">db = SQLAlchemy()
+</pre> <p>and in your application.py (or equivalent):</p> <pre data-language="python">def create_app(config_filename):
+    app = Flask(__name__)
+    app.config.from_pyfile(config_filename)
+
+    from yourapplication.model import db
+    db.init_app(app)
+</pre> <p>Using this design pattern, no application-specific state is stored on the extension object, so one extension object can be used for multiple apps. For more information about the design of extensions refer to <a class="reference internal" href="https://flask.palletsprojects.com/en/stable/extensiondev/"><span class="doc">Flask Extension Development</span></a>.</p> </section> <section id="using-applications"> <h2>Using Applications</h2> <p>To run such an application, you can use the <strong class="command">flask</strong> command:</p> <pre data-language="text">$ flask --app hello run
+</pre> <p>Flask will automatically detect the factory if it is named <code>create_app</code> or <code>make_app</code> in <code>hello</code>. You can also pass arguments to the factory like this:</p> <pre data-language="text">$ flask --app hello:create_app(local_auth=True) run
+</pre> <p>Then the <code>create_app</code> factory in <code>myapp</code> is called with the keyword argument <code>local_auth=True</code>. See <a class="reference internal" href="../../cli/index"><span class="doc">Command Line Interface</span></a> for more detail.</p> </section> <section id="factory-improvements"> <h2>Factory Improvements</h2> <p>The factory function above is not very clever, but you can improve it. The following changes are straightforward to implement:</p> <ol class="arabic simple"> <li>Make it possible to pass in configuration values for unit tests so that you don’t have to create config files on the filesystem.</li> <li>Call a function from a blueprint when the application is setting up so that you have a place to modify attributes of the application (like hooking in before/after request handlers etc.)</li> <li>Add in WSGI middlewares when the application is being created if necessary.</li> </ol> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 Pallets<br>Licensed under the BSD 3-clause License.<br>
+    <a href="https://flask.palletsprojects.com/en/stable/patterns/appfactories/" class="_attribution-link">https://flask.palletsprojects.com/en/stable/patterns/appfactories/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

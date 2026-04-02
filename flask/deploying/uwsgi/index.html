@@ -1,0 +1,152 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>uWSGI - Flask - W3cubDocs</title>
+  
+  <meta name="description" content=" uWSGI is a fast, compiled server suite with extensive configuration and capabilities beyond a basic server. ">
+  <meta name="keywords" content="uwsgi, flask">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/flask/deploying/uwsgi/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/flask.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/flask/" class="_nav-link" title="" style="margin-left:0;">Flask</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>uWSGI</h1> <p><a class="reference external" href="https://uwsgi-docs.readthedocs.io/en/latest/">uWSGI</a> is a fast, compiled server suite with extensive configuration and capabilities beyond a basic server.</p> <ul class="simple"> <li>It can be very performant due to being a compiled program.</li> <li>It is complex to configure beyond the basic application, and has so many options that it can be difficult for beginners to understand.</li> <li>It does not support Windows (but does run on WSL).</li> <li>It requires a compiler to install in some cases.</li> </ul> <p>This page outlines the basics of running uWSGI. Be sure to read its documentation to understand what features are available.</p> <section id="installing"> <h2>Installing</h2> <p>uWSGI has multiple ways to install it. The most straightforward is to install the <code>pyuwsgi</code> package, which provides precompiled wheels for common platforms. However, it does not provide SSL support, which can be provided with a reverse proxy instead.</p> <p>Create a virtualenv, install your application, then install <code>pyuwsgi</code>.</p> <pre data-language="text">$ cd hello-app
+$ python -m venv .venv
+$ . .venv/bin/activate
+$ pip install .  # install your application
+$ pip install pyuwsgi
+</pre> <p>If you have a compiler available, you can install the <code>uwsgi</code> package instead. Or install the <code>pyuwsgi</code> package from sdist instead of wheel. Either method will include SSL support.</p> <pre data-language="text">$ pip install uwsgi
+
+# or
+$ pip install --no-binary pyuwsgi pyuwsgi
+</pre> </section> <section id="running"> <h2>Running</h2> <p>The most basic way to run uWSGI is to tell it to start an HTTP server and import your application.</p> <pre data-language="text">$ uwsgi --http 127.0.0.1:8000 --master -p 4 -w hello:app
+
+*** Starting uWSGI 2.0.20 (64bit) on [x] ***
+*** Operational MODE: preforking ***
+mounting hello:app on /
+spawned uWSGI master process (pid: x)
+spawned uWSGI worker 1 (pid: x, cores: 1)
+spawned uWSGI worker 2 (pid: x, cores: 1)
+spawned uWSGI worker 3 (pid: x, cores: 1)
+spawned uWSGI worker 4 (pid: x, cores: 1)
+spawned uWSGI http 1 (pid: x)
+</pre> <p>If you’re using the app factory pattern, you’ll need to create a small Python file to create the app, then point uWSGI at that.</p> <div class="literal-block-wrapper docutils container" id="id2"> <div class="code-block-caption"><span class="caption-text"><code>wsgi.py</code></span></div> <pre data-language="python">from hello import create_app
+
+app = create_app()
+</pre> </div> <pre data-language="text">$ uwsgi --http 127.0.0.1:8000 --master -p 4 -w wsgi:app
+</pre> <p>The <code>--http</code> option starts an HTTP server at 127.0.0.1 port 8000. The <code>--master</code> option specifies the standard worker manager. The <code>-p</code> option starts 4 worker processes; a starting value could be <code>CPU * 2</code>. The <code>-w</code> option tells uWSGI how to import your application</p> </section> <section id="binding-externally"> <h2>Binding Externally</h2> <p>uWSGI should not be run as root with the configuration shown in this doc because it would cause your application code to run as root, which is not secure. However, this means it will not be possible to bind to port 80 or 443. Instead, a reverse proxy such as <a class="reference internal" href="../nginx/index"><span class="doc">nginx</span></a> or <a class="reference internal" href="../apache-httpd/index"><span class="doc">Apache httpd</span></a> should be used in front of uWSGI. It is possible to run uWSGI as root securely, but that is beyond the scope of this doc.</p> <p>uWSGI has optimized integration with <a class="reference external" href="https://uwsgi-docs.readthedocs.io/en/latest/Nginx.html">Nginx uWSGI</a> and <a class="reference external" href="https://uwsgi-docs.readthedocs.io/en/latest/Apache.html#mod-proxy-uwsgi">Apache mod_proxy_uwsgi</a>, and possibly other servers, instead of using a standard HTTP proxy. That configuration is beyond the scope of this doc, see the links for more information.</p> <p>You can bind to all external IPs on a non-privileged port using the <code>--http 0.0.0.0:8000</code> option. Don’t do this when using a reverse proxy setup, otherwise it will be possible to bypass the proxy.</p> <pre data-language="text">$ uwsgi --http 0.0.0.0:8000 --master -p 4 -w wsgi:app
+</pre> <p><code>0.0.0.0</code> is not a valid address to navigate to, you’d use a specific IP address in your browser.</p> </section> <section id="async-with-gevent"> <h2>Async with gevent</h2> <p>The default sync worker is appropriate for many use cases. If you need asynchronous support, uWSGI provides a <a class="reference external" href="https://www.gevent.org/">gevent</a> worker. This is not the same as Python’s <code>async/await</code>, or the ASGI server spec. You must actually use gevent in your own code to see any benefit to using the worker.</p> <p>When using gevent, greenlet&gt;=1.0 is required, otherwise context locals such as <code>request</code> will not work as expected. When using PyPy, PyPy&gt;=7.3.7 is required.</p> <pre data-language="text">$ uwsgi --http 127.0.0.1:8000 --master --gevent 100 -w wsgi:app
+
+*** Starting uWSGI 2.0.20 (64bit) on [x] ***
+*** Operational MODE: async ***
+mounting hello:app on /
+spawned uWSGI master process (pid: x)
+spawned uWSGI worker 1 (pid: x, cores: 100)
+spawned uWSGI http 1 (pid: x)
+*** running gevent loop engine [addr:x] ***
+</pre> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 Pallets<br>Licensed under the BSD 3-clause License.<br>
+    <a href="https://flask.palletsprojects.com/en/stable/deploying/uwsgi/" class="_attribution-link">https://flask.palletsprojects.com/en/stable/deploying/uwsgi/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

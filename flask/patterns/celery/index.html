@@ -1,0 +1,192 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Background Tasks With Celery - Flask - W3cubDocs</title>
+  
+  <meta name="description" content="If your application has a long running task, such as processing some uploaded data or sending email, you don’t want to wait for it to finish during &hellip;">
+  <meta name="keywords" content="background, tasks, with, celery, flask">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/flask/patterns/celery/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/flask.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/flask/" class="_nav-link" title="" style="margin-left:0;">Flask</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Background Tasks with Celery</h1> <p>If your application has a long running task, such as processing some uploaded data or sending email, you don’t want to wait for it to finish during a request. Instead, use a task queue to send the necessary data to another process that will run the task in the background while the request returns immediately.</p> <p><a class="reference external" href="https://celery.readthedocs.io">Celery</a> is a powerful task queue that can be used for simple background tasks as well as complex multi-stage programs and schedules. This guide will show you how to configure Celery using Flask. Read Celery’s <a class="reference external" href="https://celery.readthedocs.io/en/latest/getting-started/first-steps-with-celery.html">First Steps with Celery</a> guide to learn how to use Celery itself.</p> <p>The Flask repository contains <a class="reference external" href="https://github.com/pallets/flask/tree/main/examples/celery">an example</a> based on the information on this page, which also shows how to use JavaScript to submit tasks and poll for progress and results.</p> <section id="install"> <h2>Install</h2> <p>Install Celery from PyPI, for example using pip:</p> <pre data-language="text">$ pip install celery
+</pre> </section> <section id="integrate-celery-with-flask"> <h2>Integrate Celery with Flask</h2> <p>You can use Celery without any integration with Flask, but it’s convenient to configure it through Flask’s config, and to let tasks access the Flask application.</p> <p>Celery uses similar ideas to Flask, with a <code>Celery</code> app object that has configuration and registers tasks. While creating a Flask app, use the following code to create and configure a Celery app as well.</p> <pre data-language="python">from celery import Celery, Task
+
+def celery_init_app(app: Flask) -&gt; Celery:
+    class FlaskTask(Task):
+        def __call__(self, *args: object, **kwargs: object) -&gt; object:
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery_app = Celery(app.name, task_cls=FlaskTask)
+    celery_app.config_from_object(app.config["CELERY"])
+    celery_app.set_default()
+    app.extensions["celery"] = celery_app
+    return celery_app
+</pre> <p>This creates and returns a <code>Celery</code> app object. Celery <a class="reference external" href="https://celery.readthedocs.io/en/stable/userguide/configuration.html">configuration</a> is taken from the <code>CELERY</code> key in the Flask configuration. The Celery app is set as the default, so that it is seen during each request. The <code>Task</code> subclass automatically runs task functions with a Flask app context active, so that services like your database connections are available.</p> <p>Here’s a basic <code>example.py</code> that configures Celery to use Redis for communication. We enable a result backend, but ignore results by default. This allows us to store results only for tasks where we care about the result.</p> <pre data-language="python">from flask import Flask
+
+app = Flask(__name__)
+app.config.from_mapping(
+    CELERY=dict(
+        broker_url="redis://localhost",
+        result_backend="redis://localhost",
+        task_ignore_result=True,
+    ),
+)
+celery_app = celery_init_app(app)
+</pre> <p>Point the <code>celery worker</code> command at this and it will find the <code>celery_app</code> object.</p> <pre data-language="text">$ celery -A example worker --loglevel INFO
+</pre> <p>You can also run the <code>celery beat</code> command to run tasks on a schedule. See Celery’s docs for more information about defining schedules.</p> <pre data-language="text">$ celery -A example beat --loglevel INFO
+</pre> </section> <section id="application-factory"> <h2>Application Factory</h2> <p>When using the Flask application factory pattern, call the <code>celery_init_app</code> function inside the factory. It sets <code>app.extensions["celery"]</code> to the Celery app object, which can be used to get the Celery app from the Flask app returned by the factory.</p> <pre data-language="python">def create_app() -&gt; Flask:
+    app = Flask(__name__)
+    app.config.from_mapping(
+        CELERY=dict(
+            broker_url="redis://localhost",
+            result_backend="redis://localhost",
+            task_ignore_result=True,
+        ),
+    )
+    app.config.from_prefixed_env()
+    celery_init_app(app)
+    return app
+</pre> <p>To use <code>celery</code> commands, Celery needs an app object, but that’s no longer directly available. Create a <code>make_celery.py</code> file that calls the Flask app factory and gets the Celery app from the returned Flask app.</p> <pre data-language="python">from example import create_app
+
+flask_app = create_app()
+celery_app = flask_app.extensions["celery"]
+</pre> <p>Point the <code>celery</code> command to this file.</p> <pre data-language="text">$ celery -A make_celery worker --loglevel INFO
+$ celery -A make_celery beat --loglevel INFO
+</pre> </section> <section id="defining-tasks"> <h2>Defining Tasks</h2> <p>Using <code>@celery_app.task</code> to decorate task functions requires access to the <code>celery_app</code> object, which won’t be available when using the factory pattern. It also means that the decorated tasks are tied to the specific Flask and Celery app instances, which could be an issue during testing if you change configuration for a test.</p> <p>Instead, use Celery’s <code>@shared_task</code> decorator. This creates task objects that will access whatever the “current app” is, which is a similar concept to Flask’s blueprints and app context. This is why we called <code>celery_app.set_default()</code> above.</p> <p>Here’s an example task that adds two numbers together and returns the result.</p> <pre data-language="python">from celery import shared_task
+
+@shared_task(ignore_result=False)
+def add_together(a: int, b: int) -&gt; int:
+    return a + b
+</pre> <p>Earlier, we configured Celery to ignore task results by default. Since we want to know the return value of this task, we set <code>ignore_result=False</code>. On the other hand, a task that didn’t need a result, such as sending an email, wouldn’t set this.</p> </section> <section id="calling-tasks"> <h2>Calling Tasks</h2> <p>The decorated function becomes a task object with methods to call it in the background. The simplest way is to use the <code>delay(*args, **kwargs)</code> method. See Celery’s docs for more methods.</p> <p>A Celery worker must be running to run the task. Starting a worker is shown in the previous sections.</p> <pre data-language="python">from flask import request
+
+@app.post("/add")
+def start_add() -&gt; dict[str, object]:
+    a = request.form.get("a", type=int)
+    b = request.form.get("b", type=int)
+    result = add_together.delay(a, b)
+    return {"result_id": result.id}
+</pre> <p>The route doesn’t get the task’s result immediately. That would defeat the purpose by blocking the response. Instead, we return the running task’s result id, which we can use later to get the result.</p> </section> <section id="getting-results"> <h2>Getting Results</h2> <p>To fetch the result of the task we started above, we’ll add another route that takes the result id we returned before. We return whether the task is finished (ready), whether it finished successfully, and what the return value (or error) was if it is finished.</p> <pre data-language="python">from celery.result import AsyncResult
+
+@app.get("/result/&lt;id&gt;")
+def task_result(id: str) -&gt; dict[str, object]:
+    result = AsyncResult(id)
+    return {
+        "ready": result.ready(),
+        "successful": result.successful(),
+        "value": result.result if result.ready() else None,
+    }
+</pre> <p>Now you can start the task using the first route, then poll for the result using the second route. This keeps the Flask request workers from being blocked waiting for tasks to finish.</p> <p>The Flask repository contains <a class="reference external" href="https://github.com/pallets/flask/tree/main/examples/celery">an example</a> using JavaScript to submit tasks and poll for progress and results.</p> </section> <section id="passing-data-to-tasks"> <h2>Passing Data to Tasks</h2> <p>The “add” task above took two integers as arguments. To pass arguments to tasks, Celery has to serialize them to a format that it can pass to other processes. Therefore, passing complex objects is not recommended. For example, it would be impossible to pass a SQLAlchemy model object, since that object is probably not serializable and is tied to the session that queried it.</p> <p>Pass the minimal amount of data necessary to fetch or recreate any complex data within the task. Consider a task that will run when the logged in user asks for an archive of their data. The Flask request knows the logged in user, and has the user object queried from the database. It got that by querying the database for a given id, so the task can do the same thing. Pass the user’s id rather than the user object.</p> <pre data-language="python">@shared_task
+def generate_user_archive(user_id: str) -&gt; None:
+    user = db.session.get(User, user_id)
+    ...
+
+generate_user_archive.delay(current_user.id)
+</pre> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 Pallets<br>Licensed under the BSD 3-clause License.<br>
+    <a href="https://flask.palletsprojects.com/en/stable/patterns/celery/" class="_attribution-link">https://flask.palletsprojects.com/en/stable/patterns/celery/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

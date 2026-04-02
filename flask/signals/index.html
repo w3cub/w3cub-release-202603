@@ -1,0 +1,161 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Signals - Flask - W3cubDocs</title>
+  
+  <meta name="description" content="Signals are a lightweight way to notify subscribers of certain events during the lifecycle of the application and each request. When an event occurs &hellip;">
+  <meta name="keywords" content="signals, flask">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/flask/signals/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/flask.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/flask/" class="_nav-link" title="" style="margin-left:0;">Flask</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Signals</h1> <p>Signals are a lightweight way to notify subscribers of certain events during the lifecycle of the application and each request. When an event occurs, it emits the signal, which calls each subscriber.</p> <p>Signals are implemented by the <a class="reference external" href="https://pypi.org/project/blinker/">Blinker</a> library. See its documentation for detailed information. Flask provides some built-in signals. Extensions may provide their own.</p> <p>Many signals mirror Flask’s decorator-based callbacks with similar names. For example, the <a class="reference internal" href="../api/index#flask.request_started" title="flask.request_started"><code>request_started</code></a> signal is similar to the <a class="reference internal" href="../api/index#flask.Flask.before_request" title="flask.Flask.before_request"><code>before_request()</code></a> decorator. The advantage of signals over handlers is that they can be subscribed to temporarily, and can’t directly affect the application. This is useful for testing, metrics, auditing, and more. For example, if you want to know what templates were rendered at what parts of what requests, there is a signal that will notify you of that information.</p> <section id="core-signals"> <h2>Core Signals</h2> <p>See <a class="reference internal" href="../api/index#core-signals-list"><span class="std std-ref">Signals</span></a> for a list of all built-in signals. The <a class="reference internal" href="../lifecycle/index"><span class="doc">Application Structure and Lifecycle</span></a> page also describes the order that signals and decorators execute.</p> </section> <section id="subscribing-to-signals"> <h2>Subscribing to Signals</h2> <p>To subscribe to a signal, you can use the <code>connect()</code> method of a signal. The first argument is the function that should be called when the signal is emitted, the optional second argument specifies a sender. To unsubscribe from a signal, you can use the <code>disconnect()</code> method.</p> <p>For all core Flask signals, the sender is the application that issued the signal. When you subscribe to a signal, be sure to also provide a sender unless you really want to listen for signals from all applications. This is especially true if you are developing an extension.</p> <p>For example, here is a helper context manager that can be used in a unit test to determine which templates were rendered and what variables were passed to the template:</p> <pre data-language="python">from flask import template_rendered
+from contextlib import contextmanager
+
+@contextmanager
+def captured_templates(app):
+    recorded = []
+    def record(sender, template, context, **extra):
+        recorded.append((template, context))
+    template_rendered.connect(record, app)
+    try:
+        yield recorded
+    finally:
+        template_rendered.disconnect(record, app)
+</pre> <p>This can now easily be paired with a test client:</p> <pre data-language="python">with captured_templates(app) as templates:
+    rv = app.test_client().get('/')
+    assert rv.status_code == 200
+    assert len(templates) == 1
+    template, context = templates[0]
+    assert template.name == 'index.html'
+    assert len(context['items']) == 10
+</pre> <p>Make sure to subscribe with an extra <code>**extra</code> argument so that your calls don’t fail if Flask introduces new arguments to the signals.</p> <p>All the template rendering in the code issued by the application <code>app</code> in the body of the <code>with</code> block will now be recorded in the <code>templates</code> variable. Whenever a template is rendered, the template object as well as context are appended to it.</p> <p>Additionally there is a convenient helper method (<code>connected_to()</code>) that allows you to temporarily subscribe a function to a signal with a context manager on its own. Because the return value of the context manager cannot be specified that way, you have to pass the list in as an argument:</p> <pre data-language="python">from flask import template_rendered
+
+def captured_templates(app, recorded, **extra):
+    def record(sender, template, context):
+        recorded.append((template, context))
+    return template_rendered.connected_to(record, app)
+</pre> <p>The example above would then look like this:</p> <pre data-language="python">templates = []
+with captured_templates(app, templates, **extra):
+    ...
+    template, context = templates[0]
+</pre> </section> <section id="creating-signals"> <h2>Creating Signals</h2> <p>If you want to use signals in your own application, you can use the blinker library directly. The most common use case are named signals in a custom <a class="reference external" href="https://blinker.readthedocs.io/en/stable/#blinker.Namespace" title="(in Blinker v1.9)"><code>Namespace</code></a>. This is what is recommended most of the time:</p> <pre data-language="python">from blinker import Namespace
+my_signals = Namespace()
+</pre> <p>Now you can create new signals like this:</p> <pre data-language="python">model_saved = my_signals.signal('model-saved')
+</pre> <p>The name for the signal here makes it unique and also simplifies debugging. You can access the name of the signal with the <code>name</code> attribute.</p> </section> <section id="sending-signals"> <h2 id="signals-sending">Sending Signals</h2> <p>If you want to emit a signal, you can do so by calling the <code>send()</code> method. It accepts a sender as first argument and optionally some keyword arguments that are forwarded to the signal subscribers:</p> <pre data-language="python">class Model(object):
+    ...
+
+    def save(self):
+        model_saved.send(self)
+</pre> <p>Try to always pick a good sender. If you have a class that is emitting a signal, pass <code>self</code> as sender. If you are emitting a signal from a random function, you can pass <code>current_app._get_current_object()</code> as sender.</p> <div class="admonition-passing-proxies-as-senders admonition"> <p class="admonition-title">Passing Proxies as Senders</p> <p>Never pass <a class="reference internal" href="../api/index#flask.current_app" title="flask.current_app"><code>current_app</code></a> as sender to a signal. Use <code>current_app._get_current_object()</code> instead. The reason for this is that <a class="reference internal" href="../api/index#flask.current_app" title="flask.current_app"><code>current_app</code></a> is a proxy and not the real application object.</p> </div> </section> <section id="signals-and-flask-s-request-context"> <h2>Signals and Flask’s Request Context</h2> <p>Signals fully support <a class="reference internal" href="../reqcontext/index"><span class="doc">The Request Context</span></a> when receiving signals. Context-local variables are consistently available between <a class="reference internal" href="../api/index#flask.request_started" title="flask.request_started"><code>request_started</code></a> and <a class="reference internal" href="../api/index#flask.request_finished" title="flask.request_finished"><code>request_finished</code></a>, so you can rely on <a class="reference internal" href="../api/index#flask.g" title="flask.g"><code>flask.g</code></a> and others as needed. Note the limitations described in <a class="reference internal" href="#signals-sending"><span class="std std-ref">Sending Signals</span></a> and the <a class="reference internal" href="../api/index#flask.request_tearing_down" title="flask.request_tearing_down"><code>request_tearing_down</code></a> signal.</p> </section> <section id="decorator-based-signal-subscriptions"> <h2>Decorator Based Signal Subscriptions</h2> <p>You can also easily subscribe to signals by using the <code>connect_via()</code> decorator:</p> <pre data-language="python">from flask import template_rendered
+
+@template_rendered.connect_via(app)
+def when_template_rendered(sender, template, context, **extra):
+    print(f'Template {template.name} is rendered with {context}')
+</pre> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 Pallets<br>Licensed under the BSD 3-clause License.<br>
+    <a href="https://flask.palletsprojects.com/en/stable/signals/" class="_attribution-link">https://flask.palletsprojects.com/en/stable/signals/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
