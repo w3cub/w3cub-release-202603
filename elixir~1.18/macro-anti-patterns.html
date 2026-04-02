@@ -1,0 +1,296 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Meta-programming Anti-patterns - Elixir 1.18 - W3cubDocs</title>
+  
+  <meta name="description" content=" This document outlines potential anti-patterns related to meta-programming. ">
+  <meta name="keywords" content="meta-programming, anti-patterns, elixir, elixir~1.18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elixir~1.18/macro-anti-patterns.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elixir~1.18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elixir~1.18/" class="_nav-link" title="" style="margin-left:0;">Elixir 1.18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<div id="top-content"> <h1> <a href="https://github.com/elixir-lang/elixir/blob/v1.18.1/lib/elixir/pages/anti-patterns/macro-anti-patterns.md#L1" title="View Source" class="source" rel="help">Source</a> <span>Meta-programming anti-patterns</span> </h1> <p>This document outlines potential anti-patterns related to meta-programming.</p>
+<h2 id="compile-time-dependencies" class="section-heading">  <span class="text">Compile-time dependencies</span> </h2> <h4>Problem</h4>
+<p>This anti-pattern is related to dependencies between files in Elixir. Because macros are used at compile-time, the use of any macro in Elixir adds a compile-time dependency to the module that defines the macro.</p>
+<p>However, when macros are used in the body of a module, the arguments to the macro themselves may become compile-time dependencies. These dependencies may lead to dependency graphs where changing a single file causes several files to be recompiled.</p>
+<h4>Example</h4>
+<p>Let's take the <a href="https://github.com/elixir-plug/plug"><code class="inline">Plug</code></a> library as an example. The <code class="inline">Plug</code> project allows you specify several modules, also known as plugs, which will be invoked whenever there is a request. As a user of <code class="inline">Plug</code>, you would use it as follows:</p>
+<pre data-language="elixir">defmodule MyApp do
+  use Plug.Builder
+
+  plug MyApp.Authentication
+end</pre>
+<p>And imagine <code class="inline">Plug</code> has the following definitions of the macros above (simplified):</p>
+<pre data-language="elixir">defmodule Plug.Builder do
+  defmacro __using__(_opts) do
+    quote do
+      Module.register_attribute(__MODULE__, :plugs, accumulate: true)
+      @before_compile Plug.Builder
+    end
+  end
+
+  defmacro plug(mod) do
+    quote do
+      @plugs unquote(mod)
+    end
+  end
+
+  ...
+end</pre>
+<p>The implementation accumulates all modules inside the <code class="inline">@plugs</code> module attribute. Right before the module is compiled, <code class="inline">Plug.Builder</code> will reads all modules stored in <code class="inline">@plugs</code> and compile them into a function, like this:</p>
+<pre data-language="elixir">def call(conn, _opts) do
+  MyApp.Authentication.call(conn)
+end</pre>
+<p>The trouble with the code above is that, because the <code class="inline">plug MyApp.Authentication</code> was invoked at compile-time, the module <code class="inline">MyApp.Authentication</code> is now a compile-time dependency of <code class="inline">MyApp</code>, even though <code class="inline">MyApp.Authentication</code> is never used at compile-time. If <code class="inline">MyApp.Authentication</code> depends on other modules, even at runtime, this can now lead to a large recompilation graph in case of changes.</p>
+<h4>Refactoring</h4>
+<p>To address this anti-pattern, a macro can expand literals within the context they are meant to be used, as follows:</p>
+<pre data-language="elixir">  defmacro plug(mod) do
+    mod = Macro.expand_literals(mod, %{__CALLER__ | function: {:call, 2}})
+
+    quote do
+      @plugs unquote(mod)
+    end
+  end</pre>
+<p>In the example above, since <code class="inline">mod</code> is used only within the <code class="inline">call/2</code> function, we prematurely expand module reference as if it was inside the <code class="inline">call/2</code> function. Now <code class="inline">MyApp.Authentication</code> is only a runtime dependency of <code class="inline">MyApp</code>, no longer a compile-time one.</p>
+<p>Note, however, the above must only be done if your macros do not attempt to invoke any function, access any struct, or any other metadata of the module at compile-time. If you interact with the module given to a macro anywhere outside of definition of a function, then you effectively have a compile-time dependency. And, even though you generally want to avoid them, it is not always possible.</p>
+<p>In actual projects, developers may use <code class="inline">mix xref trace path/to/file.ex</code> to execute a file and have it print information about which modules it depends on, and if those modules are compile-time, runtime, or export dependencies. See <a href="https://hexdocs.pm/mix/1.18.1/Mix.Tasks.Xref.html"><code class="inline">mix xref</code></a> for more information.</p>
+<h2 id="large-code-generation" class="section-heading">  <span class="text">Large code generation</span> </h2> <h4>Problem</h4>
+<p>This anti-pattern is related to macros that generate too much code. When a macro generates a large amount of code, it impacts how the compiler and/or the runtime work. The reason for this is that Elixir may have to expand, compile, and execute the code multiple times, which will make compilation slower and the resulting compiled artifacts larger.</p>
+<h4>Example</h4>
+<p>Imagine you are defining a router for a web application, where you could have macros like <code class="inline">get/2</code>. On every invocation of the macro (which could be hundreds), the code inside <code class="inline">get/2</code> will be expanded and compiled, which can generate a large volume of code overall.</p>
+<pre data-language="elixir">defmodule Routes do
+  defmacro get(route, handler) do
+    quote do
+      route = unquote(route)
+      handler = unquote(handler)
+
+      if not is_binary(route) do
+        raise ArgumentError, "route must be a binary"
+      end
+
+      if not is_atom(handler) do
+        raise ArgumentError, "handler must be a module"
+      end
+
+      @store_route_for_compilation {route, handler}
+    end
+  end
+end</pre>
+<h4>Refactoring</h4>
+<p>To remove this anti-pattern, the developer should simplify the macro, delegating part of its work to other functions. As shown below, by encapsulating the code inside <code class="inline">quote/1</code> inside the function <code class="inline">__define__/3</code> instead, we reduce the code that is expanded and compiled on every invocation of the macro, and instead we dispatch to a function to do the bulk of the work.</p>
+<pre data-language="elixir">defmodule Routes do
+  defmacro get(route, handler) do
+    quote do
+      Routes.__define__(__MODULE__, unquote(route), unquote(handler))
+    end
+  end
+
+  def __define__(module, route, handler) do
+    if not is_binary(route) do
+      raise ArgumentError, "route must be a binary"
+    end
+
+    if not is_atom(handler) do
+      raise ArgumentError, "handler must be a module"
+    end
+
+    Module.put_attribute(module, :store_route_for_compilation, {route, handler})
+  end
+end</pre>
+<h2 id="unnecessary-macros" class="section-heading">  <span class="text">Unnecessary macros</span> </h2> <h4>Problem</h4>
+<p><em>Macros</em> are powerful meta-programming mechanisms that can be used in Elixir to extend the language. While using macros is not an anti-pattern in itself, this meta-programming mechanism should only be used when absolutely necessary. Whenever a macro is used, but it would have been possible to solve the same problem using functions or other existing Elixir structures, the code becomes unnecessarily more complex and less readable. Because macros are more difficult to implement and reason about, their indiscriminate use can compromise the evolution of a system, reducing its maintainability.</p>
+<h4>Example</h4>
+<p>The <code class="inline">MyMath</code> module implements the <code class="inline">sum/2</code> macro to perform the sum of two numbers received as parameters. While this code has no syntax errors and can be executed correctly to get the desired result, it is unnecessarily more complex. By implementing this functionality as a macro rather than a conventional function, the code became less clear:</p>
+<pre data-language="elixir">defmodule MyMath do
+  defmacro sum(v1, v2) do
+    quote do
+      unquote(v1) + unquote(v2)
+    end
+  end
+end</pre>
+<pre data-language="elixir">iex&gt; require MyMath
+MyMath
+iex&gt; MyMath.sum(3, 5)
+8
+iex&gt; MyMath.sum(3 + 1, 5 + 6)
+15</pre>
+<h4>Refactoring</h4>
+<p>To remove this anti-pattern, the developer must replace the unnecessary macro with structures that are simpler to write and understand, such as named functions. The code shown below is the result of the refactoring of the previous example. Basically, the <code class="inline">sum/2</code> macro has been transformed into a conventional named function. Note that the <a href="kernel.specialforms#require/2"><code class="inline">require/2</code></a> call is no longer needed:</p>
+<pre data-language="elixir">defmodule MyMath do
+  def sum(v1, v2) do # &lt;= The macro became a named function
+    v1 + v2
+  end
+end</pre>
+<pre data-language="elixir">iex&gt; MyMath.sum(3, 5)
+8
+iex&gt; MyMath.sum(3+1, 5+6)
+15</pre>
+<h2 id="use-instead-of-import" class="section-heading">  <span class="text"><code class="inline">use</code> instead of <code class="inline">import</code></span> </h2> <h4>Problem</h4>
+<p>Elixir has mechanisms such as <code class="inline">import/1</code>, <code class="inline">alias/1</code>, and <a href="kernel#use/1"><code class="inline">use/1</code></a> to establish dependencies between modules. Code implemented with these mechanisms does not characterize a smell by itself. However, while the <code class="inline">import/1</code> and <code class="inline">alias/1</code> directives have lexical scope and only facilitate a module calling functions of another, the <a href="kernel#use/1"><code class="inline">use/1</code></a> directive has a <em>broader scope</em>, which can be problematic.</p>
+<p>The <a href="kernel#use/1"><code class="inline">use/1</code></a> directive allows a module to inject any type of code into another, including propagating dependencies. In this way, using the <a href="kernel#use/1"><code class="inline">use/1</code></a> directive makes code harder to read, because to understand exactly what will happen when it references a module, it is necessary to have knowledge of the internal details of the referenced module.</p>
+<h4>Example</h4>
+<p>The code shown below is an example of this anti-pattern. It defines three modules -- <code class="inline">ModuleA</code>, <code class="inline">Library</code>, and <code class="inline">ClientApp</code>. <code class="inline">ClientApp</code> is reusing code from the <code class="inline">Library</code> via the <a href="kernel#use/1"><code class="inline">use/1</code></a> directive, but is unaware of its internal details. This makes it harder for the author of <code class="inline">ClientApp</code> to visualize which modules and functionality are now available within its module. To make matters worse, <code class="inline">Library</code> also imports <code class="inline">ModuleA</code>, which defines a <code class="inline">foo/0</code> function that conflicts with a local function defined in <code class="inline">ClientApp</code>:</p>
+<pre data-language="elixir">defmodule ModuleA do
+  def foo do
+    "From Module A"
+  end
+end</pre>
+<pre data-language="elixir">defmodule Library do
+  defmacro __using__(_opts) do
+    quote do
+      import Library
+      import ModuleA  # &lt;= propagating dependencies!
+    end
+  end
+
+  def from_lib do
+    "From Library"
+  end
+end</pre>
+<pre data-language="elixir">defmodule ClientApp do
+  use Library
+
+  def foo do
+    "Local function from client app"
+  end
+
+  def from_client_app do
+    from_lib() &lt;&gt; " - " &lt;&gt; foo()
+  end
+end</pre>
+<p>When we try to compile <code class="inline">ClientApp</code>, Elixir detects the conflict and throws the following error:</p>
+<pre data-language="elixir">error: imported ModuleA.foo/0 conflicts with local function
+  └ client_app.ex:4:</pre>
+<h4>Refactoring</h4>
+<p>To remove this anti-pattern, we recommend library authors avoid providing <code class="inline">__using__/1</code> callbacks whenever it can be replaced by <code class="inline">alias/1</code> or <code class="inline">import/1</code> directives. In the following code, we assume <code class="inline">use Library</code> is no longer available and <code class="inline">ClientApp</code> was refactored in this way, and with that, the code is clearer and the conflict as previously shown no longer exists:</p>
+<pre data-language="elixir">defmodule ClientApp do
+  import Library
+
+  def foo do
+    "Local function from client app"
+  end
+
+  def from_client_app do
+    from_lib() &lt;&gt; " - " &lt;&gt; foo()
+  end
+end</pre>
+<pre data-language="elixir">iex&gt; ClientApp.from_client_app()
+"From Library - Local function from client app"</pre>
+<h4>Additional remarks</h4>
+<p>In situations where you need to do more than importing and aliasing modules, providing <code class="inline">use MyModule</code> may be necessary, as it provides a common extension point within the Elixir ecosystem.</p>
+<p>Therefore, to provide guidance and clarity, we recommend library authors to include an admonition block in their <code class="inline">@moduledoc</code> that explains how <code class="inline">use MyModule</code> impacts the developer's code. As an example, the <a href="genserver"><code class="inline">GenServer</code></a> documentation outlines:</p>
+<section role="note" class="admonition info"><h4 class="admonition-title info"><code class="inline">use GenServer</code></h4>
+<p>When you <code class="inline">use GenServer</code>, the <a href="genserver"><code class="inline">GenServer</code></a> module will set <code class="inline">@behaviour GenServer</code> and define a <code class="inline">child_spec/1</code> function, so your module can be used as a child in a supervision tree.</p></section><p>Think of this summary as a <a href="https://en.wikipedia.org/wiki/Nutrition_facts_label">"Nutrition facts label"</a> for code generation. Make sure to only list changes made to the public API of the module. For example, if <code class="inline">use Library</code> sets an internal attribute called <code class="inline">@_some_module_info</code> and this attribute is never meant to be public, avoid documenting it in the nutrition facts.</p>
+<p>For convenience, the markup notation to generate the admonition block above is this:</p>
+<pre data-language="elixir">&gt; #### `use GenServer` {: .info}
+&gt;
+&gt; When you `use GenServer`, the `GenServer` module will
+&gt; set `@behaviour GenServer` and define a `child_spec/1`
+&gt; function, so your module can be used as a child
+&gt; in a supervision tree.</pre> </div> <div class="bottom-actions" id="bottom-actions"> <div class="bottom-actions-item"> <a href="process-anti-patterns" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Process-related anti-patterns </span> </a> </div> <div class="bottom-actions-item"> <a href="quote-and-unquote" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> Quote and unquote </span> </a> </div> </div> <footer class="footer"> <p> <span class="line"> <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages"> Search HexDocs </button> <a href="elixir.epub" title="ePub version"> Download ePub version </a> </span> </p> <p class="built-using"> Built using <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.36.1) for the <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a> </p> </footer><div class="_attribution">
+  <p class="_attribution-p">
+    © 2012-2024 The Elixir Team<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/elixir/1.18.1/macro-anti-patterns.html" class="_attribution-link">https://hexdocs.pm/elixir/1.18.1/macro-anti-patterns.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

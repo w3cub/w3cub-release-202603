@@ -1,0 +1,225 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Case, Cond, and if - Elixir 1.18 - W3cubDocs</title>
+  
+  <meta name="description" content=" In this chapter, we will learn about the case, cond, and if control flow structures. ">
+  <meta name="keywords" content="case, cond, and, if, elixir, elixir~1.18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elixir~1.18/case-cond-and-if.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elixir~1.18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elixir~1.18/" class="_nav-link" title="" style="margin-left:0;">Elixir 1.18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<div id="top-content"> <h1> <a href="https://github.com/elixir-lang/elixir/blob/v1.18.1/lib/elixir/pages/getting-started/case-cond-and-if.md#L1" title="View Source" class="source" rel="help">Source</a> <span>case, cond, and if</span> </h1> <p>In this chapter, we will learn about the <a href="kernel.specialforms#case/2"><code class="inline">case</code></a>, <a href="kernel.specialforms#cond/1"><code class="inline">cond</code></a>, and <a href="kernel#if/2"><code class="inline">if</code></a> control flow structures.</p>
+<h2 id="case" class="section-heading">  <span class="text">case</span> </h2> <p><a href="kernel.specialforms#case/2"><code class="inline">case</code></a> allows us to compare a value against many patterns until we find a matching one:</p>
+<pre data-language="elixir">iex&gt; case {1, 2, 3} do
+...&gt;   {4, 5, 6} -&gt;
+...&gt;     "This clause won't match"
+...&gt;   {1, x, 3} -&gt;
+...&gt;     "This clause will match and bind x to 2 in this clause"
+...&gt;   _ -&gt;
+...&gt;     "This clause would match any value"
+...&gt; end
+"This clause will match and bind x to 2 in this clause"</pre>
+<p>If you want to pattern match against an existing variable, you need to use the <a href="kernel.specialforms#%5E/1"><code class="inline">^</code></a> operator:</p>
+<pre data-language="elixir">iex&gt; x = 1
+1
+iex&gt; case 10 do
+...&gt;   ^x -&gt; "Won't match"
+...&gt;   _ -&gt; "Will match"
+...&gt; end
+"Will match"</pre>
+<p>Clauses also allow extra conditions to be specified via guards:</p>
+<pre data-language="elixir">iex&gt; case {1, 2, 3} do
+...&gt;   {1, x, 3} when x &gt; 0 -&gt;
+...&gt;     "Will match"
+...&gt;   _ -&gt;
+...&gt;     "Would match, if guard condition were not satisfied"
+...&gt; end
+"Will match"</pre>
+<p>The first clause above will only match when <code class="inline">x</code> is positive.</p>
+<p>Keep in mind errors in guards do not leak but simply make the guard fail:</p>
+<pre data-language="elixir">iex&gt; hd(1)
+** (ArgumentError) argument error
+iex&gt; case 1 do
+...&gt;   x when hd(x) -&gt; "Won't match"
+...&gt;   x -&gt; "Got #{x}"
+...&gt; end
+"Got 1"</pre>
+<p>If none of the clauses match, an error is raised:</p>
+<pre data-language="elixir">iex&gt; case :ok do
+...&gt;   :error -&gt; "Won't match"
+...&gt; end
+** (CaseClauseError) no case clause matching: :ok</pre>
+<p>The documentation for the <a href="kernel"><code class="inline">Kernel</code></a> module lists all available guards in its sidebar. You can also consult the complete <a href="patterns-and-guards#guards">Patterns and Guards</a> reference for in-depth documentation.</p>
+<h2 id="if" class="section-heading">  <span class="text">if</span> </h2> <p><a href="kernel.specialforms#case/2"><code class="inline">case</code></a> builds on pattern matching and guards to destructure and match on certain conditions. However, patterns and guards are limited only to certain expressions which are optimized by the compiler. In many situations, you need to write conditions that go beyond what can be expressed with <a href="kernel.specialforms#case/2"><code class="inline">case</code></a>. For those, <a href="kernel#if/2"><code class="inline">if</code></a> is a useful alternative:</p>
+<pre data-language="elixir">iex&gt; if true do
+...&gt;   "This works!"
+...&gt; end
+"This works!"
+iex&gt; if false do
+...&gt;   "This will never be seen"
+...&gt; end
+nil</pre>
+<p>If the condition given to <a href="kernel#if/2"><code class="inline">if</code></a> returns <code class="inline">false</code> or <code class="inline">nil</code>, the body given between <code class="inline">do</code>-<code class="inline">end</code> is not executed and instead it returns <code class="inline">nil</code>.</p>
+<p><a href="kernel#if/2"><code class="inline">if</code></a> also supports <code class="inline">else</code> blocks:</p>
+<pre data-language="elixir">iex&gt; if nil do
+...&gt;   "This won't be seen"
+...&gt; else
+...&gt;   "This will"
+...&gt; end
+"This will"</pre>
+<p>This is also a good opportunity to talk about variable scoping in Elixir. If any variable is declared or changed inside <a href="kernel#if/2"><code class="inline">if</code></a>, <a href="kernel.specialforms#case/2"><code class="inline">case</code></a>, and similar constructs, the declaration and change will only be visible inside the construct. For example:</p>
+<pre data-language="elixir">iex&gt; x = 1
+1
+iex&gt; if true do
+...&gt;   x = x + 1
+...&gt; end
+2
+iex&gt; x
+1</pre>
+<p>In said cases, if you want to change a value, you must return the value from the <a href="kernel#if/2"><code class="inline">if</code></a>:</p>
+<pre data-language="elixir">iex&gt; x = 1
+1
+iex&gt; x = if true do
+...&gt;   x + 1
+...&gt; else
+...&gt;   x
+...&gt; end
+2</pre>
+<section role="note" class="admonition info"><h4 class="admonition-title info">
+<code class="inline">if</code> is a macro</h4>
+<p>An interesting note regarding <a href="kernel#if/2"><code class="inline">if</code></a> is that it is implemented as a macro in the language: it isn't a special language construct as it would be in many languages. You can check the documentation and its source for more information.</p></section><p>If you find yourself nesting several <a href="kernel#if/2"><code class="inline">if</code></a> blocks, you may want to consider using <a href="kernel.specialforms#cond/1"><code class="inline">cond</code></a> instead. Let's check it out.</p>
+<h2 id="cond" class="section-heading">  <span class="text">cond</span> </h2> <p>We have used <code class="inline">case</code> to find a matching clauses from many patterns. We have used <code class="inline">if</code> to check for a single condition. If you need to check across several conditions and find the first one that does not evaluate to <code class="inline">nil</code> or <code class="inline">false</code>, <a href="kernel.specialforms#cond/1"><code class="inline">cond</code></a> is a useful construct:</p>
+<pre data-language="elixir">iex&gt; cond do
+...&gt;   2 + 2 == 5 -&gt;
+...&gt;     "This will not be true"
+...&gt;   2 * 2 == 3 -&gt;
+...&gt;     "Nor this"
+...&gt;   1 + 1 == 2 -&gt;
+...&gt;     "But this will"
+...&gt; end
+"But this will"</pre>
+<p>This is equivalent to <code class="inline">else if</code> clauses in many imperative languages - although used less frequently in Elixir.</p>
+<p>If all of the conditions return <code class="inline">nil</code> or <code class="inline">false</code>, an error (<a href="condclauseerror"><code class="inline">CondClauseError</code></a>) is raised. For this reason, it may be necessary to add a final condition, equal to <code class="inline">true</code>, which will always match:</p>
+<pre data-language="elixir">iex&gt; cond do
+...&gt;   2 + 2 == 5 -&gt;
+...&gt;     "This is never true"
+...&gt;   2 * 2 == 3 -&gt;
+...&gt;     "Nor this"
+...&gt;   true -&gt;
+...&gt;     "This is always true (equivalent to else)"
+...&gt; end
+"This is always true (equivalent to else)"</pre>
+<p>Similar to <a href="kernel#if/2"><code class="inline">if</code></a>, <a href="kernel.specialforms#cond/1"><code class="inline">cond</code></a> considers any value besides <code class="inline">nil</code> and <code class="inline">false</code> to be true:</p>
+<pre data-language="elixir">iex&gt; cond do
+...&gt;   hd([1, 2, 3]) -&gt;
+...&gt;     "1 is considered as true"
+...&gt; end
+"1 is considered as true"</pre>
+<h2 id="summing-up" class="section-heading">  <span class="text">Summing up</span> </h2> <p>We have concluded the introduction to the most fundamental control-flow constructs in Elixir. Generally speaking, Elixir developers prefer pattern matching and guards, using <a href="kernel.specialforms#case/2"><code class="inline">case</code></a> and function definitions (which we will explore in future chapters), as they are succinct and precise. When your logic cannot be outlined within patterns and guards, you may consider <a href="kernel#if/2"><code class="inline">if</code></a>, falling back to <a href="kernel.specialforms#cond/1"><code class="inline">cond</code></a> when there are several conditions to check.</p> </div> <div class="bottom-actions" id="bottom-actions"> <div class="bottom-actions-item"> <a href="pattern-matching" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Pattern matching </span> </a> </div> <div class="bottom-actions-item"> <a href="anonymous-functions" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> Anonymous functions </span> </a> </div> </div> <footer class="footer"> <p> <span class="line"> <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages"> Search HexDocs </button> <a href="elixir.epub" title="ePub version"> Download ePub version </a> </span> </p> <p class="built-using"> Built using <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.36.1) for the <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a> </p> </footer><div class="_attribution">
+  <p class="_attribution-p">
+    © 2012-2024 The Elixir Team<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/elixir/1.18.1/case-cond-and-if.html" class="_attribution-link">https://hexdocs.pm/elixir/1.18.1/case-cond-and-if.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

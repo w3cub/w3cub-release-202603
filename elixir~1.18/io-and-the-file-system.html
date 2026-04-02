@@ -1,0 +1,221 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>IO and the File System - Elixir 1.18 - W3cubDocs</title>
+  
+  <meta name="description" content="This chapter introduces the input&#47;output mechanisms, file-system-related tasks, and related modules such as IO, File, and Path. The IO system &hellip;">
+  <meta name="keywords" content="io, and, file, system, elixir, elixir~1.18">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/elixir~1.18/io-and-the-file-system.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/elixir~1.18.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/elixir~1.18/" class="_nav-link" title="" style="margin-left:0;">Elixir 1.18</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _elixir">
+				
+				
+<div id="top-content"> <h1> <a href="https://github.com/elixir-lang/elixir/blob/v1.18.1/lib/elixir/pages/getting-started/io-and-the-file-system.md#L1" title="View Source" class="source" rel="help">Source</a> <span>IO and the file system</span> </h1> <p>This chapter introduces the input/output mechanisms, file-system-related tasks, and related modules such as <a href="io"><code class="inline">IO</code></a>, <a href="file"><code class="inline">File</code></a>, and <a href="path"><code class="inline">Path</code></a>. The IO system provides a great opportunity to shed some light on some philosophies and curiosities of Elixir and the Erlang VM.</p>
+<h2 id="the-io-module" class="section-heading">  <span class="text">The <a href="io"><code class="inline">IO</code></a> module</span> </h2> <p>The <a href="io"><code class="inline">IO</code></a> module is the main mechanism in Elixir for reading and writing to standard input/output (<code class="inline">:stdio</code>), standard error (<code class="inline">:stderr</code>), files, and other IO devices. Usage of the module is pretty straightforward:</p>
+<pre data-language="elixir">iex&gt; IO.puts("hello world")
+hello world
+:ok
+iex&gt; IO.gets("yes or no? ")
+yes or no? yes
+"yes\n"</pre>
+<p>By default, functions in the <a href="io"><code class="inline">IO</code></a> module read from the standard input and write to the standard output. We can change that by passing, for example, <code class="inline">:stderr</code> as an argument (in order to write to the standard error device):</p>
+<pre data-language="elixir">iex&gt; IO.puts(:stderr, "hello world")
+hello world
+:ok</pre>
+<h2 id="the-file-module" class="section-heading">  <span class="text">The <a href="file"><code class="inline">File</code></a> module</span> </h2> <p>The <a href="file"><code class="inline">File</code></a> module contains functions that allow us to open files as IO devices. By default, files are opened in binary mode, which requires developers to use the specific <a href="io#binread/2"><code class="inline">IO.binread/2</code></a> and <a href="io#binwrite/2"><code class="inline">IO.binwrite/2</code></a> functions from the <a href="io"><code class="inline">IO</code></a> module:</p>
+<section role="note" class="admonition warning"><h4 class="admonition-title warning">Potential data loss warning</h4>
+<p>The following code opens a file for writing. If an existing file is available at the given path, its contents will be deleted.</p></section><pre data-language="elixir">iex&gt; {:ok, file} = File.open("path/to/file/hello", [:write])
+{:ok, #PID&lt;0.47.0&gt;}
+iex&gt; IO.binwrite(file, "world")
+:ok
+iex&gt; File.close(file)
+:ok
+iex&gt; File.read("path/to/file/hello")
+{:ok, "world"}</pre>
+<p>The file could be opened with the <code class="inline">:append</code> option, instead of <code class="inline">:write</code>, to preserve its contents. You may also pass the <code class="inline">:utf8</code> option, which tells the <a href="file"><code class="inline">File</code></a> module to interpret the bytes read from the file as UTF-8-encoded bytes.</p>
+<p>Besides functions for opening, reading and writing files, the <a href="file"><code class="inline">File</code></a> module has many functions to work with the file system. Those functions are named after their UNIX equivalents. For example, <a href="file#rm/1"><code class="inline">File.rm/1</code></a> can be used to remove files, <a href="file#mkdir/1"><code class="inline">File.mkdir/1</code></a> to create directories, <a href="file#mkdir_p/1"><code class="inline">File.mkdir_p/1</code></a> to create directories and all their parent chain. There are even <a href="file#cp_r/2"><code class="inline">File.cp_r/2</code></a> and <a href="file#rm_rf/1"><code class="inline">File.rm_rf/1</code></a> to respectively copy and remove files and directories recursively (i.e., copying and removing the contents of the directories too).</p>
+<p>You will also notice that functions in the <a href="file"><code class="inline">File</code></a> module have two variants: one "regular" variant and another variant with a trailing bang (<code class="inline">!</code>). For example, when we read the <code class="inline">"hello"</code> file in the example above, we use <a href="file#read/1"><code class="inline">File.read/1</code></a>. Alternatively, we can use <a href="file#read!/1"><code class="inline">File.read!/1</code></a>:</p>
+<pre data-language="elixir">iex&gt; File.read("path/to/file/hello")
+{:ok, "world"}
+iex&gt; File.read!("path/to/file/hello")
+"world"
+iex&gt; File.read("path/to/file/unknown")
+{:error, :enoent}
+iex&gt; File.read!("path/to/file/unknown")
+** (File.Error) could not read file "path/to/file/unknown": no such file or directory</pre>
+<p>Notice that the version with <code class="inline">!</code> returns the contents of the file instead of a tuple, and if anything goes wrong the function raises an error.</p>
+<p>The version without <code class="inline">!</code> is preferred when you want to handle different outcomes using pattern matching:</p>
+<pre data-language="elixir">case File.read("path/to/file/hello") do
+  {:ok, body} -&gt; # do something with the `body`
+  {:error, reason} -&gt; # handle the error caused by `reason`
+end</pre>
+<p>However, if you expect the file to be there, the bang variation is more useful as it raises a meaningful error message. Avoid writing:</p>
+<pre data-language="elixir">{:ok, body} = File.read("path/to/file/unknown")</pre>
+<p>as, in case of an error, <a href="file#read/1"><code class="inline">File.read/1</code></a> will return <code class="inline">{:error, reason}</code> and the pattern matching will fail. You will still get the desired result (a raised error), but the message will be about the pattern which doesn't match (thus being cryptic in respect to what the error actually is about).</p>
+<p>Therefore, if you don't want to handle the error outcomes, prefer to use the functions ending with an exclamation mark, such as <a href="file#read!/1"><code class="inline">File.read!/1</code></a>.</p>
+<h2 id="the-path-module" class="section-heading">  <span class="text">The <a href="path"><code class="inline">Path</code></a> module</span> </h2> <p>The majority of the functions in the <a href="file"><code class="inline">File</code></a> module expect paths as arguments. Most commonly, those paths will be regular binaries. The <a href="path"><code class="inline">Path</code></a> module provides facilities for working with such paths:</p>
+<pre data-language="elixir">iex&gt; Path.join("foo", "bar")
+"foo/bar"
+iex&gt; Path.expand("~/hello")
+"/Users/jose/hello"</pre>
+<p>Using functions from the <a href="path"><code class="inline">Path</code></a> module as opposed to directly manipulating strings is preferred since the <a href="path"><code class="inline">Path</code></a> module takes care of different operating systems transparently. Finally, keep in mind that Elixir will automatically convert slashes (<code class="inline">/</code>) into backslashes (<code class="inline">\</code>) on Windows when performing file operations.</p>
+<p>With this, we have covered the main modules that Elixir provides for dealing with IO and interacting with the file system. In the next section, we will peek a bit under the covers and learn how the IO system is implemented in the VM.</p>
+<h2 id="processes" class="section-heading">  <span class="text">Processes</span> </h2> <p>You may have noticed that <a href="file#open/2"><code class="inline">File.open/2</code></a> returns a tuple like <code class="inline">{:ok, pid}</code>:</p>
+<pre data-language="elixir">iex&gt; {:ok, file} = File.open("hello")
+{:ok, #PID&lt;0.47.0&gt;}</pre>
+<p>This happens because the <a href="io"><code class="inline">IO</code></a> module actually works with processes (see <a href="processes">the previous chapter</a>). Given a file is a process, when you write to a file that has been closed, you are actually sending a message to a process which has been terminated:</p>
+<pre data-language="elixir">iex&gt; File.close(file)
+:ok
+iex&gt; IO.write(file, "is anybody out there")
+** (ErlangError) Erlang error: :terminated:
+
+  * 1st argument: the device has terminated
+
+    (stdlib 5.0) io.erl:94: :io.put_chars(#PID&lt;0.114.0&gt;, "is anybody out there")
+    iex:4: (file)</pre>
+<p>Let's see in more detail what happens when you request <code class="inline">IO.write(pid, binary)</code>. The <a href="io"><code class="inline">IO</code></a> module sends a message to the process identified by <code class="inline">pid</code> with the desired operation. A small ad-hoc process can help us see it:</p>
+<pre data-language="elixir">iex&gt; pid = spawn(fn -&gt;
+...&gt;   receive do
+...&gt;     msg -&gt; IO.inspect(msg)
+...&gt;   end
+...&gt; end)
+#PID&lt;0.57.0&gt;
+iex&gt; IO.write(pid, "hello")
+{:io_request, #PID&lt;0.41.0&gt;, #Reference&lt;0.0.8.91&gt;,
+ {:put_chars, :unicode, "hello"}}
+** (ErlangError) erlang error: :terminated</pre>
+<p>After <a href="io#write/2"><code class="inline">IO.write/2</code></a>, we can see the request sent by the <a href="io"><code class="inline">IO</code></a> module printed out (a four-elements tuple). Soon after that, we see that it fails since the <a href="io"><code class="inline">IO</code></a> module expected some kind of result, which we did not supply.</p>
+<p>By modeling IO devices with processes, the Erlang VM allows us to even read and write to files across nodes. Neat!</p>
+<h2 id="iodata-and-chardata" class="section-heading">  <span class="text"><code class="inline">iodata</code> and <code class="inline">chardata</code></span> </h2> <p>In all of the examples above, we used binaries when writing to files. However, most of the IO functions in Elixir also accept either "iodata" or "chardata".</p>
+<p>One of the main reasons for using "iodata" and "chardata" is for performance. For example, imagine you need to greet someone in your application:</p>
+<pre data-language="elixir">name = "Mary"
+IO.puts("Hello " &lt;&gt; name &lt;&gt; "!")</pre>
+<p>Given strings in Elixir are immutable, as most data structures, the example above will copy the string "Mary" into the new "Hello Mary!" string. While this is unlikely to matter for the short string as above, copying can be quite expensive for large strings! For this reason, the IO functions in Elixir allow you to pass instead a list of strings:</p>
+<pre data-language="elixir">name = "Mary"
+IO.puts(["Hello ", name, "!"])</pre>
+<p>In the example above, there is no copying. Instead we create a list that contains the original name. We call such lists either "iodata" or "chardata" and we will learn the precise difference between them soon.</p>
+<p>Those lists are very useful because it can actually simplify the processing strings in several scenarios. For example, imagine you have a list of values, such as <code class="inline">["apple", "banana", "lemon"]</code> that you want to write to disk separated by commas. How can you achieve this?</p>
+<p>One option is to use <a href="enum#join/2"><code class="inline">Enum.join/2</code></a> and convert the values to a string:</p>
+<pre data-language="elixir">iex&gt; Enum.join(["apple", "banana", "lemon"], ",")
+"apple,banana,lemon"</pre>
+<p>The above returns a new string by copying each value into the new string. However, with the knowledge in this section, we know that we can pass a list of strings to the IO/File functions. So instead we can do:</p>
+<pre data-language="elixir">iex&gt; Enum.intersperse(["apple", "banana", "lemon"], ",")
+["apple", ",", "banana", ",", "lemon"]</pre>
+<p>"iodata" and "chardata" do not only contain strings, but they may contain arbitrary nested lists of strings too:</p>
+<pre data-language="elixir">iex&gt; IO.puts(["apple", [",", "banana", [",", "lemon"]]])</pre>
+<p>"iodata" and "chardata" may also contain integers. For example, we could print our comma separated list of values by using <code class="inline">?,</code> as separator, which is the integer representing a comma (<code class="inline">44</code>):</p>
+<pre data-language="elixir">iex&gt; IO.puts(["apple", ?,, "banana", ?,, "lemon"])</pre>
+<p>The difference between "iodata" and "chardata" is precisely what said integer represents. For iodata, the integers represent bytes. For chardata, the integers represent Unicode codepoints. For ASCII characters, the byte representation is the same as the codepoint representation, so it fits both classifications. However, the default IO device works with chardata, which means we can do:</p>
+<pre data-language="elixir">iex&gt; IO.puts([?O, ?l, ?á, ?\s, "Mary", ?!])</pre>
+<p>Charlists, such as <code class="inline">~c"hello world"</code>, are lists of integers, and therefore are chardata.</p>
+<p>We packed a lot into this small section, so let's break it down:</p>
+<ul>
+<li><p>iodata and chardata are lists of binaries and integers. Those binaries and integers can be arbitrarily nested inside lists. Their goal is to give flexibility and performance when working with IO devices and files;</p></li>
+<li><p>the choice between iodata and chardata depends on the encoding of the IO device. If the file is opened without encoding, the file expects iodata, and the functions in the <a href="io"><code class="inline">IO</code></a> module starting with <code class="inline">bin*</code> must be used. The default IO device (<code class="inline">:stdio</code>) and files opened with <code class="inline">:utf8</code> encoding expect chardata and work with the remaining functions in the <a href="io"><code class="inline">IO</code></a> module;</p></li>
+</ul>
+<p>This finishes our tour of IO devices and IO related functionality. We have learned about three Elixir modules - <a href="io"><code class="inline">IO</code></a>, <a href="file"><code class="inline">File</code></a>, and <a href="path"><code class="inline">Path</code></a> - as well as how the VM uses processes for the underlying IO mechanisms and how to use <code class="inline">chardata</code> and <code class="inline">iodata</code> for IO operations.</p> </div> <div class="bottom-actions" id="bottom-actions"> <div class="bottom-actions-item"> <a href="processes" class="bottom-actions-button" rel="prev"> <span class="subheader"> ← Previous Page </span> <span class="title"> Processes </span> </a> </div> <div class="bottom-actions-item"> <a href="alias-require-and-import" class="bottom-actions-button" rel="next"> <span class="subheader"> Next Page → </span> <span class="title"> alias, require, import, and use </span> </a> </div> </div> <footer class="footer"> <p> <span class="line"> <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages"> Search HexDocs </button> <a href="elixir.epub" title="ePub version"> Download ePub version </a> </span> </p> <p class="built-using"> Built using <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.36.1) for the <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a> </p> </footer><div class="_attribution">
+  <p class="_attribution-p">
+    © 2012-2024 The Elixir Team<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://hexdocs.pm/elixir/1.18.1/io-and-the-file-system.html" class="_attribution-link">https://hexdocs.pm/elixir/1.18.1/io-and-the-file-system.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
