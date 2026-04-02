@@ -1,0 +1,143 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Repository Priorities - Composer - W3cubDocs</title>
+  
+  <meta name="description" content="When Composer resolves dependencies, it will look up a given package in the topmost repository. If that repository does not contain the package, it &hellip;">
+  <meta name="keywords" content="repository, priorities, composer">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/composer/articles/repository-priorities.md.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/composer.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/composer/" class="_nav-link" title="" style="margin-left:0;">Composer</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="repository-priorities">Repository priorities</h1> <h2 id="canonical-repositories">Canonical repositories</h2> <p>When Composer resolves dependencies, it will look up a given package in the topmost repository. If that repository does not contain the package, it goes on to the next one, until one repository contains it and the process ends.</p> <p>Canonical repositories are better for a few reasons:</p> <ul> <li>Performance wise, it is more efficient to stop looking for a package once it has been found somewhere. It also avoids loading duplicate packages in case the same package is present in several of your repositories.</li> <li>Security wise, it is safer to treat them canonically as it means that packages you expect to come from your most important repositories will never be loaded from another repository instead. Let's say you have a private repository which is not canonical, and you require your private package <code>foo/bar ^2.0</code> for example. Now if someone publishes <code>foo/bar 2.999</code> to packagist.org, suddenly Composer will pick that package as it has a higher version than your latest release (say 2.4.3), and you end up installing something you may not have meant to. However, if the private repository is canonical, that 2.999 version from packagist.org will not be considered at all.</li> </ul> <p>There are however a few cases where you may want to specifically load some packages from a given repository, but not all. Or you may want a given repository to not be canonical, and to be only preferred if it has higher package versions than the repositories defined below.</p> <h2 id="default-behavior">Default behavior</h2> <p>By default in Composer 2.x all repositories are canonical. Composer 1.x treated all repositories as non-canonical.</p> <p>Another default is that the packagist.org repository is always added implicitly as the last repository, unless you <a href="../05-repositories.md#disabling-packagist-org">disable it</a>.</p> <h2 id="making-repositories-non-canonical">Making repositories non-canonical</h2> <p>You can add the canonical option to any repository to disable this default behavior and make sure Composer keeps looking in other repositories, even if that repository contains a given package.</p> <pre data-language="javascript">{
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://example.org",
+            "canonical": false
+        }
+    ]
+}</pre> <h2 id="filtering-packages">Filtering packages</h2> <p>You can also filter packages which a repository will be able to load, either by selecting which ones you want, or by excluding those you do not want.</p> <p>For example here we want to pick only the package <code>foo/bar</code> and all the packages from <code>some-vendor/</code> from this Composer repository.</p> <pre data-language="javascript">{
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://example.org",
+            "only": ["foo/bar", "some-vendor/*"]
+        }
+    ]
+}</pre> <p>And in this other example we exclude <code>toy/package</code> from a repository, which we may not want to load in this project.</p> <pre data-language="javascript">{
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://example.org",
+            "exclude": ["toy/package"]
+        }
+    ]
+}</pre> <p>Both <code>only</code> and <code>exclude</code> should be arrays of package names, which can also contain wildcards (<code>*</code>), which will match any character.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © Nils Adermann, Jordi Boggiano<br>Licensed under the MIT License.<br>
+    <a href="https://getcomposer.org/doc/articles/repository-priorities.md" class="_attribution-link">https://getcomposer.org/doc/articles/repository-priorities.md</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
