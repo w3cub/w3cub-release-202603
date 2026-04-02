@@ -1,0 +1,138 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Implementation of Pierre L&#39;Ecuyer&#39;s RngStreams - R - W3cubDocs</title>
+  
+  <meta name="description" content=" This is an R re-implementation of Pierre L&#39;Ecuyer&#39;s ‘RngStreams’ multiple streams of pseudo-random numbers. ">
+  <meta name="keywords" content="implementation, pierre, l&#39;ecuyer&#39;s, rngstreams, r">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/r/library/parallel/html/rngstream.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/r.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/r/" class="_nav-link" title="" style="margin-left:0;">R</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<div class="container">
+<main>  <h2>
+<code>RngStream</code> Implementation of Pierre L'Ecuyer's RngStreams</h2> <h3>Description</h3> <p>This is an <span class="rlang"><b>R</b></span> re-implementation of Pierre L'Ecuyer's ‘RngStreams’ multiple streams of pseudo-random numbers. </p> <h3>Usage</h3> <pre data-language="r"><code class="language-R">nextRNGStream(seed)
+nextRNGSubStream(seed)
+
+clusterSetRNGStream(cl = NULL, iseed)
+mc.reset.stream()
+</code></pre> <h3>Arguments</h3> <table> <tr>
+<td><code id="seed">seed</code></td> <td> <p>An integer vector of length 7 as given by <code>.Random.seed</code> when the ‘<span class="samp">⁠"L'Ecuyer-CMRG"⁠</span>’ RNG is in use. See <code><a href="../../base/html/random">RNG</a></code> for the valid values.</p> </td>
+</tr> <tr>
+<td><code id="cl">cl</code></td> <td> <p>A cluster from this package or package <a href="https://CRAN.R-project.org/package=snow"><span class="pkg">snow</span></a>, or (if <code>NULL</code>) the registered cluster.</p> </td>
+</tr> <tr>
+<td><code id="iseed">iseed</code></td> <td> <p>An integer to be supplied to <code><a href="../../base/html/random">set.seed</a></code>, or <code>NULL</code> not to set reproducible seeds.</p> </td>
+</tr> </table> <h3>Details</h3> <p>The ‘RngStreams’ interface works with (potentially) multiple streams of pseudo-random numbers: this is particularly suitable for working with parallel computations since each task can be assigned a separate RNG stream. </p> <p>This uses as its underlying generator <code>RNGkind("L'Ecuyer-CMRG")</code>, of L'Ecuyer (1999), which has a seed vector of 6 (signed) integers and a period of around <code class="reqn">2^{191}</code>. Each ‘stream’ is a subsequence of the period of length <code class="reqn">2^{127}</code> which is in turn divided into ‘substreams’ of length <code class="reqn">2^{76}</code>. </p> <p>The idea of L'Ecuyer <em>et al</em> (2002) is to use a separate stream for each of the parallel computations (which ensures that the random numbers generated never get into to sync) and the parallel computations can themselves use substreams if required. The original interface stores the original seed of the first stream, the original seed of the current stream and the current seed: this could be implemented in <span class="rlang"><b>R</b></span>, but it is as easy to work by saving the relevant values of <code>.Random.seed</code>: see the examples. </p> <p><code>clusterSetRNGStream</code> selects the <code>"L'Ecuyer-CMRG"</code> RNG and then distributes streams to the members of a cluster, optionally setting the seed of the streams by <code>set.seed(iseed)</code> (otherwise they are set from the current seed of the master process: after selecting the L'Ecuyer generator). </p> <p>When not on Windows, Calling <code>mc.reset.stream()</code> after setting the L'Ecuyer random number generator and seed makes runs from </p> <p><code><a href="mcparallel">mcparallel</a>(mc.set.seed = TRUE)</code> reproducible. This is done internally in <code><a href="mclapply">mclapply</a></code> and <code><a href="pvec">pvec</a></code>. (Note that it does not set the seed in the master process, so does not affect the fallback-to-serial versions of these functions.) </p> <h3>Value</h3> <p>For <code>nextRNGStream</code> and <code>nextRNGSubStream</code>, a value which can be assigned to <code>.Random.seed</code>. </p> <h3>Note</h3> <p>Interfaces to L'Ecuyer's C code are available in CRAN packages <a href="https://CRAN.R-project.org/package=rlecuyer"><span class="pkg">rlecuyer</span></a> and <a href="https://CRAN.R-project.org/package=rstream"><span class="pkg">rstream</span></a>. </p> <h3>Author(s)</h3> <p>Brian Ripley </p> <h3>References</h3> <p>L'Ecuyer, P. (1999). Good parameters and implementations for combined multiple recursive random number generators. <em>Operations Research</em>, <b>47</b>, 159–164. <a href="https://doi.org/10.1287/opre.47.1.159">doi:10.1287/opre.47.1.159</a>. </p> <p>L'Ecuyer, P., Simard, R., Chen, E. J. and Kelton, W. D. (2002). An object-oriented random-number package with many long streams and substreams. <em>Operations Research</em>, <b>50</b>, 1073–1075. <a href="https://doi.org/10.1287/opre.50.6.1073.358">doi:10.1287/opre.50.6.1073.358</a>. </p> <h3>See Also</h3> <p><code><a href="../../base/html/random">RNG</a></code> for fuller details of <span class="rlang"><b>R</b></span>'s built-in random number generators. </p> <p>The vignette for package <span class="pkg">parallel</span>. </p> <h3>Examples</h3> <pre data-language="r"><code class="language-R">RNGkind("L'Ecuyer-CMRG")
+set.seed(123)
+(s &lt;- .Random.seed)
+## do some work involving random numbers.
+nextRNGStream(s)
+nextRNGSubStream(s)
+</code></pre> </main> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright (©) 1999–2012 R Foundation for Statistical Computing.<br>Licensed under the <a href="https://www.gnu.org/copyleft/gpl.html">GNU General Public License</a>.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
