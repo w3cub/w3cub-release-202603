@@ -1,0 +1,151 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mod_example_hooks - Apache HTTP Server - W3cubDocs</title>
+  
+  <meta name="description" content="The files in the modules&#47;examples directory under the Apache distribution directory tree are provided as an example to those that wish to write &hellip;">
+  <meta name="keywords" content="apache, module, mod, example, hooks, http, server, apache_http_server">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/apache_http_server/mod/mod_example_hooks.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/apache_http_server.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/apache_http_server/" class="_nav-link" title="" style="margin-left:0;">Apache HTTP Server</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _apache">
+				
+				
+<h1>Apache Module mod_example_hooks</h1>  <table class="module">
+<tr>
+<th>Description:</th>
+<td>Illustrates the Apache module API</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Experimental</td>
+</tr> <tr>
+<th>Module Identifier:</th>
+<td>example_hooks_module</td>
+</tr> <tr>
+<th>Source File:</th>
+<td>mod_example_hooks.c</td>
+</tr>
+</table> <h3>Summary</h3> <p>The files in the <code>modules/examples</code> directory under the Apache distribution directory tree are provided as an example to those that wish to write modules that use the Apache API.</p> <p>The main file is <code>mod_example_hooks.c</code>, which illustrates all the different callback mechanisms and call syntaxes. By no means does an add-on module need to include routines for all of the callbacks - quite the contrary!</p> <p>The example module is an actual working module. If you link it into your server, enable the "example-hooks-handler" handler for a location, and then browse to that location, you will see a display of some of the tracing the example module did as the various callbacks were made.</p>     <h2 id="compiling">Compiling the example_hooks module</h2> <p>To include the example_hooks module in your server, follow the steps below:</p> <ol> <li> Run <code class="program"><a href="../programs/configure">configure</a></code> with <code>--enable-example-hooks</code> option.</li> <li>Make the server (run "<code>make</code>").</li> </ol> <p>To add another module of your own:</p> <ol class="up-A"> <li><code>cp modules/examples/mod_example_hooks.c modules/new_module/<em>mod_myexample.c</em></code></li> <li>Modify the file.</li> <li>Create <code>modules/new_module/config.m4</code>. <ol> <li>Add <code>APACHE_MODPATH_INIT(new_module)</code>.</li> <li>Copy APACHE_MODULE line with "example_hooks" from <code>modules/examples/config.m4</code>.</li> <li>Replace the first argument "example_hooks" with <em>myexample</em>.</li> <li>Replace the second argument with brief description of your module. It will be used in <code>configure --help</code>.</li> <li>If your module needs additional C compiler flags, linker flags or libraries, add them to CFLAGS, LDFLAGS and LIBS accordingly. See other <code>config.m4</code> files in modules directory for examples.</li> <li>Add <code>APACHE_MODPATH_FINISH</code>.</li> </ol> </li> <li>Create <code>module/new_module/Makefile.in</code>. If your module doesn't need special build instructions, all you need to have in that file is <code>include $(top_srcdir)/build/special.mk</code>.</li> <li>Run ./buildconf from the top-level directory.</li> <li>Build the server with --enable-myexample</li> </ol>   <h2 id="using">Using the <code>mod_example_hooks</code> Module</h2> <p>To activate the example_hooks module, include a block similar to the following in your <code>httpd.conf</code> file:</p> <pre class="prettyprint lang-config">&lt;Location "/example-hooks-info"&gt;
+   SetHandler example-hooks-handler
+&lt;/Location&gt;</pre> <p>As an alternative, you can put the following into a <a href="core#accessfilename"><code>.htaccess</code></a> file and then request the file "test.example" from that location:</p> <pre class="prettyprint lang-config">AddHandler example-hooks-handler ".example"</pre> <p>After reloading/restarting your server, you should be able to browse to this location and see the brief display mentioned earlier.</p>   <div class="directive-section">
+<h2 id="example">Example Directive</h2> <table class="directive"> <tr>
+<th>Description:</th>
+<td>Demonstration directive to illustrate the Apache module API</td>
+</tr> <tr>
+<th>Syntax:</th>
+<td><code>Example</code></td>
+</tr> <tr>
+<th>Context:</th>
+<td>server config, virtual host, directory, .htaccess</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Experimental</td>
+</tr> <tr>
+<th>Module:</th>
+<td>mod_example_hooks</td>
+</tr> </table> <p>The <code class="directive">Example</code> directive just sets a demonstration flag which the example module's content handler displays. It takes no arguments. If you browse to an URL to which the example-hooks content-handler applies, you will get a display of the routines within the module and how and in what order they were called to service the document request. The effect of this directive one can observe under the point "<code>Example directive declared here: YES/NO</code>".</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 The Apache Software Foundation<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://httpd.apache.org/docs/2.4/en/mod/mod_example_hooks.html" class="_attribution-link">https://httpd.apache.org/docs/2.4/en/mod/mod_example_hooks.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

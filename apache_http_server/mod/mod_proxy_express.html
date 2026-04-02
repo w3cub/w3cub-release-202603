@@ -1,0 +1,232 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mod_proxy_express - Apache HTTP Server - W3cubDocs</title>
+  
+  <meta name="description" content="This module creates dynamically configured mass reverse proxies, by mapping the Host&#58; header of the HTTP request to a server name and backend &hellip;">
+  <meta name="keywords" content="apache, module, mod, proxy, express, http, server, apache_http_server">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/apache_http_server/mod/mod_proxy_express.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/apache_http_server.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/apache_http_server/" class="_nav-link" title="" style="margin-left:0;">Apache HTTP Server</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _apache">
+				
+				
+<h1>Apache Module mod_proxy_express</h1>  <table class="module">
+<tr>
+<th>Description:</th>
+<td>Dynamic mass reverse proxy extension for <code class="module"><a href="mod_proxy">mod_proxy</a></code>
+</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Extension</td>
+</tr> <tr>
+<th>Module Identifier:</th>
+<td>proxy_express_module</td>
+</tr> <tr>
+<th>Source File:</th>
+<td>mod_proxy_express.c</td>
+</tr> <tr>
+<th>Compatibility:</th>
+<td>Available in Apache 2.3.13 and later</td>
+</tr>
+</table> <h3>Summary</h3> <p>This module creates dynamically configured mass reverse proxies, by mapping the <code>Host:</code> header of the HTTP request to a server name and backend URL stored in a DBM file. This allows for easy use of a huge number of reverse proxies with no configuration changes. It is much less feature-full than <code class="module"><a href="mod_proxy_balancer">mod_proxy_balancer</a></code>, which also provides dynamic growth, but is intended to handle much, much larger numbers of backends. It is ideally suited as a front-end HTTP switch and for micro-services architectures.</p> <p>This module <em>requires</em> the service of <code class="module"><a href="mod_proxy">mod_proxy</a></code>.</p> <div class="warning">
+<p><strong>Warning</strong></p> <p>Do not enable proxying until you have <a href="mod_proxy#access">secured your server</a>. Open proxy servers are dangerous both to your network and to the Internet at large.</p> </div> <div class="note">
+<p><strong>Limitations</strong></p> <ul> <li>This module is not intended to replace the dynamic capability of <code class="module"><a href="mod_proxy_balancer">mod_proxy_balancer</a></code>. Instead, it is intended to be mostly a lightweight and fast alternative to using <code class="module"><a href="mod_rewrite">mod_rewrite</a></code> with <code class="directive"><a href="mod_rewrite#rewritemap">RewriteMap</a></code> and the <code>[P]</code> flag for mapped reverse proxying. </li> <li>It does not support regex or pattern matching at all. </li> <li>It emulates: <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
+   ServerName front.end.server
+   ProxyPass        "/" "back.end.server:port"
+   ProxyPassReverse "/" "back.end.server:port"
+&lt;/VirtualHost&gt;</pre> That is, the entire URL is appended to the mapped backend URL. This is in keeping with the intent of being a simple but fast reverse proxy switch. </li> </ul> </div>    <div class="directive-section">
+<h2 id="proxyexpressdbmfile">ProxyExpressDBMFile Directive</h2> <table class="directive"> <tr>
+<th>Description:</th>
+<td>Pathname to DBM file.</td>
+</tr> <tr>
+<th>Syntax:</th>
+<td><pre>ProxyExpressDBMFile pathname</pre></td>
+</tr> <tr>
+<th>Context:</th>
+<td>server config, virtual host</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Extension</td>
+</tr> <tr>
+<th>Module:</th>
+<td>mod_proxy_express</td>
+</tr> </table> <p>The <code class="directive">ProxyExpressDBMFile</code> directive points to the location of the Express map DBM file. This file serves to map the incoming server name, obtained from the <code>Host:</code> header, to a backend URL.</p> <div class="note">
+<p><strong>Note</strong></p> <p>The file is constructed from a plain text file format using the <code><a href="../programs/httxt2dbm">httxt2dbm</a></code> utility.</p> <div class="example">
+<p><strong>ProxyExpress map file</strong></p>
+<pre>##
+##express-map.txt:
+##
+
+www1.example.com http://192.168.211.2:8080
+www2.example.com http://192.168.211.12:8088
+www3.example.com http://192.168.212.10</pre>
+</div> <div class="example">
+<p><strong>Create DBM file</strong></p>
+<pre>httxt2dbm -i express-map.txt -o emap</pre>
+</div> <div class="example">
+<p><strong>Configuration</strong></p>
+<pre class="prettyprint lang-config">ProxyExpressEnable on
+ProxyExpressDBMFile emap</pre> </div> </div> </div>  <div class="directive-section">
+<h2 id="proxyexpressdbmtype">ProxyExpressDBMType Directive</h2> <table class="directive"> <tr>
+<th>Description:</th>
+<td>DBM type of file.</td>
+</tr> <tr>
+<th>Syntax:</th>
+<td><pre>ProxyExpressDBMType type</pre></td>
+</tr> <tr>
+<th>Default:</th>
+<td><pre>ProxyExpressDBMType default</pre></td>
+</tr> <tr>
+<th>Context:</th>
+<td>server config, virtual host</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Extension</td>
+</tr> <tr>
+<th>Module:</th>
+<td>mod_proxy_express</td>
+</tr> </table> <p>The <code class="directive">ProxyExpressDBMType</code> directive controls the DBM type expected by the module. The default is the default DBM type created with <code><a href="../programs/httxt2dbm">httxt2dbm</a></code>.</p> <p>Possible values are (not all may be available at run time):</p> <table class="bordered">
+<tr class="header">
+<th>Value</th>
+<th>Description</th>
+</tr> <tr>
+<td><code>db</code></td>
+<td> Berkeley DB files</td>
+</tr> <tr class="odd">
+<td><code>gdbm</code></td>
+<td> GDBM files</td>
+</tr> <tr>
+<td><code>ndbm</code></td>
+<td> NDBM files</td>
+</tr> <tr class="odd">
+<td><code>sdbm</code></td>
+<td> SDBM files (always available)</td>
+</tr> <tr>
+<td><code>default</code></td>
+<td> default DBM type</td>
+</tr> </table> </div>  <div class="directive-section">
+<h2 id="proxyexpressenable">ProxyExpressEnable Directive</h2> <table class="directive"> <tr>
+<th>Description:</th>
+<td>Enable the module functionality.</td>
+</tr> <tr>
+<th>Syntax:</th>
+<td><pre>ProxyExpressEnable on|off</pre></td>
+</tr> <tr>
+<th>Default:</th>
+<td><pre>ProxyExpressEnable off</pre></td>
+</tr> <tr>
+<th>Context:</th>
+<td>server config, virtual host</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Extension</td>
+</tr> <tr>
+<th>Module:</th>
+<td>mod_proxy_express</td>
+</tr> </table> <p>The <code class="directive">ProxyExpressEnable</code> directive controls whether the module will be active.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 The Apache Software Foundation<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://httpd.apache.org/docs/2.4/en/mod/mod_proxy_express.html" class="_attribution-link">https://httpd.apache.org/docs/2.4/en/mod/mod_proxy_express.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

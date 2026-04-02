@@ -1,0 +1,171 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mod_file_cache - Apache HTTP Server - W3cubDocs</title>
+  
+  <meta name="description" content="Caching frequently requested files that change very infrequently is a technique for reducing server load. mod_file_cache provides two techniques for &hellip;">
+  <meta name="keywords" content="apache, module, mod, file, cache, http, server, apache_http_server">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/apache_http_server/mod/mod_file_cache.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/apache_http_server.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/apache_http_server/" class="_nav-link" title="" style="margin-left:0;">Apache HTTP Server</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _apache">
+				
+				
+<h1>Apache Module mod_file_cache</h1>  <table class="module">
+<tr>
+<th>Description:</th>
+<td>Caches a static list of files in memory</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Experimental</td>
+</tr> <tr>
+<th>Module Identifier:</th>
+<td>file_cache_module</td>
+</tr> <tr>
+<th>Source File:</th>
+<td>mod_file_cache.c</td>
+</tr>
+</table> <h3>Summary</h3> <div class="warning"> This module should be used with care. You can easily create a broken site using <code class="module"><a href="mod_file_cache">mod_file_cache</a></code>, so read this document carefully. </div> <p><em>Caching</em> frequently requested files that change very infrequently is a technique for reducing server load. <code class="module"><a href="mod_file_cache">mod_file_cache</a></code> provides two techniques for caching frequently requested <em>static</em> files. Through configuration directives, you can direct <code class="module"><a href="mod_file_cache">mod_file_cache</a></code> to either open then <code>mmap()</code> a file, or to pre-open a file and save the file's open <em>file handle</em>. Both techniques reduce server load when processing requests for these files by doing part of the work (specifically, the file I/O) for serving the file when the server is started rather than during each request.</p> <p>Notice: You cannot use this for speeding up CGI programs or other files which are served by special content handlers. It can only be used for regular files which are usually served by the Apache core content handler.</p> <p>This module is an extension of and borrows heavily from the <code>mod_mmap_static</code> module in Apache 1.3.</p>     <h2 id="using">Using mod_file_cache</h2> <p><code class="module"><a href="mod_file_cache">mod_file_cache</a></code> caches a list of statically configured files via <code class="directive"><a href="#mmapfile">MMapFile</a></code> or <code class="directive"><a href="#cachefile">CacheFile</a></code> directives in the main server configuration.</p> <p>Not all platforms support both directives. You will receive an error message in the server error log if you attempt to use an unsupported directive. If given an unsupported directive, the server will start but the file will not be cached. On platforms that support both directives, you should experiment with both to see which works best for you.</p> <h3>MMapFile Directive</h3> <p>The <code class="directive"><a href="#mmapfile">MMapFile</a></code> directive of <code class="module"><a href="mod_file_cache">mod_file_cache</a></code> maps a list of statically configured files into memory through the system call <code>mmap()</code>. This system call is available on most modern Unix derivatives, but not on all. There are sometimes system-specific limits on the size and number of files that can be <code>mmap()</code>ed, experimentation is probably the easiest way to find out.</p> <p>This <code>mmap()</code>ing is done once at server start or restart, only. So whenever one of the mapped files changes on the filesystem you <em>have</em> to restart the server (see the <a href="../stopping">Stopping and Restarting</a> documentation). To reiterate that point: if the files are modified <em>in place</em> without restarting the server you may end up serving requests that are completely bogus. You should update files by unlinking the old copy and putting a new copy in place. Most tools such as <code>rdist</code> and <code>mv</code> do this. The reason why this modules doesn't take care of changes to the files is that this check would need an extra <code>stat()</code> every time which is a waste and against the intent of I/O reduction.</p> <h3>CacheFile Directive</h3> <p>The <code class="directive"><a href="#cachefile">CacheFile</a></code> directive of <code class="module"><a href="mod_file_cache">mod_file_cache</a></code> opens an active <em>handle</em> or <em>file descriptor</em> to the file (or files) listed in the configuration directive and places these open file handles in the cache. When the file is requested, the server retrieves the handle from the cache and passes it to the <code>sendfile()</code> (or <code>TransmitFile()</code> on Windows), socket API.</p> <p>This file handle caching is done once at server start or restart, only. So whenever one of the cached files changes on the filesystem you <em>have</em> to restart the server (see the <a href="../stopping">Stopping and Restarting</a> documentation). To reiterate that point: if the files are modified <em>in place</em> without restarting the server you may end up serving requests that are completely bogus. You should update files by unlinking the old copy and putting a new copy in place. Most tools such as <code>rdist</code> and <code>mv</code> do this.</p> <div class="note">
+<p><strong>Note</strong></p> <p>Don't bother asking for a directive which recursively caches all the files in a directory. Try this instead... See the <code class="directive"><a href="core#include">Include</a></code> directive, and consider this command:</p> <div class="example"><pre>find /www/htdocs -type f -print \
+| sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf</pre></div> </div>   <div class="directive-section">
+<h2 id="cachefile">CacheFile Directive</h2> <table class="directive"> <tr>
+<th>Description:</th>
+<td>Cache a list of file handles at startup time</td>
+</tr> <tr>
+<th>Syntax:</th>
+<td><pre>CacheFile file-path [file-path] ...</pre></td>
+</tr> <tr>
+<th>Context:</th>
+<td>server config</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Experimental</td>
+</tr> <tr>
+<th>Module:</th>
+<td>mod_file_cache</td>
+</tr> </table> <p>The <code class="directive">CacheFile</code> directive opens handles to one or more files (given as whitespace separated arguments) and places these handles into the cache at server startup time. Handles to cached files are automatically closed on a server shutdown. When the files have changed on the filesystem, the server should be restarted to re-cache them.</p> <p>Be careful with the <var>file-path</var> arguments: They have to literally match the filesystem path Apache's URL-to-filename translation handlers create. We cannot compare inodes or other stuff to match paths through symbolic links <em>etc.</em> because that again would cost extra <code>stat()</code> system calls which is not acceptable. This module may or may not work with filenames rewritten by <code class="module"><a href="mod_alias">mod_alias</a></code> or <code class="module"><a href="mod_rewrite">mod_rewrite</a></code>.</p> <div class="example">
+<h3>Example</h3>
+<pre class="prettyprint lang-config">CacheFile /usr/local/apache/htdocs/index.html</pre> </div> </div>  <div class="directive-section">
+<h2 id="mmapfile">MMapFile Directive</h2> <table class="directive"> <tr>
+<th>Description:</th>
+<td>Map a list of files into memory at startup time</td>
+</tr> <tr>
+<th>Syntax:</th>
+<td><pre>MMapFile file-path [file-path] ...</pre></td>
+</tr> <tr>
+<th>Context:</th>
+<td>server config</td>
+</tr> <tr>
+<th>Status:</th>
+<td>Experimental</td>
+</tr> <tr>
+<th>Module:</th>
+<td>mod_file_cache</td>
+</tr> </table> <p>The <code class="directive">MMapFile</code> directive maps one or more files (given as whitespace separated arguments) into memory at server startup time. They are automatically unmapped on a server shutdown. When the files have changed on the filesystem at least a <code>HUP</code> or <code>USR1</code> signal should be send to the server to re-<code>mmap()</code> them.</p> <p>Be careful with the <var>file-path</var> arguments: They have to literally match the filesystem path Apache's URL-to-filename translation handlers create. We cannot compare inodes or other stuff to match paths through symbolic links <em>etc.</em> because that again would cost extra <code>stat()</code> system calls which is not acceptable. This module may or may not work with filenames rewritten by <code class="module"><a href="mod_alias">mod_alias</a></code> or <code class="module"><a href="mod_rewrite">mod_rewrite</a></code>.</p> <div class="example">
+<h3>Example</h3>
+<pre class="prettyprint lang-config">MMapFile /usr/local/apache/htdocs/index.html</pre> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018 The Apache Software Foundation<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://httpd.apache.org/docs/2.4/en/mod/mod_file_cache.html" class="_attribution-link">https://httpd.apache.org/docs/2.4/en/mod/mod_file_cache.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
