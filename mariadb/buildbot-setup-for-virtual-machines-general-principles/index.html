@@ -1,0 +1,162 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Buildbot Setup for Virtual Machines - General Principles - MariaDB - W3cubDocs</title>
+  
+  <meta name="description" content="The installations are kept minimal, picking mostly default options. This helps ensure our stuff works on default installs, and also saves effort &hellip;">
+  <meta name="keywords" content="buildbot, setup, for, virtual, machines, general, principles, mariadb">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/mariadb/buildbot-setup-for-virtual-machines-general-principles/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/mariadb.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/mariadb/" class="_nav-link" title="" style="margin-left:0;">MariaDB</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _mariadb">
+				
+				
+<h1>Buildbot Setup for Virtual Machines - General Principles</h1> <div> <div class="node creole"> <div class="answer formatted"> <p> The installations are kept minimal, picking mostly default options. This helps ensure our stuff works on default installs, and also saves effort during the creation of the virtual machines.</p> <p>Since most of the logic happens in the Buildbot slave on a host machine, and inside the Buildbot master, there is no need to install Buildbot or other similar complex stuff inside the VMs.</p> <h2 class="anchored_heading" id="ssh">ssh</h2> <p>The virtual machines are configured with ssh access. An account called 'buildbot' is created, with passwordless login (using ssh public key authentication), and with passwordless sudo access (needed for automated scripting). The public key for user buildbot is installed in every VM, and the private key is added to the account running the Buildbot master on the host machine.</p> <p>To generate the ssh keys:</p> <pre class="fixed" data-language="sql">ssh-keygen -t dsa
+</pre>
+<p>Leave the passphrase empty. Run this as the user running the Buildbot slave on the KVM host machine. The resulting /.ssh/id_dsa.pub will be needed below for each virtual machine install.</p> <h2 class="anchored_heading" id="serial-port">Serial port</h2> <p>The vms are configured to use the (emulated) serial port as the console. When running KVM on the host, the console then maps to the stdin/stdout. This is useful to get kernel log messages available to easier debug any problems. The bootloader Grub is similarly configured to use the serial port.</p> <p>The vms are also set up to give a login prompt on the serial port (running getty). In retrospect this has proven not really needed, as if needing to manually log in and investigate things, it is often as easy to just run KVM in graphics mode. It may be useful in cases where the host machine is remote though (in this case graphics mode does still work but can be a bit slow).</p> <p>To configure for serial console, the following two files are referenced below, and should be prepared in advance:</p> <h3 class="anchored_heading" id="ttys0"><code>ttyS0</code></h3> <pre class="fixed" data-language="sql"># ttyS0 - getty
+#
+# This service maintains a getty on ttyS0 from the point the system is
+# started until it is shut down again.
+
+start on stopped rc2
+start on stopped rc3
+start on stopped rc4
+start on stopped rc5
+
+stop on runlevel 0
+stop on runlevel 1
+stop on runlevel 6
+
+respawn
+exec /sbin/getty 115200 ttyS0
+</pre>
+<h3 class="anchored_heading" id="ttys0conf"><code>ttyS0.conf</code></h3> <pre class="fixed" data-language="sql"># ttyS0 - getty
+#
+# This service maintains a getty on ttyS0 from the point the system is
+# started until it is shut down again.
+
+start on stopped rc RUNLEVEL=[2345]
+stop on runlevel [!2345]
+
+respawn
+exec /sbin/getty -L 115200 ttyS0 vt102
+</pre>
+<h2 class="anchored_heading" id="unattended-mariadb-install-on-debianubuntu">Unattended MariaDB install on Debian/Ubuntu</h2> <h3 class="anchored_heading" id="myseed">my.seed</h3> <p>The MariaDB (and MySQL) package on Debian and Ubuntu prompts the user about the root password to set. We want to test this important step, but we do not want the prompt of course. To do this we use the following configuration file for defaults for debconf. This file is needed in the steps below under the name "my.seed" (be careful to preserve it exactly as here, including trailing space and tab characters!)</p> <pre class="fixed" data-language="sql">    mariadb-server-5.1	mysql-server/root_password_again	password	rootpass
+    mariadb-server-5.1	mysql-server/root_password	password	rootpass
+    mariadb-server-5.1	mysql-server/error_setting_password	error	
+    mariadb-server-5.1	mysql-server-5.1/nis_warning	note	
+    mariadb-server-5.1	mysql-server-5.1/really_downgrade	boolean	false
+    mariadb-server-5.1	mysql-server-5.1/start_on_boot	boolean	true
+    mariadb-server-5.1	mysql-server-5.1/postrm_remove_databases	boolean	false
+    mariadb-server-5.1	mysql-server/password_mismatch	error	
+    mariadb-server-5.1	mysql-server/no_upgrade_when_using_ndb	error	
+</pre>
+<p>For some background see <a href="http://blog.hjksolutions.com/articles/2007/07/27/unattended-package-installation-with-debian-and-ubuntu">here</a>. The file my.seed can be generated from an existing install using debconf-get-selections.</p> <h3 class="anchored_heading" id="sourcesappend">sources.append</h3> <p>For Debian/Ubuntu, we add a local repository to the list of apt source to be able to test `apt-get install`. For this, the following file "sources.append" must be prepared:</p> <pre class="fixed" data-language="sql">deb file:///home/buildbot/buildbot/debs binary/
+deb-src file:///home/buildbot/buildbot/debs source/
+</pre>
+<h2 class="anchored_heading" id="emulation-options">Emulation options</h2> <p>The default network card emulated by KVM has poor performance. To solve this we instead use the "virtio" network device, using the KVM options "-net nic,model=virtio -net user". Except on Debian 4, which has an old kernel without support for virtio. Background info <a href="http://episteme.arstechnica.com/eve/forums/a/tpc/f/96509133/m/303006642931">here</a>.</p> <p>A detail is that some 32-bit vms crashed during boot with default options. This was fixed by using the kvm "-cpu qemu32,-nx" option. Some background information <a href="https://bugs.launchpad.net/ubuntu/+source/kvm/+bug/396219">here</a>.</p> </div>     </div> <div id="content_disclaimer" class="graybox"> Content reproduced on this site is the property of its respective owners, and this content is not reviewed in advance by MariaDB. The views, information and opinions expressed by this content do not necessarily represent those of MariaDB or any other party. </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2023 MariaDB<br>Licensed under the Creative Commons Attribution 3.0 Unported License and the GNU Free Documentation License.<br>
+    <a href="https://mariadb.com/kb/en/buildbot-setup-for-virtual-machines-general-principles/" class="_attribution-link">https://mariadb.com/kb/en/buildbot-setup-for-virtual-machines-general-principles/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
