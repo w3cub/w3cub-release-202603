@@ -1,0 +1,155 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Custom Schema Types - Mongoose - W3cubDocs</title>
+  
+  <meta name="description" content="New in Mongoose 4.4.0&#58; Mongoose supports custom types. Before you reach for a custom type, however, know that a custom type is overkill for most &hellip;">
+  <meta name="keywords" content="custom, schema, types, mongoose">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/mongoose/customschematypes.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/mongoose.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/mongoose/" class="_nav-link" title="" style="margin-left:0;">Mongoose</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="custom-schema-types">  Custom Schema Types  </h1>   <h2 id="creating-a-basic-custom-schema-type">  Creating a Basic Custom Schema Type  </h2> <p><em>New in Mongoose 4.4.0:</em> Mongoose supports custom types. Before you reach for a custom type, however, know that a custom type is overkill for most use cases. You can do most basic tasks with <a href="http://mongoosejs.com/docs/2.7.x/docs/getters-setters.html">custom getters/setters</a>, <a href="http://mongoosejs.com/docs/guide.html#virtuals">virtuals</a>, and <a href="http://mongoosejs.com/docs/subdocs.html#single-embedded">single embedded docs</a>.</p> <p>Let's take a look at an example of a basic schema type: a 1-byte integer. To create a new schema type, you need to inherit from <code>mongoose.SchemaType</code> and add the corresponding property to <code>mongoose.Schema.Types</code>. The one method you need to implement is the <code>cast()</code> method.</p> <pre data-language="javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Int8</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">mongoose.SchemaType</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">key, options</span>) {
+    <span class="hljs-variable language_">super</span>(key, options, <span class="hljs-string">'Int8'</span>);
+  }
+
+  <span class="hljs-comment">// `cast()` takes a parameter that can be anything. You need to</span>
+  <span class="hljs-comment">// validate the provided `val` and throw a `CastError` if you</span>
+  <span class="hljs-comment">// can't convert it.</span>
+  <span class="hljs-title function_">cast</span>(<span class="hljs-params">val</span>) {
+    <span class="hljs-keyword">let</span> _val = <span class="hljs-title class_">Number</span>(val);
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">isNaN</span>(_val)) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Int8: '</span> + val + <span class="hljs-string">' is not a number'</span>);
+    }
+    _val = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(_val);
+    <span class="hljs-keyword">if</span> (_val &lt; -<span class="hljs-number">0x80</span> || _val &gt; <span class="hljs-number">0x7F</span>) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Int8: '</span> + val +
+        <span class="hljs-string">' is outside of the range of valid 8-bit ints'</span>);
+    }
+    <span class="hljs-keyword">return</span> _val;
+  }
+}
+
+<span class="hljs-comment">// Don't forget to add `Int8` to the type registry</span>
+mongoose.<span class="hljs-property">Schema</span>.<span class="hljs-property">Types</span>.<span class="hljs-property">Int8</span> = <span class="hljs-title class_">Int8</span>;
+
+<span class="hljs-keyword">const</span> testSchema = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Schema</span>({ <span class="hljs-attr">test</span>: <span class="hljs-title class_">Int8</span> });
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">Test</span> = mongoose.<span class="hljs-title function_">model</span>(<span class="hljs-string">'CustomTypeExample'</span>, testSchema);
+
+<span class="hljs-keyword">const</span> t = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Test</span>();
+t.<span class="hljs-property">test</span> = <span class="hljs-string">'abc'</span>;
+assert.<span class="hljs-title function_">ok</span>(t.<span class="hljs-title function_">validateSync</span>());
+assert.<span class="hljs-title function_">equal</span>(t.<span class="hljs-title function_">validateSync</span>().<span class="hljs-property">errors</span>[<span class="hljs-string">'test'</span>].<span class="hljs-property">name</span>, <span class="hljs-string">'CastError'</span>);
+assert.<span class="hljs-title function_">equal</span>(t.<span class="hljs-title function_">validateSync</span>().<span class="hljs-property">errors</span>[<span class="hljs-string">'test'</span>].<span class="hljs-property">message</span>,
+  <span class="hljs-string">'Cast to Int8 failed for value "abc" (type string) at path "test"'</span>);
+assert.<span class="hljs-title function_">equal</span>(t.<span class="hljs-title function_">validateSync</span>().<span class="hljs-property">errors</span>[<span class="hljs-string">'test'</span>].<span class="hljs-property">reason</span>.<span class="hljs-property">message</span>,
+  <span class="hljs-string">'Int8: abc is not a number'</span>);
+</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 LearnBoost<br>Licensed under the MIT License.<br>
+    <a href="https://mongoosejs.com/docs/customschematypes.html" class="_attribution-link">https://mongoosejs.com/docs/customschematypes.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
