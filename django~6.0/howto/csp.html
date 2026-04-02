@@ -1,0 +1,169 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>How to Use Django’s Content Security Policy - Django 6.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" To enable Content Security Policy (CSP) in your Django project&#58; ">
+  <meta name="keywords" content="how, use, django’s, content, security, policy, django, django~6.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/django~6.0/howto/csp.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/django~6.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/django~6.0/" class="_nav-link" title="" style="margin-left:0;">Django 6.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="s-how-to-use-django-s-content-security-policy"> <h1 id="how-to-use-django-s-content-security-policy">How to use Django’s Content Security Policy</h1> <section id="s-basic-config"> <h2 id="csp-config">Basic config</h2> <p>To enable Content Security Policy (CSP) in your Django project:</p> <ol class="arabic"> <li>
+<p>Add the CSP middleware to your <a class="reference internal" href="../ref/settings#std-setting-MIDDLEWARE"><code>MIDDLEWARE</code></a> setting:</p> <pre data-language="python">MIDDLEWARE = [
+    # ...
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
+    # ...
+]
+</pre> </li> <li>
+<p>Configure the CSP policies in your <code>settings.py</code> using either <a class="reference internal" href="../ref/settings#std-setting-SECURE_CSP"><code>SECURE_CSP</code></a> or <a class="reference internal" href="../ref/settings#std-setting-SECURE_CSP_REPORT_ONLY"><code>SECURE_CSP_REPORT_ONLY</code></a> (or both). The <a class="reference internal" href="../ref/csp#csp-settings"><span class="std std-ref">CSP Settings docs</span></a> provide more details about the differences between these two:</p> <pre data-language="python">from django.utils.csp import CSP
+
+# To enforce a CSP policy:
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    # Add more directives to be enforced.
+}
+
+# Or for report-only mode:
+SECURE_CSP_REPORT_ONLY = {
+    "default-src": [CSP.SELF],
+    # Add more directives as needed.
+    "report-uri": "/path/to/reports-endpoint/",
+}
+</pre> </li> </ol> </section> <section id="s-nonce-config"> <h2 id="csp-nonce-config">Nonce config</h2> <p>To use nonces in your CSP policy, beside the basic config, you need to:</p> <ol class="arabic"> <li>
+<p>Include the <a class="reference internal" href="../ref/csp#django.utils.csp.CSP.NONCE" title="django.utils.csp.CSP.NONCE"><code>NONCE</code></a> placeholder value in the CSP settings. This only applies to <code>script-src</code> or <code>style-src</code> directives:</p> <pre data-language="python">from django.utils.csp import CSP
+
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    # Allow self-hosted scripts and script tags with matching `nonce` attr.
+    "script-src": [CSP.SELF, CSP.NONCE],
+    # Example of the less secure 'unsafe-inline' option.
+    "style-src": [CSP.SELF, CSP.UNSAFE_INLINE],
+}
+</pre> </li> <li>
+<p>Add the <a class="reference internal" href="../ref/templates/api#django.template.context_processors.csp" title="django.template.context_processors.csp"><code>csp()</code></a> context processor to your <a class="reference internal" href="../ref/settings#std-setting-TEMPLATES"><code>TEMPLATES</code></a> setting. This makes the generated nonce value available in the Django templates as the <code>csp_nonce</code> context variable:</p> <pre data-language="python">TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "OPTIONS": {
+            "context_processors": [
+                # ...
+                "django.template.context_processors.csp",
+            ],
+        },
+    },
+]
+</pre> </li> <li>
+<p>In your templates, add the <code>nonce</code> attribute to the relevant inline <code>&lt;style&gt;</code> or <code>&lt;script&gt;</code> tags, using the <code>csp_nonce</code> context variable:</p> <pre data-language="markup">&lt;style nonce="{{ csp_nonce }}"&gt;
+  /* These inline styles will be allowed. */
+&lt;/style&gt;
+
+&lt;script nonce="{{ csp_nonce }}"&gt;
+  // This inline JavaScript will be allowed.
+&lt;/script&gt;
+</pre> </li> </ol> <div class="admonition-caching-and-nonce-reuse admonition"> <p class="admonition-title">Caching and Nonce Reuse</p> <p>The <a class="reference internal" href="../ref/middleware#django.middleware.csp.ContentSecurityPolicyMiddleware" title="django.middleware.csp.ContentSecurityPolicyMiddleware"><code>ContentSecurityPolicyMiddleware</code></a> automatically handles generating a unique nonce and inserting the appropriate <code>nonce-&lt;value&gt;</code> source expression into the <code>Content-Security-Policy</code> (or <code>Content-Security-Policy-Report-Only</code>) header when the nonce is used in a template.</p> <p>To ensure correct behavior, make sure both the HTML and the header are generated within the same request and not served from cache. See the reference documentation on <a class="reference internal" href="../ref/csp#csp-nonce"><span class="std std-ref">Nonce usage</span></a> for implementation details and important caching considerations.</p> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © Django Software Foundation and individual contributors<br>Licensed under the BSD License.<br>
+    <a href="https://docs.djangoproject.com/en/6.0/howto/csp/" class="_attribution-link">https://docs.djangoproject.com/en/6.0/howto/csp/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

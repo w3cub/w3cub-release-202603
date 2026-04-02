@@ -1,0 +1,230 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Database Migration Operations - Django 6.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" All of these operations are available from the django.contrib.postgres.operations module. ">
+  <meta name="keywords" content="database, migration, operations, django, django~6.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/django~6.0/ref/contrib/postgres/operations.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/django~6.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/django~6.0/" class="_nav-link" title="" style="margin-left:0;">Django 6.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="s-database-migration-operations"> <h1 id="database-migration-operations">Database migration operations</h1> <p>All of these <a class="reference internal" href="../../migration-operations"><span class="doc">operations</span></a> are available from the <code>django.contrib.postgres.operations</code> module.</p> <section id="s-creating-extension-using-migrations"> <h2 id="create-postgresql-extensions">Creating extension using migrations</h2> <p>You can create a PostgreSQL extension in your database using a migration file. This example creates an hstore extension, but the same principles apply for other extensions.</p> <p>Set up the hstore extension in PostgreSQL before the first <code>CreateModel</code> or <code>AddField</code> operation that involves <a class="reference internal" href="fields#django.contrib.postgres.fields.HStoreField" title="django.contrib.postgres.fields.HStoreField"><code>HStoreField</code></a> by adding a migration with the <a class="reference internal" href="#django.contrib.postgres.operations.HStoreExtension" title="django.contrib.postgres.operations.HStoreExtension"><code>HStoreExtension</code></a> operation. For example:</p> <pre data-language="python">from django.contrib.postgres.operations import HStoreExtension
+
+
+class Migration(migrations.Migration):
+    ...
+
+    operations = [HStoreExtension(), ...]
+</pre> <p>The operation skips adding the extension if it already exists.</p> <p>For most extensions, this requires a database user with superuser privileges. If the Django database user doesn’t have the appropriate privileges, you’ll have to create the extension outside of Django migrations with a user that has them. In that case, connect to your Django database and run the query <code>CREATE EXTENSION IF NOT EXISTS hstore;</code>.</p> </section> <section id="s-createextension"> <h2 id="createextension"><code>CreateExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CreateExtension">
+<code>class CreateExtension(name, hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L12"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>An <code>Operation</code> subclass which installs a PostgreSQL extension. For common extensions, use one of the more specific subclasses below.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CreateExtension.name">
+<code>name</code> </dt> <dd>
+<p>This is a required argument. The name of the extension to be installed.</p> </dd>
+</dl> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CreateExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-bloomextension"> <h2 id="bloomextension"><code>BloomExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.BloomExtension">
+<code>class BloomExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L74"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>bloom</code> extension.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.BloomExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-btreeginextension"> <h2 id="btreeginextension"><code>BtreeGinExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.BtreeGinExtension">
+<code>class BtreeGinExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L79"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>btree_gin</code> extension.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.BtreeGinExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-btreegistextension"> <h2 id="btreegistextension"><code>BtreeGistExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.BtreeGistExtension">
+<code>class BtreeGistExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L84"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>btree_gist</code> extension.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.BtreeGistExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-citextextension"> <h2 id="citextextension"><code>CITextExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CITextExtension">
+<code>class CITextExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L89"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>citext</code> extension.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CITextExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-cryptoextension"> <h2 id="cryptoextension"><code>CryptoExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CryptoExtension">
+<code>class CryptoExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L94"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>pgcrypto</code> extension.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CryptoExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-hstoreextension"> <h2 id="hstoreextension"><code>HStoreExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.HStoreExtension">
+<code>class HStoreExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L99"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>hstore</code> extension and also sets up the connection to interpret hstore data for possible use in subsequent migrations.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.HStoreExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-trigramextension"> <h2 id="trigramextension"><code>TrigramExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.TrigramExtension">
+<code>class TrigramExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L104"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>pg_trgm</code> extension.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.TrigramExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-unaccentextension"> <h2 id="unaccentextension"><code>UnaccentExtension</code></h2> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.UnaccentExtension">
+<code>class UnaccentExtension(hints=None)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L109"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Installs the <code>unaccent</code> extension.</p> <dl class="py attribute"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.UnaccentExtension.hints">
+<code>hints</code> </dt> <dd>
+<div class="versionadded"> <span class="title">New in Django 6.0.</span> </div> <p>The optional <code>hints</code> argument will be passed as <code>**hints</code> to the <a class="reference internal" href="../../../topics/db/multi-db#allow_migrate" title="allow_migrate"><code>allow_migrate()</code></a> method of database routers to assist them in <a class="reference internal" href="../../../topics/db/multi-db#topics-db-multi-db-hints"><span class="std std-ref">making routing decisions</span></a>.</p> </dd>
+</dl> </dd>
+</dl> </section> <section id="s-managing-collations-using-migrations"> <h2 id="manage-postgresql-collations">Managing collations using migrations</h2> <p>If you need to filter or order a column using a particular collation that your operating system provides but PostgreSQL does not, you can manage collations in your database using a migration file. These collations can then be used with the <code>db_collation</code> parameter on <a class="reference internal" href="../../models/fields#django.db.models.CharField" title="django.db.models.CharField"><code>CharField</code></a>, <a class="reference internal" href="../../models/fields#django.db.models.TextField" title="django.db.models.TextField"><code>TextField</code></a>, and their subclasses.</p> <p>For example, to create a collation for German phone book ordering:</p> <pre data-language="python">from django.contrib.postgres.operations import CreateCollation
+
+
+class Migration(migrations.Migration):
+    ...
+
+    operations = [
+        CreateCollation(
+            "case_insensitive",
+            provider="icu",
+            locale="und-u-ks-level2",
+            deterministic=False,
+        ),
+        ...,
+    ]
+</pre> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.CreateCollation">
+<code>class CreateCollation(name, locale, *, provider='libc', deterministic=True)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L219"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Creates a collation with the given <code>name</code>, <code>locale</code> and <code>provider</code>.</p> <p>Set the <code>deterministic</code> parameter to <code>False</code> to create a non-deterministic collation, such as for case-insensitive filtering.</p> </dd>
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.RemoveCollation">
+<code>class RemoveCollation(name, locale, *, provider='libc', deterministic=True)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L249"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Removes the collations named <code>name</code>.</p> <p>When reversed this is creating a collation with the provided <code>locale</code>, <code>provider</code>, and <code>deterministic</code> arguments. Therefore, <code>locale</code> is required to make this operation reversible.</p> </dd>
+</dl> </section> <section id="s-concurrent-index-operations"> <h2 id="concurrent-index-operations">Concurrent index operations</h2> <p>PostgreSQL supports the <code>CONCURRENTLY</code> option to <code>CREATE INDEX</code> and <code>DROP INDEX</code> statements to add and remove indexes without locking out writes. This option is useful for adding or removing an index in a live production database.</p> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.AddIndexConcurrently">
+<code>class AddIndexConcurrently(model_name, index)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L123"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Like <a class="reference internal" href="../../migration-operations#django.db.migrations.operations.AddIndex" title="django.db.migrations.operations.AddIndex"><code>AddIndex</code></a>, but creates an index with the <code>CONCURRENTLY</code> option. This has a few caveats to be aware of when using this option, see <a class="reference external" href="https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY">the PostgreSQL documentation of building indexes concurrently</a>.</p> </dd>
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.RemoveIndexConcurrently">
+<code>class RemoveIndexConcurrently(model_name, name)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L149"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Like <a class="reference internal" href="../../migration-operations#django.db.migrations.operations.RemoveIndex" title="django.db.migrations.operations.RemoveIndex"><code>RemoveIndex</code></a>, but removes the index with the <code>CONCURRENTLY</code> option. This has a few caveats to be aware of when using this option, see <a class="reference external" href="https://www.postgresql.org/docs/current/sql-dropindex.html">the PostgreSQL documentation</a>.</p> </dd>
+</dl> <div class="admonition note"> <p class="admonition-title">Note</p> <p>The <code>CONCURRENTLY</code> option is not supported inside a transaction (see <a class="reference internal" href="../../../howto/writing-migrations#non-atomic-migrations"><span class="std std-ref">non-atomic migration</span></a>).</p> </div> </section> <section id="s-adding-constraints-without-enforcing-validation"> <h2 id="adding-constraints-without-enforcing-validation">Adding constraints without enforcing validation</h2> <p>PostgreSQL supports the <code>NOT VALID</code> option with the <code>ADD CONSTRAINT</code> statement to add check constraints without enforcing validation on existing rows. This option is useful if you want to skip the potentially lengthy scan of the table to verify that all existing rows satisfy the constraint.</p> <p>To validate check constraints created with the <code>NOT VALID</code> option at a later point of time, use the <a class="reference internal" href="#django.contrib.postgres.operations.ValidateConstraint" title="django.contrib.postgres.operations.ValidateConstraint"><code>ValidateConstraint</code></a> operation.</p> <p>See <a class="reference external" href="https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-NOTES">the PostgreSQL documentation</a> for more details.</p> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.AddConstraintNotValid">
+<code>class AddConstraintNotValid(model_name, constraint)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L274"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Like <a class="reference internal" href="../../migration-operations#django.db.migrations.operations.AddConstraint" title="django.db.migrations.operations.AddConstraint"><code>AddConstraint</code></a>, but avoids validating the constraint on existing rows.</p> </dd>
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="django.contrib.postgres.operations.ValidateConstraint">
+<code>class ValidateConstraint(model_name, name)</code> <a class="reference external" href="https://github.com/django/django/blob/stable/6.0.x/django/contrib/postgres/operations.py#L310"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Scans through the table and validates the given check constraint on existing rows.</p> </dd>
+</dl> <div class="admonition note"> <p class="admonition-title">Note</p> <p><code>AddConstraintNotValid</code> and <code>ValidateConstraint</code> operations should be performed in two separate migrations. Performing both operations in the same atomic migration has the same effect as <a class="reference internal" href="../../migration-operations#django.db.migrations.operations.AddConstraint" title="django.db.migrations.operations.AddConstraint"><code>AddConstraint</code></a>, whereas performing them in a single non-atomic migration, may leave your database in an inconsistent state if the <code>ValidateConstraint</code> operation fails.</p> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © Django Software Foundation and individual contributors<br>Licensed under the BSD License.<br>
+    <a href="https://docs.djangoproject.com/en/6.0/ref/contrib/postgres/operations/" class="_attribution-link">https://docs.djangoproject.com/en/6.0/ref/contrib/postgres/operations/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
