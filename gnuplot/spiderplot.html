@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Spiderplot - Gnuplot - W3cubDocs</title>
+  
+  <meta name="description" content="Because each spider plot corresponds to a row of data rather than a column, it would make no sense to generate key entry titles in the normal way. &hellip;">
+  <meta name="keywords" content="spiderplot, gnuplot">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/gnuplot/spiderplot.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/gnuplot.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/gnuplot/" class="_nav-link" title="" style="margin-left:0;">Gnuplot</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _gnuplot">
+				
+				
+<h1 id="SECTION030260000000000000000">Spiderplot</h1>  Spider plots are essentially parallel axis plots in which the axes are arranged radially rather than vertically. Such plots are sometimes called <b>rader charts</b>. In gnuplot this requires working within a coordinate system established by the command <b>set spiderplot</b>, analogous to <b>set polar</b> except that the angular coordinate is determined implicitly by the parallel axis number. The appearance, labelling, and tic placement of the axes is controlled by <b>set paxis</b>. Further style choices are controlled using <b><a href="set_show#set_style_spiderplot">set style spiderplot</a></b>, <b><a href="set_show#set_grid">set grid</a></b>, and the individual components of the plot command. <p> Because each spider plot corresponds to a row of data rather than a column, it would make no sense to generate key entry titles in the normal way. Instead, if a plot component contains a title the text is used to label the corresponding axis. This overrides any previous <b>set paxis n label <span style="font-family:monospace">"</span>Foo<span style="font-family:monospace">"</span></b>. To place a title in the key, you can either use a separate <b>keyentry</b> command or extract text from a column in the input file with the <b>key(column)</b> using specifier. See <b><a href="set_show#keyentry">keyentry</a></b>, <b><a href="plot#using_key">using key</a></b>. </p>
+<p> In this figure a spiderplot with 5 axes is used to compare multiple entities that are each characterized by five scores. Each line (row) in $DATA generates a new polygon on the plot. </p>
+<pre>
+set spiderplot
+set style spiderplot fs transparent solid 0.2 border
+set for [p=1:5] paxis p range [0:100]
+set for [p=2:5] paxis p tics format ""
+set             paxis 1 tics font ",9"
+set for [p=1:5] paxis p label sprintf("Score %d",p)
+set grid spiderplot
+plot for [i=1:5] $DATA using i:key(1)</pre>  <h2 id="SECTION030261000000000000000">Newspiderplot</h2>  Normally the sequential elements of a plot command <b>with spiderplot</b> each correspond to one vertex of a single polygon. In order to describe multiple polygons in the same plot command, they must be separated by <b>newspiderplot</b>. Example:  <pre>
+# One polygon with 10 vertices
+plot for [i=1:5] 'A' using i, for [j=1:5] 'B' using j
+# Two polygons with 5 vertices
+plot for [i=1:5] 'A' using i, newspiderplot, for [j=1:5] 'B' using j</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley<br>Distributed under the <a href="https://sourceforge.net/p/gnuplot/gnuplot-main/ci/master/tree/Copyright">gnuplot license</a> (rights to distribute modified versions are withheld).<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
