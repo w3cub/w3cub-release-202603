@@ -1,0 +1,126 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Database Connection Client Data - SQLite - W3cubDocs</title>
+  
+  <meta name="description" content="These functions are used to associate one or more named pointers with a database connection. A call to sqlite3_set_clientdata(D,N,P,X) causes the &hellip;">
+  <meta name="keywords" content="database, connection, client, data, sqlite">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/sqlite/c3ref/get_clientdata.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/sqlite.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/sqlite/" class="_nav-link" title="" style="margin-left:0;">SQLite</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sqlite">
+				
+				
+<h1>Database Connection Client Data</h1>  <pre data-language="sql">
+void *sqlite3_get_clientdata(sqlite3*,const char*);
+int sqlite3_set_clientdata(sqlite3*, const char*, void*, void(*)(void*));
+</pre> <p> These functions are used to associate one or more named pointers with a <a href="sqlite3">database connection</a>. A call to sqlite3_set_clientdata(D,N,P,X) causes the pointer P to be attached to <a href="sqlite3">database connection</a> D using name N. Subsequent calls to sqlite3_get_clientdata(D,N) will return a copy of pointer P or a NULL pointer if there were no prior calls to sqlite3_set_clientdata() with the same values of D and N. Names are compared using strcmp() and are thus case sensitive. It returns 0 on success and SQLITE_NOMEM on allocation failure.</p> <p>If P and X are both non-NULL, then the destructor X is invoked with argument P on the first of the following occurrences: </p>
+<ul> <li> An out-of-memory error occurs during the call to sqlite3_set_clientdata() which attempts to register pointer P. </li>
+<li> A subsequent call to sqlite3_set_clientdata(D,N,P,X) is made with the same D and N parameters. </li>
+<li> The database connection closes. SQLite does not make any guarantees about the order in which destructors are called, only that all destructors will be called exactly once at some point during the database connection closing process. </li>
+</ul> <p>SQLite does not do anything with client data other than invoke destructors on the client data at the appropriate time. The intended use for client data is to provide a mechanism for wrapper libraries to store additional information about an SQLite database connection.</p> <p>There is no limit (other than available memory) on the number of different client data pointers (with different names) that can be attached to a single database connection. However, the implementation is optimized for the case of having only one or two different client data names. Applications and wrapper libraries are discouraged from using more than one client data name each.</p> <p>There is no way to enumerate the client data pointers associated with a database connection. The N parameter can be thought of as a secret key such that only code that knows the secret key is able to access the associated data.</p> <p>Security Warning: These interfaces should not be exposed in scripting languages or in other circumstances where it might be possible for an attacker to invoke them. Any agent that can invoke these interfaces can probably also take control of the process.</p> <p>Database connection client data is only available for SQLite version 3.44.0 (2023-11-01) and later.</p> <p>See also: <a href="get_auxdata">sqlite3_set_auxdata()</a> and <a href="get_auxdata">sqlite3_get_auxdata()</a>. </p>
+<p>See also lists of <a href="objlist">Objects</a>, <a href="constlist">Constants</a>, and <a href="funclist">Functions</a>.</p> <div class="_attribution">
+  <p class="_attribution-p">
+    SQLite is in the Public Domain.<br>
+    <a href="https://sqlite.org/c3ref/get_clientdata.html" class="_attribution-link">https://sqlite.org/c3ref/get_clientdata.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

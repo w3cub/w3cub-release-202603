@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Record a Database Snapshot - SQLite - W3cubDocs</title>
+  
+  <meta name="description" content="The sqlite3_snapshot_get(D,S,P) interface attempts to make a new sqlite3_snapshot object that records the current state of schema S in database &hellip;">
+  <meta name="keywords" content="record, database, snapshot, sqlite">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/sqlite/c3ref/snapshot_get.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/sqlite.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/sqlite/" class="_nav-link" title="" style="margin-left:0;">SQLite</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sqlite">
+				
+				
+<h1>Record A Database Snapshot</h1>  <pre data-language="sql">
+int sqlite3_snapshot_get(
+  sqlite3 *db,
+  const char *zSchema,
+  sqlite3_snapshot **ppSnapshot
+);
+</pre> <p> The <a href="snapshot_get">sqlite3_snapshot_get(D,S,P)</a> interface attempts to make a new <a href="snapshot">sqlite3_snapshot</a> object that records the current state of schema S in database connection D. On success, the <a href="snapshot_get">sqlite3_snapshot_get(D,S,P)</a> interface writes a pointer to the newly created <a href="snapshot">sqlite3_snapshot</a> object into *P and returns SQLITE_OK. If there is not already a read-transaction open on schema S when this function is called, one is opened automatically.</p> <p>If a read-transaction is opened by this function, then it is guaranteed that the returned snapshot object may not be invalidated by a database writer or checkpointer until after the read-transaction is closed. This is not guaranteed if a read-transaction is already open when this function is called. In that case, any subsequent write or checkpoint operation on the database may invalidate the returned snapshot handle, even while the read-transaction remains open.</p> <p>The following must be true for this function to succeed. If any of the following statements are false when sqlite3_snapshot_get() is called, SQLITE_ERROR is returned. The final value of *P is undefined in this case.</p> <p></p>
+<ul> <li> The database handle must not be in <a href="get_autocommit">autocommit mode</a>. <p></p>
+</li>
+<li> Schema S of <a href="sqlite3">database connection</a> D must be a <a href="../wal">WAL mode</a> database. <p></p>
+</li>
+<li> There must not be a write transaction open on schema S of database connection D. <p></p>
+</li>
+<li> One or more transactions must have been written to the current wal file since it was created on disk (by any connection). This means that a snapshot cannot be taken on a wal mode database with no wal file immediately after it is first opened. At least one transaction must be written to it first. </li>
+</ul> <p>This function may also return SQLITE_NOMEM. If it is called with the database handle in autocommit mode but fails for some other reason, whether or not a read transaction is opened on schema S is undefined.</p> <p>The <a href="snapshot">sqlite3_snapshot</a> object returned from a successful call to <a href="snapshot_get">sqlite3_snapshot_get()</a> must be freed using <a href="snapshot_free">sqlite3_snapshot_free()</a> to avoid a memory leak.</p> <p>The <a href="snapshot_get">sqlite3_snapshot_get()</a> interface is only available when the <a href="../compile#enable_snapshot">SQLITE_ENABLE_SNAPSHOT</a> compile-time option is used. </p>
+<p>See also lists of <a href="objlist">Objects</a>, <a href="constlist">Constants</a>, and <a href="funclist">Functions</a>.</p> <div class="_attribution">
+  <p class="_attribution-p">
+    SQLite is in the Public Domain.<br>
+    <a href="https://sqlite.org/c3ref/snapshot_get.html" class="_attribution-link">https://sqlite.org/c3ref/snapshot_get.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
