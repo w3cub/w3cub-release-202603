@@ -1,0 +1,244 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Covariance and Contravariance - PHP - W3cubDocs</title>
+  
+  <meta name="description" content="In PHP 7.2.0, partial contravariance was introduced by removing type restrictions on parameters in a child method. As of PHP 7.4.0, full covariance &hellip;">
+  <meta name="keywords" content="covariance, and, contravariance, php">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/php/language.oop5.variance.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/php.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/php/" class="_nav-link" title="" style="margin-left:0;">PHP</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _php">
+				
+				
+<div id="language.oop5.variance" class="sect1"> <h2 class="title">Covariance and Contravariance</h2> <p class="para"> In PHP 7.2.0, partial contravariance was introduced by removing type restrictions on parameters in a child method. As of PHP 7.4.0, full covariance and contravariance support was added. </p> <p class="para"> Covariance allows a child's method to return a more specific type than the return type of its parent's method. Contravariance allows a parameter type to be less specific in a child method, than that of its parent. </p> <p class="para"> A type declaration is considered more specific in the following case: </p>
+<ul class="itemizedlist"> <li class="listitem"> <span class="simpara"> A type is removed from a <a href="language.types.type-system#language.types.type-system.composite.union" class="link">union type</a> </span> </li> <li class="listitem"> <span class="simpara"> A type is added to an <a href="language.types.type-system#language.types.type-system.composite.intersection" class="link">intersection type</a> </span> </li> <li class="listitem"> <span class="simpara"> A class type is changed to a child class type </span> </li> <li class="listitem"> <span class="simpara"> <span class="type"><a href="language.types.iterable" class="type iterable">iterable</a></span> is changed to <span class="type"><a href="language.types.array" class="type array">array</a></span> or <span class="classname"><a href="class.traversable" class="classname">Traversable</a></span> </span> </li> </ul> A type class is considered less specific if the opposite is true. <div class="sect2" id="language.oop5.variance.covariance"> <h3 class="title">Covariance</h3> <p class="para"> To illustrate how covariance works, a simple abstract parent class, <var class="varname">Animal</var> is created. <var class="varname">Animal</var> will be extended by children classes, <var class="varname">Cat</var>, and <var class="varname">Dog</var>. </p> <div class="informalexample"> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+abstract class Animal
+{
+    protected string $name;
+
+    public function __construct(string $name)
+    {
+        $this-&gt;name = $name;
+    }
+
+    abstract public function speak();
+}
+
+class Dog extends Animal
+{
+    public function speak()
+    {
+        echo $this-&gt;name . " barks";
+    }
+}
+
+class Cat extends Animal 
+{
+    public function speak()
+    {
+        echo $this-&gt;name . " meows";
+    }
+}</pre> </div> </div> <p class="para"> Note that there aren't any methods which return values in this example. A few factories will be added which return a new object of class type <var class="varname">Animal</var>, <var class="varname">Cat</var>, or <var class="varname">Dog</var>. </p> <div class="informalexample"> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+interface AnimalShelter
+{
+    public function adopt(string $name): Animal;
+}
+
+class CatShelter implements AnimalShelter
+{
+    public function adopt(string $name): Cat // instead of returning class type Animal, it can return class type Cat
+    {
+        return new Cat($name);
+    }
+}
+
+class DogShelter implements AnimalShelter
+{
+    public function adopt(string $name): Dog // instead of returning class type Animal, it can return class type Dog
+    {
+        return new Dog($name);
+    }
+}
+
+$kitty = (new CatShelter)-&gt;adopt("Ricky");
+$kitty-&gt;speak();
+echo "\n";
+
+$doggy = (new DogShelter)-&gt;adopt("Mavrick");
+$doggy-&gt;speak();</pre> </div> <p class="para">The above example will output:</p> <div class="example-contents screen"> <div class="annotation-interactive cdata"><pre>
+Ricky meows
+Mavrick barks
+</pre></div> </div> </div> </div> <div class="sect2" id="language.oop5.variance.contravariance"> <h3 class="title">Contravariance</h3> <p class="para"> Continuing with the previous example with the classes <var class="varname">Animal</var>, <var class="varname">Cat</var>, and <var class="varname">Dog</var>, a class called <var class="varname">Food</var> and <var class="varname">AnimalFood</var> will be included, and a method <var class="varname">eat(AnimalFood $food)</var> is added to the <var class="varname">Animal</var> abstract class. </p> <div class="informalexample"> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+class Food {}
+
+class AnimalFood extends Food {}
+
+abstract class Animal
+{
+    protected string $name;
+
+    public function __construct(string $name)
+    {
+        $this-&gt;name = $name;
+    }
+
+    public function eat(AnimalFood $food)
+    {
+        echo $this-&gt;name . " eats " . get_class($food);
+    }
+}</pre> </div> </div> <p class="para"> In order to see the behavior of contravariance, the <var class="varname">eat</var> method is overridden in the <var class="varname">Dog</var> class to allow any <var class="varname">Food</var> type object. The <var class="varname">Cat</var> class remains unchanged. </p> <div class="informalexample"> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+class Dog extends Animal
+{
+    public function eat(Food $food) {
+        echo $this-&gt;name . " eats " . get_class($food);
+    }
+}</pre> </div> </div> <p class="para"> The next example will show the behavior of contravariance. </p> <div class="informalexample"> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+$kitty = (new CatShelter)-&gt;adopt("Ricky");
+$catFood = new AnimalFood();
+$kitty-&gt;eat($catFood);
+echo "\n";
+
+$doggy = (new DogShelter)-&gt;adopt("Mavrick");
+$banana = new Food();
+$doggy-&gt;eat($banana);</pre> </div> <p class="para">The above example will output:</p> <div class="example-contents screen"> <div class="annotation-interactive cdata"><pre>
+Ricky eats AnimalFood
+Mavrick eats Food
+</pre></div> </div> <p class="para"> But what happens if <var class="varname">$kitty</var> tries to <span class="methodname"><strong>eat()</strong></span> the <var class="varname">$banana</var>? </p> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">$kitty-&gt;eat($banana);</pre> </div> <p class="para">The above example will output:</p> <div class="example-contents screen"> <div class="annotation-interactive cdata"><pre>
+Fatal error: Uncaught TypeError: Argument 1 passed to Animal::eat() must be an instance of AnimalFood, instance of Food given
+</pre></div> </div> </div> </div> <div class="sect2"> <h3 class="title">Property variance</h3> <p class="simpara"> By default, properties are neither covariant nor contravariant, hence invariant. That is, their type may not change in a child class at all. The reason for that is "get" operations must be covariant, and "set" operations must be contravariant. The only way for a property to satisfy both requirements is to be invariant. </p> <p class="simpara"> As of PHP 8.4.0, with the addition of abstract properties (on an interface or abstract class) and <a href="language.oop5.property-hooks#language.oop5.property-hooks.virtual" class="link">virtual properties</a>, it is possible to declare a property that has only a get or set operation. As a result, abstract properties or virtual properties that have only a "get" operation required may be covariant. Similarly, an abstract property or virtual property that has only a "set" operation required may be contravariant. </p> <p class="simpara"> Once a property has both a get and set operation, however, it is no longer covariant or contravariant for further extension. That is, it is now invariant. </p> <div class="example" id="example-1"> <p><strong>Example #1 Property type variance</strong></p> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+class Animal {}
+class Dog extends Animal {}
+class Poodle extends Dog {}
+
+interface PetOwner
+{
+    // Only a get operation is required, so this may be covariant.
+    public Animal $pet { get; }
+}
+
+class DogOwner implements PetOwner
+{
+    // This may be a more restrictive type since the "get" side
+    // still returns an Animal.  However, as a native property
+    // children of this class may not change the type anymore.
+    public Dog $pet;
+}
+
+class PoodleOwner extends DogOwner
+{
+    // This is NOT ALLOWED, because DogOwner::$pet has both
+    // get and set operations defined and required.
+    public Poodle $pet;
+}
+?&gt;</pre> </div> </div> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1997–2025 The PHP Documentation Group<br>Licensed under the Creative Commons Attribution License v3.0 or later.<br>
+    <a href="https://www.php.net/manual/en/language.oop5.variance.php" class="_attribution-link">https://www.php.net/manual/en/language.oop5.variance.php</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Late Static Bindings - PHP - W3cubDocs</title>
+  
+  <meta name="description" content=" PHP implements a feature called late static bindings which can be used to reference the called class in a context of static inheritance. ">
+  <meta name="keywords" content="late, static, bindings, php">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/php/language.oop5.late-static-bindings.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/php.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/php/" class="_nav-link" title="" style="margin-left:0;">PHP</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _php">
+				
+				
+<div id="language.oop5.late-static-bindings" class="sect1"> <h2 class="title">Late Static Bindings</h2> <p class="para"> PHP implements a feature called late static bindings which can be used to reference the called class in a context of static inheritance. </p> <p class="para"> More precisely, late static bindings work by storing the class named in the last "non-forwarding call". In case of static method calls, this is the class explicitly named (usually the one on the left of the <a href="language.oop5.paamayim-nekudotayim" class="link"><code class="literal">::</code></a> operator); in case of non static method calls, it is the class of the object. A "forwarding call" is a static one that is introduced by <code class="literal">self::</code>, <code class="literal">parent::</code>, <code class="literal">static::</code>, or, if going up in the class hierarchy, <span class="function"><a href="function.forward-static-call" class="function">forward_static_call()</a></span>. The function <span class="function"><a href="function.get-called-class" class="function">get_called_class()</a></span> can be used to retrieve a string with the name of the called class and <code class="literal">static::</code> introduces its scope. </p> <p class="para"> This feature was named "late static bindings" with an internal perspective in mind. "Late binding" comes from the fact that <code class="literal">static::</code> will not be resolved using the class where the method is defined but it will rather be computed using runtime information. It was also called a "static binding" as it can be used for (but is not limited to) static method calls. </p> <div class="sect2" id="language.oop5.late-static-bindings.self"> <h3 class="title">Limitations of <code class="literal">self::</code>
+</h3> <p class="para"> Static references to the current class like <code class="literal">self::</code> or <code class="literal">__CLASS__</code> are resolved using the class in which the function belongs, as in where it was defined: </p> <div class="example" id="example-1"> <p><strong>Example #1 <code class="literal">self::</code> usage</strong></p> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+class A
+{
+    public static function who()
+    {
+        echo __CLASS__;
+    }
+
+    public static function test()
+    {
+        self::who();
+    }
+}
+
+class B extends A
+{
+    public static function who()
+    {
+        echo __CLASS__;
+    }
+}
+
+B::test();
+
+?&gt;</pre> </div> <div class="example-contents"><p>The above example will output:</p></div> <div class="example-contents screen"> <div class="annotation-interactive cdata"><pre>
+A
+</pre></div> </div> </div> </div> <div class="sect2" id="language.oop5.late-static-bindings.usage"> <h3 class="title">Late Static Bindings' usage</h3> <p class="para"> Late static bindings tries to solve that limitation by introducing a keyword that references the class that was initially called at runtime. Basically, a keyword that would allow referencing <code class="literal">B</code> from <code class="literal">test()</code> in the previous example. It was decided not to introduce a new keyword but rather use <code class="literal">static</code> that was already reserved. </p> <div class="example" id="example-2"> <p><strong>Example #2 <code class="literal">static::</code> simple usage</strong></p> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+class A
+{
+    public static function who()
+    {
+        echo __CLASS__;
+    }
+
+    public static function test()
+    {
+        static::who(); // Here comes Late Static Bindings
+    }
+}
+
+class B extends A
+{
+    public static function who()
+    {
+        echo __CLASS__;
+    }
+}
+
+B::test();
+
+?&gt;</pre> </div> <div class="example-contents"><p>The above example will output:</p></div> <div class="example-contents screen"> <div class="annotation-interactive cdata"><pre>
+B
+</pre></div> </div> </div> <blockquote class="note">
+<p><strong class="note">Note</strong>: </p>
+<p class="para"> In non-static contexts, the called class will be the class of the object instance. Since <code class="literal">$this-&gt;</code> will try to call private methods from the same scope, using <code class="literal">static::</code> may give different results. Another difference is that <code class="literal">static::</code> can only refer to static properties. </p> </blockquote> <div class="example" id="example-3"> <p><strong>Example #3 <code class="literal">static::</code> usage in a non-static context</strong></p> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+class A
+{
+    private function foo()
+    {
+        echo "Success!\n";
+    }
+
+    public function test()
+    {
+        $this-&gt;foo();
+        static::foo();
+    }
+}
+
+class B extends A
+{
+    /* foo() will be copied to B, hence its scope will still be A and
+    * the call be successful */
+}
+
+class C extends A
+{
+    private function foo()
+    {
+        /* Original method is replaced; the scope of the new one is C */
+    }
+}
+
+$b = new B();
+$b-&gt;test();
+
+$c = new C();
+try {
+    $c-&gt;test();
+} catch (Error $e) {
+    echo $e-&gt;getMessage();
+}
+
+?&gt;</pre> </div> <div class="example-contents"><p>The above example will output:</p></div> <div class="example-contents screen"> <div class="annotation-interactive cdata"><pre>
+Success!
+Success!
+Success!
+Call to private method C::foo() from scope A
+</pre></div> </div> </div> <blockquote class="note">
+<p><strong class="note">Note</strong>: </p>
+<p class="para"> Late static bindings' resolution will stop at a fully resolved static call with no fallback. On the other hand, static calls using keywords like <code class="literal">parent::</code> or <code class="literal">self::</code> will forward the calling information. </p> <div class="example" id="example-4"> <p><strong>Example #4 Forwarding and non-forwarding calls</strong></p> <div class="example-contents"> <pre class="annotation-interactive phpcode" data-language="php">&lt;?php
+
+class A
+{
+    public static function foo()
+    {
+        static::who();
+    }
+
+    public static function who()
+    {
+        echo __CLASS__ . "\n";
+    }
+}
+
+class B extends A
+{
+    public static function test()
+    {
+        A::foo();
+        parent::foo();
+        self::foo();
+    }
+
+    public static function who()
+    {
+        echo __CLASS__ . "\n";
+    }
+}
+
+class C extends B
+{
+    public static function who()
+    {
+        echo __CLASS__ . "\n";
+    }
+}
+
+C::test();
+
+?&gt;</pre> </div> <div class="example-contents"><p>The above example will output:</p></div> <div class="example-contents screen"> <div class="annotation-interactive cdata"><pre>
+A
+C
+C
+</pre></div> </div> </div> </blockquote> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1997–2025 The PHP Documentation Group<br>Licensed under the Creative Commons Attribution License v3.0 or later.<br>
+    <a href="https://www.php.net/manual/en/language.oop5.late-static-bindings.php" class="_attribution-link">https://www.php.net/manual/en/language.oop5.late-static-bindings.php</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
