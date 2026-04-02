@@ -1,0 +1,143 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Using Puppet (Engine) - Docker 1.13 - W3cubDocs</title>
+  
+  <meta name="description" content="Note&#58; Please note this is a community contributed installation path. The only official installation is using the Ubuntu installation path. This &hellip;">
+  <meta name="keywords" content="use, puppet, using, engine, docker, docker~1.13">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/docker~1.13/engine/admin/puppet/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/docker~1.13.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/docker~1.13/" class="_nav-link" title="" style="margin-left:0;">Docker 1.13</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Use Puppet</h1>  <blockquote> <p><em>Note:</em> Please note this is a community contributed installation path. The only <code class="highlighter-rouge">official</code> installation is using the <a href="https://docs.docker.com/v1.13/engine/installation/linux/ubuntulinux/"><em>Ubuntu</em></a> installation path. This version may sometimes be out of date.</p> </blockquote> <h2 id="requirements">Requirements</h2> <p>To use this guide you’ll need a working installation of Puppet from <a href="https://puppetlabs.com">Puppet Labs</a> .</p> <p>The module also currently uses the official PPA so only works with Ubuntu.</p> <h2 id="installation">Installation</h2> <p>The module is available on the <a href="https://forge.puppetlabs.com/garethr/docker/">Puppet Forge</a> and can be installed using the built-in module tool.</p> <pre class="highlight" data-language="">$ puppet module install garethr/docker
+</pre>  <p>It can also be found on <a href="https://github.com/garethr/garethr-docker">GitHub</a> if you would rather download the source.</p> <h2 id="usage">Usage</h2> <p>The module provides a puppet class for installing Docker and two defined types for managing images and containers.</p> <h3 id="installation-1">Installation</h3> <pre class="highlight" data-language="">include 'docker'
+</pre>  <h3 id="images">Images</h3> <p>The next step is probably to install a Docker image. For this, we have a defined type which can be used like so:</p> <pre class="highlight" data-language="">docker::image { 'ubuntu': }
+</pre>  <p>This is equivalent to running:</p> <pre class="highlight" data-language="">$ docker pull ubuntu
+</pre>  <p>Note that it will only be downloaded if an image of that name does not already exist. This is downloading a large binary so on first run can take a while. For that reason this define turns off the default 5 minute timeout for the exec type. Note that you can also remove images you no longer need with:</p> <pre class="highlight" data-language="">docker::image { 'ubuntu':
+  ensure =&gt; 'absent',
+}
+</pre>  <h3 id="containers">Containers</h3> <p>Now you have an image where you can run commands within a container managed by Docker.</p> <pre class="highlight" data-language="">docker::run { 'helloworld':
+  image   =&gt; 'ubuntu',
+  command =&gt; '/bin/sh -c "while true; do echo hello world; sleep 1; done"',
+}
+</pre>  <p>This is equivalent to running the following command, but under upstart:</p> <pre class="highlight" data-language="">$ docker run -d ubuntu /bin/sh -c "while true; do echo hello world; sleep 1; done"
+</pre>  <p>Run also contains a number of optional parameters:</p> <pre class="highlight" data-language="">docker::run { 'helloworld':
+  image        =&gt; 'ubuntu',
+  command      =&gt; '/bin/sh -c "while true; do echo hello world; sleep 1; done"',
+  ports        =&gt; ['4444', '4555'],
+  volumes      =&gt; ['/var/lib/couchdb', '/var/log'],
+  volumes_from =&gt; '6446ea52fbc9',
+  memory_limit =&gt; 10485760, # bytes
+  username     =&gt; 'example',
+  hostname     =&gt; 'example.com',
+  env          =&gt; ['FOO=BAR', 'FOO2=BAR2'],
+  dns          =&gt; ['8.8.8.8', '8.8.4.4'],
+}
+</pre>  <blockquote> <p><em>Note:</em> The <code class="highlighter-rouge">ports</code>, <code class="highlighter-rouge">env</code>, <code class="highlighter-rouge">dns</code> and <code class="highlighter-rouge">volumes</code> attributes can be set with either a single string or as above with an array of values.</p> </blockquote>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2017 Docker, Inc.<br>Licensed under the Apache License, Version 2.0.<br>Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries.<br>Docker, Inc. and other parties may also have trademark rights in other terms used herein.<br>
+    <a href="https://docs.docker.com/v1.13/engine/admin/puppet/" class="_attribution-link">https://docs.docker.com/v1.13/engine/admin/puppet/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

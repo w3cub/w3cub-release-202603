@@ -1,0 +1,231 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Attach Services to an Overlay Network (Engine) - Docker 1.13 - W3cubDocs</title>
+  
+  <meta name="description" content="Docker Engine swarm mode natively supports overlay networks, so you can enable container-to-container networks. When you use swarm mode, you don’t &hellip;">
+  <meta name="keywords" content="attach, services, overlay, network, engine, docker, docker~1.13">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/docker~1.13/engine/swarm/networking/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/docker~1.13.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/docker~1.13/" class="_nav-link" title="" style="margin-left:0;">Docker 1.13</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Attach services to an overlay network</h1>  <p>Docker Engine swarm mode natively supports <strong>overlay networks</strong>, so you can enable container-to-container networks. When you use swarm mode, you don’t need an external key-value store. Features of swarm mode overlay networks include the following:</p> <ul> <li>You can attach multiple services to the same network.</li> <li>By default, <strong>service discovery</strong> assigns a virtual IP address (VIP) and DNS entry to each service in the swarm, making it available by its service name to containers on the same network.</li> <li>You can configure the service to use DNS round-robin instead of a VIP.</li> </ul> <p>In order to use overlay networks in the swarm, you need to have the following ports open between the swarm nodes before you enable swarm mode:</p> <ul> <li>Port <code class="highlighter-rouge">7946</code> TCP/UDP for container network discovery.</li> <li>Port <code class="highlighter-rouge">4789</code> UDP for the container overlay network.</li> </ul> <h2 id="create-an-overlay-network-in-a-swarm">Create an overlay network in a swarm</h2> <p>When you run Docker Engine in swarm mode, you can run <code class="highlighter-rouge">docker network create</code> from a manager node to create an overlay network. For instance, to create a network named <code class="highlighter-rouge">my-network</code>:</p> <pre class="highlight" data-language="">$ docker network create \
+  --driver overlay \
+  --subnet 10.0.9.0/24 \
+  --opt encrypted \
+  my-network
+
+273d53261bcdfda5f198587974dae3827e947ccd7e74a41bf1f482ad17fa0d33
+</pre>  <p>By default nodes in the swarm encrypt traffic between themselves and other nodes. The optional <code class="highlighter-rouge">--opt encrypted</code> flag enables an additional layer of encryption in the overlay driver for vxlan traffic between containers on different nodes. For more information, refer to <a href="../../userguide/networking/overlay-security-model/index">Docker swarm mode overlay network security model</a>.</p> <p>The <code class="highlighter-rouge">--subnet</code> flag specifies the subnet for use with the overlay network. When you don’t specify a subnet, the swarm manager automatically chooses a subnet and assigns it to the network. On some older kernels, including kernel 3.10, automatically assigned adresses may overlap with another subnet in your infrastructure. Such overlaps can cause connectivity issues or failures with containers connected to the network.</p> <p>Before you attach a service to the network, the network only extends to manager nodes. You can run <code class="highlighter-rouge">docker network ls</code> to view the network:</p> <pre class="highlight" data-language="bash">$ docker network ls
+
+NETWORK ID          NAME        DRIVER   SCOPE
+f9145f09b38b        bridge      bridge   local
+..snip..
+273d53261bcd        my-network  overlay  swarm
+</pre>  <p>The <code class="highlighter-rouge">swarm</code> scope indicates that the network is available for use with services deployed to the swarm. After you create a service attached to the network, the swarm only extends the network to worker nodes where the scheduler places tasks for the service. On workers without tasks running for a service attached to the network, <code class="highlighter-rouge">network ls</code> does not display the network.</p> <h2 id="attach-a-service-to-an-overlay-network">Attach a service to an overlay network</h2> <p>To attach a service to an overlay network, pass the <code class="highlighter-rouge">--network</code> flag when you create a service. For example to create an nginx service attached to a network called <code class="highlighter-rouge">my-network</code>:</p> <pre class="highlight" data-language="bash">$ docker service create \
+  --replicas 3 \
+  --name my-web \
+  --network my-network \
+  nginx
+</pre>  <blockquote> <p><strong>Note:</strong> You have to create the network before you can attach a service to it.</p> </blockquote> <p>The containers for the tasks in the service can connect to one another on the overlay network. The swarm extends the network to all the nodes with <code class="highlighter-rouge">Running</code> tasks for the service.</p> <p>From a manager node, run <code class="highlighter-rouge">docker service ps &lt;SERVICE&gt;</code> to view the nodes where tasks are running for the service:</p> <pre class="highlight" data-language="bash">$ docker service ps my-web
+
+NAME                                IMAGE  NODE   DESIRED STATE  CURRENT STATE               ERROR
+my-web.1.63s86gf6a0ms34mvboniev7bs  nginx  node1  Running        Running 58 seconds ago
+my-web.2.6b3q2qbjveo4zauc6xig7au10  nginx  node2  Running        Running 58 seconds ago
+my-web.3.66u2hcrz0miqpc8h0y0f3v7aw  nginx  node3  Running        Running about a minute ago
+</pre>  <p><img src="data:image/png;base64,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" alt="service vip image"></p> <p>You can inspect the network from any node with a <code class="highlighter-rouge">Running</code> task for a service attached to the network:</p> <pre class="highlight" data-language="bash">$ docker network inspect &lt;NETWORK&gt;
+</pre>  <p>The network information includes a list of the containers on the node that are attached to the network. For instance:</p> <pre class="highlight" data-language="bash">$ docker network inspect my-network
+[
+    {
+        "Name": "my-network",
+        "Id": "273d53261bcdfda5f198587974dae3827e947ccd7e74a41bf1f482ad17fa0d33",
+        "Scope": "swarm",
+        "Driver": "overlay",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "10.0.9.0/24",
+                    "Gateway": "10.0.9.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Containers": {
+            "404d1dec939a021678132a35259c3604b9657649437e59060621a17edae7a819": {
+                "Name": "my-web.1.63s86gf6a0ms34mvboniev7bs",
+                "EndpointID": "3c9588d04db9bc2bf8749cb079689a3072c44c68e544944cbea8e4bc20eb7de7",
+                "MacAddress": "02:42:0a:00:09:03",
+                "IPv4Address": "10.0.9.3/24",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {
+            "com.docker.network.driver.overlay.vxlanid_list": "257"
+        },
+        "Labels": {}
+    }
+]
+</pre>  <p>In the example above, the container <code class="highlighter-rouge">my-web.1.63s86gf6a0ms34mvboniev7bs</code> for the <code class="highlighter-rouge">my-web</code> service is attached to the <code class="highlighter-rouge">my-network</code> network on node1.</p> <h2 id="use-swarm-mode-service-discovery">Use swarm mode service discovery</h2> <p>By default, when you create a service attached to a network, the swarm assigns the service a VIP. The VIP maps to a DNS alias based upon the service name. Containers on the network share DNS mappings for the service via gossip so any container on the network can access the service via its service name.</p> <p>You don’t need to expose service-specific ports to make the service available to other services on the same overlay network. The swarm’s internal load balancer automatically distributes requests to the service VIP among the active tasks.</p> <p>You can inspect the service to view the virtual IP. For example:</p> <pre class="highlight" data-language="bash">$ docker service inspect \
+  --format='{{json .Endpoint.VirtualIPs}}' \
+  my-web
+
+[{"NetworkID":"7m2rjx0a97n88wzr4nu8772r3" "Addr":"10.0.0.2/24"}]
+</pre>  <p>The following example shows how you can add a <code class="highlighter-rouge">busybox</code> service on the same network as the <code class="highlighter-rouge">nginx</code> service and the busybox service is able to access <code class="highlighter-rouge">nginx</code> using the DNS name <code class="highlighter-rouge">my-web</code>:</p> <ol> <li> <p>From a manager node, deploy a busybox service to the same network as <code class="highlighter-rouge">my-web</code>:</p> <pre class="highlight" data-language="bash">$ docker service create \
+  --name my-busybox \
+  --network my-network \
+  busybox \
+  sleep 3000
+</pre>  </li> <li> <p>Lookup the node where <code class="highlighter-rouge">my-busybox</code> is running:</p> <pre class="highlight" data-language="bash">$ docker service ps my-busybox
+
+NAME                                    IMAGE    NODE   DESIRED STATE  CURRENT STATE          ERROR
+my-busybox.1.1dok2cmx2mln5hbqve8ilnair  busybox  node1  Running        Running 5 seconds ago
+</pre>  </li> <li> <p>From the node where the busybox task is running, open an interactive shell to the busybox container:</p> <pre class="highlight" data-language="bash">$ docker exec -it my-busybox.1.1dok2cmx2mln5hbqve8ilnair /bin/sh
+</pre>  <p>You can deduce the container name as <code class="highlighter-rouge">&lt;TASK-NAME&gt;</code>+<code class="highlighter-rouge">&lt;ID&gt;</code>. Alternatively, you can run <code class="highlighter-rouge">docker ps</code> on the node where the task is running.</p> </li> <li> <p>From inside the busybox container, query the DNS to view the VIP for the <code class="highlighter-rouge">my-web</code> service:</p> <pre class="highlight" data-language="bash">$ nslookup my-web
+
+Server:    127.0.0.11
+Address 1: 127.0.0.11
+
+Name:      my-web
+Address 1: 10.0.9.2 ip-10-0-9-2.us-west-2.compute.internal
+</pre>  <blockquote> <p><strong>Note:</strong> the examples here use <code class="highlighter-rouge">nslookup</code>, but you can use <code class="highlighter-rouge">dig</code> or any available DNS query tool.</p> </blockquote> </li> <li> <p>From inside the busybox container, query the DNS using a special query &lt;tasks.SERVICE-NAME&gt; to find the IP addresses of all the containers for the <code class="highlighter-rouge">my-web</code> service:</p> <pre class="highlight" data-language="bash">$ nslookup tasks.my-web
+
+Server:    127.0.0.11
+Address 1: 127.0.0.11
+
+Name:      tasks.my-web
+Address 1: 10.0.9.4 my-web.2.6b3q2qbjveo4zauc6xig7au10.my-network
+Address 2: 10.0.9.3 my-web.1.63s86gf6a0ms34mvboniev7bs.my-network
+Address 3: 10.0.9.5 my-web.3.66u2hcrz0miqpc8h0y0f3v7aw.my-network
+</pre>  </li> <li> <p>From inside the busybox container, run <code class="highlighter-rouge">wget</code> to access the nginx web server running in the <code class="highlighter-rouge">my-web</code> service:</p> <pre class="highlight" data-language="bash">$ wget -O- my-web
+
+Connecting to my-web (10.0.9.2:80)
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+...snip...
+</pre>  <p>The swarm load balancer automatically routes the HTTP request to the service’s VIP to an active task. It distributes subsequent requests to other tasks using round-robin selection.</p> </li> </ol> <h2 id="use-dns-round-robin-for-a-service">Use DNS round-robin for a service</h2> <p>You can configure the service to use DNS round-robin directly without using a VIP, by setting the <code class="highlighter-rouge">--endpoint-mode dnsrr</code> when you create the service. DNS round-robin is useful in cases where you want to use your own load balancer.</p> <p>The following example shows a service with <code class="highlighter-rouge">dnsrr</code> endpoint mode:</p> <pre class="highlight" data-language="bash">$ docker service create \
+  --replicas 3 \
+  --name my-dnsrr-service \
+  --network my-network \
+  --endpoint-mode dnsrr \
+  nginx
+</pre>  <p>When you query the DNS for the service name, the DNS service returns the IP addresses for all the task containers:</p> <pre class="highlight" data-language="bash">$ nslookup my-dnsrr-service
+Server:    127.0.0.11
+Address 1: 127.0.0.11
+
+Name:      my-dnsrr
+Address 1: 10.0.9.8 my-dnsrr-service.1.bd3a67p61by5dfdkyk7kog7pr.my-network
+Address 2: 10.0.9.10 my-dnsrr-service.3.0sb1jxr99bywbvzac8xyw73b1.my-network
+Address 3: 10.0.9.9 my-dnsrr-service.2.am6fx47p3bropyy2dy4f8hofb.my-network
+</pre>  <h2 id="confirm-vip-connectivity">Confirm VIP connectivity</h2> <p>In genaral we recommend you use <code class="highlighter-rouge">dig</code>, <code class="highlighter-rouge">nslookup</code>, or another DNS query tool to test access to the service name via DNS. Because a VIP is a logical IP, <code class="highlighter-rouge">ping</code> is not the right tool to confirm VIP connectivity.</p> <h2 id="learn-more">Learn More</h2> <ul> <li><a href="../services/index">Deploy services to a swarm</a></li> <li><a href="../admin_guide/index">Swarm administration guide</a></li> <li><a href="../../reference/commandline/docker/index">Docker Engine command line reference</a></li> <li><a href="../swarm-tutorial/index">Swarm mode tutorial</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2017 Docker, Inc.<br>Licensed under the Apache License, Version 2.0.<br>Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries.<br>Docker, Inc. and other parties may also have trademark rights in other terms used herein.<br>
+    <a href="https://docs.docker.com/v1.13/engine/swarm/networking/" class="_attribution-link">https://docs.docker.com/v1.13/engine/swarm/networking/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

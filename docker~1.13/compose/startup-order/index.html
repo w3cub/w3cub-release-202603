@@ -1,0 +1,146 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Control Startup Order (Compose) - Docker 1.13 - W3cubDocs</title>
+  
+  <meta name="description" content="You can control the order of service startup with the depends_on option. Compose always starts containers in dependency order, where dependencies &hellip;">
+  <meta name="keywords" content="controlling, startup, order, compose, control, docker, docker~1.13">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/docker~1.13/compose/startup-order/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/docker~1.13.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/docker~1.13/" class="_nav-link" title="" style="margin-left:0;">Docker 1.13</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Controlling startup order in Compose</h1>  <p>You can control the order of service startup with the <a href="../compose-file/index#depends-on">depends_on</a> option. Compose always starts containers in dependency order, where dependencies are determined by <code class="highlighter-rouge">depends_on</code>, <code class="highlighter-rouge">links</code>, <code class="highlighter-rouge">volumes_from</code> and <code class="highlighter-rouge">network_mode: "service:..."</code>.</p> <p>However, Compose will not wait until a container is “ready” (whatever that means for your particular application) - only until it’s running. There’s a good reason for this.</p> <p>The problem of waiting for a database (for example) to be ready is really just a subset of a much larger problem of distributed systems. In production, your database could become unavailable or move hosts at any time. Your application needs to be resilient to these types of failures.</p> <p>To handle this, your application should attempt to re-establish a connection to the database after a failure. If the application retries the connection, it should eventually be able to connect to the database.</p> <p>The best solution is to perform this check in your application code, both at startup and whenever a connection is lost for any reason. However, if you don’t need this level of resilience, you can work around the problem with a wrapper script:</p> <ul> <li> <p>Use a tool such as <a href="https://github.com/vishnubob/wait-for-it">wait-for-it</a> or <a href="https://github.com/jwilder/dockerize">dockerize</a>. These are small wrapper scripts which you can include in your application’s image and will poll a given host and port until it’s accepting TCP connections.</p> <p>For example, to use <code class="highlighter-rouge">wait-for-it.sh</code> to wrap your service’s command:</p> <pre class="highlight" data-language="">version: "2"
+services:
+  web:
+    build: .
+    ports:
+      - "80:8000"
+    depends_on:
+      - "db"
+    command: ["./wait-for-it.sh", "db:5432", "--", "python", "app.py"]
+  db:
+    image: postgres
+</pre>  </li> <li> <p>Alternatively, write your own wrapper script to perform a more application-specific health check. For example, you might want to wait until Postgres is definitely ready to accept commands:</p> <pre class="highlight" data-language="">#!/bin/bash
+# wait-for-postgres.sh
+
+set -e
+
+host="$1"
+shift
+cmd="$@"
+
+until psql -h "$host" -U "postgres" -c '\l'; do
+  &gt;&amp;2 echo "Postgres is unavailable - sleeping"
+  sleep 1
+done
+
+&gt;&amp;2 echo "Postgres is up - executing command"
+exec $cmd
+</pre>  <p>You can use this as a wrapper script as in the previous example, by setting <code class="highlighter-rouge">command: ["./wait-for-postgres.sh", "db", "python", "app.py"]</code>.</p> </li> </ul> <h2 id="compose-documentation">Compose documentation</h2> <ul> <li><a href="../install/index">Installing Compose</a></li> <li><a href="../django/index">Get started with Django</a></li> <li><a href="../rails/index">Get started with Rails</a></li> <li><a href="../wordpress/index">Get started with WordPress</a></li> <li><a href="https://docs.docker.com/v1.13/compose/reference/">Command line reference</a></li> <li><a href="../compose-file/index">Compose file reference</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2017 Docker, Inc.<br>Licensed under the Apache License, Version 2.0.<br>Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries.<br>Docker, Inc. and other parties may also have trademark rights in other terms used herein.<br>
+    <a href="https://docs.docker.com/v1.13/compose/startup-order/" class="_attribution-link">https://docs.docker.com/v1.13/compose/startup-order/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

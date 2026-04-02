@@ -1,0 +1,184 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Set Up Dockerized Machines (Engine) - Docker 1.13 - W3cubDocs</title>
+  
+  <meta name="description" content="The first step in getting the voting app deployed is to set up Docker machines for the swarm nodes. You could create these Docker hosts on different &hellip;">
+  <meta name="keywords" content="set, up, dockerized, machines, engine, docker, docker~1.13">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/docker~1.13/engine/getstarted-voting-app/node-setup/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/docker~1.13.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/docker~1.13/" class="_nav-link" title="" style="margin-left:0;">Docker 1.13</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Set up Dockerized machines</h1>  <p>The first step in getting the voting app deployed is to set up Docker machines for the swarm nodes. You could create these Docker hosts on different physical machines, virtual machines, or cloud providers.</p> <p>For this example, we use <a href="../../../machine/get-started/index">Docker Machine</a> to create two virtual machines on a single system. We’ll also verify the setup, and run some basic commmands to interact with the machines.</p> <h2 id="prerequisites">Prerequisites</h2> <ul> <li>
+<strong>Docker Machine</strong> - These steps rely on use of <a href="../../../machine/get-started/index">Docker Machine</a> (<code class="highlighter-rouge">docker-machine</code>), which comes auto-installed with both Docker for Mac and Docker for Windows.</li> </ul>  <ul> <li>
+<strong>VirtualBox driver on Docker for Mac</strong> - On Docker for Mac, you’ll use <code class="highlighter-rouge">docker-machine</code> with the <code class="highlighter-rouge">virtualbox</code> driver to create machines. If you had a legacy installation of Docker Toolbox, you already have Oracle VirtualBox installed as part of that. If you started fresh with Docker for Mac, then you need to install VirtualBox independently. We recommend doing this rather than using the Toolbox installer because it can <a href="https://docs.docker.com/v1.13/docker-for-mac/docker-toolbox/">conflict</a> with Docker for Mac. You can <a href="https://www.virtualbox.org/wiki/Downloads">download VirtualBox for <code class="highlighter-rouge">OS X hosts</code> here</a>, and follow install instructions. You do not need to start VirtualBox. The <code class="highlighter-rouge">docker-machine create</code> command will call it via the driver.</li> </ul>  <ul> <li>
+<strong>Hyper-V driver on Docker for Windows</strong> - On Docker for Windows, you will use <code class="highlighter-rouge">docker-machine</code> with the <a href="../../../machine/drivers/hyper-v/index"><code class="highlighter-rouge">Hyper-V</code></a> driver to create machines. You will need to follow the instructions in the <a href="../../../machine/drivers/hyper-v/index#example">Hyper-V example</a> reference topic to set up a new external network switch (a one-time task), reboot, and then <a href="../../../machine/drivers/hyper-v/index#create-the-nodes-with-docker-machine-and-the-microsoft-hyper-v-driver">create the machines (nodes)</a> in an elevated PowerShell per those instructions.</li> </ul> <h3 id="commands-to-create-machines">Commands to create machines</h3> <p>The Docker Machine commands to create local virtual machines on Mac and Windows are are as follows.</p> <h4 id="mac">Mac</h4> <pre class="highlight" data-language="">docker-machine create --driver virtualbox HOST-NAME
+</pre>  <h4 id="windows">Windows</h4> <pre class="highlight" data-language="">docker-machine create -d hyperv --hyperv-virtual-switch "NETWORK-SWITCH"
+MACHINE-NAME
+</pre>  <p>This must be done in an elevated PowerShell, using a custom-created external network switch. See <a href="../../../machine/drivers/hyper-v/index#example">Hyper-V example</a>.</p> <h2 id="create-manager-and-worker-machines">Create manager and worker machines</h2> <p>Create two machines and name them to anticipate what their roles will be in the swarm:</p> <ul> <li> <p>manager</p> </li> <li> <p>worker</p> </li> </ul> <p>Here is an example of creating the <code class="highlighter-rouge">manager</code> on Docker for Mac. Create this one, then do the same for <code class="highlighter-rouge">worker</code>.</p> <pre class="highlight" data-language="">$  docker-machine create --driver virtualbox manager
+Running pre-create checks...
+Creating machine...
+(manager) Copying /Users/victoria/.docker/machine/cache/boot2docker.iso to /Users/victoria/.docker/machine/machines/manager/boot2docker.iso...
+(manager) Creating VirtualBox VM...
+(manager) Creating SSH key...
+(manager) Starting the VM...
+(manager) Check network to re-create if needed...
+(manager) Waiting for an IP...
+Waiting for machine to be running, this may take a few minutes...
+Detecting operating system of created instance...
+Waiting for SSH to be available...
+Detecting the provisioner...
+Provisioning with boot2docker...
+Copying certs to the local machine directory...
+Copying certs to the remote machine...
+Setting Docker configuration on the remote daemon...
+Checking connection to Docker...
+Docker is up and running!
+To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: docker-machine env manager
+</pre>  <h2 id="verify-machines-are-running-and-get-ip-addresses">Verify machines are running and get IP addresses</h2> <p>Use <code class="highlighter-rouge">docker-machine ls</code> to verify that the machines are running and to get their IP addresses.</p> <pre class="highlight" data-language="">$ docker-machine ls
+NAME       ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS
+manager   *        virtualbox   Running   tcp://192.168.99.100:2376           v1.13.0-rc6
+worker    -        virtualbox   Running   tcp://192.168.99.101:2376           v1.13.0-rc6
+</pre>  <p>You now have two “Dockerized” machines, each running Docker Engine, accessible through the <a href="../../reference/commandline/docker/index">Docker CLI</a>, and available to become swarm nodes.</p> <p>You can also get the IP address of a particular machine:</p> <pre class="highlight" data-language="">$ docker-machine ip manager
+192.168.99.100
+</pre>  <p>You will need the IP address of the manager for a later step.</p> <h2 id="interacting-with-the-machines">Interacting with the machines</h2> <p>There are a few ways to interact with these machines directly on the command line or programatically. We’ll cover two methods for managing the machines directly from the command line:</p> <ul> <li> <p><a href="#manage-the-machines-from-a-pre-configured-shell">Manage the machines from a pre-configured shell</a></p> </li> <li> <p><a href="#ssh-into-a-machine"><code class="highlighter-rouge">docker ssh</code> into a machine</a></p> </li> </ul> <h4 id="manage-the-machines-from-a-pre-configured-shell">Manage the machines from a pre-configured shell</h4> <p>You can use <code class="highlighter-rouge">docker-machine</code> to set up environment variables in a shell that connect to the Docker client on a virtual machine. With this setup, the Docker commands you type in your local shell will run on the given machine. As an example, we’ll set up a shell to talk to our manager machine.</p> <ol> <li> <p>Run <code class="highlighter-rouge">docker-machine env manager</code> to get environment variables for the manager.</p> <pre class="highlight" data-language="">$ docker-machine env manager
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://192.168.99.100:2376"
+export DOCKER_CERT_PATH="/Users/victoriabialas/.docker/machine/machines/manager"
+export DOCKER_MACHINE_NAME="manager"
+export DOCKER_API_VERSION="1.25"
+# Run this command to configure your shell:
+# eval $(docker-machine env manager)
+</pre>  </li> <li> <p>Connect your shell to the manager.</p> <p>On Mac:</p> <pre class="highlight" data-language="">$ eval $(docker-machine env manager)
+</pre>  <p>On Windows PowerShell:</p> <pre class="highlight" data-language="">&amp; docker-machine.exe env manager | Invoke-Expression
+</pre>  <p>This sets <a href="../../../machine/reference/env/index">environment variables</a> for the current shell. The rest of the <code class="highlighter-rouge">docker-machine</code> commands we cover are the same on both Mac and Windows.</p> </li> <li> <p>Run <code class="highlighter-rouge">docker-machine ls</code> again.</p> <pre class="highlight" data-language="">$ docker-machine ls
+NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS
+manager   *        virtualbox   Running   tcp://192.168.99.100:2376           v1.13.0-rc6   
+worker    -        virtualbox   Running   tcp://192.168.99.101:2376           v1.13.0-rc6   
+</pre>  <p>The asterisk next <code class="highlighter-rouge">manager</code> indicates that the current shell is connected to that machine. Docker commands run in this shell will execute on the <code class="highlighter-rouge">manager.</code> (Note that you could change this by re-running the above commands to connect to the <code class="highlighter-rouge">worker</code>, or open multiple terminals to talk to multiple machines.)</p> </li> </ol> <p>If you use this method, you’ll need to re-configure the environment setup each time you want to switch between the manager and the worker, or keep two shells open.</p> <h4 id="ssh-into-a-machine">ssh into a machine</h4> <p>Alternatively, you can use the command <code class="highlighter-rouge">docker-machine ssh &lt;MACHINE-NAME&gt;</code> to log into a machine.</p> <pre class="highlight" data-language="">$ docker-machine ssh manager
+                        ##         .
+                  ## ## ##        ==
+               ## ## ## ## ##    ===
+           /"""""""""""""""""\___/ ===
+      ~~~ {~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~
+           \______ o           __/
+             \    \         __/
+              \____\_______/
+ _                 _   ____     _            _
+| |__   ___   ___ | |_|___ \ __| | ___   ___| | _____ _ __
+| '_ \ / _ \ / _ \| __| __) / _` |/ _ \ / __| |/ / _ \ '__|
+| |_) | (_) | (_) | |_ / __/ (_| | (_) | (__|   &lt;  __/ |
+|_.__/ \___/ \___/ \__|_____\__,_|\___/ \___|_|\_\___|_|
+
+  WARNING: this is a build from test.docker.com, not a stable release.
+
+Boot2Docker version 1.13.0-rc6, build HEAD : 5ab2289 - Wed Jan 11 23:37:52 UTC 2017
+Docker version 1.13.0-rc6, build 2f2d055
+</pre>  <p>You <em>do not</em> have to set up <code class="highlighter-rouge">docker-machine</code> environment variables, as in the previous section, for <code class="highlighter-rouge">docker ssh</code> to work. You can run this command in that same shell you configured to talk to the manager, or in a new one, and it will work either way.</p> <p>This tutorial will employ the <code class="highlighter-rouge">docker ssh</code> method to run commands on the machines, but which approach you use is really a matter of personal preference.</p> <h2 id="whats-next">What’s next?</h2> <p>In the next step, we’ll <a href="../create-swarm/index">create a swarm</a> across these two Docker machines.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2017 Docker, Inc.<br>Licensed under the Apache License, Version 2.0.<br>Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries.<br>Docker, Inc. and other parties may also have trademark rights in other terms used herein.<br>
+    <a href="https://docs.docker.com/v1.13/engine/getstarted-voting-app/node-setup/" class="_attribution-link">https://docs.docker.com/v1.13/engine/getstarted-voting-app/node-setup/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

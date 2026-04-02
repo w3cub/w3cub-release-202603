@@ -1,0 +1,138 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Automation With Content Trust (Engine) - Docker 1.13 - W3cubDocs</title>
+  
+  <meta name="description" content="Your automation systems that pull or build images can also work with trust. Any automation environment must set DOCKER_TRUST_ENABLED either manually &hellip;">
+  <meta name="keywords" content="automation, with, content, trust, engine, docker, docker~1.13">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/docker~1.13/engine/security/trust/trust_automation/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/docker~1.13.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/docker~1.13/" class="_nav-link" title="" style="margin-left:0;">Docker 1.13</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Automation with content trust</h1>  <p>Your automation systems that pull or build images can also work with trust. Any automation environment must set <code class="highlighter-rouge">DOCKER_TRUST_ENABLED</code> either manually or in a scripted fashion before processing images.</p> <h2 id="bypass-requests-for-passphrases">Bypass requests for passphrases</h2> <p>To allow tools to wrap docker and push trusted content, there are two environment variables that allow you to provide the passphrases without an expect script, or typing them in:</p> <ul> <li><code class="highlighter-rouge">DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE</code></li> <li><code class="highlighter-rouge">DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE</code></li> </ul> <p>Docker attempts to use the contents of these environment variables as passphrase for the keys. For example, an image publisher can export the repository <code class="highlighter-rouge">target</code> and <code class="highlighter-rouge">snapshot</code> passphrases:</p> <pre class="highlight" data-language="bash">$  export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE="u7pEQcGoebUHm6LHe6"
+$  export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE="l7pEQcTKJjUHm6Lpe4"
+</pre>  <p>Then, when pushing a new tag the Docker client does not request these values but signs automatically:</p> <pre class="highlight" data-language="bash">$  docker push docker/trusttest:latest
+The push refers to a repository [docker.io/docker/trusttest] (len: 1)
+a9539b34a6ab: Image already exists
+b3dbab3810fc: Image already exists
+latest: digest: sha256:d149ab53f871 size: 3355
+Signing and pushing trust metadata
+</pre>  <p>When working directly with the Notary client, it will use its <a href="https://docs.docker.com/v1.13/notary/reference/client-config/#environment-variables-optional">own set of environment variables</a>.</p> <h2 id="building-with-content-trust">Building with content trust</h2> <p>You can also build with content trust. Before running the <code class="highlighter-rouge">docker build</code> command, you should set the environment variable <code class="highlighter-rouge">DOCKER_CONTENT_TRUST</code> either manually or in a scripted fashion. Consider the simple Dockerfile below.</p> <pre data-language="">FROM docker/trusttest:latest
+RUN echo
+</pre> <p>The <code class="highlighter-rouge">FROM</code> tag is pulling a signed image. You cannot build an image that has a <code class="highlighter-rouge">FROM</code> that is not either present locally or signed. Given that content trust data exists for the tag <code class="highlighter-rouge">latest</code>, the following build should succeed:</p> <pre class="highlight" data-language="bash">$  docker build -t docker/trusttest:testing .
+Using default tag: latest
+latest: Pulling from docker/trusttest
+
+b3dbab3810fc: Pull complete
+a9539b34a6ab: Pull complete
+Digest: sha256:d149ab53f871
+</pre>  <p>If content trust is enabled, building from a Dockerfile that relies on tag without trust data, causes the build command to fail:</p> <pre class="highlight" data-language="bash">$  docker build -t docker/trusttest:testing .
+unable to process Dockerfile: No trust data for notrust
+</pre>  <h2 id="related-information">Related information</h2> <ul> <li><a href="../content_trust/index">Content trust in Docker</a></li> <li><a href="../trust_key_mng/index">Manage keys for content trust</a></li> <li><a href="../trust_delegation/index">Delegations for content trust</a></li> <li><a href="../trust_sandbox/index">Play in a content trust sandbox</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2017 Docker, Inc.<br>Licensed under the Apache License, Version 2.0.<br>Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries.<br>Docker, Inc. and other parties may also have trademark rights in other terms used herein.<br>
+    <a href="https://docs.docker.com/v1.13/engine/security/trust/trust_automation/" class="_attribution-link">https://docs.docker.com/v1.13/engine/security/trust/trust_automation/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

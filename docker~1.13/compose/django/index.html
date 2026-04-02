@@ -1,0 +1,178 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Django and PostgreSQL (Compose) - Docker 1.13 - W3cubDocs</title>
+  
+  <meta name="description" content="This quick-start guide demonstrates how to use Docker Compose to set up and run a simple Django&#47;PostgreSQL app. Before starting, you’ll need to &hellip;">
+  <meta name="keywords" content="quickstart, compose, and, django, postgresql, docker, docker~1.13">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/docker~1.13/compose/django/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/docker~1.13.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/docker~1.13/" class="_nav-link" title="" style="margin-left:0;">Docker 1.13</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Quickstart: Compose and Django</h1>  <p>This quick-start guide demonstrates how to use Docker Compose to set up and run a simple Django/PostgreSQL app. Before starting, you’ll need to have <a href="../install/index">Compose installed</a>.</p> <h3 id="define-the-project-components">Define the project components</h3> <p>For this project, you need to create a Dockerfile, a Python dependencies file, and a <code class="highlighter-rouge">docker-compose.yml</code> file. (You can use either a <code class="highlighter-rouge">.yml</code> or <code class="highlighter-rouge">.yaml</code> extension for this file.)</p> <ol> <li> <p>Create an empty project directory.</p> <p>You can name the directory something easy for you to remember. This directory is the context for your application image. The directory should only contain resources to build that image.</p> </li> <li> <p>Create a new file called <code class="highlighter-rouge">Dockerfile</code> in your project directory.</p> <p>The Dockerfile defines an application’s image content via one or more build commands that configure that image. Once built, you can run the image in a container. For more information on <code class="highlighter-rouge">Dockerfiles</code>, see the <a href="../../engine/getstarted/step_four/index#building-an-image-from-a-dockerfile">Docker user guide</a> and the <a href="../../engine/reference/builder/index">Dockerfile reference</a>.</p> </li> <li> <p>Add the following content to the <code class="highlighter-rouge">Dockerfile</code>.</p> <pre class="highlight" data-language=""> FROM python:2.7
+ ENV PYTHONUNBUFFERED 1
+ RUN mkdir /code
+ WORKDIR /code
+ ADD requirements.txt /code/
+ RUN pip install -r requirements.txt
+ ADD . /code/
+</pre>  <p>This <code class="highlighter-rouge">Dockerfile</code> starts with a Python 2.7 base image. The base image is modified by adding a new <code class="highlighter-rouge">code</code> directory. The base image is further modified by installing the Python requirements defined in the <code class="highlighter-rouge">requirements.txt</code> file.</p> </li> <li> <p>Save and close the <code class="highlighter-rouge">Dockerfile</code>.</p> </li> <li> <p>Create a <code class="highlighter-rouge">requirements.txt</code> in your project directory.</p> <p>This file is used by the <code class="highlighter-rouge">RUN pip install -r requirements.txt</code> command in your <code class="highlighter-rouge">Dockerfile</code>.</p> </li> <li> <p>Add the required software in the file.</p> <pre class="highlight" data-language=""> Django
+ psycopg2
+</pre>  </li> <li> <p>Save and close the <code class="highlighter-rouge">requirements.txt</code> file.</p> </li> <li> <p>Create a file called <code class="highlighter-rouge">docker-compose.yml</code> in your project directory.</p> <p>The <code class="highlighter-rouge">docker-compose.yml</code> file describes the services that make your app. In this example those services are a web server and database. The compose file also describes which Docker images these services use, how they link together, any volumes they might need mounted inside the containers. Finally, the <code class="highlighter-rouge">docker-compose.yml</code> file describes which ports these services expose. See the <a href="../compose-file/index"><code class="highlighter-rouge">docker-compose.yml</code> reference</a> for more information on how this file works.</p> </li> <li> <p>Add the following configuration to the file.</p> <pre class="highlight" data-language=""> version: '2'
+ services:
+   db:
+     image: postgres
+   web:
+     build: .
+     command: python manage.py runserver 0.0.0.0:8000
+     volumes:
+       - .:/code
+     ports:
+       - "8000:8000"
+     depends_on:
+       - db
+</pre>  <p>This file defines two services: The <code class="highlighter-rouge">db</code> service and the <code class="highlighter-rouge">web</code> service.</p> </li> <li> <p>Save and close the <code class="highlighter-rouge">docker-compose.yml</code> file.</p> </li> </ol> <h3 id="create-a-django-project">Create a Django project</h3> <p>In this step, you create a Django starter project by building the image from the build context defined in the previous procedure.</p> <ol> <li> <p>Change to the root of your project directory.</p> </li> <li> <p>Create the Django project using the <code class="highlighter-rouge">docker-compose</code> command.</p> <pre class="highlight" data-language=""> docker-compose run web django-admin.py startproject composeexample .
+</pre>  <p>This instructs Compose to run <code class="highlighter-rouge">django-admin.py startproject composeexample</code> in a container, using the <code class="highlighter-rouge">web</code> service’s image and configuration. Because the <code class="highlighter-rouge">web</code> image doesn’t exist yet, Compose builds it from the current directory, as specified by the <code class="highlighter-rouge">build: .</code> line in <code class="highlighter-rouge">docker-compose.yml</code>.</p> <p>Once the <code class="highlighter-rouge">web</code> service image is built, Compose runs it and executes the <code class="highlighter-rouge">django-admin.py startproject</code> command in the container. This command instructs Django to create a set of files and directories representing a Django project.</p> </li> <li> <p>After the <code class="highlighter-rouge">docker-compose</code> command completes, list the contents of your project.</p> <pre class="highlight" data-language=""> $ ls -l
+ drwxr-xr-x 2 root   root   composeexample
+ -rw-rw-r-- 1 user   user   docker-compose.yml
+ -rw-rw-r-- 1 user   user   Dockerfile
+ -rwxr-xr-x 1 root   root   manage.py
+ -rw-rw-r-- 1 user   user   requirements.txt
+</pre>  </li> </ol> <p>If you are running Docker on Linux, the files <code class="highlighter-rouge">django-admin</code> created are owned by root. This happens because the container runs as the root user. Change the ownership of the new files.</p> <pre class="highlight" data-language="">      sudo chown -R $USER:$USER .
+</pre>  <p>If you are running Docker on Mac or Windows, you should already have ownership of all files, including those generated by <code class="highlighter-rouge">django-admin</code>. List the files just verify this.</p> <pre class="highlight" data-language="">    $ ls -l
+    total 32
+    -rw-r--r--  1 user  staff  145 Feb 13 23:00 Dockerfile
+    drwxr-xr-x  6 user  staff  204 Feb 13 23:07 composeexample
+    -rw-r--r--  1 user  staff  159 Feb 13 23:02 docker-compose.yml
+    -rwxr-xr-x  1 user  staff  257 Feb 13 23:07 manage.py
+    -rw-r--r--  1 user  staff   16 Feb 13 23:01 requirements.txt
+</pre>  <h3 id="connect-the-database">Connect the database</h3> <p>In this section, you set up the database connection for Django.</p> <ol> <li> <p>In your project directory, edit the <code class="highlighter-rouge">composeexample/settings.py</code> file.</p> </li> <li> <p>Replace the <code class="highlighter-rouge">DATABASES = ...</code> with the following:</p> <pre class="highlight" data-language=""> DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'postgres',
+         'USER': 'postgres',
+         'HOST': 'db',
+         'PORT': 5432,
+     }
+ }
+</pre>  <p>These settings are determined by the <a href="https://hub.docker.com/_/postgres/">postgres</a> Docker image specified in <code class="highlighter-rouge">docker-compose.yml</code>.</p> </li> <li> <p>Save and close the file.</p> </li> <li> <p>Run the <code class="highlighter-rouge">docker-compose up</code> command.</p> <pre class="highlight" data-language=""> $ docker-compose up
+ Starting composepractice_db_1...
+ Starting composepractice_web_1...
+ Attaching to composepractice_db_1, composepractice_web_1
+ ...
+ db_1  | PostgreSQL init process complete; ready for start up.
+ ...
+ db_1  | LOG:  database system is ready to accept connections
+ db_1  | LOG:  autovacuum launcher started
+ ..
+ web_1 | Django version 1.8.4, using settings 'composeexample.settings'
+ web_1 | Starting development server at http://0.0.0.0:8000/
+ web_1 | Quit the server with CONTROL-C.
+</pre>  <p>At this point, your Django app should be running at port <code class="highlighter-rouge">8000</code> on your Docker host. If you are using a Docker Machine VM, you can use the <code class="highlighter-rouge">docker-machine ip MACHINE_NAME</code> to get the IP address.</p> <p><img src="data:image/png;base64,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" alt="Django example"></p> </li> </ol> <h2 id="more-compose-documentation">More Compose documentation</h2> <ul> <li><a href="../index">User guide</a></li> <li><a href="../install/index">Installing Compose</a></li> <li><a href="../gettingstarted/index">Getting Started</a></li> <li><a href="../rails/index">Get started with Rails</a></li> <li><a href="../wordpress/index">Get started with WordPress</a></li> <li><a href="https://docs.docker.com/v1.13/compose/reference/">Command line reference</a></li> <li><a href="../compose-file/index">Compose file reference</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2017 Docker, Inc.<br>Licensed under the Apache License, Version 2.0.<br>Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries.<br>Docker, Inc. and other parties may also have trademark rights in other terms used herein.<br>
+    <a href="https://docs.docker.com/v1.13/compose/django/" class="_attribution-link">https://docs.docker.com/v1.13/compose/django/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

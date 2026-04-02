@@ -1,0 +1,173 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Getting Started (Compose) - Docker 1.13 - W3cubDocs</title>
+  
+  <meta name="description" content="On this page you build a simple Python web application running on Docker Compose. The application uses the Flask framework and maintains a hit &hellip;">
+  <meta name="keywords" content="get, started, with, docker, compose, getting, docker~1.13">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/docker~1.13/compose/gettingstarted/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/docker~1.13.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/docker~1.13/" class="_nav-link" title="" style="margin-left:0;">Docker 1.13</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Get started with Docker Compose</h1>  <p>On this page you build a simple Python web application running on Docker Compose. The application uses the Flask framework and maintains a hit counter in Redis. While the sample uses Python, the concepts demonstrated here should be understandable even if you’re not familiar with it.</p> <h2 id="prerequisites">Prerequisites</h2> <p>Make sure you have already <a href="../install/index">installed both Docker Engine and Docker Compose</a>. You don’t need to install Python or Redis, as both are provided by Docker images.</p> <h2 id="step-1-setup">Step 1: Setup</h2> <ol> <li> <p>Create a directory for the project:</p> <pre class="highlight" data-language="">$ mkdir composetest
+$ cd composetest
+</pre>  </li> <li> <p>Create a file called <code class="highlighter-rouge">app.py</code> in your project directory and paste this in:</p> <pre class="highlight" data-language="">from flask import Flask
+from redis import Redis
+
+app = Flask(__name__)
+redis = Redis(host='redis', port=6379)
+
+@app.route('/')
+def hello():
+    count = redis.incr('hits')
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
+</pre>  </li> <li> <p>Create another file called <code class="highlighter-rouge">requirements.txt</code> in your project directory and paste this in:</p> <pre class="highlight" data-language="">flask
+redis
+</pre>  </li> </ol> <p>These define the application’s dependencies.</p> <h2 id="step-2-create-a-dockerfile">Step 2: Create a Dockerfile</h2> <p>In this step, you write a Dockerfile that builds a Docker image. The image contains all the dependencies the Python application requires, including Python itself.</p> <p>In your project directory, create a file named <code class="highlighter-rouge">Dockerfile</code> and paste the following:</p> <pre class="highlight" data-language="">FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+</pre>  <p>This tells Docker to:</p> <ul> <li>Build an image starting with the Python 3.4 image.</li> <li>Add the current directory <code class="highlighter-rouge">.</code> into the path <code class="highlighter-rouge">/code</code> in the image.</li> <li>Set the working directory to <code class="highlighter-rouge">/code</code>.</li> <li>Install the Python dependencies.</li> <li>Set the default command for the container to <code class="highlighter-rouge">python app.py</code>
+</li> </ul> <p>For more information on how to write Dockerfiles, see the <a href="../../engine/getstarted/step_four/index#building-an-image-from-a-dockerfile">Docker user guide</a> and the <a href="../../engine/reference/builder/index">Dockerfile reference</a>.</p> <h2 id="step-3-define-services-in-a-compose-file">Step 3: Define services in a Compose file</h2> <p>Create a file called <code class="highlighter-rouge">docker-compose.yml</code> in your project directory and paste the following:</p> <pre class="highlight" data-language="">version: '2'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"
+    volumes:
+     - .:/code
+  redis:
+    image: "redis:alpine"
+</pre>  <p>This Compose file defines two services, <code class="highlighter-rouge">web</code> and <code class="highlighter-rouge">redis</code>. The web service:</p> <ul> <li>Uses an image that’s built from the <code class="highlighter-rouge">Dockerfile</code> in the current directory.</li> <li>Forwards the exposed port 5000 on the container to port 5000 on the host machine.</li> <li>Mounts the project directory on the host to <code class="highlighter-rouge">/code</code> inside the container, allowing you to modify the code without having to rebuild the image.</li> </ul> <p>The <code class="highlighter-rouge">redis</code> service uses a public <a href="https://registry.hub.docker.com/_/redis/">Redis</a> image pulled from the Docker Hub registry.</p> <blockquote> <p><strong>Tip:</strong> If your project is outside of the <code class="highlighter-rouge">Users</code> directory (<code class="highlighter-rouge">cd ~</code>), then you need to share the drive or location of the Dockerfile and volume you are using. If you get runtime errors indicating an application file is not found, a volume mount is denied, or a service cannot start, try enabling file or drive sharing. Volume mounting requires shared drives for projects that live outside of <code class="highlighter-rouge">C:\Users</code> (Windows) or <code class="highlighter-rouge">/Users</code> (Mac), and is required for <em>any</em> project on Docker for Windows that uses <a href="https://docs.docker.com/v1.13/docker-for-windows/#switch-between-windows-and-linux-containers-beta-feature">Linux containers</a>. For more information, see <a href="https://docs.docker.com/v1.13/docker-for-windows/#shared-drives">Shared Drives</a> on Docker for Windows, <a href="https://docs.docker.com/v1.13/docker-for-mac/#file-sharing">File sharing</a> on Docker for Mac, and the general examples on how to <a href="../../engine/tutorials/dockervolumes/index">Manage data in containers</a>.</p> </blockquote> <h2 id="step-4-build-and-run-your-app-with-compose">Step 4: Build and run your app with Compose</h2> <ol> <li> <p>From your project directory, start up your application.</p> <pre class="highlight" data-language=""> $ docker-compose up
+ Pulling image redis...
+ Building web...
+ Starting composetest_redis_1...
+ Starting composetest_web_1...
+ redis_1 | [8] 02 Jan 18:43:35.576 # Server started, Redis version 2.8.3
+ web_1   |  * Running on http://0.0.0.0:5000/
+ web_1   |  * Restarting with stat
+</pre>  <p>Compose pulls a Redis image, builds an image for your code, and start the services you defined.</p> </li> <li> <p>Enter <code class="highlighter-rouge">http://0.0.0.0:5000/</code> in a browser to see the application running.</p> <p>If you’re using Docker on Linux natively, then the web app should now be listening on port 5000 on your Docker daemon host. If <code class="highlighter-rouge">http://0.0.0.0:5000</code> doesn’t resolve, you can also try <code class="highlighter-rouge">http://localhost:5000</code>.</p> <p>If you’re using Docker Machine on a Mac, use <code class="highlighter-rouge">docker-machine ip MACHINE_VM</code> to get the IP address of your Docker host. Then, <code class="highlighter-rouge">open http://MACHINE_VM_IP:5000</code> in a browser.</p> <p>You should see a message in your browser saying:</p> <p><code class="highlighter-rouge">Hello World! I have been seen 1 times.</code></p> </li> <li> <p>Refresh the page.</p> <p>The number should increment.</p> </li> </ol> <blockquote> <p><strong>Tip:</strong> You can list local images with <code class="highlighter-rouge">docker image ls</code> and inspect them with <code class="highlighter-rouge">docker inspect &lt;tag or id&gt;</code>. Listing images at this point should return <code class="highlighter-rouge">redis</code> and <code class="highlighter-rouge">web</code>.</p> </blockquote> <h2 id="step-5-update-the-application">Step 5: Update the application</h2> <p>Because the application code is mounted into the container using a volume, you can make changes to its code and see the changes instantly, without having to rebuild the image.</p> <ol> <li> <p>Change the greeting in <code class="highlighter-rouge">app.py</code> and save it. For example:</p> <pre class="highlight" data-language="">return 'Hello from Docker! I have been seen {} times.\n'.format(count)
+</pre>  </li> <li> <p>Refresh the app in your browser. The greeting should be updated, and the counter should still be incrementing.</p> </li> </ol> <h2 id="step-6-experiment-with-some-other-commands">Step 6: Experiment with some other commands</h2> <p>If you want to run your services in the background, you can pass the <code class="highlighter-rouge">-d</code> flag (for “detached” mode) to <code class="highlighter-rouge">docker-compose up</code> and use <code class="highlighter-rouge">docker-compose ps</code> to see what is currently running:</p> <pre class="highlight" data-language="">$ docker-compose up -d
+Starting composetest_redis_1...
+Starting composetest_web_1...
+
+$ docker-compose ps
+Name                 Command            State       Ports
+-------------------------------------------------------------------
+composetest_redis_1   /usr/local/bin/run         Up
+composetest_web_1     /bin/sh -c python app.py   Up      5000-&gt;5000/tcp
+</pre>  <p>The <code class="highlighter-rouge">docker-compose run</code> command allows you to run one-off commands for your services. For example, to see what environment variables are available to the <code class="highlighter-rouge">web</code> service:</p> <pre class="highlight" data-language="">$ docker-compose run web env
+</pre>  <p>See <code class="highlighter-rouge">docker-compose --help</code> to see other available commands. You can also install <a href="../completion/index">command completion</a> for the bash and zsh shell, which will also show you available commands.</p> <p>If you started Compose with <code class="highlighter-rouge">docker-compose up -d</code>, you’ll probably want to stop your services once you’ve finished with them:</p> <pre class="highlight" data-language="">$ docker-compose stop
+</pre>  <p>You can bring everything down, removing the containers entirely, with the <code class="highlighter-rouge">down</code> command. Pass <code class="highlighter-rouge">--volumes</code> to also remove the data volume used by the Redis container:</p> <pre class="highlight" data-language="">$ docker-compose down --volumes
+</pre>  <p>At this point, you have seen the basics of how Compose works.</p> <h2 id="where-to-go-next">Where to go next</h2> <ul> <li>Next, try the quick start guide for <a href="../django/index">Django</a>, <a href="../rails/index">Rails</a>, or <a href="../wordpress/index">WordPress</a>.</li> <li><a href="https://docs.docker.com/v1.13/compose/reference/">Explore the full list of Compose commands</a></li> <li><a href="../compose-file/index">Compose configuration file reference</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2017 Docker, Inc.<br>Licensed under the Apache License, Version 2.0.<br>Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries.<br>Docker, Inc. and other parties may also have trademark rights in other terms used herein.<br>
+    <a href="https://docs.docker.com/v1.13/compose/gettingstarted/" class="_attribution-link">https://docs.docker.com/v1.13/compose/gettingstarted/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
