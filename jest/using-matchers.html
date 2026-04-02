@@ -1,0 +1,246 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Using Matchers - Jest - W3cubDocs</title>
+  
+  <meta name="description" content="Jest uses &#34;matchers&#34; to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, &hellip;">
+  <meta name="keywords" content="using, matchers, jest">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/jest/using-matchers.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/jest.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/jest/" class="_nav-link" title="" style="margin-left:0;">Jest</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Using Matchers</h1>
+<p>Jest uses "matchers" to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the <a href="expect"><code>expect</code> API doc</a>.</p>
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="common-matchers">Common Matchers</h2>
+<p>The simplest way to test a value is with exact equality.</p>
+<pre tabindex="0" data-language="typescript">test('two plus two is four', () =&gt; {
+  expect(2 + 2).toBe(4);
+});</pre>
+
+<p>In this code, <code>expect(2 + 2)</code> returns an "expectation" object. You typically won't do much with these expectation objects except call matchers on them. In this code, <code>.toBe(4)</code> is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.</p>
+<p><code>toBe</code> uses <code>Object.is</code> to test exact equality. If you want to check the value of an object, use <code>toEqual</code> instead:</p>
+<pre tabindex="0" data-language="typescript">test('object assignment', () =&gt; {
+  const data = {one: 1};
+  data['two'] = 2;
+  expect(data).toEqual({one: 1, two: 2});
+});</pre>
+
+<p><code>toEqual</code> recursively checks every field of an object or array.</p>
+<p>You can also test for the opposite of a matcher:</p>
+<pre tabindex="0" data-language="typescript">test('adding positive numbers is not zero', () =&gt; {
+  for (let a = 1; a &lt; 10; a++) {
+    for (let b = 1; b &lt; 10; b++) {
+      expect(a + b).not.toBe(0);
+    }
+  }
+});</pre>
+
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="truthiness">Truthiness</h2>
+<p>In tests, you sometimes need to distinguish between <code>undefined</code>, <code>null</code>, and <code>false</code>, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.</p>
+<ul>
+<li>
+<code>toBeNull</code> matches only <code>null</code>
+</li>
+<li>
+<code>toBeUndefined</code> matches only <code>undefined</code>
+</li>
+<li>
+<code>toBeDefined</code> is the opposite of <code>toBeUndefined</code>
+</li>
+<li>
+<code>toBeTruthy</code> matches anything that an <code>if</code> statement treats as true</li>
+<li>
+<code>toBeFalsy</code> matches anything that an <code>if</code> statement treats as false</li>
+</ul>
+<p>For example:</p>
+<pre tabindex="0" data-language="typescript">test('null', () =&gt; {
+  const n = null;
+  expect(n).toBeNull();
+  expect(n).toBeDefined();
+  expect(n).not.toBeUndefined();
+  expect(n).not.toBeTruthy();
+  expect(n).toBeFalsy();
+});
+
+test('zero', () =&gt; {
+  const z = 0;
+  expect(z).not.toBeNull();
+  expect(z).toBeDefined();
+  expect(z).not.toBeUndefined();
+  expect(z).not.toBeTruthy();
+  expect(z).toBeFalsy();
+});</pre>
+
+<p>You should use the matcher that most precisely corresponds to what you want your code to be doing.</p>
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="numbers">Numbers</h2>
+<p>Most ways of comparing numbers have matcher equivalents.</p>
+<pre tabindex="0" data-language="typescript">test('two plus two', () =&gt; {
+  const value = 2 + 2;
+  expect(value).toBeGreaterThan(3);
+  expect(value).toBeGreaterThanOrEqual(3.5);
+  expect(value).toBeLessThan(5);
+  expect(value).toBeLessThanOrEqual(4.5);
+
+  // toBe and toEqual are equivalent for numbers
+  expect(value).toBe(4);
+  expect(value).toEqual(4);
+});</pre>
+
+<p>For floating point equality, use <code>toBeCloseTo</code> instead of <code>toEqual</code>, because you don't want a test to depend on a tiny rounding error.</p>
+<pre tabindex="0" data-language="typescript">test('adding floating point numbers', () =&gt; {
+  const value = 0.1 + 0.2;
+  //expect(value).toBe(0.3);           This won't work because of rounding error
+  expect(value).toBeCloseTo(0.3); // This works.
+});</pre>
+
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="strings">Strings</h2>
+<p>You can check strings against regular expressions with <code>toMatch</code>:</p>
+<pre tabindex="0" data-language="typescript">test('there is no I in team', () =&gt; {
+  expect('team').not.toMatch(/I/);
+});
+
+test('but there is a "stop" in Christoph', () =&gt; {
+  expect('Christoph').toMatch(/stop/);
+});</pre>
+
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="arrays-and-iterables">Arrays and iterables</h2>
+<p>You can check if an array or iterable contains a particular item using <code>toContain</code>:</p>
+<pre tabindex="0" data-language="typescript">const shoppingList = [
+  'diapers',
+  'kleenex',
+  'trash bags',
+  'paper towels',
+  'milk',
+];
+
+test('the shopping list has milk on it', () =&gt; {
+  expect(shoppingList).toContain('milk');
+  expect(new Set(shoppingList)).toContain('milk');
+});</pre>
+
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="exceptions">Exceptions</h2>
+<p>If you want to test whether a particular function throws an error when it's called, use <code>toThrow</code>.</p>
+<pre tabindex="0" data-language="typescript">function compileAndroidCode() {
+  throw new Error('you are using the wrong JDK');
+}
+
+test('compiling android goes as expected', () =&gt; {
+  expect(() =&gt; compileAndroidCode()).toThrow();
+  expect(() =&gt; compileAndroidCode()).toThrow(Error);
+
+  // You can also use the exact error message or a regexp
+  expect(() =&gt; compileAndroidCode()).toThrow('you are using the wrong JDK');
+  expect(() =&gt; compileAndroidCode()).toThrow(/JDK/);
+});</pre>
+
+<blockquote><p>Note: the function that throws an exception needs to be invoked within a wrapping function otherwise the <code>toThrow</code> assertion will fail.</p></blockquote>
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="and-more">And More</h2>
+<p>This is just a taste. For a complete list of matchers, check out the <a href="expect">reference docs</a>.</p>
+<p>Once you've learned about the matchers that are available, a good next step is to check out how Jest lets you <a href="asynchronous">test asynchronous code</a>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2022 Facebook, Inc.<br>Licensed under the MIT License.<br>
+    <a href="https://jestjs.io/docs/using-matchers" class="_attribution-link">https://jestjs.io/docs/using-matchers</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Timer Mocks - Jest - W3cubDocs</title>
+  
+  <meta name="description" content="The native timer functions (i.e., setTimeout(), setInterval(), clearTimeout(), clearInterval()) are less than ideal for a testing environment since &hellip;">
+  <meta name="keywords" content="timer, mocks, jest">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/jest/timer-mocks.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/jest.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/jest/" class="_nav-link" title="" style="margin-left:0;">Jest</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Timer Mocks</h1>
+<p>The native timer functions (i.e., <code>setTimeout()</code>, <code>setInterval()</code>, <code>clearTimeout()</code>, <code>clearInterval()</code>) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. <a href="https://www.youtube.com/watch?v=QZoJ2Pt27BY" target="_blank" rel="noopener noreferrer">Great Scott!</a></p>
+<div class="theme-admonition theme-admonition-info alert alert--info admonition_uH4V">
+<div class="admonitionHeading_P5_N">
+info</div>
+<div class="admonitionContent_yySL"><p>Also see <a href="jest-object#fake-timers">Fake Timers API</a> documentation.</p></div>
+</div>
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="enable-fake-timers">Enable Fake Timers</h2>
+<p>In the following example we enable fake timers by calling <code>jest.useFakeTimers()</code>. This is replacing the original implementation of <code>setTimeout()</code> and other timer functions. Timers can be restored to their normal behavior with <code>jest.useRealTimers()</code>.</p>
+<pre tabindex="0" data-language="typescript">function timerGame(callback) {
+  console.log('Ready....go!');
+  setTimeout(() =&gt; {
+    console.log("Time's up -- stop!");
+    callback &amp;&amp; callback();
+  }, 1000);
+}
+
+module.exports = timerGame;</pre>
+<div class="language-javascript codeBlockContainer_mQmQ theme-code-block">
+<div class="codeBlockTitle_x_ju">timerGame.js</div>
+
+</div>
+<pre tabindex="0" data-language="typescript">jest.useFakeTimers();
+jest.spyOn(global, 'setTimeout');
+
+test('waits 1 second before ending the game', () =&gt; {
+  const timerGame = require('../timerGame');
+  timerGame();
+
+  expect(setTimeout).toHaveBeenCalledTimes(1);
+  expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
+});</pre>
+<div class="language-javascript codeBlockContainer_mQmQ theme-code-block">
+<div class="codeBlockTitle_x_ju">__tests__/timerGame-test.js</div>
+
+</div>
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="run-all-timers">Run All Timers</h2>
+<p>Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:</p>
+<pre tabindex="0" data-language="typescript">jest.useFakeTimers();
+test('calls the callback after 1 second', () =&gt; {
+  const timerGame = require('../timerGame');
+  const callback = jest.fn();
+
+  timerGame(callback);
+
+  // At this point in time, the callback should not have been called yet
+  expect(callback).not.toBeCalled();
+
+  // Fast-forward until all timers have been executed
+  jest.runAllTimers();
+
+  // Now our callback should have been called!
+  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalledTimes(1);
+});</pre>
+
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="run-pending-timers">Run Pending Timers</h2>
+<p>There are also scenarios where you might have a recursive timer – that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop, throwing the following error: "Aborting after running 100000 timers, assuming an infinite loop!"</p>
+<p>If that is your case, using <code>jest.runOnlyPendingTimers()</code> will solve the problem:</p>
+<pre tabindex="0" data-language="typescript">function infiniteTimerGame(callback) {
+  console.log('Ready....go!');
+
+  setTimeout(() =&gt; {
+    console.log("Time's up! 10 seconds before the next game starts...");
+    callback &amp;&amp; callback();
+
+    // Schedule the next game in 10 seconds
+    setTimeout(() =&gt; {
+      infiniteTimerGame(callback);
+    }, 10000);
+  }, 1000);
+}
+
+module.exports = infiniteTimerGame;</pre>
+<div class="language-javascript codeBlockContainer_mQmQ theme-code-block">
+<div class="codeBlockTitle_x_ju">infiniteTimerGame.js</div>
+
+</div>
+<pre tabindex="0" data-language="typescript">jest.useFakeTimers();
+jest.spyOn(global, 'setTimeout');
+
+describe('infiniteTimerGame', () =&gt; {
+  test('schedules a 10-second timer after 1 second', () =&gt; {
+    const infiniteTimerGame = require('../infiniteTimerGame');
+    const callback = jest.fn();
+
+    infiniteTimerGame(callback);
+
+    // At this point in time, there should have been a single call to
+    // setTimeout to schedule the end of the game in 1 second.
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
+
+    // Fast forward and exhaust only currently pending timers
+    // (but not any new timers that get created during that process)
+    jest.runOnlyPendingTimers();
+
+    // At this point, our 1-second timer should have fired its callback
+    expect(callback).toBeCalled();
+
+    // And it should have created a new timer to start the game over in
+    // 10 seconds
+    expect(setTimeout).toHaveBeenCalledTimes(2);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
+  });
+});</pre>
+<div class="language-javascript codeBlockContainer_mQmQ theme-code-block">
+<div class="codeBlockTitle_x_ju">__tests__/infiniteTimerGame-test.js</div>
+
+</div>
+<div class="theme-admonition theme-admonition-note alert alert--secondary admonition_uH4V">
+<div class="admonitionHeading_P5_N">
+note</div>
+<div class="admonitionContent_yySL">
+<p>For debugging or any other reason you can change the limit of timers that will be run before throwing an error:</p>
+<pre tabindex="0" data-language="typescript">jest.useFakeTimers({timerLimit: 100});</pre>
+
+</div>
+</div>
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="advance-timers-by-time">Advance Timers by Time</h2>
+<p>Another possibility is use <code>jest.advanceTimersByTime(msToRun)</code>. When this API is called, all timers are advanced by <code>msToRun</code> milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.</p>
+<pre tabindex="0" data-language="typescript">function timerGame(callback) {
+  console.log('Ready....go!');
+  setTimeout(() =&gt; {
+    console.log("Time's up -- stop!");
+    callback &amp;&amp; callback();
+  }, 1000);
+}
+
+module.exports = timerGame;</pre>
+<div class="language-javascript codeBlockContainer_mQmQ theme-code-block">
+<div class="codeBlockTitle_x_ju">timerGame.js</div>
+
+</div>
+<pre tabindex="0" data-language="typescript">jest.useFakeTimers();
+it('calls the callback after 1 second via advanceTimersByTime', () =&gt; {
+  const timerGame = require('../timerGame');
+  const callback = jest.fn();
+
+  timerGame(callback);
+
+  // At this point in time, the callback should not have been called yet
+  expect(callback).not.toBeCalled();
+
+  // Fast-forward until all timers have been executed
+  jest.advanceTimersByTime(1000);
+
+  // Now our callback should have been called!
+  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalledTimes(1);
+});</pre>
+<div class="language-javascript codeBlockContainer_mQmQ theme-code-block">
+<div class="codeBlockTitle_x_ju">__tests__/timerGame-test.js</div>
+
+</div>
+<p>Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have <code>jest.clearAllTimers()</code>.</p>
+<h2 class="anchor anchorWithStickyNavbar_JmGV" id="selective-faking">Selective Faking</h2>
+<p>Sometimes your code may require to avoid overwriting the original implementation of one or another API. If that is the case, you can use <code>doNotFake</code> option. For example, here is how you could provide a custom mock function for <code>performance.mark()</code> in jsdom environment:</p>
+<pre tabindex="0" data-language="typescript">/**
+ * @jest-environment jsdom
+ */
+
+const mockPerformanceMark = jest.fn();
+window.performance.mark = mockPerformanceMark;
+
+test('allows mocking `performance.mark()`', () =&gt; {
+  jest.useFakeTimers({doNotFake: ['performance']});
+
+  expect(window.performance.mark).toBe(mockPerformanceMark);
+});</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2022 Facebook, Inc.<br>Licensed under the MIT License.<br>
+    <a href="https://jestjs.io/docs/timer-mocks" class="_attribution-link">https://jestjs.io/docs/timer-mocks</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
