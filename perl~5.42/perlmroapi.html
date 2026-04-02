@@ -1,0 +1,126 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Perlmroapi - Perl 5.42 - W3cubDocs</title>
+  
+  <meta name="description" content=" perlmroapi - Perl method resolution plugin interface ">
+  <meta name="keywords" content="perlmroapi, perl, perl~5.42">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/perl~5.42/perlmroapi.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/perl~5.42.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/perl~5.42/" class="_nav-link" title="" style="margin-left:0;">Perl 5.42</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _perl">
+				
+				
+<h1>perlmroapi</h1>   <h2><a id="toc">CONTENTS</a></h2> <ul> <li> <a class="text-decoration-none" href="#NAME">NAME</a> </li> <li> <a class="text-decoration-none" href="#DESCRIPTION">DESCRIPTION</a> </li> <li> <a class="text-decoration-none" href="#Callbacks">Callbacks</a> </li> <li> <a class="text-decoration-none" href="#Caching">Caching</a> </li> <li> <a class="text-decoration-none" href="#Examples">Examples</a> </li> <li> <a class="text-decoration-none" href="#AUTHORS">AUTHORS</a> </li> </ul> <h2 id="NAME">NAME</h2> <p>perlmroapi - Perl method resolution plugin interface</p> <h2 id="DESCRIPTION">DESCRIPTION</h2> <p>As of Perl 5.10.1 there is a new interface for plugging and using method resolution orders other than the default (linear depth first search). The C3 method resolution order added in 5.10.0 has been re-implemented as a plugin, without changing its Perl-space interface.</p> <p>Each plugin should register itself by providing the following structure</p> <pre data-language="perl"><code>struct mro_alg {
+    AV *(*resolve)(pTHX_ HV *stash, U32 level);
+    const char *name;
+    U16 length;
+    U16 kflags;
+    U32 hash;
+};</code></pre> <p>and calling <code>Perl_mro_register</code>:</p> <pre data-language="perl"><code>Perl_mro_register(aTHX_ &amp;my_mro_alg);</code></pre> <dl> <dt id="resolve">resolve</dt> <dd> <p>Pointer to the linearisation function, described below.</p> </dd> <dt id="name">name</dt> <dd> <p>Name of the MRO, either in ISO-8859-1 or UTF-8.</p> </dd> <dt id="length">length</dt> <dd> <p>Length of the name.</p> </dd> <dt id="kflags">kflags</dt> <dd> <p>If the name is given in UTF-8, set this to <code>HVhek_UTF8</code>. The value is passed direct as the parameter <i>kflags</i> to <code>hv_common()</code>.</p> </dd> <dt id="hash">hash</dt> <dd> <p>A precomputed hash value for the MRO's name, or 0.</p> </dd> </dl> <h2 id="Callbacks">Callbacks</h2> <p>The <code>resolve</code> function is called to generate a linearised ISA for the given stash, using this MRO. It is called with a pointer to the stash, and a <i>level</i> of 0. The core always sets <i>level</i> to 0 when it calls your function - the parameter is provided to allow your implementation to track depth if it needs to recurse.</p> <p>The function should return a reference to an array containing string SVs giving the names of parent classes in order. The names of the classes should be the result of calling <code>HvENAME()</code> on the stash. In those cases where <code>HvENAME()</code> returns null, <code>HvNAME()</code> should be used instead.</p> <p>The caller is responsible for incrementing the reference count of the array returned if it wants to keep the structure. Hence, if you have created a temporary value that you keep no pointer to, <code>sv_2mortal()</code> to ensure that it is disposed of correctly. If you have cached your return value, then return a pointer to it without changing the reference count.</p> <h2 id="Caching">Caching</h2> <p>Computing MROs can be expensive. The implementation provides a cache, in which you can store a single <code>SV *</code>, or anything that can be cast to <code>SV *</code>, such as <code>AV *</code>. To read your private value, use the macro <code>MRO_GET_PRIVATE_DATA()</code>, passing it the <code>mro_meta</code> structure from the stash, and a pointer to your <code>mro_alg</code> structure:</p> <pre data-language="perl"><code>meta = HvMROMETA(stash);
+private_sv = MRO_GET_PRIVATE_DATA(meta, &amp;my_mro_alg);</code></pre> <p>To set your private value, call <code>Perl_mro_set_private_data()</code>:</p> <pre data-language="perl"><code>Perl_mro_set_private_data(aTHX_ meta, &amp;c3_alg, private_sv);</code></pre> <p>The private data cache will take ownership of a reference to private_sv, much the same way that <code>hv_store()</code> takes ownership of a reference to the value that you pass it.</p> <h2 id="Examples">Examples</h2> <p>For examples of MRO implementations, see <code>S_mro_get_linear_isa_c3()</code> and the <code>BOOT:</code> section of <i>ext/mro/mro.xs</i>, and <code>S_mro_get_linear_isa_dfs()</code> in <i>mro_core.c</i></p> <h2 id="AUTHORS">AUTHORS</h2> <p>The implementation of the C3 MRO and switchable MROs within the perl core was written by Brandon L Black. Nicholas Clark created the pluggable interface, refactored Brandon's implementation to work with it, and wrote this document.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1993–2025 Larry Wall and others<br>Licensed under the GNU General Public License version 1 or later, or the Artistic License.<br>The Perl logo is a trademark of the Perl Foundation.<br>
+    <a href="https://perldoc.perl.org/5.42.0/perlmroapi" class="_attribution-link">https://perldoc.perl.org/5.42.0/perlmroapi</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

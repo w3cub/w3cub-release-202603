@@ -1,0 +1,145 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Test2&#58;&#58;Manual&#58;&#58;Tooling&#58;&#58;Plugin&#58;&#58;TestExit - Perl 5.42 - W3cubDocs</title>
+  
+  <meta name="description" content=" Test2&#58;&#58;Manual&#58;&#58;Tooling&#58;&#58;Plugin&#58;&#58;TestExit - How to safely add pre-exit behaviors. ">
+  <meta name="keywords" content="test, manual, tooling, plugin, testexit, perl, perl~5.42">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/perl~5.42/test2::manual::tooling::plugin::testexit.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/perl~5.42.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/perl~5.42/" class="_nav-link" title="" style="margin-left:0;">Perl 5.42</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _perl">
+				
+				
+<h1>Test2::Manual::Tooling::Plugin::TestExit</h1>   <h2><a id="toc">CONTENTS</a></h2> <ul> <li> <a class="text-decoration-none" href="#NAME">NAME</a> </li> <li> <a class="text-decoration-none" href="#DESCRIPTION">DESCRIPTION</a> </li> <li> <a class="text-decoration-none" href="#COMPLETE-CODE-UP-FRONT">COMPLETE CODE UP FRONT</a> </li> <li> <a class="text-decoration-none" href="#LINE-BY-LINE">LINE BY LINE</a> </li> <li> <a class="text-decoration-none" href="#SEE-ALSO">SEE ALSO</a> </li> <li> <a class="text-decoration-none" href="#SOURCE">SOURCE</a> </li> <li> <a class="text-decoration-none" href="#MAINTAINERS">MAINTAINERS</a> </li> <li> <a class="text-decoration-none" href="#AUTHORS">AUTHORS</a> </li> <li> <a class="text-decoration-none" href="#COPYRIGHT">COPYRIGHT</a> </li> </ul> <h2 id="NAME">NAME</h2> <p>Test2::Manual::Tooling::Plugin::TestExit - How to safely add pre-exit behaviors.</p> <h2 id="DESCRIPTION">DESCRIPTION</h2> <p>This describes the correct/safe way to add pre-exit behaviors to tests via a custom plugin.</p> <p>The naive way to attempt this would be to add an <code>END { ... }</code> block. That can work, and may not cause problems.... On the other hand there are a lot of ways that can bite you. Describing all the potential problems of an END block, and how it might conflict with Test2 (Which has its own END block) is beyond the scope of this document.</p> <h2 id="COMPLETE-CODE-UP-FRONT">
+COMPLETE CODE UP FRONT</h2> <pre data-language="perl"><code>package Test2::Plugin::MyPlugin;
+
+use Test2::API qw{test2_add_callback_exit};
+
+sub import {
+    my $class = shift;
+
+    test2_add_callback_exit(sub {
+        my ($ctx, $orig_code, $new_exit_code_ref) = @_;
+
+        return if $orig_code == 42;
+
+        $$new_exit_code_ref = 42;
+    });
+}
+
+1;</code></pre> <h2 id="LINE-BY-LINE">
+LINE BY LINE</h2> <dl> <dt id="use-Test2::API-qw{test2_add_callback_exit};">
+use Test2::API qw{test2_add_callback_exit};</dt> <dd> <p>This imports the <code>(test2_add_callback_exit)</code> callback.</p> </dd> <dt id="test2_add_callback_exit(sub-{-...-});">
+test2_add_callback_exit(sub { ... });</dt> <dd> <p>This adds our callback to be called before exiting.</p> </dd> <dt id="my-($ctx,-$orig_code,-$new_exit_code_ref)-=-@_">
+my ($ctx, $orig_code, $new_exit_code_ref) = @_</dt> <dd> <p>The callback gets 3 arguments. First is a context object you may use. The second is the original exit code of the <code>END</code> block Test2 is using. The third argument is a scalar reference which you may use to get the current exit code, or set a new one.</p> </dd> <dt id="return-if-$orig_code-==-42">
+return if $orig_code == 42</dt> <dd> <p>This is a short-cut to do nothing if the original exit code was already 42.</p> </dd> <dt id="$$new_exit_code_ref-=-42">
+$$new_exit_code_ref = 42</dt> <dd> <p>This changes the exit code to 42.</p> </dd> </dl> <h2 id="SEE-ALSO">
+SEE ALSO</h2> <p><a href="Test2::Manual">Test2::Manual</a> - Primary index of the manual.</p> <h2 id="SOURCE">SOURCE</h2> <p>The source code repository for Test2-Manual can be found at <i>https://github.com/Test-More/test-more/</i>.</p> <h2 id="MAINTAINERS">MAINTAINERS</h2> <dl> <dt id="Chad-Granum-&lt;exodist@cpan.org&gt;">
+Chad Granum &lt;exodist@cpan.org&gt;</dt>  </dl> <h2 id="AUTHORS">AUTHORS</h2> <dl> <dt id="Chad-Granum-&lt;exodist@cpan.org&gt;1">
+Chad Granum &lt;exodist@cpan.org&gt;</dt>  </dl> <h2 id="COPYRIGHT">COPYRIGHT</h2> <p>Copyright Chad Granum &lt;exodist@cpan.org&gt;.</p> <p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p> <p>See <i>http://dev.perl.org/licenses/</i></p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1993–2025 Larry Wall and others<br>Licensed under the GNU General Public License version 1 or later, or the Artistic License.<br>The Perl logo is a trademark of the Perl Foundation.<br>
+    <a href="https://perldoc.perl.org/5.42.0/Test2::Manual::Tooling::Plugin::TestExit" class="_attribution-link">https://perldoc.perl.org/5.42.0/Test2::Manual::Tooling::Plugin::TestExit</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

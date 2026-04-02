@@ -1,0 +1,143 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Sigtrap - Perl 5.42 - W3cubDocs</title>
+  
+  <meta name="description" content=" sigtrap - Perl pragma to enable simple signal handling ">
+  <meta name="keywords" content="sigtrap, perl, perl~5.42">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/perl~5.42/sigtrap.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/perl~5.42.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/perl~5.42/" class="_nav-link" title="" style="margin-left:0;">Perl 5.42</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _perl">
+				
+				
+<h1>sigtrap</h1>   <h2><a id="toc">CONTENTS</a></h2> <ul> <li> <a class="text-decoration-none" href="#NAME">NAME</a> </li> <li> <a class="text-decoration-none" href="#SYNOPSIS">SYNOPSIS</a> </li> <li> <a class="text-decoration-none" href="#DESCRIPTION">DESCRIPTION</a> </li> <li> <a class="text-decoration-none" href="#OPTIONS">OPTIONS</a> <ul> <li> <a class="text-decoration-none" href="#SIGNAL-HANDLERS">SIGNAL HANDLERS</a> </li> <li> <a class="text-decoration-none" href="#SIGNAL-LISTS">SIGNAL LISTS</a> </li> <li> <a class="text-decoration-none" href="#OTHER">OTHER</a> </li> </ul> </li> <li> <a class="text-decoration-none" href="#EXAMPLES">EXAMPLES</a> </li> </ul> <h2 id="NAME">NAME</h2> <p>sigtrap - Perl pragma to enable simple signal handling</p> <h2 id="SYNOPSIS">SYNOPSIS</h2> <pre data-language="perl"><code>    use sigtrap;
+    use sigtrap qw(stack-trace old-interface-signals);	# equivalent
+    use sigtrap qw(BUS SEGV PIPE ABRT);
+    use sigtrap qw(die INT QUIT);
+    use sigtrap qw(die normal-signals);
+    use sigtrap qw(die untrapped normal-signals);
+    use sigtrap qw(die untrapped normal-signals
+		    stack-trace any error-signals);
+    use sigtrap 'handler' =&gt; \&amp;my_handler, 'normal-signals';
+    use sigtrap qw(handler my_handler normal-signals
+    	    	    stack-trace error-signals);</code></pre> <h2 id="DESCRIPTION">DESCRIPTION</h2> <p>The <b>sigtrap</b> pragma is a simple interface to installing signal handlers. You can have it install one of two handlers supplied by <b>sigtrap</b> itself (one which provides a Perl stack trace and one which simply <code>die()</code>s), or alternately you can supply your own handler for it to install. It can be told only to install a handler for signals which are either untrapped or ignored. It has three lists of signals to trap, plus you can supply your own list of signals.</p> <p>The arguments passed to the <code>use</code> statement which invokes <b>sigtrap</b> are processed in order. When a signal name or the name of one of <b>sigtrap</b>'s signal lists is encountered a handler is immediately installed, when an option is encountered it affects subsequently installed handlers.</p> <h2 id="OPTIONS">OPTIONS</h2> <h3 id="SIGNAL-HANDLERS">
+SIGNAL HANDLERS</h3> <p>These options affect which handler will be used for subsequently installed signals.</p> <dl> <dt id="stack-trace">
+<b>stack-trace</b>
+</dt> <dd> <p>The handler used for subsequently installed signals outputs a Perl stack trace to STDERR and then tries to dump core. This is the default signal handler.</p> </dd> <dt id="die"><b>die</b></dt> <dd> <p>The handler used for subsequently installed signals calls <code>die</code> (actually <code>croak</code>) with a message indicating which signal was caught.</p> </dd> <dt id="handler-your-handler">
+<b>handler</b> <i>your-handler</i>
+</dt> <dd> <p><i>your-handler</i> will be used as the handler for subsequently installed signals. <i>your-handler</i> can be any value which is valid as an assignment to an element of <code>%SIG</code>. See <a href="perlvar">perlvar</a> for examples of handler functions.</p> </dd> </dl> <h3 id="SIGNAL-LISTS">
+SIGNAL LISTS</h3> <p><b>sigtrap</b> has a few built-in lists of signals to trap. They are:</p> <dl> <dt id="normal-signals">
+<b>normal-signals</b>
+</dt> <dd> <p>These are the signals which a program might normally expect to encounter and which by default cause it to terminate. They are HUP, INT, PIPE and TERM.</p> </dd> <dt id="error-signals">
+<b>error-signals</b>
+</dt> <dd> <p>These signals usually indicate a serious problem with the Perl interpreter or with your script. They are ABRT, BUS, EMT, FPE, ILL, QUIT, SEGV, SYS and TRAP.</p> </dd> <dt id="old-interface-signals">
+<b>old-interface-signals</b>
+</dt> <dd> <p>These are the signals which were trapped by default by the old <b>sigtrap</b> interface, they are ABRT, BUS, EMT, FPE, ILL, PIPE, QUIT, SEGV, SYS, TERM, and TRAP. If no signals or signals lists are passed to <b>sigtrap</b>, this list is used.</p> </dd> </dl> <p>For each of these three lists, the collection of signals set to be trapped is checked before trapping; if your architecture does not implement a particular signal, it will not be trapped but rather silently ignored.</p> <h3 id="OTHER">OTHER</h3> <dl> <dt id="untrapped"><b>untrapped</b></dt> <dd> <p>This token tells <b>sigtrap</b> to install handlers only for subsequently listed signals which aren't already trapped or ignored.</p> </dd> <dt id="any"><b>any</b></dt> <dd> <p>This token tells <b>sigtrap</b> to install handlers for all subsequently listed signals. This is the default behavior.</p> </dd> <dt id="signal"><i>signal</i></dt> <dd> <p>Any argument which looks like a signal name (that is, <code>/^[A-Z][A-Z0-9]*$/</code>) indicates that <b>sigtrap</b> should install a handler for that name.</p> </dd> <dt id="number"><i>number</i></dt> <dd> <p>Require that at least version <i>number</i> of <b>sigtrap</b> is being used.</p> </dd> </dl> <h2 id="EXAMPLES">EXAMPLES</h2> <p>Provide a stack trace for the old-interface-signals:</p> <pre data-language="perl"><code>use sigtrap;</code></pre> <p>Ditto:</p> <pre data-language="perl"><code>use sigtrap qw(stack-trace old-interface-signals);</code></pre> <p>Provide a stack trace on the 4 listed signals only:</p> <pre data-language="perl"><code>use sigtrap qw(BUS SEGV PIPE ABRT);</code></pre> <p>Die on INT or QUIT:</p> <pre data-language="perl"><code>use sigtrap qw(die INT QUIT);</code></pre> <p>Die on HUP, INT, PIPE or TERM:</p> <pre data-language="perl"><code>use sigtrap qw(die normal-signals);</code></pre> <p>Die on HUP, INT, PIPE or TERM, except don't change the behavior for signals which are already trapped or ignored:</p> <pre data-language="perl"><code>use sigtrap qw(die untrapped normal-signals);</code></pre> <p>Die on receipt one of any of the <b>normal-signals</b> which is currently <b>untrapped</b>, provide a stack trace on receipt of <b>any</b> of the <b>error-signals</b>:</p> <pre data-language="perl"><code>    use sigtrap qw(die untrapped normal-signals
+		    stack-trace any error-signals);</code></pre> <p>Install my_handler() as the handler for the <b>normal-signals</b>:</p> <pre data-language="perl"><code>use sigtrap 'handler', \&amp;my_handler, 'normal-signals';</code></pre> <p>Install my_handler() as the handler for the normal-signals, provide a Perl stack trace on receipt of one of the error-signals:</p> <pre data-language="perl"><code>use sigtrap qw(handler my_handler normal-signals
+	    	    stack-trace error-signals);</code></pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1993–2025 Larry Wall and others<br>Licensed under the GNU General Public License version 1 or later, or the Artistic License.<br>The Perl logo is a trademark of the Perl Foundation.<br>
+    <a href="https://perldoc.perl.org/5.42.0/sigtrap" class="_attribution-link">https://perldoc.perl.org/5.42.0/sigtrap</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

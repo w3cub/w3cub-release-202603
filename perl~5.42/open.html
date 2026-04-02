@@ -1,0 +1,150 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Open - Perl 5.42 - W3cubDocs</title>
+  
+  <meta name="description" content=" open - perl pragma to set default PerlIO layers for input and output ">
+  <meta name="keywords" content="open, perl, perl~5.42">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/perl~5.42/open.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/perl~5.42.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/perl~5.42/" class="_nav-link" title="" style="margin-left:0;">Perl 5.42</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _perl">
+				
+				
+<h1>open</h1>    <h2><a id="toc">CONTENTS</a></h2> <ul> <li> <a class="text-decoration-none" href="#NAME">NAME</a> </li> <li> <a class="text-decoration-none" href="#SYNOPSIS">SYNOPSIS</a> </li> <li> <a class="text-decoration-none" href="#DESCRIPTION">DESCRIPTION</a> </li> <li> <a class="text-decoration-none" href="#IMPLEMENTATION-DETAILS">IMPLEMENTATION DETAILS</a> </li> <li> <a class="text-decoration-none" href="#SEE-ALSO">SEE ALSO</a> </li> </ul> <h2 id="NAME">NAME</h2> <p>open - perl pragma to set default PerlIO layers for input and output</p> <h2 id="SYNOPSIS">SYNOPSIS</h2> <pre data-language="perl"><code>use open IN  =&gt; ':crlf', OUT =&gt; ':raw';
+open my $in, '&lt;', 'foo.txt' or die "open failed: $!";
+my $line = &lt;$in&gt;; # CRLF translated
+close $in;
+open my $out, '&gt;', 'bar.txt' or die "open failed: $!";
+print $out $line; # no translation of bytes
+close $out;
+
+use open OUT =&gt; ':encoding(UTF-8)';
+use open IN  =&gt; ':encoding(iso-8859-7)';
+
+use open IO  =&gt; ':locale';
+
+# IO implicit only for :utf8, :encoding, :locale
+use open ':encoding(UTF-8)';
+use open ':encoding(iso-8859-7)';
+use open ':locale';
+
+# with :std, also affect global standard handles
+use open ':std', ':encoding(UTF-8)';
+use open ':std', OUT =&gt; ':encoding(cp1252)';
+use open ':std', IO =&gt; ':raw :encoding(UTF-16LE)';</code></pre> <h2 id="DESCRIPTION">DESCRIPTION</h2> <p>Full-fledged support for I/O layers is now implemented provided Perl is configured to use PerlIO as its IO system (which has been the default since 5.8, and the only supported configuration since 5.16).</p> <p>The <code>open</code> pragma serves as one of the interfaces to declare default "layers" (previously known as "disciplines") for all I/O. Any open(), readpipe() (aka qx//) and similar operators found within the lexical scope of this pragma will use the declared defaults via the <a href="perlvar#%24%7B%5EOPEN%7D"><code>${^OPEN}</code></a> variable.</p> <p>Layers are specified with a leading colon by convention. You can specify a stack of multiple layers as a space-separated string. See <a href="perlio">PerlIO</a> for more information on the available layers.</p> <p>With the <code>IN</code> subpragma you can declare the default layers of input streams, and with the <code>OUT</code> subpragma you can declare the default layers of output streams. With the <code>IO</code> subpragma (may be omitted for <code>:utf8</code>, <code>:locale</code>, or <code>:encoding</code>) you can control both input and output streams simultaneously.</p> <p>When open() is given an explicit list of layers (with the three-arg syntax), they override the list declared using this pragma. open() can also be given a single colon (:) for a layer name, to override this pragma and use the default as detailed in <a href="perlio#Defaults-and-how-to-override-them">"Defaults and how to override them" in PerlIO</a>.</p> <p>To translate from and to an arbitrary text encoding, use the <code>:encoding</code> layer. The matching of encoding names in <code>:encoding</code> is loose: case does not matter, and many encodings have several aliases. See <a href="Encode::Supported">Encode::Supported</a> for details and the list of supported locales.</p> <p>If you want to set your encoding layers based on your locale environment variables, you can use the <code>:locale</code> pseudo-layer. For example:</p> <pre data-language="perl"><code>$ENV{LANG} = 'ru_RU.KOI8-R';
+# the :locale will probe the locale environment variables like LANG
+use open OUT =&gt; ':locale';
+open(my $out, '&gt;', 'koi8') or die "open failed: $!";
+print $out chr(0x430); # CYRILLIC SMALL LETTER A = KOI8-R 0xc1
+close $out;
+open(my $in, '&lt;', 'koi8') or die "open failed: $!";
+printf "%#x\n", ord(&lt;$in&gt;); # this should print 0xc1
+close $in;</code></pre> <p>The logic of <code>:locale</code> is described in full in <a href="encoding#The-%3Alocale-sub-pragma">"The <code>:locale</code> sub-pragma" in encoding</a>, but in short it is first trying nl_langinfo(CODESET) and then guessing from the LC_ALL and LANG locale environment variables. <code>:locale</code> also implicitly turns on <code>:std</code>.</p> <p><code>:std</code> is not a layer but an additional subpragma. When specified in the import list, it activates an additional functionality of pushing the layers selected for input/output handles to the standard filehandles (STDIN, STDOUT, STDERR). If the new layers and existing layer stack both end with an <code>:encoding</code> layer, the existing <code>:encoding</code> layer will also be removed.</p> <p>For example, if both input and out are chosen to be <code>:encoding(UTF-8)</code>, a <code>:std</code> will mean that STDIN, STDOUT, and STDERR will also have <code>:encoding(UTF-8)</code> set. On the other hand, if only output is chosen to be in <code>:encoding(koi8r)</code>, a <code>:std</code> will cause only the STDOUT and STDERR to be in <code>koi8r</code>.</p> <p>The effect of <code>:std</code> is not lexical as it modifies the layer stack of the global handles. If you wish to apply only this global effect and not the effect on handles that are opened in that scope, you can isolate the call to this pragma in its own lexical scope.</p> <pre data-language="perl"><code class="plaintext">{ use open ':std', IO =&gt; ':encoding(UTF-8)' }</code></pre> <p>Before Perl 5.34, <code>:std</code> would only apply the first layer provided that is either <code>:utf8</code> or has a layer argument, e.g. <code>:encoding(UTF-8)</code>. Since Perl 5.34 it will apply the same layer stack it provides to <code>${^OPEN}</code>.</p> <h2 id="IMPLEMENTATION-DETAILS">
+IMPLEMENTATION DETAILS</h2> <p>There is a class method in <code>PerlIO::Layer</code> <code>find</code> which is implemented as XS code. It is called by <code>import</code> to validate the layers:</p> <pre data-language="perl"><code>PerlIO::Layer::-&gt;find("perlio")</code></pre> <p>The return value (if defined) is a Perl object, of class <code>PerlIO::Layer</code> which is created by the C code in <i>perlio.c</i>. As yet there is nothing useful you can do with the object at the perl level.</p> <h2 id="SEE-ALSO">
+SEE ALSO</h2> <p><a href="perlfunc#binmode">"binmode" in perlfunc</a>, <a href="perlfunc#open">"open" in perlfunc</a>, <a href="perlunicode">perlunicode</a>, <a href="perlio">PerlIO</a>, <a href="encoding">encoding</a></p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1993–2025 Larry Wall and others<br>Licensed under the GNU General Public License version 1 or later, or the Artistic License.<br>The Perl logo is a trademark of the Perl Foundation.<br>
+    <a href="https://perldoc.perl.org/5.42.0/open" class="_attribution-link">https://perldoc.perl.org/5.42.0/open</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

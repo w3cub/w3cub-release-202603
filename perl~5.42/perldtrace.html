@@ -1,0 +1,210 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Perldtrace - Perl 5.42 - W3cubDocs</title>
+  
+  <meta name="description" content=" perldtrace - Perl&#39;s support for DTrace ">
+  <meta name="keywords" content="perldtrace, perl, perl~5.42">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/perl~5.42/perldtrace.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/perl~5.42.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/perl~5.42/" class="_nav-link" title="" style="margin-left:0;">Perl 5.42</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _perl">
+				
+				
+<h1>perldtrace</h1>   <h2><a id="toc">CONTENTS</a></h2> <ul> <li> <a class="text-decoration-none" href="#NAME">NAME</a> </li> <li> <a class="text-decoration-none" href="#SYNOPSIS">SYNOPSIS</a> </li> <li> <a class="text-decoration-none" href="#DESCRIPTION">DESCRIPTION</a> </li> <li> <a class="text-decoration-none" href="#HISTORY">HISTORY</a> </li> <li> <a class="text-decoration-none" href="#PROBES">PROBES</a> </li> <li> <a class="text-decoration-none" href="#EXAMPLES">EXAMPLES</a> </li> <li> <a class="text-decoration-none" href="#REFERENCES">REFERENCES</a> </li> <li> <a class="text-decoration-none" href="#SEE-ALSO">SEE ALSO</a> </li> <li> <a class="text-decoration-none" href="#AUTHORS">AUTHORS</a> </li> </ul> <h2 id="NAME">NAME</h2> <p>perldtrace - Perl's support for DTrace</p> <h2 id="SYNOPSIS">SYNOPSIS</h2> <pre data-language="perl"><code># dtrace -Zn 'perl::sub-entry, perl::sub-return { trace(copyinstr(arg0)) }'
+dtrace: description 'perl::sub-entry, perl::sub-return ' matched 10 probes
+
+# perl -E 'sub outer { inner(@_) } sub inner { say shift } outer("hello")'
+hello
+
+(dtrace output)
+CPU     ID                    FUNCTION:NAME
+  0  75915       Perl_pp_entersub:sub-entry   BEGIN
+  0  75915       Perl_pp_entersub:sub-entry   import
+  0  75922      Perl_pp_leavesub:sub-return   import
+  0  75922      Perl_pp_leavesub:sub-return   BEGIN
+  0  75915       Perl_pp_entersub:sub-entry   outer
+  0  75915       Perl_pp_entersub:sub-entry   inner
+  0  75922      Perl_pp_leavesub:sub-return   inner
+  0  75922      Perl_pp_leavesub:sub-return   outer</code></pre> <h2 id="DESCRIPTION">DESCRIPTION</h2> <p>DTrace is a framework for comprehensive system- and application-level tracing. Perl is a DTrace <i>provider</i>, meaning it exposes several <i>probes</i> for instrumentation. You can use these in conjunction with kernel-level probes, as well as probes from other providers such as MySQL, in order to diagnose software defects, or even just your application's bottlenecks.</p> <p>Perl must be compiled with the <code>-Dusedtrace</code> option in order to make use of the provided probes. While DTrace aims to have no overhead when its instrumentation is not active, Perl's support itself cannot uphold that guarantee, so it is built without DTrace probes under most systems. One notable exception is that Mac OS X ships a <i>/usr/bin/perl</i> with DTrace support enabled.</p> <h2 id="HISTORY">HISTORY</h2> <dl> <dt id="5.10.1">
+5.10.1</dt> <dd> <p>Perl's initial DTrace support was added, providing <code>sub-entry</code> and <code>sub-return</code> probes.</p> </dd> <dt id="5.14.0">
+5.14.0</dt> <dd> <p>The <code>sub-entry</code> and <code>sub-return</code> probes gain a fourth argument: the package name of the function.</p> </dd> <dt id="5.16.0">
+5.16.0</dt> <dd> <p>The <code>phase-change</code> probe was added.</p> </dd> <dt id="5.18.0">
+5.18.0</dt> <dd> <p>The <code>op-entry</code>, <code>loading-file</code>, and <code>loaded-file</code> probes were added.</p> </dd> </dl> <h2 id="PROBES">PROBES</h2> <dl> <dt id="sub-entry(SUBNAME,-FILE,-LINE,-PACKAGE)">
+sub-entry(SUBNAME, FILE, LINE, PACKAGE)</dt> <dd> <p>Traces the entry of any subroutine. Note that all of the variables refer to the subroutine that is being invoked; there is currently no way to get ahold of any information about the subroutine's <i>caller</i> from a DTrace action.</p> <pre data-language="perl"><code>:*perl*::sub-entry {
+    printf("%s::%s entered at %s line %d\n",
+          copyinstr(arg3), copyinstr(arg0), copyinstr(arg1), arg2);
+}</code></pre> </dd> <dt id="sub-return(SUBNAME,-FILE,-LINE,-PACKAGE)">
+sub-return(SUBNAME, FILE, LINE, PACKAGE)</dt> <dd> <p>Traces the exit of any subroutine. Note that all of the variables refer to the subroutine that is returning; there is currently no way to get ahold of any information about the subroutine's <i>caller</i> from a DTrace action.</p> <pre data-language="perl"><code>:*perl*::sub-return {
+    printf("%s::%s returned at %s line %d\n",
+          copyinstr(arg3), copyinstr(arg0), copyinstr(arg1), arg2);
+}</code></pre> </dd> <dt id="phase-change(NEWPHASE,-OLDPHASE)">
+phase-change(NEWPHASE, OLDPHASE)</dt> <dd> <p>Traces changes to Perl's interpreter state. You can internalize this as tracing changes to Perl's <code>${^GLOBAL_PHASE}</code> variable, especially since the values for <code>NEWPHASE</code> and <code>OLDPHASE</code> are the strings that <code>${^GLOBAL_PHASE}</code> reports.</p> <pre data-language="perl"><code>:*perl*::phase-change {
+    printf("Phase changed from %s to %s\n",
+        copyinstr(arg1), copyinstr(arg0));
+}</code></pre> </dd> <dt id="op-entry(OPNAME)">
+op-entry(OPNAME)</dt> <dd> <p>Traces the execution of each opcode in the Perl runloop. This probe is fired before the opcode is executed. When the Perl debugger is enabled, the DTrace probe is fired <i>after</i> the debugger hooks (but still before the opcode itself is executed).</p> <pre data-language="perl"><code>:*perl*::op-entry {
+    printf("About to execute opcode %s\n", copyinstr(arg0));
+}</code></pre> </dd> <dt id="loading-file(FILENAME)">
+loading-file(FILENAME)</dt> <dd> <p>Fires when Perl is about to load an individual file, whether from <code>use</code>, <code>require</code>, or <code>do</code>. This probe fires before the file is read from disk. The filename argument is converted to local filesystem paths instead of providing <code>Module::Name</code>-style names.</p> <pre data-language="perl"><code>:*perl*:loading-file {
+    printf("About to load %s\n", copyinstr(arg0));
+}</code></pre> </dd> <dt id="loaded-file(FILENAME)">
+loaded-file(FILENAME)</dt> <dd> <p>Fires when Perl has successfully loaded an individual file, whether from <code>use</code>, <code>require</code>, or <code>do</code>. This probe fires after the file is read from disk and its contents evaluated. The filename argument is converted to local filesystem paths instead of providing <code>Module::Name</code>-style names.</p> <pre data-language="perl"><code>:*perl*:loaded-file {
+    printf("Successfully loaded %s\n", copyinstr(arg0));
+}</code></pre> </dd> </dl> <h2 id="EXAMPLES">EXAMPLES</h2> <dl> <dt id="Most-frequently-called-functions">
+Most frequently called functions</dt> <dd> <pre data-language="perl"><code class="plaintext"># dtrace -qZn 'sub-entry { @[strjoin(strjoin(copyinstr(arg3),"::"),copyinstr(arg0))] = count() } END {trunc(@, 10)}'
+
+Class::MOP::Attribute::slots                                    400
+Try::Tiny::catch                                                411
+Try::Tiny::try                                                  411
+Class::MOP::Instance::inline_slot_access                        451
+Class::MOP::Class::Immutable::Trait:::around                    472
+Class::MOP::Mixin::AttributeCore::has_initializer               496
+Class::MOP::Method::Wrapped::__ANON__                           544
+Class::MOP::Package::_package_stash                             737
+Class::MOP::Class::initialize                                  1128
+Class::MOP::get_metaclass_by_name                              1204</code></pre> </dd> <dt id="Trace-function-calls">
+Trace function calls</dt> <dd> <pre data-language="perl"><code class="plaintext"># dtrace -qFZn 'sub-entry, sub-return { trace(copyinstr(arg0)) }'
+
+0  -&gt; Perl_pp_entersub                        BEGIN
+0  &lt;- Perl_pp_leavesub                        BEGIN
+0  -&gt; Perl_pp_entersub                        BEGIN
+0    -&gt; Perl_pp_entersub                      import
+0    &lt;- Perl_pp_leavesub                      import
+0  &lt;- Perl_pp_leavesub                        BEGIN
+0  -&gt; Perl_pp_entersub                        BEGIN
+0    -&gt; Perl_pp_entersub                      dress
+0    &lt;- Perl_pp_leavesub                      dress
+0    -&gt; Perl_pp_entersub                      dirty
+0    &lt;- Perl_pp_leavesub                      dirty
+0    -&gt; Perl_pp_entersub                      whiten
+0    &lt;- Perl_pp_leavesub                      whiten
+0  &lt;- Perl_dounwind                           BEGIN</code></pre> </dd> <dt id="Function-calls-during-interpreter-cleanup">
+Function calls during interpreter cleanup</dt> <dd> <pre data-language="perl"><code># dtrace -Zn 'phase-change /copyinstr(arg0) == "END"/ { self-&gt;ending = 1 } sub-entry /self-&gt;ending/ { trace(copyinstr(arg0)) }'
+
+CPU     ID                    FUNCTION:NAME
+  1  77214       Perl_pp_entersub:sub-entry   END
+  1  77214       Perl_pp_entersub:sub-entry   END
+  1  77214       Perl_pp_entersub:sub-entry   cleanup
+  1  77214       Perl_pp_entersub:sub-entry   _force_writable
+  1  77214       Perl_pp_entersub:sub-entry   _force_writable</code></pre> </dd> <dt id="System-calls-at-compile-time">
+System calls at compile time</dt> <dd> <pre data-language="perl"><code># dtrace -qZn 'phase-change /copyinstr(arg0) == "START"/ { self-&gt;interesting = 1 } phase-change /copyinstr(arg0) == "RUN"/ { self-&gt;interesting = 0 } syscall::: /self-&gt;interesting/ { @[probefunc] = count() } END { trunc(@, 3) }'
+
+lseek                                                           310
+read                                                            374
+stat64                                                         1056</code></pre> </dd> <dt id="Perl-functions-that-execute-the-most-opcodes">
+Perl functions that execute the most opcodes</dt> <dd> <pre data-language="perl"><code># dtrace -qZn 'sub-entry { self-&gt;fqn = strjoin(copyinstr(arg3), strjoin("::", copyinstr(arg0))) } op-entry /self-&gt;fqn != ""/ { @[self-&gt;fqn] = count() } END { trunc(@, 3) }'
+
+warnings::unimport                                             4589
+Exporter::Heavy::_rebuild_cache                                5039
+Exporter::import                                              14578</code></pre> </dd> </dl> <h2 id="REFERENCES">REFERENCES</h2> <dl> <dt id="DTrace-Dynamic-Tracing-Guide">
+DTrace Dynamic Tracing Guide</dt> <dd> <p><a href="https://illumos.org/books/dtrace/preface.html">https://illumos.org/books/dtrace/preface.html</a></p> </dd> <dt id="DTrace:-Dynamic-Tracing-in-Oracle-Solaris,-Mac-OS-X-and-FreeBSD">
+DTrace: Dynamic Tracing in Oracle Solaris, Mac OS X and FreeBSD</dt> <dd> <p><a href="https://www.amazon.com/DTrace-Dynamic-Tracing-Solaris-FreeBSD/dp/0132091518/">https://www.amazon.com/DTrace-Dynamic-Tracing-Solaris-FreeBSD/dp/0132091518/</a></p> </dd> </dl> <h2 id="SEE-ALSO">
+SEE ALSO</h2> <dl> <dt id="Devel::DTrace::Provider">
+<a href="https://metacpan.org/pod/Devel::DTrace::Provider">Devel::DTrace::Provider</a>
+</dt> <dd> <p>This CPAN module lets you create application-level DTrace probes written in Perl.</p> </dd> </dl> <h2 id="AUTHORS">AUTHORS</h2> <p>Shawn M Moore <code>sartak@gmail.com</code></p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1993–2025 Larry Wall and others<br>Licensed under the GNU General Public License version 1 or later, or the Artistic License.<br>The Perl logo is a trademark of the Perl Foundation.<br>
+    <a href="https://perldoc.perl.org/5.42.0/perldtrace" class="_attribution-link">https://perldoc.perl.org/5.42.0/perldtrace</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
