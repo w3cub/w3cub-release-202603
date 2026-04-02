@@ -1,0 +1,243 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Middlewares - Socket.IO 4 - W3cubDocs</title>
+  
+  <meta name="description" content=" A middleware function is a function that gets executed for every incoming connection. ">
+  <meta name="keywords" content="middlewares, socket, io, socketio~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/socketio~4/middlewares.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/socketio~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/socketio~4/" class="_nav-link" title="" style="margin-left:0;">Socket.IO 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Middlewares</h1>
+<p>A middleware function is a function that gets executed for every incoming connection.</p>
+<p>Middleware functions can be useful for:</p>
+<ul>
+<li>logging</li>
+<li>authentication / authorization</li>
+<li>rate limiting</li>
+</ul>
+<p>Note: this function will be executed only once per connection (even if the connection consists in multiple HTTP requests).</p>
+<h2 id="registering-a-middleware">Registering a middleware</h2>
+<p>A middleware function has access to the <a href="server-socket-instance">Socket instance</a> and to the next registered middleware function.</p>
+<pre tabindex="0" data-language="javascript">io.use((socket, next) =&gt; {
+  if (isValid(socket.request)) {
+    next();
+  } else {
+    next(new Error("invalid"));
+  }
+});</pre>
+<p>You can register several middleware functions, and they will be executed sequentially:</p>
+<pre tabindex="0" data-language="javascript">io.use((socket, next) =&gt; {
+  next();
+});
+
+io.use((socket, next) =&gt; {
+  next(new Error("thou shall not pass"));
+});
+
+io.use((socket, next) =&gt; {
+  // not executed, since the previous middleware has returned an error
+  next();
+});</pre>
+<p>Please make sure to call <code>next()</code> in any case. Otherwise, the connection will be left hanging until it is closed after a given timeout.</p>
+<p><strong>Important note</strong>: the Socket instance is not actually connected when the middleware gets executed, which means that no <code>disconnect</code> event will be emitted if the connection eventually fails.</p>
+<p>For example, if the client manually closes the connection:</p>
+<pre tabindex="0" data-language="javascript">// server-side
+io.use((socket, next) =&gt; {
+  setTimeout(() =&gt; {
+    // next is called after the client disconnection
+    next();
+  }, 1000);
+
+  socket.on("disconnect", () =&gt; {
+    // not triggered
+  });
+});
+
+io.on("connection", (socket) =&gt; {
+  // not triggered
+});
+
+// client-side
+const socket = io();
+setTimeout(() =&gt; {
+  socket.disconnect();
+}, 500);</pre>
+<h2 id="sending-credentials">Sending credentials</h2>
+<p>The client can send credentials with the <code>auth</code> option:</p>
+<pre tabindex="0" data-language="javascript">// plain object
+const socket = io({
+  auth: {
+    token: "abc"
+  }
+});
+
+// or with a function
+const socket = io({
+  auth: (cb) =&gt; {
+    cb({
+      token: "abc"
+    });
+  }
+});</pre>
+<p>Those credentials can be accessed in the <a href="server-socket-instance#sockethandshake">handshake</a> object on the server-side:</p>
+<pre tabindex="0" data-language="javascript">io.use((socket, next) =&gt; {
+  const token = socket.handshake.auth.token;
+  // ...
+});</pre>
+<h2 id="handling-middleware-error">Handling middleware error</h2>
+<p>If the <code>next</code> method is called with an Error object, the connection will be refused and the client will receive an <code>connect_error</code> event.</p>
+<pre tabindex="0" data-language="javascript">// client-side
+socket.on("connect_error", (err) =&gt; {
+  console.log(err.message); // prints the message associated with the error
+});</pre>
+<p>You can attach additional details to the Error object:</p>
+<pre tabindex="0" data-language="javascript">// server-side
+io.use((socket, next) =&gt; {
+  const err = new Error("not authorized");
+  err.data = { content: "Please retry later" }; // additional details
+  next(err);
+});
+
+// client-side
+socket.on("connect_error", (err) =&gt; {
+  console.log(err instanceof Error); // true
+  console.log(err.message); // not authorized
+  console.log(err.data); // { content: "Please retry later" }
+});</pre>
+<h2 id="compatibility-with-express-middleware">Compatibility with Express middleware</h2>
+<p>Most existing <a href="http://expressjs.com/en/resources/middleware.html" target="_blank" rel="noopener noreferrer">Express middleware</a> modules should be compatible with Socket.IO, you just need a little wrapper function to make the method signatures match:</p>
+<pre tabindex="0" data-language="javascript">const wrap = middleware =&gt; (socket, next) =&gt; middleware(socket.request, {}, next);</pre>
+<p>The middleware functions that end the request-response cycle and do not call <code>next()</code> will not work though.</p>
+<p>Example with <a href="https://www.npmjs.com/package/express-session" target="_blank" rel="noopener noreferrer">express-session</a>:</p>
+<pre tabindex="0" data-language="javascript">const session = require("express-session");
+
+io.use(wrap(session({ secret: "cats" })));
+
+io.on("connection", (socket) =&gt; {
+  const session = socket.request.session;
+});</pre>
+<p>Example with <a href="http://www.passportjs.org/" target="_blank" rel="noopener noreferrer">Passport</a>:</p>
+<pre tabindex="0" data-language="javascript">const session = require("express-session");
+const passport = require("passport");
+
+io.use(wrap(session({ secret: "cats" })));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
+
+io.use((socket, next) =&gt; {
+  if (socket.request.user) {
+    next();
+  } else {
+    next(new Error("unauthorized"))
+  }
+});</pre>
+<p>A complete example with Passport can be found <a href="https://github.com/socketio/socket.io/tree/master/examples/passport-example" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014–2021 Automattic<br>Licensed under the MIT License.<br>
+    <a href="https://socket.io/docs/v4/middlewares" class="_attribution-link">https://socket.io/docs/v4/middlewares</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Behind a Reverse Proxy - Socket.IO 4 - W3cubDocs</title>
+  
+  <meta name="description" content=" You will find below the configuration needed for deploying a Socket.IO server behind a reverse-proxy solution, such as&#58; ">
+  <meta name="keywords" content="behind, reverse, proxy, socket, io, socketio~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/socketio~4/reverse-proxy.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/socketio~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/socketio~4/" class="_nav-link" title="" style="margin-left:0;">Socket.IO 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Behind a reverse proxy</h1>
+<p>You will find below the configuration needed for deploying a Socket.IO server behind a reverse-proxy solution, such as:</p>
+<ul>
+<li><a href="#nginx">NginX</a></li>
+<li><a href="#apache-httpd">Apache HTTPD</a></li>
+<li><a href="#nodejs-http-proxy">Node.js <code>http-proxy</code></a></li>
+<li><a href="#caddy-2">Caddy 2</a></li>
+</ul>
+<p>In a multi-server setup, please check the documentation <a href="using-multiple-nodes">here</a>.</p>
+<h2 id="nginx">NginX</h2>
+<p>Content of <code>/etc/nginx/nginx.conf</code>:</p>
+<pre tabindex="0" data-language="javascript">http {
+  server {
+    listen 80;
+
+    location / {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $host;
+
+      proxy_pass http://localhost:3000;
+
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+  }
+}</pre>
+<p>Related:</p>
+<ul>
+<li><a href="http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass" target="_blank" rel="noopener noreferrer">proxy_pass documentation</a></li>
+<li><a href="using-multiple-nodes#nginx-configuration">configuration in a multi-server setup</a></li>
+</ul>
+<p>If you only want to forward the Socket.IO requests (for example when NginX handles the static content):</p>
+<pre tabindex="0" data-language="javascript">http {
+  server {
+    listen 80;
+    root /var/www/html;
+
+    location /socket.io/ {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $host;
+
+      proxy_pass http://localhost:3000;
+
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+  }
+}</pre>
+<p>Or with a custom <a href="server-options#path">path</a>:</p>
+<pre tabindex="0" data-language="javascript">http {
+  server {
+    listen 80;
+    root /var/www/html;
+
+    location /my-custom-path/ {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $host;
+
+      proxy_pass http://localhost:3000;
+
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+  }
+}</pre>
+<p>In that case, the server and the client must be configured accordingly:</p>
+<p><em>Server</em></p>
+<pre tabindex="0" data-language="javascript">import { Server } from "socket.io";
+
+const io = new Server({
+  path: "/my-custom-path/"
+});</pre>
+<p><em>Client</em></p>
+<pre tabindex="0" data-language="javascript">import { io } from "socket.io-client";
+
+const socket = io({
+  path: "/my-custom-path/"
+});</pre>
+<h2 id="apache-httpd">Apache HTTPD</h2>
+<p>Content of <code>/usr/local/apache2/conf/httpd.conf</code>:</p>
+<pre tabindex="0" data-language="javascript">Listen 80
+
+ServerName example.com
+
+LoadModule mpm_event_module             modules/mod_mpm_event.so
+
+LoadModule authn_file_module            modules/mod_authn_file.so
+LoadModule authn_core_module            modules/mod_authn_core.so
+LoadModule authz_host_module            modules/mod_authz_host.so
+LoadModule authz_groupfile_module       modules/mod_authz_groupfile.so
+LoadModule authz_user_module            modules/mod_authz_user.so
+LoadModule authz_core_module            modules/mod_authz_core.so
+
+LoadModule headers_module               modules/mod_headers.so
+LoadModule lbmethod_byrequests_module   modules/mod_lbmethod_byrequests.so
+LoadModule proxy_module                 modules/mod_proxy.so
+LoadModule proxy_balancer_module        modules/mod_proxy_balancer.so
+LoadModule proxy_http_module            modules/mod_proxy_http.so
+LoadModule proxy_wstunnel_module        modules/mod_proxy_wstunnel.so
+LoadModule rewrite_module               modules/mod_rewrite.so
+LoadModule slotmem_shm_module           modules/mod_slotmem_shm.so
+LoadModule unixd_module                 modules/mod_unixd.so
+
+User daemon
+Group daemon
+
+ProxyPass / http://localhost:3000/
+RewriteEngine on
+RewriteCond %{HTTP:Upgrade} websocket [NC]
+RewriteCond %{HTTP:Connection} upgrade [NC]
+RewriteRule ^/?(.*) "ws://localhost:3000/$1" [P,L]
+
+ProxyTimeout 3</pre>
+<p>Related:</p>
+<ul>
+<li><a href="https://httpd.apache.org/docs/2.4/en/mod/mod_proxy_wstunnel.html" target="_blank" rel="noopener noreferrer">mod_proxy_wstunnel documentation</a></li>
+<li><a href="using-multiple-nodes#apache-httpd-configuration">configuration in a multi-server setup</a></li>
+</ul>
+<h2 id="nodejs-http-proxy">Node.js <code>http-proxy</code>
+</h2>
+<p>Installation: <code>npm i http-proxy</code></p>
+<pre tabindex="0" data-language="javascript">const httpProxy = require("http-proxy");
+
+httpProxy
+  .createProxyServer({
+    target: "http://localhost:3000",
+    ws: true,
+  })
+  .listen(80);</pre>
+<p><a href="https://github.com/http-party/node-http-proxy#readme" target="_blank" rel="noopener noreferrer">Documentation</a></p>
+<h2 id="caddy-2">Caddy 2</h2>
+<p>Content of <code>Caddyfile</code> for <a href="https://caddyserver.com/v2" target="_blank" rel="noopener noreferrer">Caddy 2</a></p>
+<pre tabindex="0" data-language="javascript">example.com {
+  rewrite /path /path/
+  handle /path/* {
+    uri strip_prefix /path
+    rewrite * /socket.io{path}
+    reverse_proxy localhost:3000 {
+      header_up Host {host}
+      header_up X-Real-IP {remote}
+    }
+  }
+}</pre>
+<p>Related</p>
+<ul>
+<li><a href="https://caddy.community/t/i-cant-get-socket-io-proxy-to-work-on-v2/8703/2" target="_blank" rel="noopener noreferrer">Solution forum post</a></li>
+<li><a href="https://caddyserver.com/docs/caddyfile/directives" target="_blank" rel="noopener noreferrer">Caddyfile directives</a></li>
+</ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014–2021 Automattic<br>Licensed under the MIT License.<br>
+    <a href="https://socket.io/docs/v4/reverse-proxy" class="_attribution-link">https://socket.io/docs/v4/reverse-proxy</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

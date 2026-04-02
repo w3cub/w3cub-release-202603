@@ -1,0 +1,194 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Performance Tuning - Socket.IO 4 - W3cubDocs</title>
+  
+  <meta name="description" content=" Here are some tips to improve the performance of your Socket.IO server&#58; ">
+  <meta name="keywords" content="performance, tuning, socket, io, socketio~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/socketio~4/performance-tuning.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/socketio~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/socketio~4/" class="_nav-link" title="" style="margin-left:0;">Socket.IO 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Performance tuning</h1>
+<p>Here are some tips to improve the performance of your Socket.IO server:</p>
+<ul>
+<li><a href="#at-the-socketio-level">at the Socket.IO level</a></li>
+<li><a href="#at-the-os-level">at the OS level</a></li>
+</ul>
+<p>You might also be interested in <a href="using-multiple-nodes">scaling to multiple nodes</a>.</p>
+<h2 id="at-the-socketio-level">At the Socket.IO level</h2>
+<p>Since, in most cases, the Socket.IO connection will be established with WebSocket, the performance of your Socket.IO server will be strongly linked to the performance of the underlying WebSocket server (<a href="https://github.com/websockets/ws" target="_blank" rel="noopener noreferrer"><code>ws</code></a>, by default).</p>
+<h3 id="install-ws-native-add-ons">Install <code>ws</code> native add-ons</h3>
+<p><code>ws</code> comes with two optional binary add-ons which improve certain operations. Prebuilt binaries are available for the most popular platforms so you don't necessarily need to have a C++ compiler installed on your machine.</p>
+<ul>
+<li>
+<a href="https://www.npmjs.com/package/bufferutil" target="_blank" rel="noopener noreferrer">bufferutil</a>: Allows to efficiently perform operations such as masking and unmasking the data payload of the WebSocket frames.</li>
+<li>
+<a href="https://www.npmjs.com/package/utf-8-validate" target="_blank" rel="noopener noreferrer">utf-8-validate</a>: Allows to efficiently check if a message contains valid UTF-8 as required by the spec.</li>
+</ul>
+<p>To install those packages:</p>
+<pre tabindex="0" data-language="javascript">$ npm install --save-optional bufferutil utf-8-validate</pre>
+<p>Please note that these packages are optional, the WebSocket server will fallback to the Javascript implementation if they are not available. More information can be found <a href="https://github.com/websockets/ws/#opt-in-for-performance-and-spec-compliance" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<h3 id="use-another-websocket-server-implementation">Use another WebSocket server implementation</h3>
+<p>For example, you can use the <a href="https://www.npmjs.com/package/eiows" target="_blank" rel="noopener noreferrer">eiows</a> package, which is a fork of the (now deprecated) <a href="https://www.npmjs.com/package/uws" target="_blank" rel="noopener noreferrer">uws</a> package:</p>
+<pre tabindex="0" data-language="javascript">$ npm install eiows</pre>
+<p>And then use the <a href="server-options#wsengine"><code>wsEngine</code></a> option:</p>
+<pre tabindex="0" data-language="javascript">const { createServer } = require("http");
+const { Server } = require("socket.io");
+
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  wsEngine: require("eiows").Server
+});</pre>
+<h3 id="use-a-custom-parser">Use a custom parser</h3>
+<p>If you send binary data over the Socket.IO connection, using a <a href="custom-parser">custom parser</a> like the one based on <a href="custom-parser#the-msgpack-parser">msgpack</a> might be interesting, as by default each buffer will be sent in its own WebSocket frame.</p>
+<p>Usage:</p>
+<p><em>Server</em></p>
+<pre tabindex="0" data-language="javascript">const { createServer } = require("http");
+const { Server } = require("socket.io");
+const parser = require("socket.io-msgpack-parser");
+
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  parser
+});</pre>
+<p><em>Client</em></p>
+<pre tabindex="0" data-language="javascript">const { io } = require("socket.io-client");
+const parser = require("socket.io-msgpack-parser");
+
+const socket = io("https://example.com", {
+  parser
+});</pre>
+<h2 id="at-the-os-level">At the OS level</h2>
+<p>There are lots of good articles on how to tune your OS to accept a large number of connections. Please see <a href="https://blog.jayway.com/2015/04/13/600k-concurrent-websocket-connections-on-aws-using-node-js/" target="_blank" rel="noopener noreferrer">this one</a> or <a href="https://medium.com/@elliekang/scaling-to-a-millions-websocket-concurrent-connections-at-spoon-radio-bbadd6ec1901" target="_blank" rel="noopener noreferrer">this one</a> for example.</p>
+<p>While <a href="load-testing">load testing</a> your Socket.IO server, you will likely reach the two following limits:</p>
+<ul><li>maximum number of open files</li></ul>
+<p>If you can't go over 1000 concurrent connections (new clients are not able to connect), you have most certainly reached the maximum number of open files:</p>
+<pre tabindex="0" data-language="javascript">$ ulimit -n
+1024</pre>
+<p>To increase this number, create a new file <code>/etc/security/limits.d/custom.conf</code> with the following content (requires root privileges):</p>
+<pre tabindex="0" data-language="javascript">* soft nofile 1048576
+* hard nofile 1048576</pre>
+<p>And then reload your session. Your new limit should now be updated:</p>
+<pre tabindex="0" data-language="javascript">$ ulimit -n
+1048576</pre>
+<ul><li>maximum number of available local ports</li></ul>
+<p>If you can't go over 28000 concurrent connections, you have most certainly reached the maximum number of available local ports:</p>
+<pre tabindex="0" data-language="javascript">$ cat /proc/sys/net/ipv4/ip_local_port_range
+32768   60999</pre>
+<p>To increase this number, create a new file <code>/etc/sysctl.d/net.ipv4.ip_local_port_range.conf</code> with the following content (again, requires root privileges):</p>
+<pre tabindex="0" data-language="javascript">net.ipv4.ip_local_port_range = 10000 65535</pre>
+<p>Note: we used <code>10000</code> as a lower bound so it does not include the ports that are used by the services on the machine (like <code>5432</code> for a PostgreSQL server), but you can totally use a lower value (down to <code>1024</code>).</p>
+<p>Once you reboot your machine, you will now be able to happily go to 55k concurrent connections (per incoming IP).</p>
+<p>See also:</p>
+<ul>
+<li><a href="https://unix.stackexchange.com/a/130798" target="_blank" rel="noopener noreferrer">https://unix.stackexchange.com/a/130798</a></li>
+<li><a href="https://making.pusher.com/ephemeral-port-exhaustion-and-how-to-avoid-it/" target="_blank" rel="noopener noreferrer">https://making.pusher.com/ephemeral-port-exhaustion-and-how-to-avoid-it/</a></li>
+</ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014–2021 Automattic<br>Licensed under the MIT License.<br>
+    <a href="https://socket.io/docs/v4/performance-tuning" class="_attribution-link">https://socket.io/docs/v4/performance-tuning</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

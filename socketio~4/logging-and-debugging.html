@@ -1,0 +1,155 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Logging and Debugging - Socket.IO 4 - W3cubDocs</title>
+  
+  <meta name="description" content=" Socket.IO is now completely instrumented by a minimalistic yet tremendously powerful utility called debug by TJ Holowaychuk. ">
+  <meta name="keywords" content="logging, and, debugging, socket, io, socketio~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/socketio~4/logging-and-debugging.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/socketio~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/socketio~4/" class="_nav-link" title="" style="margin-left:0;">Socket.IO 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Logging and debugging</h1>
+<p>Socket.IO is now completely instrumented by a minimalistic yet tremendously powerful utility called <a href="https://github.com/visionmedia/debug" target="_blank" rel="noopener noreferrer">debug</a> by TJ Holowaychuk.</p>
+<p>Before 1.0, the Socket.IO server would default to logging everything out to the console. This turned out to be annoyingly verbose for many users (although extremely useful for others), so now we default to being completely silent by default.</p>
+<p>The basic idea is that each module used by Socket.IO provides different debugging scopes that give you insight into the internals. By default, all output is suppressed, and you can opt into seeing messages by supplying the <code>DEBUG</code> env variable (Node.JS) or the <code>localStorage.debug</code> property (Browsers).</p>
+<p>You can see it in action for example on our homepage:</p>
+<h2 id="available-debugging-scopes">Available debugging scopes</h2>
+<p>The best way to see what information is available is to use the <code>*</code>:</p>
+<pre tabindex="0" data-language="javascript">DEBUG=* node yourfile.js</pre>
+<p>or in the browser:</p>
+<pre tabindex="0" data-language="javascript">localStorage.debug = '*';</pre>
+<p>And then filter by the scopes you’re interested in. You can prefix the <code>*</code> with scopes, separated by comma if there is more than one. For example, to only see debug statements from the socket.io client on Node.js try this:</p>
+<pre tabindex="0" data-language="javascript">DEBUG=socket.io:client* node yourfile.js</pre>
+<p>To see all debug messages from the engine <em>and</em> socket.io:</p>
+<pre tabindex="0" data-language="javascript">DEBUG=engine,socket.io* node yourfile.js</pre>
+<h3 id="removing-debug-from-your-browser-bundle">Removing debug from your browser bundle</h3>
+<p>While useful during development, the debug package adds an extra weight to the final bundle (about 4KB minified and gzipped), that's why it is excluded from the slim bundle (more details about the various browser bundles can be found <a href="client-installation#from-a-cdn">here</a>).</p>
+<p>If you are using webpack, you can remove it with <a href="https://github.com/johngodley/webpack-remove-debug" target="_blank" rel="noopener noreferrer">webpack-remove-debug</a>:</p>
+<pre tabindex="0" data-language="javascript">{
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'webpack-remove-debug'
+      }
+    ]
+  }
+}</pre>
+<h2 id="error-logs-in-the-browser-console">Error logs in the browser console</h2>
+<p>Please note that error logs such as:</p>
+<ul>
+<li><code>net::ERR_INTERNET_DISCONNECTED</code></li>
+<li><code>net::ERR_CONNECTION_REFUSED</code></li>
+<li><code>WebSocket is already in CLOSING or CLOSED state</code></li>
+<li><code>Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at xxx. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing).</code></li>
+<li><code>The connection to xxx was interrupted while the page was loading</code></li>
+</ul>
+<p>are not emitted by the Socket.IO library but by the browser itself, and are therefore out of our control.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014–2021 Automattic<br>Licensed under the MIT License.<br>
+    <a href="https://socket.io/docs/v4/logging-and-debugging" class="_attribution-link">https://socket.io/docs/v4/logging-and-debugging</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

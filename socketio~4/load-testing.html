@@ -1,0 +1,243 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Load Testing - Socket.IO 4 - W3cubDocs</title>
+  
+  <meta name="description" content="Since Socket.IO has its own protocol, including handshake, heartbeats and custom packet encoding, the easiest way to load test your Socket.IO server &hellip;">
+  <meta name="keywords" content="load, testing, socket, io, socketio~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/socketio~4/load-testing.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/socketio~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/socketio~4/" class="_nav-link" title="" style="margin-left:0;">Socket.IO 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Load testing</h1>
+<p>Since Socket.IO has its <a href="https://github.com/socketio/socket.io-protocol" target="_blank" rel="noopener noreferrer">own protocol</a>, including handshake, heartbeats and custom packet encoding, the easiest way to load test your Socket.IO server is to use the Socket.IO client library and create <em>a lot of</em> clients.</p>
+<p>There are two classic solutions to do this:</p>
+<ul>
+<li>using <a href="#artillery">Artillery</a>
+</li>
+<li>or <a href="#manual-client-creation">manually manage the clients</a>
+</li>
+</ul>
+<h2 id="artillery">Artillery</h2>
+<p>Artillery is a great tool for load testing your application. It allows creating connections, sending events and checking acknowledgments.</p>
+<p>The documentation can be found <a href="https://artillery.io/docs/guides/guides/socketio-reference.html" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<p><strong>Important note</strong>: the default installation comes with a v2 client, which is <a href="client-installation#version-compatibility">not compatible</a> with a v3/v4 server. You need to install a custom engine for this: <a href="https://github.com/ptejada/artillery-engine-socketio-v3" target="_blank" rel="noopener noreferrer">https://github.com/ptejada/artillery-engine-socketio-v3</a></p>
+<p>Installation:</p>
+<pre tabindex="0" data-language="javascript">$ npm install artillery artillery-engine-socketio-v3</pre>
+<p>Sample scenario:</p>
+<pre tabindex="0" data-language="javascript"># my-scenario.yml
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+  engines:
+   socketio-v3: {}
+
+scenarios:
+  - name: My sample scenario
+    engine: socketio-v3
+    flow:
+      # wait for the WebSocket upgrade (optional)
+      - think: 1
+
+      # basic emit
+      - emit:
+          channel: "hello"
+          data: "world"
+
+      # emit an object
+      - emit:
+          channel: "hello"
+          data:
+            id: 42
+            status: "in progress"
+            tags:
+              - "tag1"
+              - "tag2"
+
+      # emit in a custom namespace
+      - namespace: "/my-namespace"
+        emit:
+          channel: "hello"
+          data: "world"
+
+      # emit with acknowledgement
+      - emit:
+          channel: "ping"
+        acknowledge:
+          match:
+            value: "pong"
+
+      # do nothing for 30 seconds then disconnect
+      - think: 30</pre>
+<p>To run this scenario:</p>
+<pre tabindex="0" data-language="javascript">$ npx artillery run my-scenario.yml</pre>
+<p>Artillery also comes with a lot of awesome features, like the ability to <a href="https://artillery.io/docs/guides/plugins/plugin-publish-metrics.html" target="_blank" rel="noopener noreferrer">publish the metrics to various endpoints</a> or <a href="https://artillery.io/docs/guides/guides/running-tests-with-artillery-pro.html" target="_blank" rel="noopener noreferrer">run the tests from AWS</a>.</p>
+<p>Its only limitation is that you cannot easily test server-to-client events, as the Artillery DSL is more suited for classic client-to-server communication. Which brings us to <a href="#manual-client-creation">our next section</a>.</p>
+<h2 id="manual-client-creation">Manual client creation</h2>
+<p>Here's a basic script to create a thousand Socket.IO clients and monitor the number of packets received per second:</p>
+<pre tabindex="0" data-language="javascript">const { io } = require("socket.io-client");
+
+const URL = process.env.URL || "http://localhost:3000";
+const MAX_CLIENTS = 1000;
+const POLLING_PERCENTAGE = 0.05;
+const CLIENT_CREATION_INTERVAL_IN_MS = 10;
+const EMIT_INTERVAL_IN_MS = 1000;
+
+let clientCount = 0;
+let lastReport = new Date().getTime();
+let packetsSinceLastReport = 0;
+
+const createClient = () =&gt; {
+  // for demonstration purposes, some clients stay stuck in HTTP long-polling
+  const transports =
+    Math.random() &lt; POLLING_PERCENTAGE ? ["polling"] : ["polling", "websocket"];
+
+  const socket = io(URL, {
+    transports,
+  });
+
+  setInterval(() =&gt; {
+    socket.emit("client to server event");
+  }, EMIT_INTERVAL_IN_MS);
+
+  socket.on("server to client event", () =&gt; {
+    packetsSinceLastReport++;
+  });
+
+  socket.on("disconnect", (reason) =&gt; {
+    console.log(`disconnect due to ${reason}`);
+  });
+
+  if (++clientCount &lt; MAX_CLIENTS) {
+    setTimeout(createClient, CLIENT_CREATION_INTERVAL_IN_MS);
+  }
+};
+
+createClient();
+
+const printReport = () =&gt; {
+  const now = new Date().getTime();
+  const durationSinceLastReport = (now - lastReport) / 1000;
+  const packetsPerSeconds = (
+    packetsSinceLastReport / durationSinceLastReport
+  ).toFixed(2);
+
+  console.log(
+    `client count: ${clientCount} ; average packets received per second: ${packetsPerSeconds}`
+  );
+
+  packetsSinceLastReport = 0;
+  lastReport = now;
+};
+
+setInterval(printReport, 5000);</pre>
+<p>You can use it as a starting point for load testing your own application.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014–2021 Automattic<br>Licensed under the MIT License.<br>
+    <a href="https://socket.io/docs/v4/load-testing" class="_attribution-link">https://socket.io/docs/v4/load-testing</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
