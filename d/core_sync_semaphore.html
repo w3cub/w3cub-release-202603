@@ -1,0 +1,276 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>core.sync.semaphore - D - W3cubDocs</title>
+  
+  <meta name="description" content=" The semaphore module provides a general use semaphore for synchronization. ">
+  <meta name="keywords" content="core, sync, semaphore, d">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/d/core_sync_semaphore.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/d.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/d/" class="_nav-link" title="" style="margin-left:0;">D</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _d">
+				
+				
+<h1>core.sync.semaphore</h1>  <p>The semaphore module provides a general use semaphore for synchronization. </p>
+<dl>
+<dt>License:</dt>
+<dd>
+<a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a> </dd>
+</dl> <dl>
+<dt>Authors:</dt>
+<dd>Sean Kelly </dd>
+</dl> <dl>
+<dt>Source</dt>
+<dd> <a href="https://github.com/dlang/druntime/blob/master/src/core/sync/semaphore.d">core/sync/semaphore.d</a>
+</dd>
+</dl> <dl>
+<dt class="d_decl" id="Semaphore">class <strong id="Semaphore">Semaphore</strong>; </dt> <dd>
+<p>This class represents a general counting semaphore as concieved by Edsger Dijkstra. As per Mesa type monitors however, "signal" has been replaced with "notify" to indicate that control is not transferred to the waiter when a notification is sent.</p>
+<dl>
+<dt>Examples:</dt>
+<dd>
+<pre data-language="d">import core.thread, core.atomic;
+
+void testWait()
+{
+    auto semaphore = new Semaphore;
+    shared bool stopConsumption = false;
+    immutable numToProduce = 20;
+    immutable numConsumers = 10;
+    shared size_t numConsumed;
+    shared size_t numComplete;
+
+    void consumer()
+    {
+        while (true)
+        {
+            semaphore.wait();
+
+            if (atomicLoad(stopConsumption))
+                break;
+            atomicOp!"+="(numConsumed, 1);
+        }
+        atomicOp!"+="(numComplete, 1);
+    }
+
+    void producer()
+    {
+        assert(!semaphore.tryWait());
+
+        foreach (_; 0 .. numToProduce)
+            semaphore.notify();
+
+        // wait until all items are consumed
+        while (atomicLoad(numConsumed) != numToProduce)
+            Thread.yield();
+
+        // mark consumption as finished
+        atomicStore(stopConsumption, true);
+
+        // wake all consumers
+        foreach (_; 0 .. numConsumers)
+            semaphore.notify();
+
+        // wait until all consumers completed
+        while (atomicLoad(numComplete) != numConsumers)
+            Thread.yield();
+
+        assert(!semaphore.tryWait());
+        semaphore.notify();
+        assert(semaphore.tryWait());
+        assert(!semaphore.tryWait());
+    }
+
+    auto group = new ThreadGroup;
+
+    for ( int i = 0; i &lt; numConsumers; ++i )
+        group.create(&amp;consumer);
+    group.create(&amp;producer);
+    group.joinAll();
+}
+
+
+void testWaitTimeout()
+{
+    auto sem = new Semaphore;
+    shared bool semReady;
+    bool alertedOne, alertedTwo;
+
+    void waiter()
+    {
+        while (!atomicLoad(semReady))
+            Thread.yield();
+        alertedOne = sem.wait(dur!"msecs"(1));
+        alertedTwo = sem.wait(dur!"msecs"(1));
+        assert(alertedOne &amp;&amp; !alertedTwo);
+    }
+
+    auto thread = new Thread(&amp;waiter);
+    thread.start();
+
+    sem.notify();
+    atomicStore(semReady, true);
+    thread.join();
+    assert(alertedOne &amp;&amp; !alertedTwo);
+}
+
+testWait();
+testWaitTimeout();
+</pre> </dd>
+</dl> <dl>
+<dt class="d_decl" id="Semaphore.this">this(uint count = 0); </dt> <dd>
+<p>Initializes a semaphore object with the specified initial count. </p>
+<dl>
+<dt>Parameters:</dt>
+<dd><table>
+<tr>
+<td>uint <code>count</code>
+</td> <td>The initial count for the semaphore.</td>
+</tr> </table></dd>
+</dl> <dl>
+<dt>Throws:</dt>
+<dd>SyncError on error.</dd>
+</dl> </dd> <dt class="d_decl" id="Semaphore.wait">void <strong id="wait">wait</strong>(); </dt> <dd>
+<p>Wait until the current count is above zero, then atomically decrement the count by one and return. </p>
+<dl>
+<dt>Throws:</dt>
+<dd>SyncError on error.</dd>
+</dl> </dd> <dt class="d_decl" id="Semaphore.wait.2">bool <strong id="wait">wait</strong>(Duration period); </dt> <dd>
+<p>Suspends the calling thread until the current count moves above zero or until the supplied time period has elapsed. If the count moves above zero in this interval, then atomically decrement the count by one and return true. Otherwise, return false. </p>
+<dl>
+<dt>Parameters:</dt>
+<dd><table>
+<tr>
+<td>Duration <code>period</code>
+</td> <td>The time to wait.</td>
+</tr> </table></dd>
+</dl> <dl>
+<dt>In</dt>
+<dd> period must be non-negative. </dd>
+</dl> <dl>
+<dt>Throws:</dt>
+<dd>SyncError on error. </dd>
+</dl> <dl>
+<dt>Returns:</dt>
+<dd>true if notified before the timeout and false if not.</dd>
+</dl> </dd> <dt class="d_decl" id="Semaphore.notify">void <strong id="notify">notify</strong>(); </dt> <dd>
+<p>Atomically increment the current count by one. This will notify one waiter, if there are any in the queue. </p>
+<dl>
+<dt>Throws:</dt>
+<dd>SyncError on error.</dd>
+</dl> </dd> <dt class="d_decl" id="Semaphore.tryWait">bool <strong id="tryWait">tryWait</strong>(); </dt> <dd>
+<p>If the current count is equal to zero, return. Otherwise, atomically decrement the count by one and return true. </p>
+<dl>
+<dt>Throws:</dt>
+<dd>SyncError on error. </dd>
+</dl> <dl>
+<dt>Returns:</dt>
+<dd>true if the count was above zero and false if not.</dd>
+</dl> </dd> <dt class="d_decl" id="Semaphore.Handle">protected alias <strong id="Handle">Handle</strong> = core.sys.posix.semaphore.sem_t; </dt> <dd>
+<p>Aliases the operating-system-specific semaphore type.</p> </dd> <dt class="d_decl" id="Semaphore.m_hndl">protected Handle <strong id="m_hndl">m_hndl</strong>; </dt> <dd>
+<p>Handle to the system-specific semaphore.</p> </dd> </dl> </dd> </dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1999–2021 The D Language Foundation<br>Licensed under the Boost License 1.0.<br>
+    <a href="https://dlang.org/phobos/core_sync_semaphore.html" class="_attribution-link">https://dlang.org/phobos/core_sync_semaphore.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
