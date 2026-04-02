@@ -1,0 +1,171 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>1. Process - Pony - W3cubDocs</title>
+  
+  <meta name="description" content="The Process package provides support for handling Unix style processes. For each external process that you want to handle, you need to create a &hellip;">
+  <meta name="keywords" content="process, package, pony">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pony/process--">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pony.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pony/" class="_nav-link" title="" style="margin-left:0;">Pony</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="process-package">Process package</h1> <p>The Process package provides support for handling Unix style processes. For each external process that you want to handle, you need to create a <code>ProcessMonitor</code> and a corresponding <code>ProcessNotify</code> object. Each ProcessMonitor runs as it own actor and upon receiving data will call its corresponding <code>ProcessNotify</code>'s method.</p> <h2 id="example-program">Example program</h2> <p>The following program will spawn an external program and write to it's STDIN. Output received on STDOUT of the child process is forwarded to the ProcessNotify client and printed.</p> <pre data-language="pony">use "process"
+use "files"
+
+actor Main
+  new create(env: Env) =&gt;
+    // create a notifier
+    let client = ProcessClient(env)
+    let notifier: ProcessNotify iso = consume client
+    // define the binary to run
+    try
+      let path = FilePath(env.root as AmbientAuth, "/bin/cat")?
+      // define the arguments; first arg is always the binary name
+      let args: Array[String] val = ["cat"]
+      // define the environment variable for the execution
+      let vars: Array[String] val = ["HOME=/"; "PATH=/bin"]
+      // create a ProcessMonitor and spawn the child process
+      let auth = env.root as AmbientAuth
+      let pm: ProcessMonitor = ProcessMonitor(auth, auth, consume notifier,
+      path, args, vars)
+      // write to STDIN of the child process
+      pm.write("one, two, three")
+      pm.done_writing() // closing stdin allows cat to terminate
+    else
+      env.out.print("Could not create FilePath!")
+    end
+
+// define a client that implements the ProcessNotify interface
+class ProcessClient is ProcessNotify
+  let _env: Env
+
+  new iso create(env: Env) =&gt;
+    _env = env
+
+  fun ref stdout(process: ProcessMonitor ref, data: Array[U8] iso) =&gt;
+    let out = String.from_array(consume data)
+    _env.out.print("STDOUT: " + out)
+
+  fun ref stderr(process: ProcessMonitor ref, data: Array[U8] iso) =&gt;
+    let err = String.from_array(consume data)
+    _env.out.print("STDERR: " + err)
+
+  fun ref failed(process: ProcessMonitor ref, err: ProcessError) =&gt;
+    _env.out.print(err.string())
+
+  fun ref dispose(process: ProcessMonitor ref, child_exit_status: ProcessExitStatus) =&gt;
+    let code: I32 = consume child_exit_code
+    match child_exit_status
+    | let exited: Exited =&gt;
+      _env.out.print("Child exit code: " + exited.exit_code().string())
+    | let signaled: Signaled =&gt;
+      _env.out.print("Child terminated by signal: " + signaled.signal().string())
+    end
+</pre> <h2 id="process-portability">Process portability</h2> <p>The ProcessMonitor supports spawning processes on Linux, FreeBSD, OSX and Windows.</p> <h2 id="shutting-down-processmonitor-and-external-process">Shutting down ProcessMonitor and external process</h2> <p>When a process is spawned using ProcessMonitor, and it is not necessary to communicate to it any further using <code>stdin</code> and <code>stdout</code> or <code>stderr</code>, calling <a href="process-processmonitor#done_writing">done_writing()</a> will close stdin to the child process. Processes expecting input will be notified of an <code>EOF</code> on their <code>stdin</code> and can terminate.</p> <p>If a running program needs to be canceled and the <a href="process-processmonitor">ProcessMonitor</a> should be shut down, calling <a href="process-processmonitor#dispose">dispose</a> will terminate the child process and clean up all resources.</p> <p>Once the child process is detected to be closed, the process exit status is retrieved and <a href="process-processnotify#dispose">ProcessNotify.dispose</a> is called.</p> <p>The process exit status can be either an instance of <a href="process-exited">Exited</a> containing the process exit code in case the program exited on its own, or (only on posix systems like linux, osx or bsd) an instance of <a href="process-signaled">Signaled</a> containing the signal number that terminated the process.</p> <h2 id="public-types">Public Types</h2> <ul> <li><a href="process-processnotify">interface ProcessNotify</a></li> <li><a href="process-processmonitorauth">type ProcessMonitorAuth</a></li> <li><a href="process-processmonitor">actor ProcessMonitor</a></li> <li><a href="process-processerror">class ProcessError</a></li> <li><a href="process-processerrortype">type ProcessErrorType</a></li> <li><a href="process-execveerror">primitive ExecveError</a></li> <li><a href="process-pipeerror">primitive PipeError</a></li> <li><a href="process-forkerror">primitive ForkError</a></li> <li><a href="process-waitpiderror">primitive WaitpidError</a></li> <li><a href="process-writeerror">primitive WriteError</a></li> <li><a href="process-killerror">primitive KillError</a></li> <li><a href="process-caperror">primitive CapError</a></li> <li><a href="process-chdirerror">primitive ChdirError</a></li> <li><a href="process-unknownerror">primitive UnknownError</a></li> <li><a href="process-startprocessauth">primitive StartProcessAuth</a></li> <li><a href="process-exited">class Exited</a></li> <li><a href="process-signaled">class Signaled</a></li> <li><a href="process-processexitstatus">type ProcessExitStatus</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2016-2020, The Pony Developers<br>© 2014-2015, Causality Ltd.<br>Licensed under the BSD 2-Clause License.<br>
+    <a href="https://stdlib.ponylang.io/process--index" class="_attribution-link">https://stdlib.ponylang.io/process--index</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
