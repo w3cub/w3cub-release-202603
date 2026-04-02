@@ -1,0 +1,199 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Skinned Mesh - Three.js - W3cubDocs</title>
+  
+  <meta name="description" content=" [page&#58;Object3D] → [page&#58;Mesh] → ">
+  <meta name="keywords" content="skinnedmesh, skinned, mesh, three, js, threejs">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/threejs/api/en/objects/skinnedmesh.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/threejs.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/threejs/" class="_nav-link" title="" style="margin-left:0;">Three.js</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<p>[page:Object3D] → [page:Mesh] → </p>
+<h1 id="skinnedmesh" class=" section-header"><span class="descname">SkinnedMesh</span></h1> <p class="section-desc"> A mesh that has a <a class="reference internal" href="skeleton"><code class="xref js js-skeleton">Skeleton</code></a> with <a class="reference internal" href="bone"><code class="xref js js-bone">bones</code></a> that can then be used to animate the vertices of the geometry. </p> <iframe id="scene" src="https://threejs.org/docs/scenes/bones-browser.html"></iframe>  <div class="section">
+<h2 class="section-title section-header" id="code-example">Code Example</h2>
+<pre data-language="javascript"><code>
+		const geometry = new THREE.CylinderGeometry( 5, 5, 5, 5, 15, 5, 30 );
+
+		// create the skin indices and skin weights manually
+		// (typically a loader would read this data from a 3D model for you)
+
+		const position = geometry.attributes.position;
+
+		const vertex = new THREE.Vector3();
+
+		const skinIndices = [];
+		const skinWeights = [];
+
+		for ( let i = 0; i &lt; position.count; i ++ ) {
+
+			vertex.fromBufferAttribute( position, i );
+
+			// compute skinIndex and skinWeight based on some configuration data
+			const y = ( vertex.y + sizing.halfHeight );
+			const skinIndex = Math.floor( y / sizing.segmentHeight );
+			const skinWeight = ( y % sizing.segmentHeight ) / sizing.segmentHeight;
+			skinIndices.push( skinIndex, skinIndex + 1, 0, 0 );
+			skinWeights.push( 1 - skinWeight, skinWeight, 0, 0 );
+		}
+
+		geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
+		geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+
+		// create skinned mesh and skeleton
+
+		const mesh = new THREE.SkinnedMesh( geometry, material );
+		const skeleton = new THREE.Skeleton( bones );
+
+		// see example from THREE.Skeleton
+		const rootBone = skeleton.bones[ 0 ];
+		mesh.add( rootBone );
+
+		// bind the skeleton to the mesh
+		mesh.bind( skeleton );
+
+		// move the bones and manipulate the model
+		skeleton.bones[ 0 ].rotation.x = -0.1;
+		skeleton.bones[ 1 ].rotation.x = 0.2;
+		</code></pre> </div> <div class="section">
+<h2 class="section-title section-header" id="constructor">Constructor</h2>
+<h3 id="skinnedmesh-buffergeometry-geometry-material-material-" class=" section-header"> <span class="descname">SkinnedMesh</span>( <span class="sig-param"><span class="sig-type">BufferGeometry</span> <code class="sig-name">geometry</code></span>, <span class="sig-param"><span class="sig-type">Material</span> <code class="sig-name">material</code></span> ) </h3> <p> <a class="reference internal" href="buffergeometry"><code class="xref js js-buffergeometry">geometry</code></a> - an instance of <a class="reference internal" href="buffergeometry"><code class="xref js js-buffergeometry">BufferGeometry</code></a>.<br> <a class="reference internal" href="material"><code class="xref js js-material">material</code></a> - (optional) an instance of <a class="reference internal" href="material"><code class="xref js js-material">Material</code></a>. Default is a new <a class="reference internal" href="meshbasicmaterial"><code class="xref js js-meshbasicmaterial">MeshBasicMaterial</code></a>. </p> </div> <div class="section">
+<h2 class="section-title section-header" id="properties">Properties</h2>
+<p>See the base <a class="reference internal" href="mesh"><code class="xref js js-mesh">Mesh</code></a> class for common properties.</p> <h3 id="bindmode-string" class=" section-header"><dt class="sig sig-object js">
+<span class="sig-name descname">bindMode</span><span class="sig-colon">:</span> <span class="sig-type">String</span>
+</dt></h3> <p> Either <code class="docutils literal notranslate"><span class="pre">AttachedBindMode</span></code> or <code class="docutils literal notranslate"><span class="pre">DetachedBindMode</span></code>. <code class="docutils literal notranslate"><span class="pre">AttachedBindMode</span></code> means the skinned mesh shares the same world space as the skeleton. This is not true when using <code class="docutils literal notranslate"><span class="pre">DetachedBindMode</span></code> which is useful when sharing a skeleton across multiple skinned meshes. Default is <code class="docutils literal notranslate"><span class="pre">AttachedBindMode</span></code>. </p> <h3 id="bindmatrix-matrix4" class=" section-header"><dt class="sig sig-object js">
+<span class="sig-name descname">bindMatrix</span><span class="sig-colon">:</span> <span class="sig-type">Matrix4</span>
+</dt></h3> <p>The base matrix that is used for the bound bone transforms.</p> <h3 id="bindmatrixinverse-matrix4" class=" section-header"><dt class="sig sig-object js">
+<span class="sig-name descname">bindMatrixInverse</span><span class="sig-colon">:</span> <span class="sig-type">Matrix4</span>
+</dt></h3> <p>The base matrix that is used for resetting the bound bone transforms.</p> <h3 id="boundingbox-box3" class=" section-header"><dt class="sig sig-object js">
+<span class="sig-name descname">boundingBox</span><span class="sig-colon">:</span> <span class="sig-type">Box3</span>
+</dt></h3> <p> The bounding box of the [name]. Can be calculated with <a class="reference internal" href=".computeboundingbox"><code class="xref js js-.computeboundingbox">.computeBoundingBox</code></a>(). Default is <code class="docutils literal notranslate"><span class="pre">null</span></code>. </p> <h3 id="boundingsphere-sphere" class=" section-header"><dt class="sig sig-object js">
+<span class="sig-name descname">boundingSphere</span><span class="sig-colon">:</span> <span class="sig-type">Sphere</span>
+</dt></h3> <p> The bounding sphere of the [name]. Can be calculated with <a class="reference internal" href=".computeboundingsphere"><code class="xref js js-.computeboundingsphere">.computeBoundingSphere</code></a>(). Default is <code class="docutils literal notranslate"><span class="pre">null</span></code>. </p> <h3 id="isskinnedmesh-boolean" class=" section-header"><dt class="sig sig-object js">
+<span class="sig-name descname">isSkinnedMesh</span><span class="sig-colon">:</span> <span class="sig-type">Boolean</span>
+</dt></h3> <p>Read-only flag to check if a given object is of type [name].</p> <h3 id="skeleton-skeleton" class=" section-header"><dt class="sig sig-object js">
+<span class="sig-name descname">skeleton</span><span class="sig-colon">:</span> <span class="sig-type">Skeleton</span>
+</dt></h3> <p><a class="reference internal" href="skeleton"><code class="xref js js-skeleton">Skeleton</code></a> representing the bone hierarchy of the skinned mesh.</p> </div> <div class="section">
+<h2 class="section-title section-header" id="methods">Methods</h2>
+<p>See the base <a class="reference internal" href="mesh"><code class="xref js js-mesh">Mesh</code></a> class for common methods.</p> <h3 id="bind-skeleton-skeleton-matrix4-bindmatrix-undefined" class=" section-header"> <dt class="sig sig-object js" id="bind">
+<span class="sig-name descname">bind</span><span class="sig-paren">(</span><span class="sig-param"><span class="sig-type"><span class="sig-param"><span class="sig-type">Skeleton</span></span> <code class="sig-name"><span class="sig-name">skeleton</span></code></span></span><span class="sig-paren">, </span><span class="sig-param"><span class="sig-type"><span class="sig-param"><span class="sig-type">Matrix4</span></span> <code class="sig-name"><span class="sig-name">bindMatrix</span></code></span></span><span class="sig-paren">)</span><span class="sig-returns"><span class="sig-colon">:</span> <span class="sig-type">undefined</span></span>
+</dt> </h3> <p> <a class="reference internal" href="skeleton"><code class="xref js js-skeleton">skeleton</code></a> - <a class="reference internal" href="skeleton"><code class="xref js js-skeleton">Skeleton</code></a> created from a <a class="reference internal" href="bone"><code class="xref js js-bone">Bones</code></a> tree.<br> <a class="reference internal" href="matrix4"><code class="xref js js-matrix4">bindMatrix</code></a> - <a class="reference internal" href="matrix4"><code class="xref js js-matrix4">Matrix4</code></a> that represents the base transform of the skeleton.<br><br> Bind a skeleton to the skinned mesh. The bindMatrix gets saved to .bindMatrix property and the .bindMatrixInverse gets calculated. </p> <h3 id="clone-skinnedmesh" class=" section-header"><dt class="sig sig-object js" id="clone">
+<span class="sig-name descname">clone</span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="sig-returns"><span class="sig-colon">:</span> <span class="sig-type">SkinnedMesh</span></span>
+</dt></h3> <p> This method does currently not clone an instance of [name] correctly. Please use <a class="reference internal" href="skeletonutils.clone"><code class="xref js js-skeletonutils.clone">SkeletonUtils.clone</code></a>() in the meanwhile. </p> <h3 id="computeboundingbox-undefined" class=" section-header"><dt class="sig sig-object js" id="computeBoundingBox">
+<span class="sig-name descname">computeBoundingBox</span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="sig-returns"><span class="sig-colon">:</span> <span class="sig-type">undefined</span></span>
+</dt></h3> <p> Computes the bounding box of the skinned mesh, and updates the <a class="reference internal" href=".boundingbox"><code class="xref js js-.boundingbox">.boundingBox</code></a> attribute. The bounding box is not computed by the engine; it must be computed by your app. If the skinned mesh is animated, the bounding box should be recomputed per frame. </p> <h3 id="computeboundingsphere-undefined" class=" section-header"><dt class="sig sig-object js" id="computeBoundingSphere">
+<span class="sig-name descname">computeBoundingSphere</span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="sig-returns"><span class="sig-colon">:</span> <span class="sig-type">undefined</span></span>
+</dt></h3> <p> Computes the bounding sphere of the skinned mesh, and updates the <a class="reference internal" href=".boundingsphere"><code class="xref js js-.boundingsphere">.boundingSphere</code></a> attribute. The bounding sphere is automatically computed by the engine when it is needed, e.g., for ray casting and view frustum culling. If the skinned mesh is animated, the bounding sphere should be recomputed per frame. </p> <h3 id="normalizeskinweights-undefined" class=" section-header"><dt class="sig sig-object js" id="normalizeSkinWeights">
+<span class="sig-name descname">normalizeSkinWeights</span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="sig-returns"><span class="sig-colon">:</span> <span class="sig-type">undefined</span></span>
+</dt></h3> <p>Normalizes the skin weights.</p> <h3 id="pose-undefined" class=" section-header"><dt class="sig sig-object js" id="pose">
+<span class="sig-name descname">pose</span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="sig-returns"><span class="sig-colon">:</span> <span class="sig-type">undefined</span></span>
+</dt></h3> <p>This method sets the skinned mesh in the rest pose (resets the pose).</p> <h3 id="applybonetransform-integer-index-vector3-vector-vector3" class=" section-header"> <dt class="sig sig-object js" id="applyBoneTransform">
+<span class="sig-name descname">applyBoneTransform</span><span class="sig-paren">(</span><span class="sig-param"><span class="sig-type"><span class="sig-param"><span class="sig-type">Integer</span></span> <code class="sig-name"><span class="sig-name">index</span></code></span></span><span class="sig-paren">, </span><span class="sig-param"><span class="sig-type"><span class="sig-param"><span class="sig-type">Vector3</span></span> <code class="sig-name"><span class="sig-name">vector</span></code></span></span><span class="sig-paren">)</span><span class="sig-returns"><span class="sig-colon">:</span> <span class="sig-type">Vector3</span></span>
+</dt> </h3> <p> Applies the bone transform associated with the given index to the given position vector. Returns the updated vector. </p>   </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2025 Three.js Authors<br>Licensed under the MIT License.<br>
+    <a href="https://threejs.org/docs/api/en/objects/SkinnedMesh.html" class="_attribution-link">https://threejs.org/docs/api/en/objects/SkinnedMesh.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
