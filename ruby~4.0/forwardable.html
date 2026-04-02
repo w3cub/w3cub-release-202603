@@ -1,0 +1,227 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Forwardable - Ruby 4.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" The Forwardable module provides delegation of specified methods to a designated object, using the methods def_delegator and def_delegators. ">
+  <meta name="keywords" content="module, forwardable, ruby, ruby~4.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ruby~4.0/forwardable.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ruby~4.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ruby~4.0/" class="_nav-link" title="" style="margin-left:0;">Ruby 4.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rdoc">
+				
+				
+<h1 id="module-Forwardable" class="anchor-link module"> module Forwardable </h1> <section class="description"> <p>The <a href="forwardable"><code>Forwardable</code></a> module provides delegation of specified methods to a designated object, using the methods <a href="forwardable#method-i-def_delegator"><code>def_delegator</code></a> and <a href="forwardable#method-i-def_delegators"><code>def_delegators</code></a>.</p> <p>For example, say you have a class RecordCollection which contains an array <code>@records</code>. You could provide the lookup method record_number(), which simply calls [] on the <code>@records</code> array, like this:</p> <pre class="ruby" data-language="ruby">require 'forwardable'
+
+class RecordCollection
+  attr_accessor :records
+  extend Forwardable
+  def_delegator :@records, :[], :record_number
+end
+</pre> <p>We can use the lookup method like so:</p> <pre class="ruby" data-language="ruby">r = RecordCollection.new
+r.records = [4,5,6]
+r.record_number(0)  # =&gt; 4
+</pre> <p>Further, if you wish to provide the methods size, &lt;&lt;, and map, all of which delegate to @records, this is how you can do it:</p> <pre class="ruby" data-language="ruby">class RecordCollection # re-open RecordCollection class
+  def_delegators :@records, :size, :&lt;&lt;, :map
+end
+
+r = RecordCollection.new
+r.records = [1,2,3]
+r.record_number(0)   # =&gt; 1
+r.size               # =&gt; 3
+r &lt;&lt; 4               # =&gt; [1, 2, 3, 4]
+r.map { |x| x * 2 }  # =&gt; [2, 4, 6, 8]
+</pre> <p>You can even extend regular objects with <a href="forwardable"><code>Forwardable</code></a>.</p> <pre class="ruby" data-language="ruby">my_hash = Hash.new
+my_hash.extend Forwardable              # prepare object for delegation
+my_hash.def_delegator "STDOUT", "puts"  # add delegation for STDOUT.puts()
+my_hash.puts "Howdy!"
+</pre> <h2 id="module-Forwardable-label-Another+example"><a href="#module-Forwardable-label-Another+example">Another example</a></h2> <p>You could use <a href="forwardable"><code>Forwardable</code></a> as an alternative to inheritance, when you don’t want to inherit all methods from the superclass. For instance, here is how you might add a range of <a href="array"><code>Array</code></a> instance methods to a new class <code>Queue</code>:</p> <pre class="ruby" data-language="ruby">class Queue
+  extend Forwardable
+
+  def initialize
+    @q = [ ]    # prepare delegate object
+  end
+
+  # setup preferred interface, enq() and deq()...
+  def_delegator :@q, :push, :enq
+  def_delegator :@q, :shift, :deq
+
+  # support some general Array methods that fit Queues well
+  def_delegators :@q, :clear, :first, :push, :shift, :size
+end
+
+q = Thread::Queue.new
+q.enq 1, 2, 3, 4, 5
+q.push 6
+
+q.shift    # =&gt; 1
+while q.size &gt; 0
+  puts q.deq
+end
+
+q.enq "Ruby", "Perl", "Python"
+puts q.first
+q.clear
+puts q.first
+</pre> <p>This should output:</p> <pre class="ruby" data-language="ruby">2
+3
+4
+5
+6
+Ruby
+nil
+</pre> <h2 id="module-Forwardable-label-Notes"><a href="#module-Forwardable-label-Notes">Notes</a></h2> <p>Be advised, RDoc will not detect delegated methods.</p> <p><span>forwardable.rb</span> provides single-method delegation via the <a href="forwardable#method-i-def_delegator"><code>def_delegator</code></a> and <a href="forwardable#method-i-def_delegators"><code>def_delegators</code></a> methods. For full-class delegation via DelegateClass, see <span>delegate.rb</span>.</p> </section> <section id="5Buntitled-5D" class="documentation-section anchor-link"> <section class="constants-list"> <header> <h3 id="constants"><a href="#constants">Constants</a></h3> </header> <dl> <dt id="FORWARDABLE_VERSION">FORWARDABLE_VERSION</dt> <dd> <p>Version for backward compatibility</p> </dd> <dt id="VERSION">VERSION</dt> <dd> <p>Version of <span>forwardable.rb</span></p> </dd> </dl> </section> <section class="attribute-method-details method-section"> <header> <h3 id="attributes"><a href="#attributes">Attributes</a></h3> </header> <div class="method-detail anchor-link"> <div class="method-heading attribute-method-heading" id="attribute-c-debug"> <a href="#attribute-c-debug" title="Link to this attribute"> <span class="method-name">debug</span> <span class="attribute-access-type">[RW]</span> </a> </div> <div class="method-description"> <p>ignored</p> </div> </div> </section> <section id="public-instance-5Buntitled-5D-method-details" class="method-section anchor-link"> <header> <h3 id="public-instance-methods"><a href="#public-instance-methods">Public Instance Methods</a></h3> </header> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-def_delegator"> <a href="#method-i-def_delegator" title="Link to this method"> <span class="method-name">def_delegator</span> <span class="method-args">(accessor, method, ali = method)</span> </a> </div> </div>  <div class="aliases"> Alias for: <a href="forwardable#method-i-def_instance_delegator">def_instance_delegator</a> </div> </div> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-def_delegators"> <a href="#method-i-def_delegators" title="Link to this method"> <span class="method-name">def_delegators</span> <span class="method-args">(accessor, *methods)</span> </a> </div> </div>  <div class="aliases"> Alias for: <a href="forwardable#method-i-def_instance_delegators">def_instance_delegators</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="def_instance_delegator-source"> <pre class="ruby" data-language="ruby"># File lib/forwardable.rb, line 188
+def def_instance_delegator(accessor, method, ali = method)
+  gen = Forwardable._delegator_method(self, accessor, method, ali)
+
+  # If it's not a class or module, it's an instance
+  mod = Module === self ? self : singleton_class
+  mod.module_eval(&amp;gen)
+end</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-def_instance_delegator"> <a href="#method-i-def_instance_delegator" title="Link to this method"> <span class="method-name">def_instance_delegator</span> <span class="method-args">(accessor, method, ali = method)</span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Define <code>method</code> as delegator instance method with an optional alias name <code>ali</code>. Method calls to <code>ali</code> will be delegated to <code>accessor.method</code>. <code>accessor</code> should be a method name, instance variable name, or constant name. Use the full path to the constant if providing the constant name. Returns the name of the method defined.</p> <pre class="ruby" data-language="ruby">class MyQueue
+  CONST = 1
+  extend Forwardable
+  attr_reader :queue
+  def initialize
+    @queue = []
+  end
+
+  def_delegator :@queue, :push, :mypush
+  def_delegator 'MyQueue::CONST', :to_i
+end
+
+q = MyQueue.new
+q.mypush 42
+q.queue    #=&gt; [42]
+q.push 23  #=&gt; NoMethodError
+q.to_i     #=&gt; 1
+</pre> </div> <div class="aliases"> Also aliased as: <a href="forwardable#method-i-def_delegator">def_delegator</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="def_instance_delegators-source"> <pre class="ruby" data-language="ruby"># File lib/forwardable.rb, line 156
+def def_instance_delegators(accessor, *methods)
+  methods.each do |method|
+    next if /\A__(?:send|id)__\z/ =~ method
+    def_instance_delegator(accessor, method)
+  end
+end</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-def_instance_delegators"> <a href="#method-i-def_instance_delegators" title="Link to this method"> <span class="method-name">def_instance_delegators</span> <span class="method-args">(accessor, *methods)</span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Shortcut for defining multiple delegator methods, but with no provision for using a different name. The following two code samples have the same effect:</p> <pre class="ruby" data-language="ruby">def_delegators :@records, :size, :&lt;&lt;, :map
+
+def_delegator :@records, :size
+def_delegator :@records, :&lt;&lt;
+def_delegator :@records, :map
+</pre> </div> <div class="aliases"> Also aliased as: <a href="forwardable#method-i-def_delegators">def_delegators</a> </div> </div> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-delegate"> <a href="#method-i-delegate" title="Link to this method"> <span class="method-callseq"> delegate method → accessor </span> </a> </div> <div class="method-heading"> <a href="#method-i-delegate" title="Link to this method"> <span class="method-callseq"> delegate [method, method, ...] → accessor </span> </a> </div> </div>  <div class="aliases"> Alias for: <a href="forwardable#method-i-instance_delegate">instance_delegate</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="instance_delegate-source"> <pre class="ruby" data-language="ruby"># File lib/forwardable.rb, line 135
+def instance_delegate(hash)
+  hash.each do |methods, accessor|
+    unless defined?(methods.each)
+      def_instance_delegator(accessor, methods)
+    else
+      methods.each {|method| def_instance_delegator(accessor, method)}
+    end
+  end
+end</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-instance_delegate"> <a href="#method-i-instance_delegate" title="Link to this method"> <span class="method-name">instance_delegate</span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="aliases"> Also aliased as: <a href="forwardable#method-i-delegate">delegate</a> </div> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    Ruby Core © 1993–2025 Yukihiro Matsumoto<br>Licensed under the Ruby License.<br>Ruby Standard Library © contributors<br>Licensed under their own licenses.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

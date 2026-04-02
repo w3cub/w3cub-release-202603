@@ -1,0 +1,252 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Thread&#58;&#58;Queue - Ruby 4.0 - W3cubDocs</title>
+  
+  <meta name="description" content="The Thread&#58;&#58;Queue class implements multi-producer, multi-consumer queues. It is especially useful in threaded programming when information &hellip;">
+  <meta name="keywords" content="class, thread, queue, ruby, ruby~4.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ruby~4.0/thread/queue.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ruby~4.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ruby~4.0/" class="_nav-link" title="" style="margin-left:0;">Ruby 4.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rdoc">
+				
+				
+<ol role="navigation" aria-label="Breadcrumb navigation" class="breadcrumb"> <li> <a href="../thread">Thread</a><span>::</span> </li> <li> <span>Queue</span> </li> </ol> <h1 id="class-Thread::Queue" class="anchor-link class"> class Thread::Queue </h1>
+<dl class="meta">
+<dt>Parent:</dt>
+<dd class="meta-parent"><a href="../object">Object</a></dd>
+</dl> <section class="description"> <p>The <a href="queue"><code>Thread::Queue</code></a> class implements multi-producer, multi-consumer queues. It is especially useful in threaded programming when information must be exchanged safely between multiple threads. The <a href="queue"><code>Thread::Queue</code></a> class implements all the required locking semantics.</p> <p>The class implements FIFO (first in, first out) type of queue. In a FIFO queue, the first tasks added are the first retrieved.</p> <p>Example:</p> <pre class="ruby" data-language="ruby">queue = Thread::Queue.new
+
+producer = Thread.new do
+  5.times do |i|
+    sleep rand(i) # simulate expense
+    queue &lt;&lt; i
+    puts "#{i} produced"
+  end
+end
+
+consumer = Thread.new do
+  5.times do |i|
+    value = queue.pop
+    sleep rand(i/2) # simulate expense
+    puts "consumed #{value}"
+  end
+end
+
+consumer.join
+</pre> </section> <section id="5Buntitled-5D" class="documentation-section anchor-link"> <section id="public-class-5Buntitled-5D-method-details" class="method-section anchor-link"> <header> <h3 id="public-class-methods"><a href="#public-class-methods">Public Class Methods</a></h3> </header> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="new-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_initialize(int argc, VALUE *argv, VALUE self)
+{
+    VALUE initial;
+    struct rb_queue *q = queue_ptr(self);
+    if ((argc = rb_scan_args(argc, argv, "01", &amp;initial)) == 1) {
+        initial = rb_to_array(initial);
+    }
+    RB_OBJ_WRITE(self, queue_list(q), ary_buf_new());
+    ccan_list_head_init(queue_waitq(q));
+    if (argc == 1) {
+        rb_ary_concat(q-&gt;que, initial);
+    }
+    return self;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-c-new"> <a href="#method-c-new" title="Link to this method"> <span class="method-callseq"> Thread::Queue.new → empty_queue </span> </a> <a class="method-click-advice">Show source</a>
+</div> <div class="method-heading"> <a href="#method-c-new" title="Link to this method"> <span class="method-callseq"> Thread::Queue.new(enumerable) → queue </span> </a> </div> </div>   <div class="method-description"> <p>Creates a new queue instance, optionally using the contents of an <code>enumerable</code> for its initial state.</p> <p>Example:</p> <pre class="ruby" data-language="ruby">q = Thread::Queue.new
+#=&gt; #&lt;Thread::Queue:0x00007ff7501110d0&gt;
+q.empty?
+#=&gt; true
+
+q = Thread::Queue.new([1, 2, 3])
+#=&gt; #&lt;Thread::Queue:0x00007ff7500ec500&gt;
+q.empty?
+#=&gt; false
+q.pop
+#=&gt; 1
+</pre> </div> </div> </section> <section id="public-instance-5Buntitled-5D-method-details" class="method-section anchor-link"> <header> <h3 id="public-instance-methods"><a href="#public-instance-methods">Public Instance Methods</a></h3> </header> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-3C-3C"> <a href="#method-i-3C-3C" title="Link to this method"> <span class="method-callseq"> &lt;&lt;(object) </span> </a> </div> </div> <div class="method-description"> <p>Pushes the given <code>object</code> to the queue.</p> </div> <div class="aliases"> Alias for: <a href="queue#method-i-push">push</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="clear-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_clear(VALUE self)
+{
+    struct rb_queue *q = queue_ptr(self);
+
+    rb_ary_clear(check_array(self, q-&gt;que));
+    return self;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-clear"> <a href="#method-i-clear" title="Link to this method"> <span class="method-name">clear</span> <span class="method-args">()</span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Removes all objects from the queue.</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="close-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_close(VALUE self)
+{
+    struct rb_queue *q = queue_ptr(self);
+
+    if (!queue_closed_p(self)) {
+        FL_SET(self, QUEUE_CLOSED);
+
+        wakeup_all(queue_waitq(q));
+    }
+
+    return self;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-close"> <a href="#method-i-close" title="Link to this method"> <span class="method-callseq"> close </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Closes the queue. A closed queue cannot be re-opened.</p> <p>After the call to close completes, the following are true:</p> <ul>
+<li> <p><code>closed?</code> will return true</p> </li>
+<li> <p><code>close</code> will be ignored.</p> </li>
+<li> <p>calling enq/push/&lt;&lt; will raise a <a href="../closedqueueerror"><code>ClosedQueueError</code></a>.</p> </li>
+<li> <p>when <code>empty?</code> is false, calling deq/pop/shift will return an object from the queue as usual.</p> </li>
+<li> <p>when <code>empty?</code> is true, deq(false) will not suspend the thread and will return nil. deq(true) will raise a <a href="../threaderror"><code>ThreadError</code></a>.</p> </li>
+</ul> <p><a href="../closedqueueerror"><code>ClosedQueueError</code></a> is inherited from <a href="../stopiteration"><code>StopIteration</code></a>, so that you can break loop block.</p> <p>Example:</p> <pre class="ruby" data-language="ruby">q = Thread::Queue.new
+Thread.new{
+  while e = q.deq # wait for nil to break loop
+    # ...
+  end
+}
+q.close
+</pre> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="closed-3F-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_closed_p(VALUE self)
+{
+    return RBOOL(queue_closed_p(self));
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-closed-3F"> <a href="#method-i-closed-3F" title="Link to this method"> <span class="method-callseq"> closed? </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns <code>true</code> if the queue is closed.</p> </div> </div> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-deq"> <a href="#method-i-deq" title="Link to this method"> <span class="method-name">deq</span> </a> </div> </div> <div class="aliases"> Alias for: <a href="queue#method-i-pop">pop</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="empty-3F-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_empty_p(VALUE self)
+{
+    return RBOOL(queue_length(self, queue_ptr(self)) == 0);
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-empty-3F"> <a href="#method-i-empty-3F" title="Link to this method"> <span class="method-callseq"> empty? </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns <code>true</code> if the queue is empty.</p> </div> </div> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-enq"> <a href="#method-i-enq" title="Link to this method"> <span class="method-callseq"> enq(object) </span> </a> </div> </div> <div class="method-description"> <p>Pushes the given <code>object</code> to the queue.</p> </div> <div class="aliases"> Alias for: <a href="queue#method-i-push">push</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="freeze-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_freeze(VALUE self)
+{
+    rb_raise(rb_eTypeError, "cannot freeze " "%+"PRIsVALUE, self);
+    UNREACHABLE_RETURN(self);
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-freeze"> <a href="#method-i-freeze" title="Link to this method"> <span class="method-callseq"> freeze </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>The queue can’t be frozen, so this method raises an exception:</p> <pre class="ruby" data-language="ruby">Thread::Queue.new.freeze # Raises TypeError (cannot freeze #&lt;Thread::Queue:0x...&gt;)
+</pre> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="length-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_length(VALUE self)
+{
+    return LONG2NUM(queue_length(self, queue_ptr(self)));
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-length"> <a href="#method-i-length" title="Link to this method"> <span class="method-callseq"> length </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the length of the queue.</p> </div> <div class="aliases"> Also aliased as: <a href="queue#method-i-size">size</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="num_waiting-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_num_waiting(VALUE self)
+{
+    struct rb_queue *q = queue_ptr(self);
+
+    return INT2NUM(q-&gt;num_waiting);
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-num_waiting"> <a href="#method-i-num_waiting" title="Link to this method"> <span class="method-name">num_waiting</span> <span class="method-args">()</span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the number of threads waiting on the queue.</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="pop-source"> <pre class="ruby" data-language="ruby"># File thread_sync.rb, line 16
+def pop(non_block = false, timeout: nil)
+  if non_block &amp;&amp; timeout
+    raise ArgumentError, "can't set a timeout if non_block is enabled"
+  end
+  Primitive.rb_queue_pop(non_block, timeout)
+end</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-pop"> <a href="#method-i-pop" title="Link to this method"> <span class="method-callseq"> pop(non_block=false, timeout: nil) </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Retrieves data from the queue.</p> <p>If the queue is empty, the calling thread is suspended until data is pushed onto the queue. If <code>non_block</code> is true, the thread isn’t suspended, and <a href="../threaderror"><code>ThreadError</code></a> is raised.</p> <p>If <code>timeout</code> seconds have passed and no data is available <code>nil</code> is returned. If <code>timeout</code> is <code>0</code> it returns immediately.</p> </div> <div class="aliases"> Also aliased as: <a href="queue#method-i-deq">deq</a>, <a href="queue#method-i-shift">shift</a> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="push-source"> <pre class="c" data-language="c">static VALUE
+rb_queue_push(VALUE self, VALUE obj)
+{
+    return queue_do_push(self, queue_ptr(self), obj);
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-push"> <a href="#method-i-push" title="Link to this method"> <span class="method-callseq"> push(object) </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Pushes the given <code>object</code> to the queue.</p> </div> <div class="aliases"> Also aliased as: <a href="queue#method-i-enq">enq</a>, <a href="queue#method-i-3C-3C">&lt;&lt;</a> </div> </div> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-shift"> <a href="#method-i-shift" title="Link to this method"> <span class="method-name">shift</span> </a> </div> </div> <div class="aliases"> Alias for: <a href="queue#method-i-pop">pop</a> </div> </div> <div class="method-detail anchor-link method-alias"> <div class="method-header"> <div class="method-heading" id="method-i-size"> <a href="#method-i-size" title="Link to this method"> <span class="method-callseq"> size </span> </a> </div> </div> <div class="method-description"> <p>Returns the length of the queue.</p> </div> <div class="aliases"> Alias for: <a href="queue#method-i-length">length</a> </div> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    Ruby Core © 1993–2025 Yukihiro Matsumoto<br>Licensed under the Ruby License.<br>Ruby Standard Library © contributors<br>Licensed under their own licenses.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

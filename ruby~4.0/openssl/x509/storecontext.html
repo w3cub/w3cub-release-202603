@@ -1,0 +1,314 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>OpenSSL&#58;&#58;X509&#58;&#58;StoreContext - Ruby 4.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" A StoreContext is used while validating a single certificate and holds the status involved. ">
+  <meta name="keywords" content="class, openssl, x, storecontext, ruby, ruby~4.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ruby~4.0/openssl/x509/storecontext.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ruby~4.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ruby~4.0/" class="_nav-link" title="" style="margin-left:0;">Ruby 4.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rdoc">
+				
+				
+<ol role="navigation" aria-label="Breadcrumb navigation" class="breadcrumb"> <li> <a href="../../openssl">OpenSSL</a><span>::</span> </li> <li> <span>X509</span><span>::</span> </li> <li> <span>StoreContext</span> </li> </ol> <h1 id="class-OpenSSL::X509::StoreContext" class="anchor-link class"> class OpenSSL::X509::StoreContext </h1>
+<dl class="meta">
+<dt>Parent:</dt>
+<dd class="meta-parent"><a href="../../object">Object</a></dd>
+</dl> <section class="description"> <p>A <a href="storecontext"><code>StoreContext</code></a> is used while validating a single certificate and holds the status involved.</p> </section> <section id="5Buntitled-5D" class="documentation-section anchor-link"> <section id="public-class-5Buntitled-5D-method-details" class="method-section anchor-link"> <header> <h3 id="public-class-methods"><a href="#public-class-methods">Public Class Methods</a></h3> </header> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="new-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_initialize(int argc, VALUE *argv, VALUE self)
+{
+    VALUE store, cert, chain;
+    X509_STORE_CTX *ctx;
+    X509_STORE *x509st;
+    X509 *x509 = NULL;
+    STACK_OF(X509) *x509s = NULL;
+    int state;
+
+    rb_scan_args(argc, argv, "12", &amp;store, &amp;cert, &amp;chain);
+    GetX509StCtx(self, ctx);
+    GetX509Store(store, x509st);
+    if (!NIL_P(cert))
+        x509 = DupX509CertPtr(cert); /* NEED TO DUP */
+    if (!NIL_P(chain)) {
+        x509s = ossl_protect_x509_ary2sk(chain, &amp;state);
+        if (state) {
+            X509_free(x509);
+            rb_jump_tag(state);
+        }
+    }
+    if (X509_STORE_CTX_init(ctx, x509st, x509, x509s) != 1){
+        X509_free(x509);
+        sk_X509_pop_free(x509s, X509_free);
+        ossl_raise(eX509StoreError, "X509_STORE_CTX_init");
+    }
+    rb_iv_set(self, "@verify_callback", rb_iv_get(store, "@verify_callback"));
+    rb_iv_set(self, "@cert", cert);
+
+    return self;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-c-new"> <a href="#method-c-new" title="Link to this method"> <span class="method-callseq"> new(store, cert = nil, untrusted = nil) </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Sets up a <a href="storecontext"><code>StoreContext</code></a> for a verification of the X.509 certificate <em>cert</em>.</p> </div> </div> </section> <section id="public-instance-5Buntitled-5D-method-details" class="method-section anchor-link"> <header> <h3 id="public-instance-methods"><a href="#public-instance-methods">Public Instance Methods</a></h3> </header> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="chain-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_get_chain(VALUE self)
+{
+    X509_STORE_CTX *ctx;
+    const STACK_OF(X509) *chain;
+
+    GetX509StCtx(self, ctx);
+    chain = X509_STORE_CTX_get0_chain(ctx);
+    if (!chain)
+        return Qnil; /* Could be an empty array instead? */
+    return ossl_x509_sk2ary(chain);
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-chain"> <a href="#method-i-chain" title="Link to this method"> <span class="method-callseq"> chain → nil | Array of X509::Certificate </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the verified chain.</p> <p>See also the man page X509_STORE_CTX_set0_verified_chain(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="cleanup-source"> <pre class="ruby" data-language="ruby"># File ext/openssl/lib/openssl/x509.rb, line 337
+def cleanup
+  warn "(#{caller.first}) OpenSSL::X509::StoreContext#cleanup is deprecated with no replacement" if $VERBOSE
+end</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-cleanup"> <a href="#method-i-cleanup" title="Link to this method"> <span class="method-name">cleanup</span> <span class="method-args">()</span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>    </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="current_cert-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_get_curr_cert(VALUE self)
+{
+    X509_STORE_CTX *ctx;
+    X509 *x509;
+
+    GetX509StCtx(self, ctx);
+    x509 = X509_STORE_CTX_get_current_cert(ctx);
+    if (!x509)
+        return Qnil;
+
+    return ossl_x509_new(x509);
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-current_cert"> <a href="#method-i-current_cert" title="Link to this method"> <span class="method-callseq"> current_cert → X509::Certificate </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the certificate which caused the error.</p> <p>See also the man page X509_STORE_CTX_get_current_cert(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="current_crl-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_get_curr_crl(VALUE self)
+{
+    X509_STORE_CTX *ctx;
+    X509_CRL *crl;
+
+    GetX509StCtx(self, ctx);
+    crl = X509_STORE_CTX_get0_current_crl(ctx);
+    if (!crl)
+        return Qnil;
+
+    return ossl_x509crl_new(crl);
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-current_crl"> <a href="#method-i-current_crl" title="Link to this method"> <span class="method-callseq"> current_crl → X509::CRL </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the <a href="crl"><code>CRL</code></a> which caused the error.</p> <p>See also the man page X509_STORE_CTX_get_current_crl(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="error-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_get_err(VALUE self)
+{
+    X509_STORE_CTX *ctx;
+
+    GetX509StCtx(self, ctx);
+
+    return INT2NUM(X509_STORE_CTX_get_error(ctx));
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-error"> <a href="#method-i-error" title="Link to this method"> <span class="method-callseq"> error → Integer </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the error code of <em>stctx</em>. This is typically called after <a href="storecontext#method-i-verify"><code>verify</code></a> is done, or from the verification callback set to <a href="store#method-i-verify_callback-3D"><code>OpenSSL::X509::Store#verify_callback=</code></a>.</p> <p>See also the man page X509_STORE_CTX_get_error(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="error-3D-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_set_error(VALUE self, VALUE err)
+{
+    X509_STORE_CTX *ctx;
+
+    GetX509StCtx(self, ctx);
+    X509_STORE_CTX_set_error(ctx, NUM2INT(err));
+
+    return err;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-error-3D"> <a href="#method-i-error-3D" title="Link to this method"> <span class="method-callseq"> error = error_code </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Sets the error code of <em>stctx</em>. This is used by the verification callback set to <a href="store#method-i-verify_callback-3D"><code>OpenSSL::X509::Store#verify_callback=</code></a>.</p> <p>See also the man page X509_STORE_CTX_set_error(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="error_depth-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_get_err_depth(VALUE self)
+{
+    X509_STORE_CTX *ctx;
+
+    GetX509StCtx(self, ctx);
+
+    return INT2NUM(X509_STORE_CTX_get_error_depth(ctx));
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-error_depth"> <a href="#method-i-error_depth" title="Link to this method"> <span class="method-callseq"> error_depth → Integer </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the depth of the chain. This is used in combination with <a href="storecontext#method-i-error"><code>error</code></a>.</p> <p>See also the man page X509_STORE_CTX_get_error_depth(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="error_string-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_get_err_string(VALUE self)
+{
+    X509_STORE_CTX *ctx;
+    long err;
+
+    GetX509StCtx(self, ctx);
+    err = X509_STORE_CTX_get_error(ctx);
+
+    return rb_str_new2(X509_verify_cert_error_string(err));
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-error_string"> <a href="#method-i-error_string" title="Link to this method"> <span class="method-callseq"> error_string → String </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Returns the human readable error string corresponding to the error code retrieved by <a href="storecontext#method-i-error"><code>error</code></a>.</p> <p>See also the man page X509_verify_cert_error_string(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="flags-3D-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_set_flags(VALUE self, VALUE flags)
+{
+    X509_STORE_CTX *store;
+    long f = NUM2LONG(flags);
+
+    GetX509StCtx(self, store);
+    X509_STORE_CTX_set_flags(store, f);
+
+    return flags;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-flags-3D"> <a href="#method-i-flags-3D" title="Link to this method"> <span class="method-callseq"> flags = flags </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Sets the verification flags to the context. This overrides the default value set by <a href="store#method-i-flags-3D"><code>Store#flags=</code></a>.</p> <p>See also the man page X509_VERIFY_PARAM_set_flags(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="purpose-3D-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_set_purpose(VALUE self, VALUE purpose)
+{
+    X509_STORE_CTX *store;
+    int p = NUM2INT(purpose);
+
+    GetX509StCtx(self, store);
+    X509_STORE_CTX_set_purpose(store, p);
+
+    return purpose;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-purpose-3D"> <a href="#method-i-purpose-3D" title="Link to this method"> <span class="method-callseq"> purpose = purpose </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Sets the purpose of the context. This overrides the default value set by <a href="store#method-i-purpose-3D"><code>Store#purpose=</code></a>.</p> <p>See also the man page X509_VERIFY_PARAM_set_purpose(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="time-3D-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_set_time(VALUE self, VALUE time)
+{
+    X509_STORE_CTX *store;
+    long t;
+
+    t = NUM2LONG(rb_Integer(time));
+    GetX509StCtx(self, store);
+    X509_STORE_CTX_set_time(store, 0, t);
+
+    return time;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-time-3D"> <a href="#method-i-time-3D" title="Link to this method"> <span class="method-callseq"> time = time </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Sets the time used in the verification. If not set, the current time is used.</p> <p>See also the man page X509_VERIFY_PARAM_set_time(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="trust-3D-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_set_trust(VALUE self, VALUE trust)
+{
+    X509_STORE_CTX *store;
+    int t = NUM2INT(trust);
+
+    GetX509StCtx(self, store);
+    X509_STORE_CTX_set_trust(store, t);
+
+    return trust;
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-trust-3D"> <a href="#method-i-trust-3D" title="Link to this method"> <span class="method-callseq"> trust = trust </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Sets the trust settings of the context. This overrides the default value set by <a href="store#method-i-trust-3D"><code>Store#trust=</code></a>.</p> <p>See also the man page X509_VERIFY_PARAM_set_trust(3).</p> </div> </div> <div class="method-detail anchor-link ">
+<div class="method-source-code" id="verify-source"> <pre class="c" data-language="c">static VALUE
+ossl_x509stctx_verify(VALUE self)
+{
+    X509_STORE_CTX *ctx;
+
+    GetX509StCtx(self, ctx);
+    VALUE cb = rb_iv_get(self, "@verify_callback");
+    X509_STORE_CTX_set_ex_data(ctx, stctx_ex_verify_cb_idx, (void *)cb);
+    RB_OBJ_WRITTEN(self, Qundef, cb);
+
+    switch (X509_verify_cert(ctx)) {
+      case 1:
+        return Qtrue;
+      case 0:
+        ossl_clear_error();
+        return Qfalse;
+      default:
+        ossl_raise(eX509StoreError, "X509_verify_cert");
+    }
+}</pre> </div> <div class="method-header"> <div class="method-heading" id="method-i-verify"> <a href="#method-i-verify" title="Link to this method"> <span class="method-callseq"> verify → true | false </span> </a> <a class="method-click-advice">Show source</a>
+</div> </div>   <div class="method-description"> <p>Performs the certificate verification using the parameters set to <em>stctx</em>.</p> <p>See also the man page X509_verify_cert(3).</p> </div> </div> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    Ruby Core © 1993–2025 Yukihiro Matsumoto<br>Licensed under the Ruby License.<br>Ruby Standard Library © contributors<br>Licensed under their own licenses.<br>
+    
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
