@@ -1,0 +1,368 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Edit_user( Int &#36;user_id )&#58; int|WP_Error - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Edit user settings based on contents of &#36;_POST ">
+  <meta name="keywords" content="edit, user, int, &#36;user, id, int|wp, error, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/edit_user.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">edit_user( <span class="arg-type">int</span> <span class="arg-name">$user_id</span> ): <span class="return-type">int|<a href="../classes/wp_error" rel="class">WP_Error</a></span>
+</h1> <section><p>Edit user settings based on contents of $_POST</p> </section> <section><h2 id="description">Description</h2> <p>Used on user-edit.php and profile.php to manage and process user options, passwords etc.</p> </section> <section><h2 id="parameters">Parameters</h2> <dl>
+<dt>
+<code>$user_id</code><span class="type"><span class="int">int</span></span><span class="required">optional</span>
+</dt>
+<dd><div class="desc"><span class="description">User ID.</span></div></dd>
+</dl></section> <section><h2 id="return">Return</h2> <span class="return-type">int|<a href="../classes/wp_error" rel="class">WP_Error</a></span> User ID of the updated user or <a href="../classes/wp_error" rel="class">WP_Error</a> on failure.</section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="30" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function edit_user( $user_id = 0 ) {
+	$wp_roles = wp_roles();
+	$user     = new stdClass();
+	$user_id  = (int) $user_id;
+	if ( $user_id ) {
+		$update           = true;
+		$user-&gt;ID         = $user_id;
+		$userdata         = get_userdata( $user_id );
+		$user-&gt;user_login = wp_slash( $userdata-&gt;user_login );
+	} else {
+		$update = false;
+	}
+
+	if ( ! $update &amp;&amp; isset( $_POST['user_login'] ) ) {
+		$user-&gt;user_login = sanitize_user( wp_unslash( $_POST['user_login'] ), true );
+	}
+
+	$pass1 = '';
+	$pass2 = '';
+	if ( isset( $_POST['pass1'] ) ) {
+		$pass1 = trim( $_POST['pass1'] );
+	}
+	if ( isset( $_POST['pass2'] ) ) {
+		$pass2 = trim( $_POST['pass2'] );
+	}
+
+	if ( isset( $_POST['role'] ) &amp;&amp; current_user_can( 'promote_users' ) &amp;&amp; ( ! $user_id || current_user_can( 'promote_user', $user_id ) ) ) {
+		$new_role = sanitize_text_field( $_POST['role'] );
+
+		// If the new role isn't editable by the logged-in user die with error.
+		$editable_roles = get_editable_roles();
+		if ( ! empty( $new_role ) &amp;&amp; empty( $editable_roles[ $new_role ] ) ) {
+			wp_die( __( 'Sorry, you are not allowed to give users that role.' ), 403 );
+		}
+
+		$potential_role = isset( $wp_roles-&gt;role_objects[ $new_role ] ) ? $wp_roles-&gt;role_objects[ $new_role ] : false;
+
+		/*
+		 * Don't let anyone with 'promote_users' edit their own role to something without it.
+		 * Multisite super admins can freely edit their roles, they possess all caps.
+		 */
+		if (
+			( is_multisite() &amp;&amp; current_user_can( 'manage_network_users' ) ) ||
+			get_current_user_id() !== $user_id ||
+			( $potential_role &amp;&amp; $potential_role-&gt;has_cap( 'promote_users' ) )
+		) {
+			$user-&gt;role = $new_role;
+		}
+	}
+
+	if ( isset( $_POST['email'] ) ) {
+		$user-&gt;user_email = sanitize_text_field( wp_unslash( $_POST['email'] ) );
+	}
+	if ( isset( $_POST['url'] ) ) {
+		if ( empty( $_POST['url'] ) || 'http://' === $_POST['url'] ) {
+			$user-&gt;user_url = '';
+		} else {
+			$user-&gt;user_url = sanitize_url( $_POST['url'] );
+			$protocols      = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
+			$user-&gt;user_url = preg_match( '/^(' . $protocols . '):/is', $user-&gt;user_url ) ? $user-&gt;user_url : 'http://' . $user-&gt;user_url;
+		}
+	}
+	if ( isset( $_POST['first_name'] ) ) {
+		$user-&gt;first_name = sanitize_text_field( $_POST['first_name'] );
+	}
+	if ( isset( $_POST['last_name'] ) ) {
+		$user-&gt;last_name = sanitize_text_field( $_POST['last_name'] );
+	}
+	if ( isset( $_POST['nickname'] ) ) {
+		$user-&gt;nickname = sanitize_text_field( $_POST['nickname'] );
+	}
+	if ( isset( $_POST['display_name'] ) ) {
+		$user-&gt;display_name = sanitize_text_field( $_POST['display_name'] );
+	}
+
+	if ( isset( $_POST['description'] ) ) {
+		$user-&gt;description = trim( $_POST['description'] );
+	}
+
+	foreach ( wp_get_user_contact_methods( $user ) as $method =&gt; $name ) {
+		if ( isset( $_POST[ $method ] ) ) {
+			$user-&gt;$method = sanitize_text_field( $_POST[ $method ] );
+		}
+	}
+
+	if ( isset( $_POST['locale'] ) ) {
+		$locale = sanitize_text_field( $_POST['locale'] );
+		if ( 'site-default' === $locale ) {
+			$locale = '';
+		} elseif ( '' === $locale ) {
+			$locale = 'en_US';
+		} elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
+			if ( current_user_can( 'install_languages' ) &amp;&amp; wp_can_install_language_pack() ) {
+				if ( ! wp_download_language_pack( $locale ) ) {
+					$locale = '';
+				}
+			} else {
+				$locale = '';
+			}
+		}
+
+		$user-&gt;locale = $locale;
+	}
+
+	if ( $update ) {
+		$user-&gt;rich_editing         = isset( $_POST['rich_editing'] ) &amp;&amp; 'false' === $_POST['rich_editing'] ? 'false' : 'true';
+		$user-&gt;syntax_highlighting  = isset( $_POST['syntax_highlighting'] ) &amp;&amp; 'false' === $_POST['syntax_highlighting'] ? 'false' : 'true';
+		$user-&gt;admin_color          = isset( $_POST['admin_color'] ) ? sanitize_text_field( $_POST['admin_color'] ) : 'fresh';
+		$user-&gt;show_admin_bar_front = isset( $_POST['admin_bar_front'] ) ? 'true' : 'false';
+	}
+
+	$user-&gt;comment_shortcuts = isset( $_POST['comment_shortcuts'] ) &amp;&amp; 'true' === $_POST['comment_shortcuts'] ? 'true' : '';
+
+	$user-&gt;use_ssl = 0;
+	if ( ! empty( $_POST['use_ssl'] ) ) {
+		$user-&gt;use_ssl = 1;
+	}
+
+	$errors = new WP_Error();
+
+	/* checking that username has been typed */
+	if ( '' === $user-&gt;user_login ) {
+		$errors-&gt;add( 'user_login', __( '&lt;strong&gt;Error:&lt;/strong&gt; Please enter a username.' ) );
+	}
+
+	/* checking that nickname has been typed */
+	if ( $update &amp;&amp; empty( $user-&gt;nickname ) ) {
+		$errors-&gt;add( 'nickname', __( '&lt;strong&gt;Error:&lt;/strong&gt; Please enter a nickname.' ) );
+	}
+
+	/**
+	 * Fires before the password and confirm password fields are checked for congruity.
+	 *
+	 * @since 1.5.1
+	 *
+	 * @param string $user_login The username.
+	 * @param string $pass1     The password (passed by reference).
+	 * @param string $pass2     The confirmed password (passed by reference).
+	 */
+	do_action_ref_array( 'check_passwords', array( $user-&gt;user_login, &amp;$pass1, &amp;$pass2 ) );
+
+	// Check for blank password when adding a user.
+	if ( ! $update &amp;&amp; empty( $pass1 ) ) {
+		$errors-&gt;add( 'pass', __( '&lt;strong&gt;Error:&lt;/strong&gt; Please enter a password.' ), array( 'form-field' =&gt; 'pass1' ) );
+	}
+
+	// Check for "\" in password.
+	if ( str_contains( wp_unslash( $pass1 ), '\\' ) ) {
+		$errors-&gt;add( 'pass', __( '&lt;strong&gt;Error:&lt;/strong&gt; Passwords may not contain the character "\\".' ), array( 'form-field' =&gt; 'pass1' ) );
+	}
+
+	// Checking the password has been typed twice the same.
+	if ( ( $update || ! empty( $pass1 ) ) &amp;&amp; $pass1 !== $pass2 ) {
+		$errors-&gt;add( 'pass', __( '&lt;strong&gt;Error:&lt;/strong&gt; Passwords do not match. Please enter the same password in both password fields.' ), array( 'form-field' =&gt; 'pass1' ) );
+	}
+
+	if ( ! empty( $pass1 ) ) {
+		$user-&gt;user_pass = $pass1;
+	}
+
+	if ( ! $update &amp;&amp; isset( $_POST['user_login'] ) &amp;&amp; ! validate_username( $_POST['user_login'] ) ) {
+		$errors-&gt;add( 'user_login', __( '&lt;strong&gt;Error:&lt;/strong&gt; This username is invalid because it uses illegal characters. Please enter a valid username.' ) );
+	}
+
+	if ( ! $update &amp;&amp; username_exists( $user-&gt;user_login ) ) {
+		$errors-&gt;add( 'user_login', __( '&lt;strong&gt;Error:&lt;/strong&gt; This username is already registered. Please choose another one.' ) );
+	}
+
+	/** This filter is documented in wp-includes/user.php */
+	$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
+
+	if ( in_array( strtolower( $user-&gt;user_login ), array_map( 'strtolower', $illegal_logins ), true ) ) {
+		$errors-&gt;add( 'invalid_username', __( '&lt;strong&gt;Error:&lt;/strong&gt; Sorry, that username is not allowed.' ) );
+	}
+
+	// Checking email address.
+	if ( empty( $user-&gt;user_email ) ) {
+		$errors-&gt;add( 'empty_email', __( '&lt;strong&gt;Error:&lt;/strong&gt; Please enter an email address.' ), array( 'form-field' =&gt; 'email' ) );
+	} elseif ( ! is_email( $user-&gt;user_email ) ) {
+		$errors-&gt;add( 'invalid_email', __( '&lt;strong&gt;Error:&lt;/strong&gt; The email address is not correct.' ), array( 'form-field' =&gt; 'email' ) );
+	} else {
+		$owner_id = email_exists( $user-&gt;user_email );
+		if ( $owner_id &amp;&amp; ( ! $update || ( $owner_id !== $user-&gt;ID ) ) ) {
+			$errors-&gt;add( 'email_exists', __( '&lt;strong&gt;Error:&lt;/strong&gt; This email is already registered. Please choose another one.' ), array( 'form-field' =&gt; 'email' ) );
+		}
+	}
+
+	/**
+	 * Fires before user profile update errors are returned.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param WP_Error $errors WP_Error object (passed by reference).
+	 * @param bool     $update Whether this is a user update.
+	 * @param stdClass $user   User object (passed by reference).
+	 */
+	do_action_ref_array( 'user_profile_update_errors', array( &amp;$errors, $update, &amp;$user ) );
+
+	if ( $errors-&gt;has_errors() ) {
+		return $errors;
+	}
+
+	if ( $update ) {
+		$user_id = wp_update_user( $user );
+	} else {
+		$user_id = wp_insert_user( $user );
+		$notify  = isset( $_POST['send_user_notification'] ) ? 'both' : 'admin';
+
+		/**
+		 * Fires after a new user has been created.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param int|WP_Error $user_id ID of the newly created user or WP_Error on failure.
+		 * @param string       $notify  Type of notification that should happen. See
+		 *                              wp_send_new_user_notifications() for more information.
+		 */
+		do_action( 'edit_user_created_user', $user_id, $notify );
+	}
+	return $user_id;
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-admin/includes/user.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-admin/includes/user.php#L30">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-admin/includes/user.php#L30-L250">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/check_passwords"><span class="hook-func">do_action_ref_array</span>( ‘check_passwords’, <nobr><span class="arg-type">string</span> <span class="arg-name">$user_login</span></nobr>, <nobr><span class="arg-type">string</span> <span class="arg-name">$pass1</span></nobr>, <nobr><span class="arg-type">string</span> <span class="arg-name">$pass2</span></nobr> )</a></dt>
+<dd>
+<p>Fires before the password and confirm password fields are checked for congruity.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/edit_user_created_user"><span class="hook-func">do_action</span>( ‘edit_user_created_user’, <nobr><span class="arg-type">int|WP_Error</span> <span class="arg-name">$user_id</span></nobr>, <nobr><span class="arg-type">string</span> <span class="arg-name">$notify</span></nobr> )</a></dt>
+<dd>
+<p>Fires after a new user has been created.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/illegal_user_logins"><span class="hook-func">apply_filters</span>( ‘illegal_user_logins’, <nobr><span class="arg-type">array</span> <span class="arg-name">$usernames</span></nobr> )</a></dt>
+<dd>
+<p>Filters the list of disallowed usernames.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/user_profile_update_errors"><span class="hook-func">do_action_ref_array</span>( ‘user_profile_update_errors’, <nobr><span class="arg-type">WP_Error</span> <span class="arg-name">$errors</span></nobr>, <nobr><span class="arg-type">bool</span> <span class="arg-name">$update</span></nobr>, <nobr><span class="arg-type">stdClass</span> <span class="arg-name">$user</span></nobr> )</a></dt>
+<dd>
+<p>Fires before user profile update errors are returned.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/2.0.0/">2.0.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/edit_user" class="_attribution-link">https://developer.wordpress.org/reference/functions/edit_user</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

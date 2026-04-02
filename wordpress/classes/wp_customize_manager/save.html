@@ -1,0 +1,327 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WP_Customize_Manager&#58;&#58;save() - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Handles customize_save WP Ajax request to save&#47;update a changeset. ">
+  <meta name="keywords" content="wp, customize, manager, save, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/classes/wp_customize_manager/save.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">WP_Customize_Manager::save()</h1> <section><p>Handles customize_save WP Ajax request to save/update a changeset.</p> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="2430" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">public function save() {
+	if ( ! is_user_logged_in() ) {
+		wp_send_json_error( 'unauthenticated' );
+	}
+
+	if ( ! $this-&gt;is_preview() ) {
+		wp_send_json_error( 'not_preview' );
+	}
+
+	$action = 'save-customize_' . $this-&gt;get_stylesheet();
+	if ( ! check_ajax_referer( $action, 'nonce', false ) ) {
+		wp_send_json_error( 'invalid_nonce' );
+	}
+
+	$changeset_post_id = $this-&gt;changeset_post_id();
+	$is_new_changeset  = empty( $changeset_post_id );
+	if ( $is_new_changeset ) {
+		if ( ! current_user_can( get_post_type_object( 'customize_changeset' )-&gt;cap-&gt;create_posts ) ) {
+			wp_send_json_error( 'cannot_create_changeset_post' );
+		}
+	} else {
+		if ( ! current_user_can( get_post_type_object( 'customize_changeset' )-&gt;cap-&gt;edit_post, $changeset_post_id ) ) {
+			wp_send_json_error( 'cannot_edit_changeset_post' );
+		}
+	}
+
+	if ( ! empty( $_POST['customize_changeset_data'] ) ) {
+		$input_changeset_data = json_decode( wp_unslash( $_POST['customize_changeset_data'] ), true );
+		if ( ! is_array( $input_changeset_data ) ) {
+			wp_send_json_error( 'invalid_customize_changeset_data' );
+		}
+	} else {
+		$input_changeset_data = array();
+	}
+
+	// Validate title.
+	$changeset_title = null;
+	if ( isset( $_POST['customize_changeset_title'] ) ) {
+		$changeset_title = sanitize_text_field( wp_unslash( $_POST['customize_changeset_title'] ) );
+	}
+
+	// Validate changeset status param.
+	$is_publish       = null;
+	$changeset_status = null;
+	if ( isset( $_POST['customize_changeset_status'] ) ) {
+		$changeset_status = wp_unslash( $_POST['customize_changeset_status'] );
+		if ( ! get_post_status_object( $changeset_status ) || ! in_array( $changeset_status, array( 'draft', 'pending', 'publish', 'future' ), true ) ) {
+			wp_send_json_error( 'bad_customize_changeset_status', 400 );
+		}
+		$is_publish = ( 'publish' === $changeset_status || 'future' === $changeset_status );
+		if ( $is_publish &amp;&amp; ! current_user_can( get_post_type_object( 'customize_changeset' )-&gt;cap-&gt;publish_posts ) ) {
+			wp_send_json_error( 'changeset_publish_unauthorized', 403 );
+		}
+	}
+
+	/*
+	 * Validate changeset date param. Date is assumed to be in local time for
+	 * the WP if in MySQL format (YYYY-MM-DD HH:MM:SS). Otherwise, the date
+	 * is parsed with strtotime() so that ISO date format may be supplied
+	 * or a string like "+10 minutes".
+	 */
+	$changeset_date_gmt = null;
+	if ( isset( $_POST['customize_changeset_date'] ) ) {
+		$changeset_date = wp_unslash( $_POST['customize_changeset_date'] );
+		if ( preg_match( '/^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d$/', $changeset_date ) ) {
+			$mm         = substr( $changeset_date, 5, 2 );
+			$jj         = substr( $changeset_date, 8, 2 );
+			$aa         = substr( $changeset_date, 0, 4 );
+			$valid_date = wp_checkdate( $mm, $jj, $aa, $changeset_date );
+			if ( ! $valid_date ) {
+				wp_send_json_error( 'bad_customize_changeset_date', 400 );
+			}
+			$changeset_date_gmt = get_gmt_from_date( $changeset_date );
+		} else {
+			$timestamp = strtotime( $changeset_date );
+			if ( ! $timestamp ) {
+				wp_send_json_error( 'bad_customize_changeset_date', 400 );
+			}
+			$changeset_date_gmt = gmdate( 'Y-m-d H:i:s', $timestamp );
+		}
+	}
+
+	$lock_user_id = null;
+	$autosave     = ! empty( $_POST['customize_changeset_autosave'] );
+	if ( ! $is_new_changeset ) {
+		$lock_user_id = wp_check_post_lock( $this-&gt;changeset_post_id() );
+	}
+
+	// Force request to autosave when changeset is locked.
+	if ( $lock_user_id &amp;&amp; ! $autosave ) {
+		$autosave           = true;
+		$changeset_status   = null;
+		$changeset_date_gmt = null;
+	}
+
+	if ( $autosave &amp;&amp; ! defined( 'DOING_AUTOSAVE' ) ) { // Back-compat.
+		define( 'DOING_AUTOSAVE', true );
+	}
+
+	$autosaved = false;
+	$r         = $this-&gt;save_changeset_post(
+		array(
+			'status'   =&gt; $changeset_status,
+			'title'    =&gt; $changeset_title,
+			'date_gmt' =&gt; $changeset_date_gmt,
+			'data'     =&gt; $input_changeset_data,
+			'autosave' =&gt; $autosave,
+		)
+	);
+	if ( $autosave &amp;&amp; ! is_wp_error( $r ) ) {
+		$autosaved = true;
+	}
+
+	// If the changeset was locked and an autosave request wasn't itself an error, then now explicitly return with a failure.
+	if ( $lock_user_id &amp;&amp; ! is_wp_error( $r ) ) {
+		$r = new WP_Error(
+			'changeset_locked',
+			__( 'Changeset is being edited by other user.' ),
+			array(
+				'lock_user' =&gt; $this-&gt;get_lock_user_data( $lock_user_id ),
+			)
+		);
+	}
+
+	if ( is_wp_error( $r ) ) {
+		$response = array(
+			'message' =&gt; $r-&gt;get_error_message(),
+			'code'    =&gt; $r-&gt;get_error_code(),
+		);
+		if ( is_array( $r-&gt;get_error_data() ) ) {
+			$response = array_merge( $response, $r-&gt;get_error_data() );
+		} else {
+			$response['data'] = $r-&gt;get_error_data();
+		}
+	} else {
+		$response       = $r;
+		$changeset_post = get_post( $this-&gt;changeset_post_id() );
+
+		// Dismiss all other auto-draft changeset posts for this user (they serve like autosave revisions), as there should only be one.
+		if ( $is_new_changeset ) {
+			$this-&gt;dismiss_user_auto_draft_changesets();
+		}
+
+		// Note that if the changeset status was publish, then it will get set to Trash if revisions are not supported.
+		$response['changeset_status'] = $changeset_post-&gt;post_status;
+		if ( $is_publish &amp;&amp; 'trash' === $response['changeset_status'] ) {
+			$response['changeset_status'] = 'publish';
+		}
+
+		if ( 'publish' !== $response['changeset_status'] ) {
+			$this-&gt;set_changeset_lock( $changeset_post-&gt;ID );
+		}
+
+		if ( 'future' === $response['changeset_status'] ) {
+			$response['changeset_date'] = $changeset_post-&gt;post_date;
+		}
+
+		if ( 'publish' === $response['changeset_status'] || 'trash' === $response['changeset_status'] ) {
+			$response['next_changeset_uuid'] = wp_generate_uuid4();
+		}
+	}
+
+	if ( $autosave ) {
+		$response['autosaved'] = $autosaved;
+	}
+
+	if ( isset( $response['setting_validities'] ) ) {
+		$response['setting_validities'] = array_map( array( $this, 'prepare_setting_validity_for_js' ), $response['setting_validities'] );
+	}
+
+	/**
+	 * Filters response data for a successful customize_save Ajax request.
+	 *
+	 * This filter does not apply if there was a nonce or authentication failure.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param array                $response Additional information passed back to the 'saved'
+	 *                                       event on `wp.customize`.
+	 * @param WP_Customize_Manager $manager  WP_Customize_Manager instance.
+	 */
+	$response = apply_filters( 'customize_save_response', $response, $this );
+
+	if ( is_wp_error( $r ) ) {
+		wp_send_json_error( $response );
+	} else {
+		wp_send_json_success( $response );
+	}
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/class-wp-customize-manager.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/class-wp-customize-manager.php#L2430">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/class-wp-customize-manager.php#L2430-L2618">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../../hooks/customize_save_response"><span class="hook-func">apply_filters</span>( ‘customize_save_response’, <nobr><span class="arg-type">array</span> <span class="arg-name">$response</span></nobr>, <nobr><span class="arg-type">WP_Customize_Manager</span> <span class="arg-name">$manager</span></nobr> )</a></dt>
+<dd>
+<p>Filters response data for a successful customize_save Ajax request.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/4.7.0/">4.7.0</a></td>
+<td><span class="since-description">The semantics of this method have changed to update a changeset, optionally to also change the status and other attributes.</span></td>
+</tr>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/3.4.0/">3.4.0</a></td>
+<td>Introduced.</td>
+</tr>
+</tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/classes/wp_customize_manager/save" class="_attribution-link">https://developer.wordpress.org/reference/classes/wp_customize_manager/save</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,607 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>_wp_theme_json_webfonts_handler() - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Runs the theme.json webfonts handler. ">
+  <meta name="keywords" content="wp, theme, json, webfonts, handler, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/_wp_theme_json_webfonts_handler.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">_wp_theme_json_webfonts_handler()</h1> <section><p>Runs the theme.json webfonts handler.</p> </section> <section><h2 id="description">Description</h2> <p>Using <code>WP_Theme_JSON_Resolver</code>, it gets the fonts defined in the <code>theme.json</code> for the current selection and style variations, validates the font-face properties, generates the ‘@font-face’ style declarations, and then enqueues the styles for both the editor and front-end.</p> <p>Design Notes: This is not a public API, but rather an internal handler.<br>A future public Webfonts API will replace this stopgap code.</p> <p>This code design is intentional.<br>a. It hides the inner-workings.<br>b. It does not expose API ins or outs for consumption.<br>c. It only works with a theme’s <code>theme.json</code>.</p> <p>Why? a. To avoid backwards-compatibility issues when the Webfonts API is introduced in Core.<br>b. To make <code>fontFace</code> declarations in <code>theme.json</code> work.</p> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="5417" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function _wp_theme_json_webfonts_handler() {
+	_deprecated_function( __FUNCTION__, '6.4.0', 'wp_print_font_faces' );
+
+	// Block themes are unavailable during installation.
+	if ( wp_installing() ) {
+		return;
+	}
+
+	if ( ! wp_theme_has_theme_json() ) {
+		return;
+	}
+
+	// Webfonts to be processed.
+	$registered_webfonts = array();
+
+	/**
+	 * Gets the webfonts from theme.json.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @return array Array of defined webfonts.
+	 */
+	$fn_get_webfonts_from_theme_json = static function() {
+		// Get settings from theme.json.
+		$settings = WP_Theme_JSON_Resolver::get_merged_data()-&gt;get_settings();
+
+		// If in the editor, add webfonts defined in variations.
+		if ( is_admin() || wp_is_rest_endpoint() ) {
+			$variations = WP_Theme_JSON_Resolver::get_style_variations();
+			foreach ( $variations as $variation ) {
+				// Skip if fontFamilies are not defined in the variation.
+				if ( empty( $variation['settings']['typography']['fontFamilies'] ) ) {
+					continue;
+				}
+
+				// Initialize the array structure.
+				if ( empty( $settings['typography'] ) ) {
+					$settings['typography'] = array();
+				}
+				if ( empty( $settings['typography']['fontFamilies'] ) ) {
+					$settings['typography']['fontFamilies'] = array();
+				}
+				if ( empty( $settings['typography']['fontFamilies']['theme'] ) ) {
+					$settings['typography']['fontFamilies']['theme'] = array();
+				}
+
+				// Combine variations with settings. Remove duplicates.
+				$settings['typography']['fontFamilies']['theme'] = array_merge( $settings['typography']['fontFamilies']['theme'], $variation['settings']['typography']['fontFamilies']['theme'] );
+				$settings['typography']['fontFamilies']          = array_unique( $settings['typography']['fontFamilies'] );
+			}
+		}
+
+		// Bail out early if there are no settings for webfonts.
+		if ( empty( $settings['typography']['fontFamilies'] ) ) {
+			return array();
+		}
+
+		$webfonts = array();
+
+		// Look for fontFamilies.
+		foreach ( $settings['typography']['fontFamilies'] as $font_families ) {
+			foreach ( $font_families as $font_family ) {
+
+				// Skip if fontFace is not defined.
+				if ( empty( $font_family['fontFace'] ) ) {
+					continue;
+				}
+
+				// Skip if fontFace is not an array of webfonts.
+				if ( ! is_array( $font_family['fontFace'] ) ) {
+					continue;
+				}
+
+				$webfonts = array_merge( $webfonts, $font_family['fontFace'] );
+			}
+		}
+
+		return $webfonts;
+	};
+
+	/**
+	 * Transforms each 'src' into an URI by replacing 'file:./'
+	 * placeholder from theme.json.
+	 *
+	 * The absolute path to the webfont file(s) cannot be defined in
+	 * theme.json. `file:./` is the placeholder which is replaced by
+	 * the theme's URL path to the theme's root.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @param array $src Webfont file(s) `src`.
+	 * @return array Webfont's `src` in URI.
+	 */
+	$fn_transform_src_into_uri = static function( array $src ) {
+		foreach ( $src as $key =&gt; $url ) {
+			// Tweak the URL to be relative to the theme root.
+			if ( ! str_starts_with( $url, 'file:./' ) ) {
+				continue;
+			}
+
+			$src[ $key ] = get_theme_file_uri( str_replace( 'file:./', '', $url ) );
+		}
+
+		return $src;
+	};
+
+	/**
+	 * Converts the font-face properties (i.e. keys) into kebab-case.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @param array $font_face Font face to convert.
+	 * @return array Font faces with each property in kebab-case format.
+	 */
+	$fn_convert_keys_to_kebab_case = static function( array $font_face ) {
+		foreach ( $font_face as $property =&gt; $value ) {
+			$kebab_case               = _wp_to_kebab_case( $property );
+			$font_face[ $kebab_case ] = $value;
+			if ( $kebab_case !== $property ) {
+				unset( $font_face[ $property ] );
+			}
+		}
+
+		return $font_face;
+	};
+
+	/**
+	 * Validates a webfont.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @param array $webfont The webfont arguments.
+	 * @return array|false The validated webfont arguments, or false if the webfont is invalid.
+	 */
+	$fn_validate_webfont = static function( $webfont ) {
+		$webfont = wp_parse_args(
+				$webfont,
+				array(
+						'font-family'  =&gt; '',
+						'font-style'   =&gt; 'normal',
+						'font-weight'  =&gt; '400',
+						'font-display' =&gt; 'fallback',
+						'src'          =&gt; array(),
+				)
+		);
+
+		// Check the font-family.
+		if ( empty( $webfont['font-family'] ) || ! is_string( $webfont['font-family'] ) ) {
+			trigger_error( __( 'Webfont font family must be a non-empty string.' ) );
+
+			return false;
+		}
+
+		// Check that the `src` property is defined and a valid type.
+		if ( empty( $webfont['src'] ) || ( ! is_string( $webfont['src'] ) &amp;&amp; ! is_array( $webfont['src'] ) ) ) {
+			trigger_error( __( 'Webfont src must be a non-empty string or an array of strings.' ) );
+
+			return false;
+		}
+
+		// Validate the `src` property.
+		foreach ( (array) $webfont['src'] as $src ) {
+			if ( ! is_string( $src ) || '' === trim( $src ) ) {
+				trigger_error( __( 'Each webfont src must be a non-empty string.' ) );
+
+				return false;
+			}
+		}
+
+		// Check the font-weight.
+		if ( ! is_string( $webfont['font-weight'] ) &amp;&amp; ! is_int( $webfont['font-weight'] ) ) {
+			trigger_error( __( 'Webfont font weight must be a properly formatted string or integer.' ) );
+
+			return false;
+		}
+
+		// Check the font-display.
+		if ( ! in_array( $webfont['font-display'], array( 'auto', 'block', 'fallback', 'optional', 'swap' ), true ) ) {
+			$webfont['font-display'] = 'fallback';
+		}
+
+		$valid_props = array(
+				'ascend-override',
+				'descend-override',
+				'font-display',
+				'font-family',
+				'font-stretch',
+				'font-style',
+				'font-weight',
+				'font-variant',
+				'font-feature-settings',
+				'font-variation-settings',
+				'line-gap-override',
+				'size-adjust',
+				'src',
+				'unicode-range',
+		);
+
+		foreach ( $webfont as $prop =&gt; $value ) {
+			if ( ! in_array( $prop, $valid_props, true ) ) {
+				unset( $webfont[ $prop ] );
+			}
+		}
+
+		return $webfont;
+	};
+
+	/**
+	 * Registers webfonts declared in theme.json.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @uses $registered_webfonts To access and update the registered webfonts registry (passed by reference).
+	 * @uses $fn_get_webfonts_from_theme_json To run the function that gets the webfonts from theme.json.
+	 * @uses $fn_convert_keys_to_kebab_case To run the function that converts keys into kebab-case.
+	 * @uses $fn_validate_webfont To run the function that validates each font-face (webfont) from theme.json.
+	 */
+	$fn_register_webfonts = static function() use ( &amp;$registered_webfonts, $fn_get_webfonts_from_theme_json, $fn_convert_keys_to_kebab_case, $fn_validate_webfont, $fn_transform_src_into_uri ) {
+		$registered_webfonts = array();
+
+		foreach ( $fn_get_webfonts_from_theme_json() as $webfont ) {
+			if ( ! is_array( $webfont ) ) {
+				continue;
+			}
+
+			$webfont = $fn_convert_keys_to_kebab_case( $webfont );
+
+			$webfont = $fn_validate_webfont( $webfont );
+
+			$webfont['src'] = $fn_transform_src_into_uri( (array) $webfont['src'] );
+
+			// Skip if not valid.
+			if ( empty( $webfont ) ) {
+				continue;
+			}
+
+			$registered_webfonts[] = $webfont;
+		}
+	};
+
+	/**
+	 * Orders 'src' items to optimize for browser support.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @param array $webfont Webfont to process.
+	 * @return array Ordered `src` items.
+	 */
+	$fn_order_src = static function( array $webfont ) {
+		$src         = array();
+		$src_ordered = array();
+
+		foreach ( $webfont['src'] as $url ) {
+			// Add data URIs first.
+			if ( str_starts_with( trim( $url ), 'data:' ) ) {
+				$src_ordered[] = array(
+						'url'    =&gt; $url,
+						'format' =&gt; 'data',
+				);
+				continue;
+			}
+			$format         = pathinfo( $url, PATHINFO_EXTENSION );
+			$src[ $format ] = $url;
+		}
+
+		// Add woff2.
+		if ( ! empty( $src['woff2'] ) ) {
+			$src_ordered[] = array(
+					'url'    =&gt; sanitize_url( $src['woff2'] ),
+					'format' =&gt; 'woff2',
+			);
+		}
+
+		// Add woff.
+		if ( ! empty( $src['woff'] ) ) {
+			$src_ordered[] = array(
+					'url'    =&gt; sanitize_url( $src['woff'] ),
+					'format' =&gt; 'woff',
+			);
+		}
+
+		// Add ttf.
+		if ( ! empty( $src['ttf'] ) ) {
+			$src_ordered[] = array(
+					'url'    =&gt; sanitize_url( $src['ttf'] ),
+					'format' =&gt; 'truetype',
+			);
+		}
+
+		// Add eot.
+		if ( ! empty( $src['eot'] ) ) {
+			$src_ordered[] = array(
+					'url'    =&gt; sanitize_url( $src['eot'] ),
+					'format' =&gt; 'embedded-opentype',
+			);
+		}
+
+		// Add otf.
+		if ( ! empty( $src['otf'] ) ) {
+			$src_ordered[] = array(
+					'url'    =&gt; sanitize_url( $src['otf'] ),
+					'format' =&gt; 'opentype',
+			);
+		}
+		$webfont['src'] = $src_ordered;
+
+		return $webfont;
+	};
+
+	/**
+	 * Compiles the 'src' into valid CSS.
+	 *
+	 * @since 6.0.0
+	 * @since 6.2.0 Removed local() CSS.
+	 *
+	 * @param string $font_family Font family.
+	 * @param array  $value       Value to process.
+	 * @return string The CSS.
+	 */
+	$fn_compile_src = static function( $font_family, array $value ) {
+		$src = '';
+
+		foreach ( $value as $item ) {
+			$src .= ( 'data' === $item['format'] )
+					? ", url({$item['url']})"
+					: ", url('{$item['url']}') format('{$item['format']}')";
+		}
+
+		$src = ltrim( $src, ', ' );
+
+		return $src;
+	};
+
+	/**
+	 * Compiles the font variation settings.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @param array $font_variation_settings Array of font variation settings.
+	 * @return string The CSS.
+	 */
+	$fn_compile_variations = static function( array $font_variation_settings ) {
+		$variations = '';
+
+		foreach ( $font_variation_settings as $key =&gt; $value ) {
+			$variations .= "$key $value";
+		}
+
+		return $variations;
+	};
+
+	/**
+	 * Builds the font-family's CSS.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @uses $fn_compile_src To run the function that compiles the src.
+	 * @uses $fn_compile_variations To run the function that compiles the variations.
+	 *
+	 * @param array $webfont Webfont to process.
+	 * @return string This font-family's CSS.
+	 */
+	$fn_build_font_face_css = static function( array $webfont ) use ( $fn_compile_src, $fn_compile_variations ) {
+		$css = '';
+
+		// Wrap font-family in quotes if it contains spaces.
+		if (
+				str_contains( $webfont['font-family'], ' ' ) &amp;&amp;
+				! str_contains( $webfont['font-family'], '"' ) &amp;&amp;
+				! str_contains( $webfont['font-family'], "'" )
+		) {
+			$webfont['font-family'] = '"' . $webfont['font-family'] . '"';
+		}
+
+		foreach ( $webfont as $key =&gt; $value ) {
+			/*
+			 * Skip "provider", since it's for internal API use,
+			 * and not a valid CSS property.
+			 */
+			if ( 'provider' === $key ) {
+				continue;
+			}
+
+			// Compile the "src" parameter.
+			if ( 'src' === $key ) {
+				$value = $fn_compile_src( $webfont['font-family'], $value );
+			}
+
+			// If font-variation-settings is an array, convert it to a string.
+			if ( 'font-variation-settings' === $key &amp;&amp; is_array( $value ) ) {
+				$value = $fn_compile_variations( $value );
+			}
+
+			if ( ! empty( $value ) ) {
+				$css .= "$key:$value;";
+			}
+		}
+
+		return $css;
+	};
+
+	/**
+	 * Gets the '@font-face' CSS styles for locally-hosted font files.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @uses $registered_webfonts To access and update the registered webfonts registry (passed by reference).
+	 * @uses $fn_order_src To run the function that orders the src.
+	 * @uses $fn_build_font_face_css To run the function that builds the font-face CSS.
+	 *
+	 * @return string The `@font-face` CSS.
+	 */
+	$fn_get_css = static function() use ( &amp;$registered_webfonts, $fn_order_src, $fn_build_font_face_css ) {
+		$css = '';
+
+		foreach ( $registered_webfonts as $webfont ) {
+			// Order the webfont's `src` items to optimize for browser support.
+			$webfont = $fn_order_src( $webfont );
+
+			// Build the @font-face CSS for this webfont.
+			$css .= '@font-face{' . $fn_build_font_face_css( $webfont ) . '}';
+		}
+
+		return $css;
+	};
+
+	/**
+	 * Generates and enqueues webfonts styles.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @uses $fn_get_css To run the function that gets the CSS.
+	 */
+	$fn_generate_and_enqueue_styles = static function() use ( $fn_get_css ) {
+		// Generate the styles.
+		$styles = $fn_get_css();
+
+		// Bail out if there are no styles to enqueue.
+		if ( '' === $styles ) {
+			return;
+		}
+
+		// Enqueue the stylesheet.
+		wp_register_style( 'wp-webfonts', '' );
+		wp_enqueue_style( 'wp-webfonts' );
+
+		// Add the styles to the stylesheet.
+		wp_add_inline_style( 'wp-webfonts', $styles );
+	};
+
+	/**
+	 * Generates and enqueues editor styles.
+	 *
+	 * @since 6.0.0
+	 *
+	 * @uses $fn_get_css To run the function that gets the CSS.
+	 */
+	$fn_generate_and_enqueue_editor_styles = static function() use ( $fn_get_css ) {
+		// Generate the styles.
+		$styles = $fn_get_css();
+
+		// Bail out if there are no styles to enqueue.
+		if ( '' === $styles ) {
+			return;
+		}
+
+		wp_add_inline_style( 'wp-block-library', $styles );
+	};
+
+	add_action( 'wp_loaded', $fn_register_webfonts );
+	add_action( 'wp_enqueue_scripts', $fn_generate_and_enqueue_styles );
+	add_action( 'admin_init', $fn_generate_and_enqueue_editor_styles );
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/deprecated.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/deprecated.php#L5417">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/deprecated.php#L5417-L5889">View on GitHub</a></p></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/6.4.0/">6.4.0</a></td>
+<td><span class="since-description">Use <a href="wp_print_font_faces" rel="function">wp_print_font_faces()</a> instead.</span></td>
+</tr>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/6.0.0/">6.0.0</a></td>
+<td>Introduced.</td>
+</tr>
+</tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/_wp_theme_json_webfonts_handler" class="_attribution-link">https://developer.wordpress.org/reference/functions/_wp_theme_json_webfonts_handler</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

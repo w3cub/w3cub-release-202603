@@ -1,0 +1,271 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Upgrade_network() - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Executes network-level upgrade routines. ">
+  <meta name="keywords" content="upgrade, network, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/upgrade_network.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">upgrade_network()</h1> <section><p>Executes network-level upgrade routines.</p> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="2441" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function upgrade_network() {
+	global $wp_current_db_version, $wpdb;
+
+	// Always clear expired transients.
+	delete_expired_transients( true );
+
+	// 2.8.0
+	if ( $wp_current_db_version &lt; 11549 ) {
+		$wpmu_sitewide_plugins   = get_site_option( 'wpmu_sitewide_plugins' );
+		$active_sitewide_plugins = get_site_option( 'active_sitewide_plugins' );
+		if ( $wpmu_sitewide_plugins ) {
+			if ( ! $active_sitewide_plugins ) {
+				$sitewide_plugins = (array) $wpmu_sitewide_plugins;
+			} else {
+				$sitewide_plugins = array_merge( (array) $active_sitewide_plugins, (array) $wpmu_sitewide_plugins );
+			}
+
+			update_site_option( 'active_sitewide_plugins', $sitewide_plugins );
+		}
+		delete_site_option( 'wpmu_sitewide_plugins' );
+		delete_site_option( 'deactivated_sitewide_plugins' );
+
+		$start = 0;
+		while ( $rows = $wpdb-&gt;get_results( "SELECT meta_key, meta_value FROM {$wpdb-&gt;sitemeta} ORDER BY meta_id LIMIT $start, 20" ) ) {
+			foreach ( $rows as $row ) {
+				$value = $row-&gt;meta_value;
+				if ( ! @unserialize( $value ) ) {
+					$value = stripslashes( $value );
+				}
+				if ( $value !== $row-&gt;meta_value ) {
+					update_site_option( $row-&gt;meta_key, $value );
+				}
+			}
+			$start += 20;
+		}
+	}
+
+	// 3.0.0
+	if ( $wp_current_db_version &lt; 13576 ) {
+		update_site_option( 'global_terms_enabled', '1' );
+	}
+
+	// 3.3.0
+	if ( $wp_current_db_version &lt; 19390 ) {
+		update_site_option( 'initial_db_version', $wp_current_db_version );
+	}
+
+	if ( $wp_current_db_version &lt; 19470 ) {
+		if ( false === get_site_option( 'active_sitewide_plugins' ) ) {
+			update_site_option( 'active_sitewide_plugins', array() );
+		}
+	}
+
+	// 3.4.0
+	if ( $wp_current_db_version &lt; 20148 ) {
+		// 'allowedthemes' keys things by stylesheet. 'allowed_themes' keyed things by name.
+		$allowedthemes  = get_site_option( 'allowedthemes' );
+		$allowed_themes = get_site_option( 'allowed_themes' );
+		if ( false === $allowedthemes &amp;&amp; is_array( $allowed_themes ) &amp;&amp; $allowed_themes ) {
+			$converted = array();
+			$themes    = wp_get_themes();
+			foreach ( $themes as $stylesheet =&gt; $theme_data ) {
+				if ( isset( $allowed_themes[ $theme_data-&gt;get( 'Name' ) ] ) ) {
+					$converted[ $stylesheet ] = true;
+				}
+			}
+			update_site_option( 'allowedthemes', $converted );
+			delete_site_option( 'allowed_themes' );
+		}
+	}
+
+	// 3.5.0
+	if ( $wp_current_db_version &lt; 21823 ) {
+		update_site_option( 'ms_files_rewriting', '1' );
+	}
+
+	// 3.5.2
+	if ( $wp_current_db_version &lt; 24448 ) {
+		$illegal_names = get_site_option( 'illegal_names' );
+		if ( is_array( $illegal_names ) &amp;&amp; count( $illegal_names ) === 1 ) {
+			$illegal_name  = reset( $illegal_names );
+			$illegal_names = explode( ' ', $illegal_name );
+			update_site_option( 'illegal_names', $illegal_names );
+		}
+	}
+
+	// 4.2.0
+	if ( $wp_current_db_version &lt; 31351 &amp;&amp; 'utf8mb4' === $wpdb-&gt;charset ) {
+		if ( wp_should_upgrade_global_tables() ) {
+			$wpdb-&gt;query( "ALTER TABLE $wpdb-&gt;usermeta DROP INDEX meta_key, ADD INDEX meta_key(meta_key(191))" );
+			$wpdb-&gt;query( "ALTER TABLE $wpdb-&gt;site DROP INDEX domain, ADD INDEX domain(domain(140),path(51))" );
+			$wpdb-&gt;query( "ALTER TABLE $wpdb-&gt;sitemeta DROP INDEX meta_key, ADD INDEX meta_key(meta_key(191))" );
+			$wpdb-&gt;query( "ALTER TABLE $wpdb-&gt;signups DROP INDEX domain_path, ADD INDEX domain_path(domain(140),path(51))" );
+
+			$tables = $wpdb-&gt;tables( 'global' );
+
+			// sitecategories may not exist.
+			if ( ! $wpdb-&gt;get_var( "SHOW TABLES LIKE '{$tables['sitecategories']}'" ) ) {
+				unset( $tables['sitecategories'] );
+			}
+
+			foreach ( $tables as $table ) {
+				maybe_convert_table_to_utf8mb4( $table );
+			}
+		}
+	}
+
+	// 4.3.0
+	if ( $wp_current_db_version &lt; 33055 &amp;&amp; 'utf8mb4' === $wpdb-&gt;charset ) {
+		if ( wp_should_upgrade_global_tables() ) {
+			$upgrade = false;
+			$indexes = $wpdb-&gt;get_results( "SHOW INDEXES FROM $wpdb-&gt;signups" );
+			foreach ( $indexes as $index ) {
+				if ( 'domain_path' === $index-&gt;Key_name &amp;&amp; 'domain' === $index-&gt;Column_name &amp;&amp; '140' !== $index-&gt;Sub_part ) {
+					$upgrade = true;
+					break;
+				}
+			}
+
+			if ( $upgrade ) {
+				$wpdb-&gt;query( "ALTER TABLE $wpdb-&gt;signups DROP INDEX domain_path, ADD INDEX domain_path(domain(140),path(51))" );
+			}
+
+			$tables = $wpdb-&gt;tables( 'global' );
+
+			// sitecategories may not exist.
+			if ( ! $wpdb-&gt;get_var( "SHOW TABLES LIKE '{$tables['sitecategories']}'" ) ) {
+				unset( $tables['sitecategories'] );
+			}
+
+			foreach ( $tables as $table ) {
+				maybe_convert_table_to_utf8mb4( $table );
+			}
+		}
+	}
+
+	// 5.1.0
+	if ( $wp_current_db_version &lt; 44467 ) {
+		$network_id = get_main_network_id();
+		delete_network_option( $network_id, 'site_meta_supported' );
+		is_site_meta_supported();
+	}
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-admin/includes/upgrade.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-admin/includes/upgrade.php#L2441">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-admin/includes/upgrade.php#L2441-L2583">View on GitHub</a></p></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/3.0.0/">3.0.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/upgrade_network" class="_attribution-link">https://developer.wordpress.org/reference/functions/upgrade_network</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WP_Network_Query&#58;&#58;get_network_ids()&#58; Int|array - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Used internally to get a list of network IDs matching the query vars. ">
+  <meta name="keywords" content="wp, network, query, get, ids, int|array, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/classes/wp_network_query/get_network_ids.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">WP_Network_Query::get_network_ids(): <span class="return-type">int|array</span>
+</h1> <section><p>Used internally to get a list of network IDs matching the query vars.</p> </section> <section><h2 id="return">Return</h2> <span class="return-type">int|array</span> A single count of network IDs if a count query. An array of network IDs if a full query.</section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="326" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">protected function get_network_ids() {
+	global $wpdb;
+
+	$order = $this-&gt;parse_order( $this-&gt;query_vars['order'] );
+
+	// Disable ORDER BY with 'none', an empty array, or boolean false.
+	if ( in_array( $this-&gt;query_vars['orderby'], array( 'none', array(), false ), true ) ) {
+		$orderby = '';
+	} elseif ( ! empty( $this-&gt;query_vars['orderby'] ) ) {
+		$ordersby = is_array( $this-&gt;query_vars['orderby'] ) ?
+			$this-&gt;query_vars['orderby'] :
+			preg_split( '/[,\s]/', $this-&gt;query_vars['orderby'] );
+
+		$orderby_array = array();
+		foreach ( $ordersby as $_key =&gt; $_value ) {
+			if ( ! $_value ) {
+				continue;
+			}
+
+			if ( is_int( $_key ) ) {
+				$_orderby = $_value;
+				$_order   = $order;
+			} else {
+				$_orderby = $_key;
+				$_order   = $_value;
+			}
+
+			$parsed = $this-&gt;parse_orderby( $_orderby );
+
+			if ( ! $parsed ) {
+				continue;
+			}
+
+			if ( 'network__in' === $_orderby ) {
+				$orderby_array[] = $parsed;
+				continue;
+			}
+
+			$orderby_array[] = $parsed . ' ' . $this-&gt;parse_order( $_order );
+		}
+
+		$orderby = implode( ', ', $orderby_array );
+	} else {
+		$orderby = "$wpdb-&gt;site.id $order";
+	}
+
+	$number = absint( $this-&gt;query_vars['number'] );
+	$offset = absint( $this-&gt;query_vars['offset'] );
+	$limits = '';
+
+	if ( ! empty( $number ) ) {
+		if ( $offset ) {
+			$limits = 'LIMIT ' . $offset . ',' . $number;
+		} else {
+			$limits = 'LIMIT ' . $number;
+		}
+	}
+
+	if ( $this-&gt;query_vars['count'] ) {
+		$fields = 'COUNT(*)';
+	} else {
+		$fields = "$wpdb-&gt;site.id";
+	}
+
+	// Parse network IDs for an IN clause.
+	if ( ! empty( $this-&gt;query_vars['network__in'] ) ) {
+		$this-&gt;sql_clauses['where']['network__in'] = "$wpdb-&gt;site.id IN ( " . implode( ',', wp_parse_id_list( $this-&gt;query_vars['network__in'] ) ) . ' )';
+	}
+
+	// Parse network IDs for a NOT IN clause.
+	if ( ! empty( $this-&gt;query_vars['network__not_in'] ) ) {
+		$this-&gt;sql_clauses['where']['network__not_in'] = "$wpdb-&gt;site.id NOT IN ( " . implode( ',', wp_parse_id_list( $this-&gt;query_vars['network__not_in'] ) ) . ' )';
+	}
+
+	if ( ! empty( $this-&gt;query_vars['domain'] ) ) {
+		$this-&gt;sql_clauses['where']['domain'] = $wpdb-&gt;prepare( "$wpdb-&gt;site.domain = %s", $this-&gt;query_vars['domain'] );
+	}
+
+	// Parse network domain for an IN clause.
+	if ( is_array( $this-&gt;query_vars['domain__in'] ) ) {
+		$this-&gt;sql_clauses['where']['domain__in'] = "$wpdb-&gt;site.domain IN ( '" . implode( "', '", $wpdb-&gt;_escape( $this-&gt;query_vars['domain__in'] ) ) . "' )";
+	}
+
+	// Parse network domain for a NOT IN clause.
+	if ( is_array( $this-&gt;query_vars['domain__not_in'] ) ) {
+		$this-&gt;sql_clauses['where']['domain__not_in'] = "$wpdb-&gt;site.domain NOT IN ( '" . implode( "', '", $wpdb-&gt;_escape( $this-&gt;query_vars['domain__not_in'] ) ) . "' )";
+	}
+
+	if ( ! empty( $this-&gt;query_vars['path'] ) ) {
+		$this-&gt;sql_clauses['where']['path'] = $wpdb-&gt;prepare( "$wpdb-&gt;site.path = %s", $this-&gt;query_vars['path'] );
+	}
+
+	// Parse network path for an IN clause.
+	if ( is_array( $this-&gt;query_vars['path__in'] ) ) {
+		$this-&gt;sql_clauses['where']['path__in'] = "$wpdb-&gt;site.path IN ( '" . implode( "', '", $wpdb-&gt;_escape( $this-&gt;query_vars['path__in'] ) ) . "' )";
+	}
+
+	// Parse network path for a NOT IN clause.
+	if ( is_array( $this-&gt;query_vars['path__not_in'] ) ) {
+		$this-&gt;sql_clauses['where']['path__not_in'] = "$wpdb-&gt;site.path NOT IN ( '" . implode( "', '", $wpdb-&gt;_escape( $this-&gt;query_vars['path__not_in'] ) ) . "' )";
+	}
+
+	// Falsey search strings are ignored.
+	if ( strlen( $this-&gt;query_vars['search'] ) ) {
+		$this-&gt;sql_clauses['where']['search'] = $this-&gt;get_search_sql(
+			$this-&gt;query_vars['search'],
+			array( "$wpdb-&gt;site.domain", "$wpdb-&gt;site.path" )
+		);
+	}
+
+	$join = '';
+
+	$where = implode( ' AND ', $this-&gt;sql_clauses['where'] );
+
+	$groupby = '';
+
+	$pieces = array( 'fields', 'join', 'where', 'orderby', 'limits', 'groupby' );
+
+	/**
+	 * Filters the network query clauses.
+	 *
+	 * @since 4.6.0
+	 *
+	 * @param string[]         $clauses {
+	 *     Associative array of the clauses for the query.
+	 *
+	 *     @type string $fields   The SELECT clause of the query.
+	 *     @type string $join     The JOIN clause of the query.
+	 *     @type string $where    The WHERE clause of the query.
+	 *     @type string $orderby  The ORDER BY clause of the query.
+	 *     @type string $limits   The LIMIT clause of the query.
+	 *     @type string $groupby  The GROUP BY clause of the query.
+	 * }
+	 * @param WP_Network_Query $query   Current instance of WP_Network_Query (passed by reference).
+	 */
+	$clauses = apply_filters_ref_array( 'networks_clauses', array( compact( $pieces ), &amp;$this ) );
+
+	$fields  = isset( $clauses['fields'] ) ? $clauses['fields'] : '';
+	$join    = isset( $clauses['join'] ) ? $clauses['join'] : '';
+	$where   = isset( $clauses['where'] ) ? $clauses['where'] : '';
+	$orderby = isset( $clauses['orderby'] ) ? $clauses['orderby'] : '';
+	$limits  = isset( $clauses['limits'] ) ? $clauses['limits'] : '';
+	$groupby = isset( $clauses['groupby'] ) ? $clauses['groupby'] : '';
+
+	if ( $where ) {
+		$where = 'WHERE ' . $where;
+	}
+
+	if ( $groupby ) {
+		$groupby = 'GROUP BY ' . $groupby;
+	}
+
+	if ( $orderby ) {
+		$orderby = "ORDER BY $orderby";
+	}
+
+	$found_rows = '';
+	if ( ! $this-&gt;query_vars['no_found_rows'] ) {
+		$found_rows = 'SQL_CALC_FOUND_ROWS';
+	}
+
+	$this-&gt;sql_clauses['select']  = "SELECT $found_rows $fields";
+	$this-&gt;sql_clauses['from']    = "FROM $wpdb-&gt;site $join";
+	$this-&gt;sql_clauses['groupby'] = $groupby;
+	$this-&gt;sql_clauses['orderby'] = $orderby;
+	$this-&gt;sql_clauses['limits']  = $limits;
+
+	// Beginning of the string is on a new line to prevent leading whitespace. See https://core.trac.wordpress.org/ticket/56841.
+	$this-&gt;request =
+		"{$this-&gt;sql_clauses['select']}
+		 {$this-&gt;sql_clauses['from']}
+		 {$where}
+		 {$this-&gt;sql_clauses['groupby']}
+		 {$this-&gt;sql_clauses['orderby']}
+		 {$this-&gt;sql_clauses['limits']}";
+
+	if ( $this-&gt;query_vars['count'] ) {
+		return (int) $wpdb-&gt;get_var( $this-&gt;request );
+	}
+
+	$network_ids = $wpdb-&gt;get_col( $this-&gt;request );
+
+	return array_map( 'intval', $network_ids );
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/class-wp-network-query.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/class-wp-network-query.php#L326">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/class-wp-network-query.php#L326-L509">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../../hooks/networks_clauses"><span class="hook-func">apply_filters_ref_array</span>( ‘networks_clauses’, <nobr><span class="arg-type">string[]</span> <span class="arg-name">$clauses</span></nobr>, <nobr><span class="arg-type">WP_Network_Query</span> <span class="arg-name">$query</span></nobr> )</a></dt>
+<dd>
+<p>Filters the network query clauses.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/4.6.0/">4.6.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/classes/wp_network_query/get_network_ids" class="_attribution-link">https://developer.wordpress.org/reference/classes/wp_network_query/get_network_ids</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

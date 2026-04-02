@@ -1,0 +1,240 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Update_meta_cache( String &#36;meta_type, String|int[] &#36;object_ids )&#58; Array|false - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Updates the metadata cache for the specified objects. ">
+  <meta name="keywords" content="update, meta, cache, string, &#36;meta, type, string|int, &#36;object, ids, array|false, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/update_meta_cache.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">update_meta_cache( <span class="arg-type">string</span> <span class="arg-name">$meta_type</span>, <span class="arg-type">string|int[]</span> <span class="arg-name">$object_ids</span> ): <span class="return-type">array|false</span>
+</h1> <section><p>Updates the metadata cache for the specified objects.</p> </section> <section><h2 id="parameters">Parameters</h2> <dl>
+<dt>
+<code>$meta_type</code><span class="type"><span class="string">string</span></span><span class="required">required</span>
+</dt>
+<dd><div class="desc"><span class="description">Type of object metadata is for. Accepts <code>'post'</code>, <code>'comment'</code>, <code>'term'</code>, <code>'user'</code>, or any other object type with an associated meta table.</span></div></dd>
+<dt>
+<code>$object_ids</code><span class="type"><span class="string">string</span>|<span class="int[]">int[]</span></span><span class="required">required</span>
+</dt>
+<dd><div class="desc"><span class="description">Array or comma delimited list of object IDs to update cache for.</span></div></dd>
+</dl></section> <section><h2 id="return">Return</h2> <span class="return-type">array|false</span> Metadata cache for the specified objects, or false on failure.</section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="1112" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function update_meta_cache( $meta_type, $object_ids ) {
+	global $wpdb;
+
+	if ( ! $meta_type || ! $object_ids ) {
+		return false;
+	}
+
+	$table = _get_meta_table( $meta_type );
+	if ( ! $table ) {
+		return false;
+	}
+
+	$column = sanitize_key( $meta_type . '_id' );
+
+	if ( ! is_array( $object_ids ) ) {
+		$object_ids = preg_replace( '|[^0-9,]|', '', $object_ids );
+		$object_ids = explode( ',', $object_ids );
+	}
+
+	$object_ids = array_map( 'intval', $object_ids );
+
+	/**
+	 * Short-circuits updating the metadata cache of a specific type.
+	 *
+	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
+	 * (post, comment, term, user, or any other type with an associated meta table).
+	 * Returning a non-null value will effectively short-circuit the function.
+	 *
+	 * Possible hook names include:
+	 *
+	 *  - `update_post_metadata_cache`
+	 *  - `update_comment_metadata_cache`
+	 *  - `update_term_metadata_cache`
+	 *  - `update_user_metadata_cache`
+	 *
+	 * @since 5.0.0
+	 *
+	 * @param mixed $check      Whether to allow updating the meta cache of the given type.
+	 * @param int[] $object_ids Array of object IDs to update the meta cache for.
+	 */
+	$check = apply_filters( "update_{$meta_type}_metadata_cache", null, $object_ids );
+	if ( null !== $check ) {
+		return (bool) $check;
+	}
+
+	$cache_key      = $meta_type . '_meta';
+	$non_cached_ids = array();
+	$cache          = array();
+	$cache_values   = wp_cache_get_multiple( $object_ids, $cache_key );
+
+	foreach ( $cache_values as $id =&gt; $cached_object ) {
+		if ( false === $cached_object ) {
+			$non_cached_ids[] = $id;
+		} else {
+			$cache[ $id ] = $cached_object;
+		}
+	}
+
+	if ( empty( $non_cached_ids ) ) {
+		return $cache;
+	}
+
+	// Get meta info.
+	$id_list   = implode( ',', $non_cached_ids );
+	$id_column = ( 'user' === $meta_type ) ? 'umeta_id' : 'meta_id';
+
+	$meta_list = $wpdb-&gt;get_results( "SELECT $column, meta_key, meta_value FROM $table WHERE $column IN ($id_list) ORDER BY $id_column ASC", ARRAY_A );
+
+	if ( ! empty( $meta_list ) ) {
+		foreach ( $meta_list as $metarow ) {
+			$mpid = (int) $metarow[ $column ];
+			$mkey = $metarow['meta_key'];
+			$mval = $metarow['meta_value'];
+
+			// Force subkeys to be array type.
+			if ( ! isset( $cache[ $mpid ] ) || ! is_array( $cache[ $mpid ] ) ) {
+				$cache[ $mpid ] = array();
+			}
+			if ( ! isset( $cache[ $mpid ][ $mkey ] ) || ! is_array( $cache[ $mpid ][ $mkey ] ) ) {
+				$cache[ $mpid ][ $mkey ] = array();
+			}
+
+			// Add a value to the current pid/key.
+			$cache[ $mpid ][ $mkey ][] = $mval;
+		}
+	}
+
+	$data = array();
+	foreach ( $non_cached_ids as $id ) {
+		if ( ! isset( $cache[ $id ] ) ) {
+			$cache[ $id ] = array();
+		}
+		$data[ $id ] = $cache[ $id ];
+	}
+	wp_cache_add_multiple( $data, $cache_key );
+
+	return $cache;
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/meta.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/meta.php#L1112">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/meta.php#L1112-L1209">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/update_meta_type_metadata_cache"><span class="hook-func">apply_filters</span>( “update_{$meta_type}_metadata_cache”, <nobr><span class="arg-type">mixed</span> <span class="arg-name">$check</span></nobr>, <nobr><span class="arg-type">int[]</span> <span class="arg-name">$object_ids</span></nobr> )</a></dt>
+<dd>
+<p>Short-circuits updating the metadata cache of a specific type.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/2.9.0/">2.9.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/update_meta_cache" class="_attribution-link">https://developer.wordpress.org/reference/functions/update_meta_cache</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

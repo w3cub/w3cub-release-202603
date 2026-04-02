@@ -1,0 +1,375 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Bulk_edit_posts( Array|null &#36;post_data &#61; Null )&#58; Array - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Processes the post data for the bulk editing of posts. ">
+  <meta name="keywords" content="bulk, edit, posts, array|null, &#36;post, data, null, array, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/bulk_edit_posts.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">bulk_edit_posts( <span class="arg-type">array|null</span> <span class="arg-name">$post_data</span> = <span class="arg-default">null</span> ): <span class="return-type">array</span>
+</h1> <section><p>Processes the post data for the bulk editing of posts.</p> </section> <section><h2 id="description">Description</h2> <p>Updates all bulk edited posts/pages, adding (but not removing) tags and categories. Skips pages when they would be their own parent or child.</p> </section> <section><h2 id="parameters">Parameters</h2> <dl>
+<dt>
+<code>$post_data</code><span class="type"><span class="array">array</span>|<span class="null">null</span></span><span class="required">optional</span>
+</dt>
+<dd>
+<div class="desc"><span class="description">The array of post data to process.<br> Defaults to the <code>$_POST</code> superglobal.</span></div>
+<p class="default">Default:<code>null</code></p>
+</dd>
+</dl></section> <section><h2 id="return">Return</h2> <span class="return-type">array</span> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="498" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function bulk_edit_posts( $post_data = null ) {
+	global $wpdb;
+
+	if ( empty( $post_data ) ) {
+		$post_data = &amp;$_POST;
+	}
+
+	if ( isset( $post_data['post_type'] ) ) {
+		$ptype = get_post_type_object( $post_data['post_type'] );
+	} else {
+		$ptype = get_post_type_object( 'post' );
+	}
+
+	if ( ! current_user_can( $ptype-&gt;cap-&gt;edit_posts ) ) {
+		if ( 'page' === $ptype-&gt;name ) {
+			wp_die( __( 'Sorry, you are not allowed to edit pages.' ) );
+		} else {
+			wp_die( __( 'Sorry, you are not allowed to edit posts.' ) );
+		}
+	}
+
+	if ( '-1' === $post_data['_status'] ) {
+		$post_data['post_status'] = null;
+		unset( $post_data['post_status'] );
+	} else {
+		$post_data['post_status'] = $post_data['_status'];
+	}
+	unset( $post_data['_status'] );
+
+	if ( ! empty( $post_data['post_status'] ) ) {
+		$post_data['post_status'] = sanitize_key( $post_data['post_status'] );
+
+		if ( 'inherit' === $post_data['post_status'] ) {
+			unset( $post_data['post_status'] );
+		}
+	}
+
+	$post_ids = array_map( 'intval', (array) $post_data['post'] );
+
+	$reset = array(
+		'post_author',
+		'post_status',
+		'post_password',
+		'post_parent',
+		'page_template',
+		'comment_status',
+		'ping_status',
+		'keep_private',
+		'tax_input',
+		'post_category',
+		'sticky',
+		'post_format',
+	);
+
+	foreach ( $reset as $field ) {
+		if ( isset( $post_data[ $field ] ) &amp;&amp; ( '' === $post_data[ $field ] || '-1' === $post_data[ $field ] ) ) {
+			unset( $post_data[ $field ] );
+		}
+	}
+
+	if ( isset( $post_data['post_category'] ) ) {
+		if ( is_array( $post_data['post_category'] ) &amp;&amp; ! empty( $post_data['post_category'] ) ) {
+			$new_cats = array_map( 'absint', $post_data['post_category'] );
+		} else {
+			unset( $post_data['post_category'] );
+		}
+	}
+
+	$tax_input = array();
+	if ( isset( $post_data['tax_input'] ) ) {
+		foreach ( $post_data['tax_input'] as $tax_name =&gt; $terms ) {
+			if ( empty( $terms ) ) {
+				continue;
+			}
+
+			if ( is_taxonomy_hierarchical( $tax_name ) ) {
+				$tax_input[ $tax_name ] = array_map( 'absint', $terms );
+			} else {
+				$comma = _x( ',', 'tag delimiter' );
+				if ( ',' !== $comma ) {
+					$terms = str_replace( $comma, ',', $terms );
+				}
+				$tax_input[ $tax_name ] = explode( ',', trim( $terms, " \n\t\r\0\x0B," ) );
+			}
+		}
+	}
+
+	if ( isset( $post_data['post_parent'] ) &amp;&amp; (int) $post_data['post_parent'] ) {
+		$parent   = (int) $post_data['post_parent'];
+		$pages    = $wpdb-&gt;get_results( "SELECT ID, post_parent FROM $wpdb-&gt;posts WHERE post_type = 'page'" );
+		$children = array();
+
+		for ( $i = 0; $i &lt; 50 &amp;&amp; $parent &gt; 0; $i++ ) {
+			$children[] = $parent;
+
+			foreach ( $pages as $page ) {
+				if ( (int) $page-&gt;ID === $parent ) {
+					$parent = (int) $page-&gt;post_parent;
+					break;
+				}
+			}
+		}
+	}
+
+	$updated          = array();
+	$skipped          = array();
+	$locked           = array();
+	$shared_post_data = $post_data;
+
+	foreach ( $post_ids as $post_id ) {
+		// Start with fresh post data with each iteration.
+		$post_data = $shared_post_data;
+
+		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
+
+		if ( ! isset( $post_type_object )
+			|| ( isset( $children ) &amp;&amp; in_array( $post_id, $children, true ) )
+			|| ! current_user_can( 'edit_post', $post_id )
+		) {
+			$skipped[] = $post_id;
+			continue;
+		}
+
+		if ( wp_check_post_lock( $post_id ) ) {
+			$locked[] = $post_id;
+			continue;
+		}
+
+		$post      = get_post( $post_id );
+		$tax_names = get_object_taxonomies( $post );
+
+		foreach ( $tax_names as $tax_name ) {
+			$taxonomy_obj = get_taxonomy( $tax_name );
+
+			if ( ! $taxonomy_obj-&gt;show_in_quick_edit ) {
+				continue;
+			}
+
+			if ( isset( $tax_input[ $tax_name ] ) &amp;&amp; current_user_can( $taxonomy_obj-&gt;cap-&gt;assign_terms ) ) {
+				$new_terms = $tax_input[ $tax_name ];
+			} else {
+				$new_terms = array();
+			}
+
+			if ( $taxonomy_obj-&gt;hierarchical ) {
+				$current_terms = (array) wp_get_object_terms( $post_id, $tax_name, array( 'fields' =&gt; 'ids' ) );
+			} else {
+				$current_terms = (array) wp_get_object_terms( $post_id, $tax_name, array( 'fields' =&gt; 'names' ) );
+			}
+
+			$post_data['tax_input'][ $tax_name ] = array_merge( $current_terms, $new_terms );
+		}
+
+		if ( isset( $new_cats ) &amp;&amp; in_array( 'category', $tax_names, true ) ) {
+			$cats = (array) wp_get_post_categories( $post_id );
+
+			if (
+				isset( $post_data['indeterminate_post_category'] )
+				&amp;&amp; is_array( $post_data['indeterminate_post_category'] )
+			) {
+				$indeterminate_post_category = $post_data['indeterminate_post_category'];
+			} else {
+				$indeterminate_post_category = array();
+			}
+
+			$indeterminate_cats         = array_intersect( $cats, $indeterminate_post_category );
+			$determinate_cats           = array_diff( $new_cats, $indeterminate_post_category );
+			$post_data['post_category'] = array_unique( array_merge( $indeterminate_cats, $determinate_cats ) );
+
+			unset( $post_data['tax_input']['category'] );
+		}
+
+		$post_data['post_ID']        = $post_id;
+		$post_data['post_type']      = $post-&gt;post_type;
+		$post_data['post_mime_type'] = $post-&gt;post_mime_type;
+
+		foreach ( array( 'comment_status', 'ping_status', 'post_author' ) as $field ) {
+			if ( ! isset( $post_data[ $field ] ) ) {
+				$post_data[ $field ] = $post-&gt;$field;
+			}
+		}
+
+		$post_data = _wp_translate_postdata( true, $post_data );
+		if ( is_wp_error( $post_data ) ) {
+			$skipped[] = $post_id;
+			continue;
+		}
+		$post_data = _wp_get_allowed_postdata( $post_data );
+
+		if ( isset( $shared_post_data['post_format'] ) ) {
+			set_post_format( $post_id, $shared_post_data['post_format'] );
+		}
+
+		// Prevent wp_insert_post() from overwriting post format with the old data.
+		unset( $post_data['tax_input']['post_format'] );
+
+		// Reset post date of scheduled post to be published.
+		if (
+			in_array( $post-&gt;post_status, array( 'future', 'draft' ), true ) &amp;&amp;
+			'publish' === $post_data['post_status']
+		) {
+			$post_data['post_date']     = current_time( 'mysql' );
+			$post_data['post_date_gmt'] = '';
+		}
+
+		$post_id = wp_update_post( $post_data );
+		update_post_meta( $post_id, '_edit_last', get_current_user_id() );
+		$updated[] = $post_id;
+
+		if ( isset( $post_data['sticky'] ) &amp;&amp; current_user_can( $ptype-&gt;cap-&gt;edit_others_posts ) ) {
+			if ( 'sticky' === $post_data['sticky'] ) {
+				stick_post( $post_id );
+			} else {
+				unstick_post( $post_id );
+			}
+		}
+	}
+
+	/**
+	 * Fires after processing the post data for bulk edit.
+	 *
+	 * @since 6.3.0
+	 *
+	 * @param int[] $updated          An array of updated post IDs.
+	 * @param array $shared_post_data Associative array containing the post data.
+	 */
+	do_action( 'bulk_edit_posts', $updated, $shared_post_data );
+
+	return array(
+		'updated' =&gt; $updated,
+		'skipped' =&gt; $skipped,
+		'locked'  =&gt; $locked,
+	);
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-admin/includes/post.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-admin/includes/post.php#L498">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-admin/includes/post.php#L498-L731">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/bulk_edit_posts"><span class="hook-func">do_action</span>( ‘bulk_edit_posts’, <nobr><span class="arg-type">int[]</span> <span class="arg-name">$updated</span></nobr>, <nobr><span class="arg-type">array</span> <span class="arg-name">$shared_post_data</span></nobr> )</a></dt>
+<dd>
+<p>Fires after processing the post data for bulk edit.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/2.7.0/">2.7.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/bulk_edit_posts" class="_attribution-link">https://developer.wordpress.org/reference/functions/bulk_edit_posts</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

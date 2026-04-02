@@ -1,0 +1,287 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Wp_dashboard_right_now() - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Dashboard widget that displays some basic stats about the site. ">
+  <meta name="keywords" content="wp, dashboard, right, now, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/wp_dashboard_right_now.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">wp_dashboard_right_now()</h1> <section><p>Dashboard widget that displays some basic stats about the site.</p> </section> <section><h2 id="description">Description</h2> <p>Formerly ‘Right Now’. A streamlined ‘At a Glance’ as of 3.8.</p> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="300" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function wp_dashboard_right_now() {
+	?&gt;
+	&lt;div class="main"&gt;
+	&lt;ul&gt;
+	&lt;?php
+	// Posts and Pages.
+	foreach ( array( 'post', 'page' ) as $post_type ) {
+		$num_posts = wp_count_posts( $post_type );
+
+		if ( $num_posts &amp;&amp; $num_posts-&gt;publish ) {
+			if ( 'post' === $post_type ) {
+				/* translators: %s: Number of posts. */
+				$text = _n( '%s Post', '%s Posts', $num_posts-&gt;publish );
+			} else {
+				/* translators: %s: Number of pages. */
+				$text = _n( '%s Page', '%s Pages', $num_posts-&gt;publish );
+			}
+
+			$text             = sprintf( $text, number_format_i18n( $num_posts-&gt;publish ) );
+			$post_type_object = get_post_type_object( $post_type );
+
+			if ( $post_type_object &amp;&amp; current_user_can( $post_type_object-&gt;cap-&gt;edit_posts ) ) {
+				printf( '&lt;li class="%1$s-count"&gt;&lt;a href="edit.php?post_type=%1$s"&gt;%2$s&lt;/a&gt;&lt;/li&gt;', $post_type, $text );
+			} else {
+				printf( '&lt;li class="%1$s-count"&gt;&lt;span&gt;%2$s&lt;/span&gt;&lt;/li&gt;', $post_type, $text );
+			}
+		}
+	}
+
+	// Comments.
+	$num_comm = wp_count_comments();
+
+	if ( $num_comm &amp;&amp; ( $num_comm-&gt;approved || $num_comm-&gt;moderated ) ) {
+		/* translators: %s: Number of comments. */
+		$text = sprintf( _n( '%s Comment', '%s Comments', $num_comm-&gt;approved ), number_format_i18n( $num_comm-&gt;approved ) );
+		?&gt;
+		&lt;li class="comment-count"&gt;
+			&lt;a href="edit-comments.php"&gt;&lt;?php echo $text; ?&gt;&lt;/a&gt;
+		&lt;/li&gt;
+		&lt;?php
+		$moderated_comments_count_i18n = number_format_i18n( $num_comm-&gt;moderated );
+		/* translators: %s: Number of comments. */
+		$text = sprintf( _n( '%s Comment in moderation', '%s Comments in moderation', $num_comm-&gt;moderated ), $moderated_comments_count_i18n );
+		?&gt;
+		&lt;li class="comment-mod-count&lt;?php echo ! $num_comm-&gt;moderated ? ' hidden' : ''; ?&gt;"&gt;
+			&lt;a href="edit-comments.php?comment_status=moderated" class="comments-in-moderation-text"&gt;&lt;?php echo $text; ?&gt;&lt;/a&gt;
+		&lt;/li&gt;
+		&lt;?php
+	}
+
+	/**
+	 * Filters the array of extra elements to list in the 'At a Glance'
+	 * dashboard widget.
+	 *
+	 * Prior to 3.8.0, the widget was named 'Right Now'. Each element
+	 * is wrapped in list-item tags on output.
+	 *
+	 * @since 3.8.0
+	 *
+	 * @param string[] $items Array of extra 'At a Glance' widget items.
+	 */
+	$elements = apply_filters( 'dashboard_glance_items', array() );
+
+	if ( $elements ) {
+		echo '&lt;li&gt;' . implode( "&lt;/li&gt;\n&lt;li&gt;", $elements ) . "&lt;/li&gt;\n";
+	}
+
+	?&gt;
+	&lt;/ul&gt;
+	&lt;?php
+	update_right_now_message();
+
+	// Check if search engines are asked not to index this site.
+	if ( ! is_network_admin() &amp;&amp; ! is_user_admin()
+		&amp;&amp; current_user_can( 'manage_options' ) &amp;&amp; ! get_option( 'blog_public' )
+	) {
+
+		/**
+		 * Filters the link title attribute for the 'Search engines discouraged'
+		 * message displayed in the 'At a Glance' dashboard widget.
+		 *
+		 * Prior to 3.8.0, the widget was named 'Right Now'.
+		 *
+		 * @since 3.0.0
+		 * @since 4.5.0 The default for `$title` was updated to an empty string.
+		 *
+		 * @param string $title Default attribute text.
+		 */
+		$title = apply_filters( 'privacy_on_link_title', '' );
+
+		/**
+		 * Filters the link label for the 'Search engines discouraged' message
+		 * displayed in the 'At a Glance' dashboard widget.
+		 *
+		 * Prior to 3.8.0, the widget was named 'Right Now'.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $content Default text.
+		 */
+		$content = apply_filters( 'privacy_on_link_text', __( 'Search engines discouraged' ) );
+
+		$title_attr = '' === $title ? '' : " title='$title'";
+
+		echo "&lt;p class='search-engines-info'&gt;&lt;a href='options-reading.php'$title_attr&gt;$content&lt;/a&gt;&lt;/p&gt;";
+	}
+	?&gt;
+	&lt;/div&gt;
+	&lt;?php
+	/*
+	 * activity_box_end has a core action, but only prints content when multisite.
+	 * Using an output buffer is the only way to really check if anything's displayed here.
+	 */
+	ob_start();
+
+	/**
+	 * Fires at the end of the 'At a Glance' dashboard widget.
+	 *
+	 * Prior to 3.8.0, the widget was named 'Right Now'.
+	 *
+	 * @since 2.5.0
+	 */
+	do_action( 'rightnow_end' );
+
+	/**
+	 * Fires at the end of the 'At a Glance' dashboard widget.
+	 *
+	 * Prior to 3.8.0, the widget was named 'Right Now'.
+	 *
+	 * @since 2.0.0
+	 */
+	do_action( 'activity_box_end' );
+
+	$actions = ob_get_clean();
+
+	if ( ! empty( $actions ) ) :
+		?&gt;
+	&lt;div class="sub"&gt;
+		&lt;?php echo $actions; ?&gt;
+	&lt;/div&gt;
+		&lt;?php
+	endif;
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-admin/includes/dashboard.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-admin/includes/dashboard.php#L300">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-admin/includes/dashboard.php#L300-L442">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/activity_box_end"><span class="hook-func">do_action</span>( ‘activity_box_end’ )</a></dt>
+<dd>
+<p>Fires at the end of the ‘At a Glance’ dashboard widget.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/dashboard_glance_items"><span class="hook-func">apply_filters</span>( ‘dashboard_glance_items’, <nobr><span class="arg-type">string[]</span> <span class="arg-name">$items</span></nobr> )</a></dt>
+<dd>
+<p>Filters the array of extra elements to list in the ‘At a Glance’ dashboard widget.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/privacy_on_link_text"><span class="hook-func">apply_filters</span>( ‘privacy_on_link_text’, <nobr><span class="arg-type">string</span> <span class="arg-name">$content</span></nobr> )</a></dt>
+<dd>
+<p>Filters the link label for the ‘Search engines discouraged’ message displayed in the ‘At a Glance’ dashboard widget.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/privacy_on_link_title"><span class="hook-func">apply_filters</span>( ‘privacy_on_link_title’, <nobr><span class="arg-type">string</span> <span class="arg-name">$title</span></nobr> )</a></dt>
+<dd>
+<p>Filters the link title attribute for the ‘Search engines discouraged’ message displayed in the ‘At a Glance’ dashboard widget.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/rightnow_end"><span class="hook-func">do_action</span>( ‘rightnow_end’ )</a></dt>
+<dd>
+<p>Fires at the end of the ‘At a Glance’ dashboard widget.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/2.7.0/">2.7.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/wp_dashboard_right_now" class="_attribution-link">https://developer.wordpress.org/reference/functions/wp_dashboard_right_now</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WP_Customize_Nav_Menus&#58;&#58;customize_register() - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Adds the customizer settings and controls. ">
+  <meta name="keywords" content="wp, customize, nav, menus, register, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/classes/wp_customize_nav_menus/customize_register.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">WP_Customize_Nav_Menus::customize_register()</h1> <section><p>Adds the customizer settings and controls.</p> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="629" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">public function customize_register() {
+	$changeset = $this-&gt;manager-&gt;unsanitized_post_values();
+
+	// Preview settings for nav menus early so that the sections and controls will be added properly.
+	$nav_menus_setting_ids = array();
+	foreach ( array_keys( $changeset ) as $setting_id ) {
+		if ( preg_match( '/^(nav_menu_locations|nav_menu|nav_menu_item)\[/', $setting_id ) ) {
+			$nav_menus_setting_ids[] = $setting_id;
+		}
+	}
+	$settings = $this-&gt;manager-&gt;add_dynamic_settings( $nav_menus_setting_ids );
+	if ( $this-&gt;manager-&gt;settings_previewed() ) {
+		foreach ( $settings as $setting ) {
+			$setting-&gt;preview();
+		}
+	}
+
+	// Require JS-rendered control types.
+	$this-&gt;manager-&gt;register_panel_type( 'WP_Customize_Nav_Menus_Panel' );
+	$this-&gt;manager-&gt;register_control_type( 'WP_Customize_Nav_Menu_Control' );
+	$this-&gt;manager-&gt;register_control_type( 'WP_Customize_Nav_Menu_Name_Control' );
+	$this-&gt;manager-&gt;register_control_type( 'WP_Customize_Nav_Menu_Locations_Control' );
+	$this-&gt;manager-&gt;register_control_type( 'WP_Customize_Nav_Menu_Auto_Add_Control' );
+	$this-&gt;manager-&gt;register_control_type( 'WP_Customize_Nav_Menu_Item_Control' );
+
+	// Create a panel for Menus.
+	$description = '&lt;p&gt;' . __( 'This panel is used for managing navigation menus for content you have already published on your site. You can create menus and add items for existing content such as pages, posts, categories, tags, formats, or custom links.' ) . '&lt;/p&gt;';
+	if ( current_theme_supports( 'widgets' ) ) {
+		$description .= '&lt;p&gt;' . sprintf(
+			/* translators: %s: URL to the Widgets panel of the Customizer. */
+			__( 'Menus can be displayed in locations defined by your theme or in &lt;a href="%s"&gt;widget areas&lt;/a&gt; by adding a &amp;#8220;Navigation Menu&amp;#8221; widget.' ),
+			"javascript:wp.customize.panel( 'widgets' ).focus();"
+		) . '&lt;/p&gt;';
+	} else {
+		$description .= '&lt;p&gt;' . __( 'Menus can be displayed in locations defined by your theme.' ) . '&lt;/p&gt;';
+	}
+
+	/*
+	 * Once multiple theme supports are allowed in WP_Customize_Panel,
+	 * this panel can be restricted to themes that support menus or widgets.
+	 */
+	$this-&gt;manager-&gt;add_panel(
+		new WP_Customize_Nav_Menus_Panel(
+			$this-&gt;manager,
+			'nav_menus',
+			array(
+				'title'       =&gt; __( 'Menus' ),
+				'description' =&gt; $description,
+				'priority'    =&gt; 100,
+			)
+		)
+	);
+	$menus = wp_get_nav_menus();
+
+	// Menu locations.
+	$locations     = get_registered_nav_menus();
+	$num_locations = count( $locations );
+
+	if ( 1 === $num_locations ) {
+		$description = '&lt;p&gt;' . __( 'Your theme can display menus in one location. Select which menu you would like to use.' ) . '&lt;/p&gt;';
+	} else {
+		/* translators: %s: Number of menu locations. */
+		$description = '&lt;p&gt;' . sprintf( _n( 'Your theme can display menus in %s location. Select which menu you would like to use.', 'Your theme can display menus in %s locations. Select which menu appears in each location.', $num_locations ), number_format_i18n( $num_locations ) ) . '&lt;/p&gt;';
+	}
+
+	if ( current_theme_supports( 'widgets' ) ) {
+		/* translators: URL to the Widgets panel of the Customizer. */
+		$description .= '&lt;p&gt;' . sprintf( __( 'If your theme has widget areas, you can also add menus there. Visit the &lt;a href="%s"&gt;Widgets panel&lt;/a&gt; and add a &amp;#8220;Navigation Menu widget&amp;#8221; to display a menu in a sidebar or footer.' ), "javascript:wp.customize.panel( 'widgets' ).focus();" ) . '&lt;/p&gt;';
+	}
+
+	$this-&gt;manager-&gt;add_section(
+		'menu_locations',
+		array(
+			'title'       =&gt; 1 === $num_locations ? _x( 'View Location', 'menu locations' ) : _x( 'View All Locations', 'menu locations' ),
+			'panel'       =&gt; 'nav_menus',
+			'priority'    =&gt; 30,
+			'description' =&gt; $description,
+		)
+	);
+
+	$choices = array( '0' =&gt; __( '&amp;mdash; Select &amp;mdash;' ) );
+	foreach ( $menus as $menu ) {
+		$choices[ $menu-&gt;term_id ] = wp_html_excerpt( $menu-&gt;name, 40, '&amp;hellip;' );
+	}
+
+	// Attempt to re-map the nav menu location assignments when previewing a theme switch.
+	$mapped_nav_menu_locations = array();
+	if ( ! $this-&gt;manager-&gt;is_theme_active() ) {
+		$theme_mods = get_option( 'theme_mods_' . $this-&gt;manager-&gt;get_stylesheet(), array() );
+
+		// If there is no data from a previous activation, start fresh.
+		if ( empty( $theme_mods['nav_menu_locations'] ) ) {
+			$theme_mods['nav_menu_locations'] = array();
+		}
+
+		$mapped_nav_menu_locations = wp_map_nav_menu_locations( $theme_mods['nav_menu_locations'], $this-&gt;original_nav_menu_locations );
+	}
+
+	foreach ( $locations as $location =&gt; $description ) {
+		$setting_id = "nav_menu_locations[{$location}]";
+
+		$setting = $this-&gt;manager-&gt;get_setting( $setting_id );
+		if ( $setting ) {
+			$setting-&gt;transport = 'postMessage';
+			remove_filter( "customize_sanitize_{$setting_id}", 'absint' );
+			add_filter( "customize_sanitize_{$setting_id}", array( $this, 'intval_base10' ) );
+		} else {
+			$this-&gt;manager-&gt;add_setting(
+				$setting_id,
+				array(
+					'sanitize_callback' =&gt; array( $this, 'intval_base10' ),
+					'theme_supports'    =&gt; 'menus',
+					'type'              =&gt; 'theme_mod',
+					'transport'         =&gt; 'postMessage',
+					'default'           =&gt; 0,
+				)
+			);
+		}
+
+		// Override the assigned nav menu location if mapped during previewed theme switch.
+		if ( empty( $changeset[ $setting_id ] ) &amp;&amp; isset( $mapped_nav_menu_locations[ $location ] ) ) {
+			$this-&gt;manager-&gt;set_post_value( $setting_id, $mapped_nav_menu_locations[ $location ] );
+		}
+
+		$this-&gt;manager-&gt;add_control(
+			new WP_Customize_Nav_Menu_Location_Control(
+				$this-&gt;manager,
+				$setting_id,
+				array(
+					'label'       =&gt; $description,
+					'location_id' =&gt; $location,
+					'section'     =&gt; 'menu_locations',
+					'choices'     =&gt; $choices,
+				)
+			)
+		);
+	}
+
+	// Used to denote post states for special pages.
+	if ( ! function_exists( 'get_post_states' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/template.php';
+	}
+
+	// Register each menu as a Customizer section, and add each menu item to each menu.
+	foreach ( $menus as $menu ) {
+		$menu_id = $menu-&gt;term_id;
+
+		// Create a section for each menu.
+		$section_id = 'nav_menu[' . $menu_id . ']';
+		$this-&gt;manager-&gt;add_section(
+			new WP_Customize_Nav_Menu_Section(
+				$this-&gt;manager,
+				$section_id,
+				array(
+					'title'    =&gt; html_entity_decode( $menu-&gt;name, ENT_QUOTES, get_bloginfo( 'charset' ) ),
+					'priority' =&gt; 10,
+					'panel'    =&gt; 'nav_menus',
+				)
+			)
+		);
+
+		$nav_menu_setting_id = 'nav_menu[' . $menu_id . ']';
+		$this-&gt;manager-&gt;add_setting(
+			new WP_Customize_Nav_Menu_Setting(
+				$this-&gt;manager,
+				$nav_menu_setting_id,
+				array(
+					'transport' =&gt; 'postMessage',
+				)
+			)
+		);
+
+		// Add the menu contents.
+		$menu_items = (array) wp_get_nav_menu_items( $menu_id );
+
+		foreach ( array_values( $menu_items ) as $i =&gt; $item ) {
+
+			// Create a setting for each menu item (which doesn't actually manage data, currently).
+			$menu_item_setting_id = 'nav_menu_item[' . $item-&gt;ID . ']';
+
+			$value = (array) $item;
+			if ( empty( $value['post_title'] ) ) {
+				$value['title'] = '';
+			}
+
+			$value['nav_menu_term_id'] = $menu_id;
+			$this-&gt;manager-&gt;add_setting(
+				new WP_Customize_Nav_Menu_Item_Setting(
+					$this-&gt;manager,
+					$menu_item_setting_id,
+					array(
+						'value'     =&gt; $value,
+						'transport' =&gt; 'postMessage',
+					)
+				)
+			);
+
+			// Create a control for each menu item.
+			$this-&gt;manager-&gt;add_control(
+				new WP_Customize_Nav_Menu_Item_Control(
+					$this-&gt;manager,
+					$menu_item_setting_id,
+					array(
+						'label'    =&gt; $item-&gt;title,
+						'section'  =&gt; $section_id,
+						'priority' =&gt; 10 + $i,
+					)
+				)
+			);
+		}
+
+		// Note: other controls inside of this section get added dynamically in JS via the MenuSection.ready() function.
+	}
+
+	// Add the add-new-menu section and controls.
+	$this-&gt;manager-&gt;add_section(
+		'add_menu',
+		array(
+			'type'     =&gt; 'new_menu',
+			'title'    =&gt; __( 'New Menu' ),
+			'panel'    =&gt; 'nav_menus',
+			'priority' =&gt; 20,
+		)
+	);
+
+	$this-&gt;manager-&gt;add_setting(
+		new WP_Customize_Filter_Setting(
+			$this-&gt;manager,
+			'nav_menus_created_posts',
+			array(
+				'transport'         =&gt; 'postMessage',
+				'type'              =&gt; 'option', // To prevent theme prefix in changeset.
+				'default'           =&gt; array(),
+				'sanitize_callback' =&gt; array( $this, 'sanitize_nav_menus_created_posts' ),
+			)
+		)
+	);
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/class-wp-customize-nav-menus.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/class-wp-customize-nav-menus.php#L629">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/class-wp-customize-nav-menus.php#L629-L866">View on GitHub</a></p></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/4.3.0/">4.3.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/classes/wp_customize_nav_menus/customize_register" class="_attribution-link">https://developer.wordpress.org/reference/classes/wp_customize_nav_menus/customize_register</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

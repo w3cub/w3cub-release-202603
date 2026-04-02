@@ -1,0 +1,236 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Wp_get_image_mime( String &#36;file )&#58; String|false - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Returns the real mime type of an image file. ">
+  <meta name="keywords" content="wp, get, image, mime, string, &#36;file, string|false, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/wp_get_image_mime.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">wp_get_image_mime( <span class="arg-type">string</span> <span class="arg-name">$file</span> ): <span class="return-type">string|false</span>
+</h1> <section><p>Returns the real mime type of an image file.</p> </section> <section><h2 id="description">Description</h2> <p>This depends on exif_imagetype() or getimagesize() to determine real mime types.</p> </section> <section><h2 id="parameters">Parameters</h2> <dl>
+<dt>
+<code>$file</code><span class="type"><span class="string">string</span></span><span class="required">required</span>
+</dt>
+<dd><div class="desc"><span class="description">Full path to the file.</span></div></dd>
+</dl></section> <section><h2 id="return">Return</h2> <span class="return-type">string|false</span> The actual mime type or false if the type cannot be determined.</section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="3324" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function wp_get_image_mime( $file ) {
+	/*
+	 * Use exif_imagetype() to check the mimetype if available or fall back to
+	 * getimagesize() if exif isn't available. If either function throws an Exception
+	 * we assume the file could not be validated.
+	 */
+	try {
+		if ( is_callable( 'exif_imagetype' ) ) {
+			$imagetype = exif_imagetype( $file );
+			$mime      = ( $imagetype ) ? image_type_to_mime_type( $imagetype ) : false;
+		} elseif ( function_exists( 'getimagesize' ) ) {
+			// Don't silence errors when in debug mode, unless running unit tests.
+			if ( defined( 'WP_DEBUG' ) &amp;&amp; WP_DEBUG &amp;&amp; ! defined( 'WP_RUN_CORE_TESTS' ) ) {
+				// Not using wp_getimagesize() here to avoid an infinite loop.
+				$imagesize = getimagesize( $file );
+			} else {
+				$imagesize = @getimagesize( $file );
+			}
+
+			$mime = ( isset( $imagesize['mime'] ) ) ? $imagesize['mime'] : false;
+		} else {
+			$mime = false;
+		}
+
+		if ( false !== $mime ) {
+			return $mime;
+		}
+
+		$magic = file_get_contents( $file, false, null, 0, 12 );
+
+		if ( false === $magic ) {
+			return false;
+		}
+
+		/*
+		 * Add WebP fallback detection when image library doesn't support WebP.
+		 * Note: detection values come from LibWebP, see
+		 * https://github.com/webmproject/libwebp/blob/master/imageio/image_dec.c#L30
+		 */
+		$magic = bin2hex( $magic );
+		if (
+			// RIFF.
+			( str_starts_with( $magic, '52494646' ) ) &amp;&amp;
+			// WEBP.
+			( 16 === strpos( $magic, '57454250' ) )
+		) {
+			$mime = 'image/webp';
+		}
+
+		/**
+		 * Add AVIF fallback detection when image library doesn't support AVIF.
+		 *
+		 * Detection based on section 4.3.1 File-type box definition of the ISO/IEC 14496-12
+		 * specification and the AV1-AVIF spec, see https://aomediacodec.github.io/av1-avif/v1.1.0.html#brands.
+		 */
+
+		// Divide the header string into 4 byte groups.
+		$magic = str_split( $magic, 8 );
+
+		if ( isset( $magic[1] ) &amp;&amp; isset( $magic[2] ) &amp;&amp; 'ftyp' === hex2bin( $magic[1] ) ) {
+			if ( 'avif' === hex2bin( $magic[2] ) || 'avis' === hex2bin( $magic[2] ) ) {
+				$mime = 'image/avif';
+			} elseif ( 'heic' === hex2bin( $magic[2] ) ) {
+				$mime = 'image/heic';
+			} elseif ( 'heif' === hex2bin( $magic[2] ) ) {
+				$mime = 'image/heif';
+			} else {
+				/*
+				 * HEIC/HEIF images and image sequences/animations may have other strings here
+				 * like mif1, msf1, etc. For now fall back to using finfo_file() to detect these.
+				 */
+				if ( extension_loaded( 'fileinfo' ) ) {
+					$fileinfo  = finfo_open( FILEINFO_MIME_TYPE );
+					$mime_type = finfo_file( $fileinfo, $file );
+					finfo_close( $fileinfo );
+
+					if ( wp_is_heic_image_mime_type( $mime_type ) ) {
+						$mime = $mime_type;
+					}
+				}
+			}
+		}
+	} catch ( Exception $e ) {
+		$mime = false;
+	}
+
+	return $mime;
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/functions.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/functions.php#L3324">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/functions.php#L3324-L3411">View on GitHub</a></p></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/6.7.0/">6.7.0</a></td>
+<td><span class="since-description">Added support for HEIC images.</span></td>
+</tr>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/6.5.0/">6.5.0</a></td>
+<td><span class="since-description">Added support for AVIF images.</span></td>
+</tr>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/5.8.0/">5.8.0</a></td>
+<td><span class="since-description">Added support for WebP images.</span></td>
+</tr>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/4.7.1/">4.7.1</a></td>
+<td>Introduced.</td>
+</tr>
+</tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/wp_get_image_mime" class="_attribution-link">https://developer.wordpress.org/reference/functions/wp_get_image_mime</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

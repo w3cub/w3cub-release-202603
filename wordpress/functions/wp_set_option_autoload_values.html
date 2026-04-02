@@ -1,0 +1,249 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Wp_set_option_autoload_values( Array &#36;options )&#58; Array - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Sets the autoload values for multiple options in the database. ">
+  <meta name="keywords" content="wp, set, option, autoload, values, array, &#36;options, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/wp_set_option_autoload_values.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">wp_set_option_autoload_values( <span class="arg-type">array</span> <span class="arg-name">$options</span> ): <span class="return-type">array</span>
+</h1> <section><p>Sets the autoload values for multiple options in the database.</p> </section> <section><h2 id="description">Description</h2> <p>Autoloading too many options can lead to performance problems, especially if the options are not frequently used.<br>This function allows modifying the autoload value for multiple options without changing the actual option value.<br>This is for example recommended for plugin activation and deactivation hooks, to ensure any options exclusively used by the plugin which are generally autoloaded can be set to not autoload when the plugin is inactive.</p> </section> <section><h2 id="parameters">Parameters</h2> <dl>
+<dt>
+<code>$options</code><span class="type"><span class="array">array</span></span><span class="required">required</span>
+</dt>
+<dd><div class="desc"><span class="description">Associative array of option names and their autoload values to set. The option names are expected to not be SQL-escaped. The autoload values should be boolean values. For backward compatibility <code>'yes'</code> and <code>'no'</code> are also accepted, though using these values is deprecated.</span></div></dd>
+</dl></section> <section><h2 id="return">Return</h2> <span class="return-type">array</span> Associative array of all provided $options as keys and boolean values for whether their autoload value was updated.</section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="388" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function wp_set_option_autoload_values( array $options ) {
+	global $wpdb;
+
+	if ( ! $options ) {
+		return array();
+	}
+
+	$grouped_options = array(
+		'on'  =&gt; array(),
+		'off' =&gt; array(),
+	);
+	$results         = array();
+	foreach ( $options as $option =&gt; $autoload ) {
+		wp_protect_special_option( $option ); // Ensure only valid options can be passed.
+
+		/*
+		 * Sanitize autoload value and categorize accordingly.
+		 * The values 'yes', 'no', 'on', and 'off' are supported for backward compatibility.
+		 */
+		if ( 'off' === $autoload || 'no' === $autoload || false === $autoload ) {
+			$grouped_options['off'][] = $option;
+		} else {
+			$grouped_options['on'][] = $option;
+		}
+		$results[ $option ] = false; // Initialize result value.
+	}
+
+	$where      = array();
+	$where_args = array();
+	foreach ( $grouped_options as $autoload =&gt; $options ) {
+		if ( ! $options ) {
+			continue;
+		}
+		$placeholders = implode( ',', array_fill( 0, count( $options ), '%s' ) );
+		$where[]      = "autoload != '%s' AND option_name IN ($placeholders)";
+		$where_args[] = $autoload;
+		foreach ( $options as $option ) {
+			$where_args[] = $option;
+		}
+	}
+	$where = 'WHERE ' . implode( ' OR ', $where );
+
+	/*
+	 * Determine the relevant options that do not already use the given autoload value.
+	 * If no options are returned, no need to update.
+	 */
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+	$options_to_update = $wpdb-&gt;get_col( $wpdb-&gt;prepare( "SELECT option_name FROM $wpdb-&gt;options $where", $where_args ) );
+	if ( ! $options_to_update ) {
+		return $results;
+	}
+
+	// Run UPDATE queries as needed (maximum 2) to update the relevant options' autoload values to 'yes' or 'no'.
+	foreach ( $grouped_options as $autoload =&gt; $options ) {
+		if ( ! $options ) {
+			continue;
+		}
+		$options                      = array_intersect( $options, $options_to_update );
+		$grouped_options[ $autoload ] = $options;
+		if ( ! $grouped_options[ $autoload ] ) {
+			continue;
+		}
+
+		// Run query to update autoload value for all the options where it is needed.
+		$success = $wpdb-&gt;query(
+			$wpdb-&gt;prepare(
+				"UPDATE $wpdb-&gt;options SET autoload = %s WHERE option_name IN (" . implode( ',', array_fill( 0, count( $grouped_options[ $autoload ] ), '%s' ) ) . ')',
+				array_merge(
+					array( $autoload ),
+					$grouped_options[ $autoload ]
+				)
+			)
+		);
+		if ( ! $success ) {
+			// Set option list to an empty array to indicate no options were updated.
+			$grouped_options[ $autoload ] = array();
+			continue;
+		}
+
+		// Assume that on success all options were updated, which should be the case given only new values are sent.
+		foreach ( $grouped_options[ $autoload ] as $option ) {
+			$results[ $option ] = true;
+		}
+	}
+
+	/*
+	 * If any options were changed to 'on', delete their individual caches, and delete 'alloptions' cache so that it
+	 * is refreshed as needed.
+	 * If no options were changed to 'on' but any options were changed to 'no', delete them from the 'alloptions'
+	 * cache. This is not necessary when options were changed to 'on', since in that situation the entire cache is
+	 * deleted anyway.
+	 */
+	if ( $grouped_options['on'] ) {
+		wp_cache_delete_multiple( $grouped_options['on'], 'options' );
+		wp_cache_delete( 'alloptions', 'options' );
+	} elseif ( $grouped_options['off'] ) {
+		$alloptions = wp_load_alloptions( true );
+
+		foreach ( $grouped_options['off'] as $option ) {
+			if ( isset( $alloptions[ $option ] ) ) {
+				unset( $alloptions[ $option ] );
+			}
+		}
+
+		wp_cache_set( 'alloptions', $alloptions, 'options' );
+	}
+
+	return $results;
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/option.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/option.php#L388">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/option.php#L388-L496">View on GitHub</a></p></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/6.7.0/">6.7.0</a></td>
+<td><span class="since-description">The autoload values <code>'yes'</code> and <code>'no'</code> are deprecated.</span></td>
+</tr>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/6.4.0/">6.4.0</a></td>
+<td>Introduced.</td>
+</tr>
+</tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/wp_set_option_autoload_values" class="_attribution-link">https://developer.wordpress.org/reference/functions/wp_set_option_autoload_values</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

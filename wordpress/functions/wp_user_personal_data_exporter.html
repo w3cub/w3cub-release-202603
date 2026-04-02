@@ -1,0 +1,336 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Wp_user_personal_data_exporter( String &#36;email_address )&#58; Array - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Finds and exports personal data associated with an email address from the user and user_meta table. ">
+  <meta name="keywords" content="wp, user, personal, data, exporter, string, &#36;email, address, array, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/functions/wp_user_personal_data_exporter.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">wp_user_personal_data_exporter( <span class="arg-type">string</span> <span class="arg-name">$email_address</span> ): <span class="return-type">array</span>
+</h1> <section><p>Finds and exports personal data associated with an email address from the user and user_meta table.</p> </section> <section><h2 id="parameters">Parameters</h2> <dl>
+<dt>
+<code>$email_address</code><span class="type"><span class="string">string</span></span><span class="required">required</span>
+</dt>
+<dd><div class="desc"><span class="description">The user’s email address.</span></div></dd>
+</dl></section> <section><h2 id="return">Return</h2> <span class="return-type">array</span> An array of personal data.<br> <ul class="param-hash">
+<li>
+<code>data</code> <span class="type">array[]</span><div class="desc">An array of personal data arrays.</div>
+</li> <li>
+<code>done</code> <span class="type">bool</span><div class="desc">Whether the exporter is finished.</div>
+</li> </ul> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="3881" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">function wp_user_personal_data_exporter( $email_address ) {
+	$email_address = trim( $email_address );
+
+	$data_to_export = array();
+
+	$user = get_user_by( 'email', $email_address );
+
+	if ( ! $user ) {
+		return array(
+			'data' =&gt; array(),
+			'done' =&gt; true,
+		);
+	}
+
+	$user_meta = get_user_meta( $user-&gt;ID );
+
+	$user_props_to_export = array(
+		'ID'              =&gt; __( 'User ID' ),
+		'user_login'      =&gt; __( 'User Login Name' ),
+		'user_nicename'   =&gt; __( 'User Nice Name' ),
+		'user_email'      =&gt; __( 'User Email' ),
+		'user_url'        =&gt; __( 'User URL' ),
+		'user_registered' =&gt; __( 'User Registration Date' ),
+		'display_name'    =&gt; __( 'User Display Name' ),
+		'nickname'        =&gt; __( 'User Nickname' ),
+		'first_name'      =&gt; __( 'User First Name' ),
+		'last_name'       =&gt; __( 'User Last Name' ),
+		'description'     =&gt; __( 'User Description' ),
+	);
+
+	$user_data_to_export = array();
+
+	foreach ( $user_props_to_export as $key =&gt; $name ) {
+		$value = '';
+
+		switch ( $key ) {
+			case 'ID':
+			case 'user_login':
+			case 'user_nicename':
+			case 'user_email':
+			case 'user_url':
+			case 'user_registered':
+			case 'display_name':
+				$value = $user-&gt;data-&gt;$key;
+				break;
+			case 'nickname':
+			case 'first_name':
+			case 'last_name':
+			case 'description':
+				$value = $user_meta[ $key ][0];
+				break;
+		}
+
+		if ( ! empty( $value ) ) {
+			$user_data_to_export[] = array(
+				'name'  =&gt; $name,
+				'value' =&gt; $value,
+			);
+		}
+	}
+
+	// Get the list of reserved names.
+	$reserved_names = array_values( $user_props_to_export );
+
+	/**
+	 * Filters the user's profile data for the privacy exporter.
+	 *
+	 * @since 5.4.0
+	 *
+	 * @param array    $additional_user_profile_data {
+	 *     An array of name-value pairs of additional user data items. Default empty array.
+	 *
+	 *     @type string $name  The user-facing name of an item name-value pair,e.g. 'IP Address'.
+	 *     @type string $value The user-facing value of an item data pair, e.g. '50.60.70.0'.
+	 * }
+	 * @param WP_User  $user           The user whose data is being exported.
+	 * @param string[] $reserved_names An array of reserved names. Any item in `$additional_user_data`
+	 *                                 that uses one of these for its `name` will not be included in the export.
+	 */
+	$_extra_data = apply_filters( 'wp_privacy_additional_user_profile_data', array(), $user, $reserved_names );
+
+	if ( is_array( $_extra_data ) &amp;&amp; ! empty( $_extra_data ) ) {
+		// Remove items that use reserved names.
+		$extra_data = array_filter(
+			$_extra_data,
+			static function ( $item ) use ( $reserved_names ) {
+				return ! in_array( $item['name'], $reserved_names, true );
+			}
+		);
+
+		if ( count( $extra_data ) !== count( $_extra_data ) ) {
+			_doing_it_wrong(
+				__FUNCTION__,
+				sprintf(
+					/* translators: %s: wp_privacy_additional_user_profile_data */
+					__( 'Filter %s returned items with reserved names.' ),
+					'&lt;code&gt;wp_privacy_additional_user_profile_data&lt;/code&gt;'
+				),
+				'5.4.0'
+			);
+		}
+
+		if ( ! empty( $extra_data ) ) {
+			$user_data_to_export = array_merge( $user_data_to_export, $extra_data );
+		}
+	}
+
+	$data_to_export[] = array(
+		'group_id'          =&gt; 'user',
+		'group_label'       =&gt; __( 'User' ),
+		'group_description' =&gt; __( 'User&amp;#8217;s profile data.' ),
+		'item_id'           =&gt; "user-{$user-&gt;ID}",
+		'data'              =&gt; $user_data_to_export,
+	);
+
+	if ( isset( $user_meta['community-events-location'] ) ) {
+		$location = maybe_unserialize( $user_meta['community-events-location'][0] );
+
+		$location_props_to_export = array(
+			'description' =&gt; __( 'City' ),
+			'country'     =&gt; __( 'Country' ),
+			'latitude'    =&gt; __( 'Latitude' ),
+			'longitude'   =&gt; __( 'Longitude' ),
+			'ip'          =&gt; __( 'IP' ),
+		);
+
+		$location_data_to_export = array();
+
+		foreach ( $location_props_to_export as $key =&gt; $name ) {
+			if ( ! empty( $location[ $key ] ) ) {
+				$location_data_to_export[] = array(
+					'name'  =&gt; $name,
+					'value' =&gt; $location[ $key ],
+				);
+			}
+		}
+
+		$data_to_export[] = array(
+			'group_id'          =&gt; 'community-events-location',
+			'group_label'       =&gt; __( 'Community Events Location' ),
+			'group_description' =&gt; __( 'User&amp;#8217;s location data used for the Community Events in the WordPress Events and News dashboard widget.' ),
+			'item_id'           =&gt; "community-events-location-{$user-&gt;ID}",
+			'data'              =&gt; $location_data_to_export,
+		);
+	}
+
+	if ( isset( $user_meta['session_tokens'] ) ) {
+		$session_tokens = maybe_unserialize( $user_meta['session_tokens'][0] );
+
+		$session_tokens_props_to_export = array(
+			'expiration' =&gt; __( 'Expiration' ),
+			'ip'         =&gt; __( 'IP' ),
+			'ua'         =&gt; __( 'User Agent' ),
+			'login'      =&gt; __( 'Last Login' ),
+		);
+
+		foreach ( $session_tokens as $token_key =&gt; $session_token ) {
+			$session_tokens_data_to_export = array();
+
+			foreach ( $session_tokens_props_to_export as $key =&gt; $name ) {
+				if ( ! empty( $session_token[ $key ] ) ) {
+					$value = $session_token[ $key ];
+					if ( in_array( $key, array( 'expiration', 'login' ), true ) ) {
+						$value = date_i18n( 'F d, Y H:i A', $value );
+					}
+					$session_tokens_data_to_export[] = array(
+						'name'  =&gt; $name,
+						'value' =&gt; $value,
+					);
+				}
+			}
+
+			$data_to_export[] = array(
+				'group_id'          =&gt; 'session-tokens',
+				'group_label'       =&gt; __( 'Session Tokens' ),
+				'group_description' =&gt; __( 'User&amp;#8217;s Session Tokens data.' ),
+				'item_id'           =&gt; "session-tokens-{$user-&gt;ID}-{$token_key}",
+				'data'              =&gt; $session_tokens_data_to_export,
+			);
+		}
+	}
+
+	return array(
+		'data' =&gt; $data_to_export,
+		'done' =&gt; true,
+	);
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/user.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/user.php#L3881">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/user.php#L3881-L4067">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../hooks/wp_privacy_additional_user_profile_data"><span class="hook-func">apply_filters</span>( ‘wp_privacy_additional_user_profile_data’, <nobr><span class="arg-type">array</span> <span class="arg-name">$additional_user_profile_data</span></nobr>, <nobr><span class="arg-type">WP_User</span> <span class="arg-name">$user</span></nobr>, <nobr><span class="arg-type">string[]</span> <span class="arg-name">$reserved_names</span></nobr> )</a></dt>
+<dd>
+<p>Filters the user’s profile data for the privacy exporter.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/5.4.0/">5.4.0</a></td>
+<td><span class="since-description">Added ‘Session Tokens’ group to the export data.</span></td>
+</tr>
+<tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/4.9.6/">4.9.6</a></td>
+<td>Introduced.</td>
+</tr>
+</tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/functions/wp_user_personal_data_exporter" class="_attribution-link">https://developer.wordpress.org/reference/functions/wp_user_personal_data_exporter</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

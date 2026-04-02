@@ -1,0 +1,275 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>WP_Customize_Selective_Refresh&#58;&#58;handle_render_partials_request() - WordPress - W3cubDocs</title>
+  
+  <meta name="description" content=" Handles the Ajax request to return the rendered partials for the requested placements. ">
+  <meta name="keywords" content="wp, customize, selective, refresh, handle, render, partials, request, wordpress">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/wordpress/classes/wp_customize_selective_refresh/handle_render_partials_request.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/wordpress.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/wordpress/" class="_nav-link" title="" style="margin-left:0;">WordPress</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _wordpress">
+				
+				
+<h1 class="wp-block-wporg-code-reference-title">WP_Customize_Selective_Refresh::handle_render_partials_request()</h1> <section><p>Handles the Ajax request to return the rendered partials for the requested placements.</p> </section> <section><h2 id="source">Source</h2> <pre class="wp-block-code" data-start="304" aria-label="Function source code" data-language="php"><code id="wporg-source-code" lang="php" class="language-php line-numbers">public function handle_render_partials_request() {
+	if ( ! $this-&gt;is_render_partials_request() ) {
+		return;
+	}
+
+	/*
+	 * Note that is_customize_preview() returning true will entail that the
+	 * user passed the 'customize' capability check and the nonce check, since
+	 * WP_Customize_Manager::setup_theme() is where the previewing flag is set.
+	 */
+	if ( ! is_customize_preview() ) {
+		wp_send_json_error( 'expected_customize_preview', 403 );
+	} elseif ( ! isset( $_POST['partials'] ) ) {
+		wp_send_json_error( 'missing_partials', 400 );
+	}
+
+	// Ensure that doing selective refresh on 404 template doesn't result in fallback rendering behavior (full refreshes).
+	status_header( 200 );
+
+	$partials = json_decode( wp_unslash( $_POST['partials'] ), true );
+
+	if ( ! is_array( $partials ) ) {
+		wp_send_json_error( 'malformed_partials' );
+	}
+
+	$this-&gt;add_dynamic_partials( array_keys( $partials ) );
+
+	/**
+	 * Fires immediately before partials are rendered.
+	 *
+	 * Plugins may do things like call wp_enqueue_scripts() and gather a list of the scripts
+	 * and styles which may get enqueued in the response.
+	 *
+	 * @since 4.5.0
+	 *
+	 * @param WP_Customize_Selective_Refresh $refresh  Selective refresh component.
+	 * @param array                          $partials Placements' context data for the partials rendered in the request.
+	 *                                                 The array is keyed by partial ID, with each item being an array of
+	 *                                                 the placements' context data.
+	 */
+	do_action( 'customize_render_partials_before', $this, $partials );
+
+	set_error_handler( array( $this, 'handle_error' ), error_reporting() );
+
+	$contents = array();
+
+	foreach ( $partials as $partial_id =&gt; $container_contexts ) {
+		$this-&gt;current_partial_id = $partial_id;
+
+		if ( ! is_array( $container_contexts ) ) {
+			wp_send_json_error( 'malformed_container_contexts' );
+		}
+
+		$partial = $this-&gt;get_partial( $partial_id );
+
+		if ( ! $partial || ! $partial-&gt;check_capabilities() ) {
+			$contents[ $partial_id ] = null;
+			continue;
+		}
+
+		$contents[ $partial_id ] = array();
+
+		// @todo The array should include not only the contents, but also whether the container is included?
+		if ( empty( $container_contexts ) ) {
+			// Since there are no container contexts, render just once.
+			$contents[ $partial_id ][] = $partial-&gt;render( null );
+		} else {
+			foreach ( $container_contexts as $container_context ) {
+				$contents[ $partial_id ][] = $partial-&gt;render( $container_context );
+			}
+		}
+	}
+	$this-&gt;current_partial_id = null;
+
+	restore_error_handler();
+
+	/**
+	 * Fires immediately after partials are rendered.
+	 *
+	 * Plugins may do things like call wp_footer() to scrape scripts output and return them
+	 * via the <a href="../../hooks/customize_render_partials_response">'customize_render_partials_response'</a> filter.
+	 *
+	 * @since 4.5.0
+	 *
+	 * @param WP_Customize_Selective_Refresh $refresh  Selective refresh component.
+	 * @param array                          $partials Placements' context data for the partials rendered in the request.
+	 *                                                 The array is keyed by partial ID, with each item being an array of
+	 *                                                 the placements' context data.
+	 */
+	do_action( 'customize_render_partials_after', $this, $partials );
+
+	$response = array(
+		'contents' =&gt; $contents,
+	);
+
+	if ( defined( 'WP_DEBUG_DISPLAY' ) &amp;&amp; WP_DEBUG_DISPLAY ) {
+		$response['errors'] = $this-&gt;triggered_errors;
+	}
+
+	$setting_validities             = $this-&gt;manager-&gt;validate_setting_values( $this-&gt;manager-&gt;unsanitized_post_values() );
+	$exported_setting_validities    = array_map( array( $this-&gt;manager, 'prepare_setting_validity_for_js' ), $setting_validities );
+	$response['setting_validities'] = $exported_setting_validities;
+
+	/**
+	 * Filters the response from rendering the partials.
+	 *
+	 * Plugins may use this filter to inject `$scripts` and `$styles`, which are dependencies
+	 * for the partials being rendered. The response data will be available to the client via
+	 * the `render-partials-response` JS event, so the client can then inject the scripts and
+	 * styles into the DOM if they have not already been enqueued there.
+	 *
+	 * If plugins do this, they'll need to take care for any scripts that do `document.write()`
+	 * and make sure that these are not injected, or else to override the function to no-op,
+	 * or else the page will be destroyed.
+	 *
+	 * Plugins should be aware that `$scripts` and `$styles` may eventually be included by
+	 * default in the response.
+	 *
+	 * @since 4.5.0
+	 *
+	 * @param array $response {
+	 *     Response.
+	 *
+	 *     @type array $contents Associative array mapping a partial ID its corresponding array of contents
+	 *                           for the containers requested.
+	 *     @type array $errors   List of errors triggered during rendering of partials, if `WP_DEBUG_DISPLAY`
+	 *                           is enabled.
+	 * }
+	 * @param WP_Customize_Selective_Refresh $refresh  Selective refresh component.
+	 * @param array                          $partials Placements' context data for the partials rendered in the request.
+	 *                                                 The array is keyed by partial ID, with each item being an array of
+	 *                                                 the placements' context data.
+	 */
+	$response = apply_filters( 'customize_render_partials_response', $response, $this, $partials );
+
+	wp_send_json_success( $response );
+}
+</code></pre>
+<p class="wporg-dot-link-list"><a href="https://developer.wordpress.org/reference/files/wp-includes/customize/class-wp-customize-selective-refresh.php/">View all references</a> <a href="https://core.trac.wordpress.org/browser/tags/6.7/src/wp-includes/customize/class-wp-customize-selective-refresh.php#L304">View on Trac</a> <a href="https://github.com/WordPress/wordpress-develop/blob/6.7/src/wp-includes/customize/class-wp-customize-selective-refresh.php#L304-L440">View on GitHub</a></p></section> <section><h2 id="hooks">Hooks</h2> <dl>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../../hooks/customize_render_partials_after"><span class="hook-func">do_action</span>( ‘customize_render_partials_after’, <nobr><span class="arg-type">WP_Customize_Selective_Refresh</span> <span class="arg-name">$refresh</span></nobr>, <nobr><span class="arg-type">array</span> <span class="arg-name">$partials</span></nobr> )</a></dt>
+<dd>
+<p>Fires immediately after partials are rendered.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../../hooks/customize_render_partials_before"><span class="hook-func">do_action</span>( ‘customize_render_partials_before’, <nobr><span class="arg-type">WP_Customize_Selective_Refresh</span> <span class="arg-name">$refresh</span></nobr>, <nobr><span class="arg-type">array</span> <span class="arg-name">$partials</span></nobr> )</a></dt>
+<dd>
+<p>Fires immediately before partials are rendered.</p> </dd>
+<dt class="wp-block-wporg-code-reference-title has-normal-font-size"><a href="../../hooks/customize_render_partials_response"><span class="hook-func">apply_filters</span>( ‘customize_render_partials_response’, <nobr><span class="arg-type">array</span> <span class="arg-name">$response</span></nobr>, <nobr><span class="arg-type">WP_Customize_Selective_Refresh</span> <span class="arg-name">$refresh</span></nobr>, <nobr><span class="arg-type">array</span> <span class="arg-name">$partials</span></nobr> )</a></dt>
+<dd>
+<p>Filters the response from rendering the partials.</p> </dd>
+</dl></section>  <section><h2 id="changelog">Changelog</h2> <section style="margin-top:var(--wp--preset--spacing--20);"><figure class="wp-block-table "><table>
+<thead><tr>
+<th scope="col">Version</th>
+<th scope="col">Description</th>
+</tr></thead>
+<tbody><tr class="">
+<td><a href="https://developer.wordpress.org/reference/since/4.5.0/">4.5.0</a></td>
+<td>Introduced.</td>
+</tr></tbody>
+</table></figure></section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2003–2024 WordPress Foundation<br>Licensed under the GNU GPLv2+ License.<br>
+    <a href="https://developer.wordpress.org/reference/classes/wp_customize_selective_refresh/handle_render_partials_request" class="_attribution-link">https://developer.wordpress.org/reference/classes/wp_customize_selective_refresh/handle_render_partials_request</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
