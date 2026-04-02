@@ -1,0 +1,123 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>The Big Varnish Picture - Varnish - W3cubDocs</title>
+  
+  <meta name="description" content="In this section we will cover answers to the questions&#58; - What is in this package called “Varnish”? - what are all the different bits and pieces &hellip;">
+  <meta name="keywords" content="big, varnish, picture">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/varnish/users-guide/intro.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/varnish.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/varnish/" class="_nav-link" title="" style="margin-left:0;">Varnish</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1 id="users-intro">The Big Varnish Picture</h1> <p>In this section we will cover answers to the questions: - What is in this package called “Varnish”? - what are all the different bits and pieces named? - Will you need a hex-wrench for assembly?</p> <p>The two main parts of Varnish are the two processes in the <code>varnishd</code> program. The first process is called “the manager”, and its job is to talk to you, the administrator, and make the things you ask for happen.</p> <p>The second process is called “the worker” or just “the child” and this is the process which does all the actual work with your HTTP traffic.</p> <p>When you start <code>varnishd</code>, you start the manager process, and once it is done handling all the command line flags, it will start the child process for you. Should the child process die, the manager will start it again for you, automatically and right away.</p> <p>The main reason for this division of labor is security: The manager process will typically run with “root” permissions, in order to open TCP socket port 80, but it starts the child process with minimal permissions, as a defensive measure.</p> <p>The manager process is interactive, it offers a CLI – Command Line Interface, which can be used manually, from scripts or programs. The CLI offers almost full control of what Varnish actually does to your HTTP traffic, and we have gone to great lengths to ensure that you should not need to restart the Varnish processes, unless you need to change something very fundamental.</p> <p>The CLI can be safely accessed remotely, using a simple and flexible PSK – Pre Shared Key, access control scheme, so it is easy to integrate Varnish into your operations and management infrastructure or tie it to your CMS.</p> <p>All this is covered in <a class="reference internal" href="running#users-running"><span class="std std-ref">Starting and running Varnish</span></a>.</p> <p>Things like, how the child process should deal with the HTTP requests, what to cache, which headers to remove etc, is all specified using a small programming language called VCL – Varnish Configuration Language. The manager process will compile the VCL program and check it for errors,</p> <p>but it is the child process which runs the VCL program, for each and every HTTP request which comes in.</p> <p>Because the VCL is compiled to C code, and the C code is compiled to machine instructions, even very complex VCL programs execute in a few microseconds, without impacting performance at all.</p> <p>And don’t fret if you are not really a programmer, VCL is very simple to do simple things with:</p> <pre data-language="python">sub vcl_recv {
+        # Remove the cookie header to enable caching
+        unset req.http.cookie;
+}
+</pre> <p>The CLI interface allows you to compile and load new VCL programs at any time, and you can switch between the loaded VCL programs instantly, without restarting the child process and without missing a single HTTP request.</p> <p>VCL code can be extended using external modules, called VMODs or even by inline C-code if you are brave, so in terms of what Varnish can do for your HTTP traffic, there really is no limit.</p> <p><a class="reference internal" href="vcl#users-vcl"><span class="std std-ref">VCL - Varnish Configuration Language</span></a> describes VCL and what it can do in great detail.</p> <p>Varnish uses a segment of shared memory to report and log its activities and status. For each HTTP request, a number of very detailed records will be appended to the log memory segment. Other processes can subscribe to log-records, filter them, and format them, for instance as Apache/NCSA style log records.</p> <p>Another segment in shared memory is used for statistics counters, this allows real-time, down to microsecond resolution monitoring of cache hit-rate, resource usage and specific performance indicating metrics.</p> <p>Varnish comes with a number of tools which reports from shared memory, <code>varnishlog</code>, <code>varnishstats</code>, <code>varnishncsa</code> etc, and with an API library so you can write your own tools, should you need that.</p> <p><a class="reference internal" href="report#users-report"><span class="std std-ref">Reporting and statistics</span></a> explains how all that work.</p> <p>Presumably the reason for your interest in Varnish, is that you want your website to work better. There are many aspects of performance tuning a website, from relatively simple policy decisions about what to cache, to designing a geographically diverse multilevel CDNs using ESI and automatic failover.</p> <p><a class="reference internal" href="performance#users-performance"><span class="std std-ref">Varnish and Website Performance</span></a> will take you through the possibilities and facilities Varnish offers.</p> <p>Finally, Murphys Law must be referenced here: Things will go wrong, and more likely than not, they will do so at zero-zero-dark O’clock. Most likely during a hurricane, when your phone battery is flat and your wife had prepared a intimate evening to celebrate your anniversary.</p> <p>Yes, we’ve all been there, haven’t we?</p> <p>When things go wrong <a class="reference internal" href="troubleshooting#users-trouble"><span class="std std-ref">Troubleshooting Varnish</span></a> will hopefully be of some help.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 2006 Verdens Gang AS<br>Copyright © 2006–2020 Varnish Software AS<br>Licensed under the BSD-2-Clause License.<br>
+    <a href="https://varnish-cache.org/docs/7.4/users-guide/intro.html" class="_attribution-link">https://varnish-cache.org/docs/7.4/users-guide/intro.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

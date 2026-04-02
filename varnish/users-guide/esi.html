@@ -1,0 +1,160 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Content Composition With Edge Side Includes - Varnish - W3cubDocs</title>
+  
+  <meta name="description" content="Varnish can create web pages by assembling different pages, called fragments, together into one page. These fragments can have individual cache &hellip;">
+  <meta name="keywords" content="content, composition, with, edge, side, includes, varnish">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/varnish/users-guide/esi.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/varnish.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/varnish/" class="_nav-link" title="" style="margin-left:0;">Varnish</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1 id="users-guide-esi">Content composition with Edge Side Includes</h1> <p>Varnish can create web pages by assembling different pages, called <code>fragments</code>, together into one page. These <code>fragments</code> can have individual cache policies. If you have a web site with a list showing the five most popular articles on your site, this list can probably be cached as a <code>fragment</code> and included in all the other pages.</p> <p>Used properly this strategy can dramatically increase your hit rate and reduce the load on your servers.</p> <p>In Varnish we’ve only implemented a small subset of ESI, because most of the rest of the ESI specifications facilities are easier and better done with VCL:</p> <pre data-language="python">esi:include
+esi:remove
+&lt;!--esi ...--&gt;
+</pre> <p>Content substitution based on variables and cookies is not implemented.</p> <p>Varnish will not process ESI instructions in HTML comments.</p> <section id="example-esi-include"> <h2>Example: esi:include</h2> <p>Lets see an example how this could be used. This simple cgi script outputs the date:</p> <pre data-language="python">#!/bin/sh
+
+echo 'Content-type: text/html'
+echo ''
+date "+%Y-%m-%d %H:%M"
+</pre> <p>Now, lets have an HTML file that has an ESI include statement:</p> <pre data-language="python">&lt;HTML&gt;
+&lt;BODY&gt;
+The time is: &lt;esi:include src="/cgi-bin/date.cgi"/&gt;
+at this very moment.
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+</pre> <p>For ESI to work you need to activate ESI processing in VCL, like this:</p> <pre data-language="python">sub vcl_backend_response {
+    if (bereq.url == "/test.html") {
+       set beresp.do_esi = true; // Do ESI processing
+       set beresp.ttl = 24 h;    // Sets the TTL on the HTML above
+    } elseif (bereq.url == "/cgi-bin/date.cgi") {
+       set beresp.ttl = 1m;      // Sets a one minute TTL on
+                                 // the included object
+    }
+}
+</pre> <p>Note that <code>set beresp.do_esi = true;</code> is not required, and should be avoided, for the included fragments, unless they also contains <code>&lt;ESI::include …/&gt;</code> instructions.</p> </section> <section id="example-esi-remove-and-esi"> <h2>Example: esi:remove and &lt;!–esi … –&gt;</h2> <p>The <code>&lt;esi:remove&gt;</code> and <code>&lt;!–esi … –&gt;</code> constructs can be used to present appropriate content whether or not ESI is available, for example you can include content when ESI is available or link to it when it is not. ESI processors will remove the start (“&lt;!–esi”) and the end (”–&gt;”) when the page is processed, while still processing the contents. If the page is not processed, it will remain intact, becoming a HTML/XML comment tag. ESI processors will remove <code>&lt;esi:remove&gt;</code> tags and all content contained in them, allowing you to only render the content when the page is not being ESI-processed. For example:</p> <pre data-language="python">&lt;esi:remove&gt;
+  &lt;a href="http://www.example.com/LICENSE"&gt;The license&lt;/a&gt;
+&lt;/esi:remove&gt;
+&lt;!--esi
+&lt;p&gt;The full text of the license:&lt;/p&gt;
+&lt;esi:include src="http://example.com/LICENSE" /&gt;
+--&gt;
+</pre> </section> <section id="what-happens-when-it-fails"> <h2>What happens when it fails ?</h2> <p>By default, the fragments must have <code>resp.status</code> 200 or 206 or their inclusion will cause the parent request to abort.</p> <p>Likewise, if the fragment is a streaming fetch, and that fetch fails, the parent request aborts.</p> <p>If you include synthetic fragments, that is fragments created in <code>vcl_backend_error{}</code> or <code>vcl_synth{}</code>, you must set <code>(be)resp.status</code> to 200 before <code>return(deliver);</code></p> <p>We say “abort” rather than “fail”, because by the time Varnish starts inserting the fragments, the HTTP response header has long since been sent, and it is no longer possible to change the parent requests’s <code>resp.status</code> to a 5xx, so the only way to signal that something is amiss, is to close the connection.</p> <p>However, it is possible to allow individual <code>&lt;ESI:include…</code> to continue in case of failures, by setting:</p> <pre data-language="python">param.set feature +esi_include_onerror
+</pre> <p>and tagging those specific includes:</p> <pre data-language="python">&lt;ESI:include src="…" onerror="continue"/&gt;
+</pre> </section> <section id="can-an-esi-fragment-also-use-esi-includes"> <h2>Can an ESI fragment also use ESI-includes ?</h2> <p>Yes, but the depth is limited by the <code>max_esi_depth</code> parameter in order to prevent infinite recursion.</p> </section> <section id="doing-esi-on-json-and-other-non-xml-ish-content"> <h2>Doing ESI on JSON and other non-XML’ish content</h2> <p>Varnish will peek at the first byte of an object and if it is not a “&lt;” Varnish assumes you didn’t really mean to ESI process it. You can disable this check by:</p> <pre data-language="python">param.set feature +esi_disable_xml_check
+</pre> </section> <section id="ignoring-bom-in-esi-objects"> <h2>Ignoring BOM in ESI objects</h2> <p>If you backend spits out a Unicode Byte-Order-Mark as the first bytes of the response, the “&lt;” check will fail unless you set:</p> <pre data-language="python">param.set feature +esi_remove_bom
+</pre> </section> <section id="esi-on-invalid-xml"> <h2>ESI on invalid XML</h2> <p>The ESI parser expects the XML to be reasonably well formed, but this may fail if you are ESI including non-XML files. You can make the ESI parser disregard anything but ESI tags by setting:</p> <pre data-language="python">param.set feature +esi_ignore_other_elements
+</pre> </section> <section id="esi-includes-with-https-protocol"> <h2>ESI includes with HTTPS protocol</h2> <p>If ESI:include tags specify HTTPS protocol, it will be ignored by default, because Varnish has no way to fetch it with encryption. If you want Varnish to fetch them like it does anything else, set:</p> <pre data-language="python">param.set feature +esi_ignore_https
+</pre> </section> <section id="esi-on-partial-responses-206"> <h2>ESI on partial responses (206)</h2> <p>Varnish supports range requests, but in general partial responses make no sense in an ESI context.</p> <p>If you really know what you are doing, change the 206 to a 200:</p> <pre data-language="python">sub vcl_backend_response {
+    if (beresp.status == 206 &amp;&amp; beresp.http.secret == "swordfish") {
+        set beresp.do_esi = True;
+        set beresp.status = 200;
+    }
+}
+</pre> </section> <section id="esi-and-return-vcl"> <h2>ESI and return(vcl(…))</h2> <p>If the original client request switched to a different VCL using <code>return(vcl(...))</code> in <code>vcl_recv</code>, any esi:include-requests will still start out in the same VCL as the original did, <em>not</em> in the one it switched to.</p> </section> <section id="esi-and-gzip-compression"> <h2>ESI and gzip compression</h2> <p>Varnish’s ESI implementation handles gzip compression automatically, no matter how it is mixed: The parent request can be compressed or uncompressed and the fragments can be compressed or uncompressed, it all works out.</p> <p>Varnish does this compressing all parts of ESI responses separately, and stitching them together on the fly during delivery, which has a negative impact on compression ratio.</p> <p>When you <code>set beresp.do_esi = True;</code> on a gzip’ed response, it will be uncompressed and recompressed part-wise during the fetch.</p> <p>The part-wise compression reduces the opportunities for removing redundancy, because back-references in the gzip data stream cannot point outside it’s own part.</p> <p>The other case where compression ratio is impacted, is if an uncompressed fragment is inserted into a compressed response.</p> </section><div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 2006 Verdens Gang AS<br>Copyright © 2006–2020 Varnish Software AS<br>Licensed under the BSD-2-Clause License.<br>
+    <a href="https://varnish-cache.org/docs/7.4/users-guide/esi.html" class="_attribution-link">https://varnish-cache.org/docs/7.4/users-guide/esi.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

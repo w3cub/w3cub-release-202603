@@ -1,0 +1,135 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Achieving a High Hitrate - Varnish - W3cubDocs</title>
+  
+  <meta name="description" content="Now that Varnish is up and running you can access your web application through Varnish. Unless your application is specifically written to work &hellip;">
+  <meta name="keywords" content="achieving, high, hitrate, varnish">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/varnish/users-guide/increasing-your-hitrate.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/varnish.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/varnish/" class="_nav-link" title="" style="margin-left:0;">Varnish</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1 id="users-guide-increasing-your-hitrate">Achieving a high hitrate</h1> <p>Now that Varnish is up and running you can access your web application through Varnish. Unless your application is specifically written to work behind a web accelerator you’ll probably need to do some changes to either the configuration or the application in order to get a high hitrate in Varnish.</p> <p>Varnish will not cache your data unless it’s absolutely sure it is safe to do so. So, for you to understand how Varnish decides if and how to cache a page, we’ll guide you through a couple of tools that you should find useful to understand what is happening in your Varnish setup.</p> <p>Note that you need a tool to see the HTTP headers that fly between Varnish and the backend. On the Varnish server, the easiest way to do this is to use <a class="reference internal" href="../reference/varnishlog#varnishlog-1"><span class="std std-ref">varnishlog</span></a> and <a class="reference internal" href="../reference/varnishtop#varnishtop-1"><span class="std std-ref">varnishtop</span></a> but sometimes a client-side tool makes sense. Here are the ones we commonly use.</p> <section id="tool-varnishtop"> <h2>Tool: varnishtop</h2> <p>You can use varnishtop to identify what URLs are hitting the backend the most. <code>varnishtop -i BereqURL</code> is an essential command, showing you the top requests Varnish is sending to the backend. You can see some other examples of <a class="reference internal" href="../reference/varnishtop#varnishtop-1"><span class="std std-ref">varnishtop</span></a> usage in <a class="reference internal" href="operation-statistics#users-guide-statistics"><span class="std std-ref">Statistics</span></a>.</p> </section> <section id="tool-varnishlog"> <h2>Tool: varnishlog</h2> <p>When you have identified an URL which is frequently sent to the backend you can use <a class="reference internal" href="../reference/varnishlog#varnishlog-1"><span class="std std-ref">varnishlog</span></a> to have a look at the request. <code>varnishlog -q 'ReqURL ~ "^/foo/bar"'</code> will show you the requests coming from the client matching <code>/foo/bar</code>.</p> <p>For more information on how <a class="reference internal" href="../reference/varnishlog#varnishlog-1"><span class="std std-ref">varnishlog</span></a> works please see <a class="reference internal" href="operation-logging#users-guide-logging"><span class="std std-ref">Logging in Varnish</span></a> or then man page.</p> </section> <section id="tool-lwp-request"> <h2>Tool: lwp-request</h2> <p><code>lwp-request</code> is tool that is a part of The World-Wide Web library for Perl. It’s a couple of really basic programs that can execute an HTTP request and show you the result. We mostly use the two programs, <code>GET</code> and <code>HEAD</code>.</p> <p>vg.no was the first site to use Varnish and the people running Varnish there are quite clueful. So it’s interesting to look at their HTTP Headers. Let’s send a GET request for their home page:</p> <pre data-language="python">$ GET -H 'Host: www.vg.no' -Used http://vg.no/
+GET http://vg.no/
+Host: www.vg.no
+User-Agent: lwp-request/5.834 libwww-perl/5.834
+
+200 OK
+Cache-Control: must-revalidate
+Refresh: 600
+Title: VG Nett - Forsiden - VG Nett
+X-Age: 463
+X-Cache: HIT
+X-Rick-Would-Never: Let you down
+X-VG-Jobb: http://www.finn.no/finn/job/fulltime/result?keyword=vg+multimedia Merk:HeaderNinja
+X-VG-Korken: http://www.youtube.com/watch?v=Fcj8CnD5188
+X-VG-WebCache: joanie
+X-VG-WebServer: leon
+</pre> <p>OK. Lets look at what <code>GET</code> does. <code>GET</code> usually sends off HTTP 0.9 requests, which lack the ‘Host’ header. So we add a ‘Host’ header with the ‘-H’ option. ‘-U’ print request headers, ‘-s’ prints response status, ‘-e’ prints response headers and ‘-d’ discards the actual content. We don’t really care about the content, only the headers.</p> <p>As you can see, VG adds quite a bit of information in their headers. Some of the headers, like the ‘X-Rick-Would-Never’ are specific to vg.no and their somewhat odd sense of humour. Others, like the ‘X-VG-Webcache’ are for debugging purposes.</p> <p>So, to check whether a site sets cookies for a specific URL, just do:</p> <pre data-language="python">GET -Used http://example.com/ |grep ^Set-Cookie
+</pre> </section> <section id="tool-live-http-headers"> <h2>Tool: Live HTTP Headers</h2> <p>There is also a plugin for Firefox called <code>Live HTTP Headers</code>. This plugin can show you what headers are being sent and received. <code>Live HTTP Headers</code> can be found at <a class="reference external" href="https://addons.mozilla.org/en-US/firefox/addon/3829/">https://addons.mozilla.org/en-US/firefox/addon/3829/</a> or by googling “Live HTTP Headers”.</p> </section><div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 2006 Verdens Gang AS<br>Copyright © 2006–2020 Varnish Software AS<br>Licensed under the BSD-2-Clause License.<br>
+    <a href="https://varnish-cache.org/docs/7.4/users-guide/increasing-your-hitrate.html" class="_attribution-link">https://varnish-cache.org/docs/7.4/users-guide/increasing-your-hitrate.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
