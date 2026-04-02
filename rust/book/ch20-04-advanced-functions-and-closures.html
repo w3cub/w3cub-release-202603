@@ -1,0 +1,199 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>20.04. Advanced Functions and Closures - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" This section explores some advanced features related to functions and closures, including function pointers and returning closures. ">
+  <meta name="keywords" content="advanced, functions, and, closures, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/book/ch20-04-advanced-functions-and-closures.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 id="advanced-functions-and-closures">Advanced Functions and Closures</h1> <p>This section explores some advanced features related to functions and closures, including function pointers and returning closures.</p> <h3 id="function-pointers">Function Pointers</h3> <p>We’ve talked about how to pass closures to functions; you can also pass regular functions to functions! This technique is useful when you want to pass a function you’ve already defined rather than defining a new closure. Functions coerce to the type <code>fn</code> (with a lowercase <em>f</em>), not to be confused with the <code>Fn</code> closure trait. The <code>fn</code> type is called a <em>function pointer</em>. Passing functions with function pointers will allow you to use functions as arguments to other functions.</p> <p>The syntax for specifying that a parameter is a function pointer is similar to that of closures, as shown in Listing 20-28, where we’ve defined a function <code>add_one</code> that adds 1 to its parameter. The function <code>do_twice</code> takes two parameters: a function pointer to any function that takes an <code>i32</code> parameter and returns an <code>i32</code>, and one <code>i32</code> value. The <code>do_twice</code> function calls the function <code>f</code> twice, passing it the <code>arg</code> value, then adds the two function call results together. The <code>main</code> function calls <code>do_twice</code> with the arguments <code>add_one</code> and <code>5</code>.</p> <figure class="listing" id="listing-20-28"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}
+
+fn do_twice(f: fn(i32) -&gt; i32, arg: i32) -&gt; i32 {
+    f(arg) + f(arg)
+}
+
+fn main() {
+    let answer = do_twice(add_one, 5);
+
+    println!("The answer is: {answer}");
+}</pre> <figcaption><a href="#listing-20-28">Listing 20-28</a>: Using the <code>fn</code> type to accept a function pointer as an argument</figcaption> </figure> <p>This code prints <code>The answer is: 12</code>. We specify that the parameter <code>f</code> in <code>do_twice</code> is an <code>fn</code> that takes one parameter of type <code>i32</code> and returns an <code>i32</code>. We can then call <code>f</code> in the body of <code>do_twice</code>. In <code>main</code>, we can pass the function name <code>add_one</code> as the first argument to <code>do_twice</code>.</p> <p>Unlike closures, <code>fn</code> is a type rather than a trait, so we specify <code>fn</code> as the parameter type directly rather than declaring a generic type parameter with one of the <code>Fn</code> traits as a trait bound.</p> <p>Function pointers implement all three of the closure traits (<code>Fn</code>, <code>FnMut</code>, and <code>FnOnce</code>), meaning you can always pass a function pointer as an argument for a function that expects a closure. It’s best to write functions using a generic type and one of the closure traits so that your functions can accept either functions or closures.</p> <p>That said, one example of where you would want to only accept <code>fn</code> and not closures is when interfacing with external code that doesn’t have closures: C functions can accept functions as arguments, but C doesn’t have closures.</p> <p>As an example of where you could use either a closure defined inline or a named function, let’s look at a use of the <code>map</code> method provided by the <code>Iterator</code> trait in the standard library. To use the <code>map</code> method to turn a vector of numbers into a vector of strings, we could use a closure, as in Listing 20-29.</p> <figure class="listing" id="listing-20-29"> <pre data-language="rust">fn main() {
+    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec&lt;String&gt; =
+        list_of_numbers.iter().map(|i| i.to_string()).collect();
+}</pre> <figcaption><a href="#listing-20-29">Listing 20-29</a>: Using a closure with the <code>map</code> method to convert numbers to strings</figcaption> </figure> <p>Or we could name a function as the argument to <code>map</code> instead of the closure. Listing 20-30 shows what this would look like.</p> <figure class="listing" id="listing-20-30"> <pre data-language="rust">fn main() {
+    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec&lt;String&gt; =
+        list_of_numbers.iter().map(ToString::to_string).collect();
+}</pre> <figcaption><a href="#listing-20-30">Listing 20-30</a>: Using the <code>String::to_string</code> function with the <code>map</code> method to convert numbers to strings</figcaption> </figure> <p>Note that we must use the fully qualified syntax that we talked about in the <a href="ch20-02-advanced-traits#advanced-traits">“Advanced Traits”</a> section because there are multiple functions available named <code>to_string</code>.</p> <p>Here, we’re using the <code>to_string</code> function defined in the <code>ToString</code> trait, which the standard library has implemented for any type that implements <code>Display</code>.</p> <p>Recall from the <a href="ch06-01-defining-an-enum#enum-values">“Enum Values”</a> section in Chapter 6 that the name of each enum variant that we define also becomes an initializer function. We can use these initializer functions as function pointers that implement the closure traits, which means we can specify the initializer functions as arguments for methods that take closures, as seen in Listing 20-31.</p> <figure class="listing" id="listing-20-31"> <pre data-language="rust">fn main() {
+    enum Status {
+        Value(u32),
+        Stop,
+    }
+
+    let list_of_statuses: Vec&lt;Status&gt; = (0u32..20).map(Status::Value).collect();
+}</pre> <figcaption><a href="#listing-20-31">Listing 20-31</a>: Using an enum initializer with the <code>map</code> method to create a <code>Status</code> instance from numbers</figcaption> </figure> <p>Here, we create <code>Status::Value</code> instances using each <code>u32</code> value in the range that <code>map</code> is called on by using the initializer function of <code>Status::Value</code>. Some people prefer this style and some people prefer to use closures. They compile to the same code, so use whichever style is clearer to you.</p> <h3 id="returning-closures">Returning Closures</h3> <p>Closures are represented by traits, which means you can’t return closures directly. In most cases where you might want to return a trait, you can instead use the concrete type that implements the trait as the return value of the function. However, you can’t usually do that with closures because they don’t have a concrete type that is returnable; you’re not allowed to use the function pointer <code>fn</code> as a return type if the closure captures any values from its scope, for example.</p> <p>Instead, you will normally use the <code>impl Trait</code> syntax we learned about in Chapter 10. You can return any function type, using <code>Fn</code>, <code>FnOnce</code>, and <code>FnMut</code>. For example, the code in Listing 20-32 will compile just fine.</p> <figure class="listing" id="listing-20-32"> <pre data-language="rust">#![allow(unused)]
+fn main() {
+fn returns_closure() -&gt; impl Fn(i32) -&gt; i32 {
+    |x| x + 1
+}
+}</pre> <figcaption><a href="#listing-20-32">Listing 20-32</a>: Returning a closure from a function using the <code>impl Trait</code> syntax</figcaption> </figure> <p>However, as we noted in the <a href="ch13-01-closures#closure-type-inference-and-annotation">“Inferring and Annotating Closure Types”</a> section in Chapter 13, each closure is also its own distinct type. If you need to work with multiple functions that have the same signature but different implementations, you will need to use a trait object for them. Consider what happens if you write code like that shown in Listing 20-33.</p> <figure class="listing" id="listing-20-33"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">fn main() {
+    let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+    for handler in handlers {
+        let output = handler(5);
+        println!("{output}");
+    }
+}
+
+fn returns_closure() -&gt; impl Fn(i32) -&gt; i32 {
+    |x| x + 1
+}
+
+fn returns_initialized_closure(init: i32) -&gt; impl Fn(i32) -&gt; i32 {
+    move |x| x + init
+}</pre> <figcaption><a href="#listing-20-33">Listing 20-33</a>: Creating a <code>Vec&lt;T&gt;</code> of closures defined by functions that return <code>impl Fn</code> types</figcaption> </figure> <p>Here we have two functions, <code>returns_closure</code> and <code>returns_initialized_closure</code>, which both return <code>impl Fn(i32) -&gt; i32</code>. Notice that the closures that they return are different, even though they implement the same type. If we try to compile this, Rust lets us know that it won’t work:</p> <pre>$ cargo build
+   Compiling functions-example v0.1.0 (file:///projects/functions-example)
+error[E0308]: mismatched types
+  --&gt; src/main.rs:2:44
+   |
+ 2 |     let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected opaque type, found a different opaque type
+...
+ 9 | fn returns_closure() -&gt; impl Fn(i32) -&gt; i32 {
+   |                         ------------------- the expected opaque type
+...
+13 | fn returns_initialized_closure(init: i32) -&gt; impl Fn(i32) -&gt; i32 {
+   |                                              ------------------- the found opaque type
+   |
+   = note: expected opaque type `impl Fn(i32) -&gt; i32`
+              found opaque type `impl Fn(i32) -&gt; i32`
+   = note: distinct uses of `impl Trait` result in different opaque types
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `functions-example` (bin "functions-example") due to 1 previous error
+</pre> <p>The error message tells us that whenever we return an <code>impl Trait</code>, Rust creates a unique <em>opaque type</em>, a type where we cannot see into the details of what Rust constructs for us, nor can we guess the type Rust will generate to write ourselves. So, even though these functions return closures that implement the same trait, <code>Fn(i32) -&gt; i32</code>, the opaque types Rust generates for each are distinct. (This is similar to how Rust produces different concrete types for distinct async blocks even when they have the same output type, as we saw in <a href="ch17-03-more-futures">“The <code>Pin</code> Type and the <code>Unpin</code> Trait”</a> in Chapter 17.) We have seen a solution to this problem a few times now: We can use a trait object, as in Listing 20-34.</p> <figure class="listing" id="listing-20-34"> <pre data-language="rust">fn main() {
+    let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+    for handler in handlers {
+        let output = handler(5);
+        println!("{output}");
+    }
+}
+
+fn returns_closure() -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(|x| x + 1)
+}
+
+fn returns_initialized_closure(init: i32) -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(move |x| x + init)
+}</pre> <figcaption><a href="#listing-20-34">Listing 20-34</a>: Creating a <code>Vec&lt;T&gt;</code> of closures defined by functions that return <code>Box&lt;dyn Fn&gt;</code> so that they have the same type</figcaption> </figure> <p>This code will compile just fine. For more about trait objects, refer to the section <a href="ch18-02-trait-objects">“Using Trait Objects To Abstract over Shared Behavior”</a> in Chapter 18.</p> <p>Next, let’s look at macros!</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/book/ch20-04-advanced-functions-and-closures.html" class="_attribution-link">https://doc.rust-lang.org/book/ch20-04-advanced-functions-and-closures.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

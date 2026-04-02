@@ -1,0 +1,256 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>16.02. Transfer Data Between Threads With Message Passing - Rust - W3cubDocs</title>
+  
+  <meta name="description" content="One increasingly popular approach to ensuring safe concurrency is message passing, where threads or actors communicate by sending each other &hellip;">
+  <meta name="keywords" content="transfer, data, between, threads, with, message, passing, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/book/ch16-02-message-passing.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h2 id="transfer-data-between-threads-with-message-passing">Transfer Data Between Threads with Message Passing</h2> <p>One increasingly popular approach to ensuring safe concurrency is message passing, where threads or actors communicate by sending each other messages containing data. Here’s the idea in a slogan from <a href="https://golang.org/doc/effective_go.html#concurrency">the Go language documentation</a>: “Do not communicate by sharing memory; instead, share memory by communicating.”</p> <p>To accomplish message-sending concurrency, Rust’s standard library provides an implementation of channels. A <em>channel</em> is a general programming concept by which data is sent from one thread to another.</p> <p>You can imagine a channel in programming as being like a directional channel of water, such as a stream or a river. If you put something like a rubber duck into a river, it will travel downstream to the end of the waterway.</p> <p>A channel has two halves: a transmitter and a receiver. The transmitter half is the upstream location where you put the rubber duck into the river, and the receiver half is where the rubber duck ends up downstream. One part of your code calls methods on the transmitter with the data you want to send, and another part checks the receiving end for arriving messages. A channel is said to be <em>closed</em> if either the transmitter or receiver half is dropped.</p> <p>Here, we’ll work up to a program that has one thread to generate values and send them down a channel, and another thread that will receive the values and print them out. We’ll be sending simple values between threads using a channel to illustrate the feature. Once you’re familiar with the technique, you could use channels for any threads that need to communicate with each other, such as a chat system or a system where many threads perform parts of a calculation and send the parts to one thread that aggregates the results.</p> <p>First, in Listing 16-6, we’ll create a channel but not do anything with it. Note that this won’t compile yet because Rust can’t tell what type of values we want to send over the channel.</p> <figure class="listing" id="listing-16-6"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+}</pre> <figcaption><a href="#listing-16-6">Listing 16-6</a>: Creating a channel and assigning the two halves to <code>tx</code> and <code>rx</code></figcaption> </figure> <p>We create a new channel using the <code>mpsc::channel</code> function; <code>mpsc</code> stands for <em>multiple producer, single consumer</em>. In short, the way Rust’s standard library implements channels means a channel can have multiple <em>sending</em> ends that produce values but only one <em>receiving</em> end that consumes those values. Imagine multiple streams flowing together into one big river: Everything sent down any of the streams will end up in one river at the end. We’ll start with a single producer for now, but we’ll add multiple producers when we get this example working.</p> <p>The <code>mpsc::channel</code> function returns a tuple, the first element of which is the sending end—the transmitter—and the second element of which is the receiving end—the receiver. The abbreviations <code>tx</code> and <code>rx</code> are traditionally used in many fields for <em>transmitter</em> and <em>receiver</em>, respectively, so we name our variables as such to indicate each end. We’re using a <code>let</code> statement with a pattern that destructures the tuples; we’ll discuss the use of patterns in <code>let</code> statements and destructuring in Chapter 19. For now, know that using a <code>let</code> statement in this way is a convenient approach to extract the pieces of the tuple returned by <code>mpsc::channel</code>.</p> <p>Let’s move the transmitting end into a spawned thread and have it send one string so that the spawned thread is communicating with the main thread, as shown in Listing 16-7. This is like putting a rubber duck in the river upstream or sending a chat message from one thread to another.</p> <figure class="listing" id="listing-16-7"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+}</pre> <figcaption><a href="#listing-16-7">Listing 16-7</a>: Moving <code>tx</code> to a spawned thread and sending <code>"hi"</code></figcaption> </figure> <p>Again, we’re using <code>thread::spawn</code> to create a new thread and then using <code>move</code> to move <code>tx</code> into the closure so that the spawned thread owns <code>tx</code>. The spawned thread needs to own the transmitter to be able to send messages through the channel.</p> <p>The transmitter has a <code>send</code> method that takes the value we want to send. The <code>send</code> method returns a <code>Result&lt;T, E&gt;</code> type, so if the receiver has already been dropped and there’s nowhere to send a value, the send operation will return an error. In this example, we’re calling <code>unwrap</code> to panic in case of an error. But in a real application, we would handle it properly: Return to Chapter 9 to review strategies for proper error handling.</p> <p>In Listing 16-8, we’ll get the value from the receiver in the main thread. This is like retrieving the rubber duck from the water at the end of the river or receiving a chat message.</p> <figure class="listing" id="listing-16-8"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</pre> <figcaption><a href="#listing-16-8">Listing 16-8</a>: Receiving the value <code>"hi"</code> in the main thread and printing it</figcaption> </figure> <p>The receiver has two useful methods: <code>recv</code> and <code>try_recv</code>. We’re using <code>recv</code>, short for <em>receive</em>, which will block the main thread’s execution and wait until a value is sent down the channel. Once a value is sent, <code>recv</code> will return it in a <code>Result&lt;T, E&gt;</code>. When the transmitter closes, <code>recv</code> will return an error to signal that no more values will be coming.</p> <p>The <code>try_recv</code> method doesn’t block, but will instead return a <code>Result&lt;T, E&gt;</code> immediately: an <code>Ok</code> value holding a message if one is available and an <code>Err</code> value if there aren’t any messages this time. Using <code>try_recv</code> is useful if this thread has other work to do while waiting for messages: We could write a loop that calls <code>try_recv</code> every so often, handles a message if one is available, and otherwise does other work for a little while until checking again.</p> <p>We’ve used <code>recv</code> in this example for simplicity; we don’t have any other work for the main thread to do other than wait for messages, so blocking the main thread is appropriate.</p> <p>When we run the code in Listing 16-8, we’ll see the value printed from the main thread:</p>  <pre>Got: hi
+</pre> <p>Perfect!</p>   <h3 id="transferring-ownership-through-channels">Transferring Ownership Through Channels</h3> <p>The ownership rules play a vital role in message sending because they help you write safe, concurrent code. Preventing errors in concurrent programming is the advantage of thinking about ownership throughout your Rust programs. Let’s do an experiment to show how channels and ownership work together to prevent problems: We’ll try to use a <code>val</code> value in the spawned thread <em>after</em> we’ve sent it down the channel. Try compiling the code in Listing 16-9 to see why this code isn’t allowed.</p> <figure class="listing" id="listing-16-9"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+        println!("val is {val}");
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</pre> <figcaption><a href="#listing-16-9">Listing 16-9</a>: Attempting to use <code>val</code> after we’ve sent it down the channel</figcaption> </figure> <p>Here, we try to print <code>val</code> after we’ve sent it down the channel via <code>tx.send</code>. Allowing this would be a bad idea: Once the value has been sent to another thread, that thread could modify or drop it before we try to use the value again. Potentially, the other thread’s modifications could cause errors or unexpected results due to inconsistent or nonexistent data. However, Rust gives us an error if we try to compile the code in Listing 16-9:</p> <pre>$ cargo run
+   Compiling message-passing v0.1.0 (file:///projects/message-passing)
+error[E0382]: borrow of moved value: `val`
+  --&gt; src/main.rs:10:27
+   |
+ 8 |         let val = String::from("hi");
+   |             --- move occurs because `val` has type `String`, which does not implement the `Copy` trait
+ 9 |         tx.send(val).unwrap();
+   |                 --- value moved here
+10 |         println!("val is {val}");
+   |                           ^^^ value borrowed here after move
+   |
+   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `message-passing` (bin "message-passing") due to 1 previous error
+</pre> <p>Our concurrency mistake has caused a compile-time error. The <code>send</code> function takes ownership of its parameter, and when the value is moved the receiver takes ownership of it. This stops us from accidentally using the value again after sending it; the ownership system checks that everything is okay.</p>   <h3 id="sending-multiple-values">Sending Multiple Values</h3> <p>The code in Listing 16-8 compiled and ran, but it didn’t clearly show us that two separate threads were talking to each other over the channel.</p> <p>In Listing 16-10, we’ve made some modifications that will prove the code in Listing 16-8 is running concurrently: The spawned thread will now send multiple messages and pause for a second between each message.</p> <figure class="listing" id="listing-16-10"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+}</pre> <figcaption><a href="#listing-16-10">Listing 16-10</a>: Sending multiple messages and pausing between each one</figcaption> </figure> <p>This time, the spawned thread has a vector of strings that we want to send to the main thread. We iterate over them, sending each individually, and pause between each by calling the <code>thread::sleep</code> function with a <code>Duration</code> value of one second.</p> <p>In the main thread, we’re not calling the <code>recv</code> function explicitly anymore: Instead, we’re treating <code>rx</code> as an iterator. For each value received, we’re printing it. When the channel is closed, iteration will end.</p> <p>When running the code in Listing 16-10, you should see the following output with a one-second pause in between each line:</p>  <pre>Got: hi
+Got: from
+Got: the
+Got: thread
+</pre> <p>Because we don’t have any code that pauses or delays in the <code>for</code> loop in the main thread, we can tell that the main thread is waiting to receive values from the spawned thread.</p>   <h3 id="creating-multiple-producers">Creating Multiple Producers</h3> <p>Earlier we mentioned that <code>mpsc</code> was an acronym for <em>multiple producer, single consumer</em>. Let’s put <code>mpsc</code> to use and expand the code in Listing 16-10 to create multiple threads that all send values to the same receiver. We can do so by cloning the transmitter, as shown in Listing 16-11.</p> <figure class="listing" id="listing-16-11"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    // --snip--
+
+    let (tx, rx) = mpsc::channel();
+
+    let tx1 = tx.clone();
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+
+    // --snip--
+}</pre> <figcaption><a href="#listing-16-11">Listing 16-11</a>: Sending multiple messages from multiple producers</figcaption> </figure> <p>This time, before we create the first spawned thread, we call <code>clone</code> on the transmitter. This will give us a new transmitter we can pass to the first spawned thread. We pass the original transmitter to a second spawned thread. This gives us two threads, each sending different messages to the one receiver.</p> <p>When you run the code, your output should look something like this:</p>  <pre>Got: hi
+Got: more
+Got: from
+Got: messages
+Got: for
+Got: the
+Got: thread
+Got: you
+</pre> <p>You might see the values in another order, depending on your system. This is what makes concurrency interesting as well as difficult. If you experiment with <code>thread::sleep</code>, giving it various values in the different threads, each run will be more nondeterministic and create different output each time.</p> <p>Now that we’ve looked at how channels work, let’s look at a different method of concurrency.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/book/ch16-02-message-passing.html" class="_attribution-link">https://doc.rust-lang.org/book/ch16-02-message-passing.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

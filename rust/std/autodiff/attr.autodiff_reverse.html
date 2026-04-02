@@ -1,0 +1,145 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Std&#58;&#58;autodiff&#58;&#58;autodiff_reverse - Rust - W3cubDocs</title>
+  
+  <meta name="description" content="This macro handles automatic differentiation. This macro uses reverse-mode automatic differentiation to generate a new function. It may only be &hellip;">
+  <meta name="keywords" content="attribute, macro, autodiff, reverse, std, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/autodiff/attr.autodiff_reverse.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Attribute Macro autodiff_reverse </h1>
+<pre class="rust item-decl" data-language="rust">#[autodiff_reverse]</pre>
+<span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>autodiff</code> <a href="https://github.com/rust-lang/rust/issues/124509">#124509</a>)</span>
+</div></span><p>This macro handles automatic differentiation. This macro uses reverse-mode automatic differentiation to generate a new function. It may only be applied to a function. The new function will compute the derivative of the function to which the macro was applied.</p> <p>The expected usage syntax is: <code>#[autodiff_reverse(NAME, INPUT_ACTIVITIES, OUTPUT_ACTIVITY)]</code></p> <ul> <li>
+<code>NAME</code>: A string that represents a valid function name.</li> <li>
+<code>INPUT_ACTIVITIES</code>: Specifies one valid activity for each input parameter.</li> <li>
+<code>OUTPUT_ACTIVITY</code>: Must not be set if the function implicitly returns nothing (or explicitly returns <code>-&gt; ()</code>). Otherwise, it must be set to one of the allowed activities.</li> </ul> <p>ACTIVITIES might either be <code>Active</code>, <code>Duplicated</code> or <code>Const</code>, more options will be exposed later.</p> <p><code>Active</code> can be used for float scalar values. If used on an input, a new float will be appended to the return tuple of the generated function. If the function returns a float scalar, <code>Active</code> can be used for the return as well. In this case a float scalar will be appended to the argument list, it works as seed.</p> <p><code>Duplicated</code> can be used on references, raw pointers, or other indirect input arguments. It creates a new shadow argument of the same type, following the original argument. A const reference or pointer argument will receive a mutable reference or pointer as shadow.</p> <p><code>Const</code> should be used on non-float arguments, or float-based arguments as an optimization if we are not interested in computing the derivatives with respect to this argument.</p> <h4 id="usage-examples">Usage examples:</h4> <div class="example-wrap ignore">ⓘ<pre class="rust rust-example-rendered" data-language="rust">#![feature(autodiff)]
+use std::autodiff::*;
+#[autodiff_reverse(rb_rev, Active, Active, Active)]
+fn rosenbrock(x: f64, y: f64) -&gt; f64 {
+    (1.0 - x).powi(2) + 100.0 * (y - x.powi(2)).powi(2)
+}
+#[autodiff_reverse(rb_inp_rev, Active, Active, Duplicated)]
+fn rosenbrock_inp(x: f64, y: f64, out: &amp;mut f64) {
+    *out = (1.0 - x).powi(2) + 100.0 * (y - x.powi(2)).powi(2);
+}
+
+fn main() {
+    let (output1, dx1, dy1) = rb_rev(1.0, 3.0, 1.0);
+    dbg!(output1, dx1, dy1); // (400.0, -800.0, 400.0)
+    let mut output2 = 0.0;
+    let mut seed = 1.0;
+    let (dx2, dy2) = rb_inp_rev(1.0, 3.0, &amp;mut output2, &amp;mut seed);
+    // (dx2, dy2, output2, seed) == (-800.0, 400.0, 400.0, 0.0)
+}</pre>
+</div> <p>We often want to track how one or more input floats affect one output float. This output can be a scalar return value, or a mutable reference or pointer argument. In the latter case, the mutable input should be marked as duplicated and its shadow initialized to <code>0.0</code>. The shadow of the output should be marked as active or duplicated and initialized to <code>1.0</code>. After calling the generated function, the shadow(s) of the input(s) will contain the derivatives. The shadow of the outputs (“seed”) will be reset to zero. If the function has more than one output float marked as active or duplicated, users might want to set one of them to <code>1.0</code> and the others to <code>0.0</code> to compute partial derivatives. Unlike forward-mode, a call to the generated function does not reset the shadow of the inputs. Reverse mode is generally more efficient if we have more active/duplicated input than output floats.</p> <p>Related information can also be found under the term “Jacobian-Vector Product” (JVP).</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/autodiff/attr.autodiff_reverse.html" class="_attribution-link">https://doc.rust-lang.org/std/autodiff/attr.autodiff_reverse.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

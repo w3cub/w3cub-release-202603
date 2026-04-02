@@ -1,0 +1,164 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>19.02. Refutability&#58; Whether a Pattern Might Fail to Match - Rust - W3cubDocs</title>
+  
+  <meta name="description" content="Patterns come in two forms&#58; refutable and irrefutable. Patterns that will match for any possible value passed are irrefutable. An example would &hellip;">
+  <meta name="keywords" content="refutability, whether, pattern, might, fail, match, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/book/ch19-02-refutability.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 id="refutability-whether-a-pattern-might-fail-to-match">Refutability: Whether a Pattern Might Fail to Match</h1> <p>Patterns come in two forms: refutable and irrefutable. Patterns that will match for any possible value passed are <em>irrefutable</em>. An example would be <code>x</code> in the statement <code>let x = 5;</code> because <code>x</code> matches anything and therefore cannot fail to match. Patterns that can fail to match for some possible value are <em>refutable</em>. An example would be <code>Some(x)</code> in the expression <code>if let Some(x) = a_value</code> because if the value in the <code>a_value</code> variable is <code>None</code> rather than <code>Some</code>, the <code>Some(x)</code> pattern will not match.</p> <p>Function parameters, <code>let</code> statements, and <code>for</code> loops can only accept irrefutable patterns because the program cannot do anything meaningful when values don’t match. The <code>if let</code> and <code>while let</code> expressions and the <code>let...else</code> statement accept refutable and irrefutable patterns, but the compiler warns against irrefutable patterns because, by definition, they’re intended to handle possible failure: The functionality of a conditional is in its ability to perform differently depending on success or failure.</p> <p>In general, you shouldn’t have to worry about the distinction between refutable and irrefutable patterns; however, you do need to be familiar with the concept of refutability so that you can respond when you see it in an error message. In those cases, you’ll need to change either the pattern or the construct you’re using the pattern with, depending on the intended behavior of the code.</p> <p>Let’s look at an example of what happens when we try to use a refutable pattern where Rust requires an irrefutable pattern and vice versa. Listing 19-8 shows a <code>let</code> statement, but for the pattern, we’ve specified <code>Some(x)</code>, a refutable pattern. As you might expect, this code will not compile.</p> <figure class="listing" id="listing-19-8"> <pre data-language="rust">fn main() {
+    let some_option_value: Option&lt;i32&gt; = None;
+    let Some(x) = some_option_value;
+}</pre> <figcaption><a href="#listing-19-8">Listing 19-8</a>: Attempting to use a refutable pattern with <code>let</code></figcaption> </figure> <p>If <code>some_option_value</code> were a <code>None</code> value, it would fail to match the pattern <code>Some(x)</code>, meaning the pattern is refutable. However, the <code>let</code> statement can only accept an irrefutable pattern because there is nothing valid the code can do with a <code>None</code> value. At compile time, Rust will complain that we’ve tried to use a refutable pattern where an irrefutable pattern is required:</p> <pre>$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error[E0005]: refutable pattern in local binding
+ --&gt; src/main.rs:3:9
+  |
+3 |     let Some(x) = some_option_value;
+  |         ^^^^^^^ pattern `None` not covered
+  |
+  = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
+  = note: for more information, visit https://doc.rust-lang.org/book/ch19-02-refutability.html
+  = note: the matched value is of type `Option&lt;i32&gt;`
+help: you might want to use `let else` to handle the variant that isn't matched
+  |
+3 |     let Some(x) = some_option_value else { todo!() };
+  |                                     ++++++++++++++++
+
+For more information about this error, try `rustc --explain E0005`.
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
+</pre> <p>Because we didn’t cover (and couldn’t cover!) every valid value with the pattern <code>Some(x)</code>, Rust rightfully produces a compiler error.</p> <p>If we have a refutable pattern where an irrefutable pattern is needed, we can fix it by changing the code that uses the pattern: Instead of using <code>let</code>, we can use <code>let...else</code>. Then, if the pattern doesn’t match, the code in the curly brackets will handle the value. Listing 19-9 shows how to fix the code in Listing 19-8.</p> <figure class="listing" id="listing-19-9"> <pre data-language="rust">fn main() {
+    let some_option_value: Option&lt;i32&gt; = None;
+    let Some(x) = some_option_value else {
+        return;
+    };
+}</pre> <figcaption><a href="#listing-19-9">Listing 19-9</a>: Using <code>let...else</code> and a block with refutable patterns instead of <code>let</code></figcaption> </figure> <p>We’ve given the code an out! This code is perfectly valid, although it means we cannot use an irrefutable pattern without receiving a warning. If we give <code>let...else</code> a pattern that will always match, such as <code>x</code>, as shown in Listing 19-10, the compiler will give a warning.</p> <figure class="listing" id="listing-19-10"> <pre data-language="rust">fn main() {
+    let x = 5 else {
+        return;
+    };
+}</pre> <figcaption><a href="#listing-19-10">Listing 19-10</a>: Attempting to use an irrefutable pattern with <code>let...else</code></figcaption> </figure> <p>Rust complains that it doesn’t make sense to use <code>let...else</code> with an irrefutable pattern:</p> <pre>$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+warning: irrefutable `let...else` pattern
+ --&gt; src/main.rs:2:5
+  |
+2 |     let x = 5 else {
+  |     ^^^^^^^^^
+  |
+  = note: this pattern will always match, so the `else` clause is useless
+  = help: consider removing the `else` clause
+  = note: `#[warn(irrefutable_let_patterns)]` on by default
+
+warning: `patterns` (bin "patterns") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running `target/debug/patterns`
+</pre> <p>For this reason, match arms must use refutable patterns, except for the last arm, which should match any remaining values with an irrefutable pattern. Rust allows us to use an irrefutable pattern in a <code>match</code> with only one arm, but this syntax isn’t particularly useful and could be replaced with a simpler <code>let</code> statement.</p> <p>Now that you know where to use patterns and the difference between refutable and irrefutable patterns, let’s cover all the syntax we can use to create patterns.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/book/ch19-02-refutability.html" class="_attribution-link">https://doc.rust-lang.org/book/ch19-02-refutability.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>std&#58;&#58;marker&#58;&#58;CoercePointee - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Derive macro that makes a smart pointer usable with trait objects. ">
+  <meta name="keywords" content="derive, macro, coercepointee, std, marker, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/marker/derive.coercepointee.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Derive Macro CoercePointee </h1>
+<pre class="rust item-decl" data-language="rust">#[derive(CoercePointee)]</pre>
+<span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>derive_coerce_pointee</code> <a href="https://github.com/rust-lang/rust/issues/123430">#123430</a>)</span>
+</div></span><p>Derive macro that makes a smart pointer usable with trait objects.</p> <h2 id="what-this-macro-does">What this macro does</h2> <p>This macro is intended to be used with user-defined pointer types, and makes it possible to perform coercions on the pointee of the user-defined pointer. There are two aspects to this:</p> <h3 id="unsizing-coercions-of-the-pointee">Unsizing coercions of the pointee</h3> <p>By using the macro, the following example will compile:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(derive_coerce_pointee)]
+use std::marker::CoercePointee;
+use std::ops::Deref;
+
+#[derive(CoercePointee)]
+#[repr(transparent)]
+struct MySmartPointer&lt;T: ?Sized&gt;(Box&lt;T&gt;);
+
+impl&lt;T: ?Sized&gt; Deref for MySmartPointer&lt;T&gt; {
+    type Target = T;
+    fn deref(&amp;self) -&gt; &amp;T {
+        &amp;self.0
+    }
+}
+
+trait MyTrait {}
+
+impl MyTrait for i32 {}
+
+fn main() {
+    let ptr: MySmartPointer&lt;i32&gt; = MySmartPointer(Box::new(4));
+
+    // This coercion would be an error without the derive.
+    let ptr: MySmartPointer&lt;dyn MyTrait&gt; = ptr;
+}</pre></div> <p>Without the <code>#[derive(CoercePointee)]</code> macro, this example would fail with the following error:</p> <div class="example-wrap"><pre class="language-text">error[E0308]: mismatched types
+  --&gt; src/main.rs:11:44
+   |
+11 |     let ptr: MySmartPointer&lt;dyn MyTrait&gt; = ptr;
+   |              ---------------------------   ^^^ expected `MySmartPointer&lt;dyn MyTrait&gt;`, found `MySmartPointer&lt;i32&gt;`
+   |              |
+   |              expected due to this
+   |
+   = note: expected struct `MySmartPointer&lt;dyn MyTrait&gt;`
+              found struct `MySmartPointer&lt;i32&gt;`
+   = help: `i32` implements `MyTrait` so you could box the found value and coerce it to the trait object `Box&lt;dyn MyTrait&gt;`, you will have to change the expected type as well</pre></div>
+<h3 id="dyn-compatibility-1">Dyn compatibility</h3> <p>This macro allows you to dispatch on the user-defined pointer type. That is, traits using the type as a receiver are dyn-compatible. For example, this compiles:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(arbitrary_self_types, derive_coerce_pointee)]
+use std::marker::CoercePointee;
+use std::ops::Deref;
+
+#[derive(CoercePointee)]
+#[repr(transparent)]
+struct MySmartPointer&lt;T: ?Sized&gt;(Box&lt;T&gt;);
+
+impl&lt;T: ?Sized&gt; Deref for MySmartPointer&lt;T&gt; {
+    type Target = T;
+    fn deref(&amp;self) -&gt; &amp;T {
+        &amp;self.0
+    }
+}
+
+// You can always define this trait. (as long as you have #![feature(arbitrary_self_types)])
+trait MyTrait {
+    fn func(self: MySmartPointer&lt;Self&gt;);
+}
+
+// But using `dyn MyTrait` requires #[derive(CoercePointee)].
+fn call_func(value: MySmartPointer&lt;dyn MyTrait&gt;) {
+    value.func();
+}</pre></div> <p>If you remove the <code>#[derive(CoercePointee)]</code> annotation from the struct, then the above example will fail with this error message:</p> <div class="example-wrap"><pre class="language-text">error[E0038]: the trait `MyTrait` is not dyn compatible
+  --&gt; src/lib.rs:21:36
+   |
+17 |     fn func(self: MySmartPointer&lt;Self&gt;);
+   |                   -------------------- help: consider changing method `func`'s `self` parameter to be `&amp;self`: `&amp;Self`
+...
+21 | fn call_func(value: MySmartPointer&lt;dyn MyTrait&gt;) {
+   |                                    ^^^^^^^^^^^ `MyTrait` is not dyn compatible
+   |
+note: for a trait to be dyn compatible it needs to allow building a vtable
+      for more information, visit &lt;https://doc.rust-lang.org/reference/items/traits.html#object-safety&gt;
+  --&gt; src/lib.rs:17:19
+   |
+16 | trait MyTrait {
+   |       ------- this trait is not dyn compatible...
+17 |     fn func(self: MySmartPointer&lt;Self&gt;);
+   |                   ^^^^^^^^^^^^^^^^^^^^ ...because method `func`'s `self` parameter cannot be dispatched on</pre></div>
+<h2 id="requirements-for-using-the-macro">Requirements for using the macro</h2> <p>This macro can only be used if:</p> <ul> <li>The type is a <code>#[repr(transparent)]</code> struct.</li> <li>The type of its non-zero-sized field must either be a standard library pointer type (reference, raw pointer, <code>NonNull</code>, <code>Box</code>, <code>Rc</code>, <code>Arc</code>, etc.) or another user-defined type also using the <code>#[derive(CoercePointee)]</code> macro.</li> <li>Zero-sized fields must not mention any generic parameters unless the zero-sized field has type <a href="struct.phantomdata" title="struct std::marker::PhantomData"><code>PhantomData</code></a>.</li> </ul> <h3 id="multiple-type-parameters">Multiple type parameters</h3> <p>If the type has multiple type parameters, then you must explicitly specify which one should be used for dynamic dispatch. For example:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#[derive(CoercePointee)]
+#[repr(transparent)]
+struct MySmartPointer&lt;#[pointee] T: ?Sized, U&gt; {
+    ptr: Box&lt;T&gt;,
+    _phantom: PhantomData&lt;U&gt;,
+}</pre></div> <p>Specifying <code>#[pointee]</code> when the struct has only one type parameter is allowed, but not required.</p> <h2 id="examples">Examples</h2> <p>A custom implementation of the <code>Rc</code> type:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(derive_coerce_pointee)]
+use std::marker::CoercePointee;
+use std::ops::Deref;
+use std::ptr::NonNull;
+
+#[derive(CoercePointee)]
+#[repr(transparent)]
+pub struct Rc&lt;T: ?Sized&gt; {
+    inner: NonNull&lt;RcInner&lt;T&gt;&gt;,
+}
+
+struct RcInner&lt;T: ?Sized&gt; {
+    refcount: usize,
+    value: T,
+}
+
+impl&lt;T: ?Sized&gt; Deref for Rc&lt;T&gt; {
+    type Target = T;
+    fn deref(&amp;self) -&gt; &amp;T {
+        let ptr = self.inner.as_ptr();
+        unsafe { &amp;(*ptr).value }
+    }
+}
+
+impl&lt;T&gt; Rc&lt;T&gt; {
+    pub fn new(value: T) -&gt; Self {
+        let inner = Box::new(RcInner {
+            refcount: 1,
+            value,
+        });
+        Self {
+            inner: NonNull::from(Box::leak(inner)),
+        }
+    }
+}
+
+impl&lt;T: ?Sized&gt; Clone for Rc&lt;T&gt; {
+    fn clone(&amp;self) -&gt; Self {
+        // A real implementation would handle overflow here.
+        unsafe { (*self.inner.as_ptr()).refcount += 1 };
+        Self { inner: self.inner }
+    }
+}
+
+impl&lt;T: ?Sized&gt; Drop for Rc&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        let ptr = self.inner.as_ptr();
+        unsafe { (*ptr).refcount -= 1 };
+        if unsafe { (*ptr).refcount } == 0 {
+            drop(unsafe { Box::from_raw(ptr) });
+        }
+    }
+}</pre></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/marker/derive.CoercePointee.html" class="_attribution-link">https://doc.rust-lang.org/std/marker/derive.CoercePointee.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

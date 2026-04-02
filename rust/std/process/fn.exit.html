@@ -1,0 +1,127 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Std&#58;&#58;process&#58;&#58;exit - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Terminates the current process with the specified exit code. ">
+  <meta name="keywords" content="function, exit, std, process, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/process/fn.exit.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Function exit </h1>
+<pre class="rust item-decl" data-language="rust">pub fn exit(code: i32) -&gt; !</pre>
+<p>Terminates the current process with the specified exit code.</p> <p>This function will never return and will immediately terminate the current process. The exit code is passed through to the underlying OS and will be available for consumption by another process.</p> <p>Note that because this function never returns, and that it terminates the process, no destructors on the current stack or any other thread’s stack will be run. If a clean shutdown is needed it is recommended to only call this function at a known point where there are no more destructors left to run; or, preferably, simply return a type implementing <a href="trait.termination" title="trait std::process::Termination"><code>Termination</code></a> (such as <a href="struct.exitcode" title="struct std::process::ExitCode"><code>ExitCode</code></a> or <code>Result</code>) from the <code>main</code> function and avoid this function altogether:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">fn main() -&gt; Result&lt;(), MyError&gt; {
+    // ...
+    Ok(())
+}</pre></div> <p>In its current implementation, this function will execute exit handlers registered with <code>atexit</code> as well as other platform-specific exit handlers (e.g. <code>fini</code> sections of ELF shared objects). This means that Rust requires that all exit handlers are safe to execute at any time. In particular, if an exit handler cleans up some state that might be concurrently accessed by other threads, it is required that the exit handler performs suitable synchronization with those threads. (The alternative to this requirement would be to not run exit handlers at all, which is considered undesirable. Note that returning from <code>main</code> also calls <code>exit</code>, so making <code>exit</code> an unsafe operation is not an option.)</p> <h3 id="platform-specific-behavior">Platform-specific behavior</h3> <p><strong>Unix</strong>: On Unix-like platforms, it is unlikely that all 32 bits of <code>exit</code> will be visible to a parent process inspecting the exit code. On most Unix-like platforms, only the eight least-significant bits are considered.</p> <p>For example, the exit code for this example will be <code>0</code> on Linux, but <code>256</code> on Windows:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process;
+
+process::exit(0x0100);</pre></div>
+<h4 id="safe-interop-with-c-code">Safe interop with C code</h4> <p>On Unix, this function is currently implemented using the <code>exit</code> C function <a href="https://en.cppreference.com/w/c/program/exit"><code>exit</code></a>. As of C23, the C standard does not permit multiple threads to call <code>exit</code> concurrently. Rust mitigates this with a lock, but if C code calls <code>exit</code>, that can still cause undefined behavior. Note that returning from <code>main</code> is equivalent to calling <code>exit</code>.</p> <p>Therefore, it is undefined behavior to have two concurrent threads perform the following without synchronization:</p> <ul> <li>One thread calls Rust’s <code>exit</code> function or returns from Rust’s <code>main</code> function</li> <li>Another thread calls the C function <code>exit</code> or <code>quick_exit</code>, or returns from C’s <code>main</code> function</li> </ul> <p>Note that if a binary contains multiple copies of the Rust runtime (e.g., when combining multiple <code>cdylib</code> or <code>staticlib</code>), they each have their own separate lock, so from the perspective of code running in one of the Rust runtimes, the “outside” Rust code is basically C code, and concurrent <code>exit</code> again causes undefined behavior.</p> <p>Individual C implementations might provide more guarantees than the standard and permit concurrent calls to <code>exit</code>; consult the documentation of your C implementation for details.</p> <p>For some of the on-going discussion to make <code>exit</code> thread-safe in C, see:</p> <ul> <li><a href="https://github.com/rust-lang/rust/issues/126600">Rust issue #126600</a></li> <li><a href="https://austingroupbugs.net/view.php?id=1845">Austin Group Bugzilla (for POSIX)</a></li> <li><a href="https://sourceware.org/bugzilla/show_bug.cgi?id=31997">GNU C library Bugzilla</a></li> </ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/process/fn.exit.html" class="_attribution-link">https://doc.rust-lang.org/std/process/fn.exit.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

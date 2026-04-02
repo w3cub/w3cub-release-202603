@@ -1,0 +1,168 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Application Binary Interface (ABI) - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" This section documents features that affect the ABI of the compiled output of a crate. ">
+  <meta name="keywords" content="application, binary, interface, abi, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/reference/abi.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 id="application-binary-interface-abi">Application binary interface (ABI)</h1>  <p>This section documents features that affect the ABI of the compiled output of a crate.</p> <p>See <em><a href="items/functions#extern-function-qualifier">extern functions</a></em> for information on specifying the ABI for exporting functions. See <em><a href="items/external-blocks">external blocks</a></em> for information on specifying the ABI for linking external libraries.</p>  <h2 id="the-used-attribute">The <code id="">used</code> attribute</h2>  <p>The <em><code>used</code> attribute</em> can only be applied to <a href="items/static-items"><code>static</code> items</a>. This <a href="attributes">attribute</a> forces the compiler to keep the variable in the output object file (.o, .rlib, etc. excluding final binaries) even if the variable is not used, or referenced, by any other item in the crate. However, the linker is still free to remove such an item.</p> <p>Below is an example that shows under what conditions the compiler keeps a <code>static</code> item in the output object file.</p> <pre data-language="rust">#![allow(unused)]
+fn main() {
+// foo.rs
+
+// This is kept because of `#[used]`:
+#[used]
+static FOO: u32 = 0;
+
+// This is removable because it is unused:
+#[allow(dead_code)]
+static BAR: u32 = 0;
+
+// This is kept because it is publicly reachable:
+pub static BAZ: u32 = 0;
+
+// This is kept because it is referenced by a public, reachable function:
+static QUUX: u32 = 0;
+
+pub fn quux() -&gt; &amp;'static u32 {
+    &amp;QUUX
+}
+
+// This is removable because it is referenced by a private, unused (dead) function:
+static CORGE: u32 = 0;
+
+#[allow(dead_code)]
+fn corge() -&gt; &amp;'static u32 {
+    &amp;CORGE
+}
+}</pre> <pre>$ rustc -O --emit=obj --crate-type=rlib foo.rs
+
+$ nm -C foo.o
+0000000000000000 R foo::BAZ
+0000000000000000 r foo::FOO
+0000000000000000 R foo::QUUX
+0000000000000000 T foo::quux
+</pre>  <h2 id="the-no_mangle-attribute">The <code id="">no_mangle</code> attribute</h2>  <p>The <em><code>no_mangle</code> attribute</em> may be used on any <a href="items">item</a> to disable standard symbol name mangling. The symbol for the item will be the identifier of the item’s name.</p>  <p>Additionally, the item will be publicly exported from the produced library or object file, similar to the <a href="#the-used-attribute"><code>used</code> attribute</a>.</p>  <p>This attribute is unsafe as an unmangled symbol may collide with another symbol with the same name (or with a well-known symbol), leading to undefined behavior.</p> <pre data-language="rust">#![allow(unused)]
+fn main() {
+#[unsafe(no_mangle)]
+extern "C" fn foo() {}
+}</pre>  <div class="alert alert-edition"> <blockquote> <p class="alert-title"><span class="alert-title-edition">2024</span> Edition differences</p> <p>Before the 2024 edition it is allowed to use the <code>no_mangle</code> attribute without the <code>unsafe</code> qualification.</p> </blockquote> </div>  <h2 id="the-link_section-attribute">The <code id="">link_section</code> attribute</h2>  <p>The <em><code>link_section</code> attribute</em> specifies the section of the object file that a <a href="items/functions">function</a> or <a href="items/static-items">static</a>’s content will be placed into.</p>  <p>The <code>link_section</code> attribute uses the <a href="attributes#grammar-MetaNameValueStr">MetaNameValueStr</a> syntax to specify the section name.</p>  <pre data-language="rust">#![allow(unused)]
+fn main() {
+#[unsafe(no_mangle)]
+#[unsafe(link_section = ".example_section")]
+pub static VAR1: u32 = 1;
+}</pre>  <p>This attribute is unsafe as it allows users to place data and code into sections of memory not expecting them, such as mutable data into read-only areas.</p>  <div class="alert alert-edition"> <blockquote> <p class="alert-title"><span class="alert-title-edition">2024</span> Edition differences</p> <p>Before the 2024 edition it is allowed to use the <code>link_section</code> attribute without the <code>unsafe</code> qualification.</p> </blockquote> </div>  <h2 id="the-export_name-attribute">The <code id="">export_name</code> attribute</h2>  <p>The <em><code>export_name</code> attribute</em> specifies the name of the symbol that will be exported on a <a href="items/functions">function</a> or <a href="items/static-items">static</a>.</p>  <p>The <code>export_name </code>attribute uses the <a href="attributes#grammar-MetaNameValueStr">MetaNameValueStr</a> syntax to specify the symbol name.</p> <pre data-language="rust">#![allow(unused)]
+fn main() {
+#[unsafe(export_name = "exported_symbol_name")]
+pub fn name_in_rust() { }
+}</pre>  <p>This attribute is unsafe as a symbol with a custom name may collide with another symbol with the same name (or with a well-known symbol), leading to undefined behavior.</p>  <div class="alert alert-edition"> <blockquote> <p class="alert-title"><span class="alert-title-edition">2024</span> Edition differences</p> <p>Before the 2024 edition it is allowed to use the <code>export_name</code> attribute without the <code>unsafe</code> qualification.</p> </blockquote> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/reference/abi.html" class="_attribution-link">https://doc.rust-lang.org/reference/abi.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

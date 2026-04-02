@@ -1,0 +1,168 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Std&#58;&#58;hint&#58;&#58;unreachable_unchecked - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Informs the compiler that the site which is calling this function is not reachable, possibly enabling further optimizations. ">
+  <meta name="keywords" content="function, unreachable, unchecked, std, hint, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/hint/fn.unreachable_unchecked.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Function unreachable_unchecked </h1>
+<pre class="rust item-decl" data-language="rust">pub const unsafe fn unreachable_unchecked() -&gt; !</pre>
+<p>Informs the compiler that the site which is calling this function is not reachable, possibly enabling further optimizations.</p> <h2 id="safety">Safety</h2> <p>Reaching this function is <em>Undefined Behavior</em>.</p> <p>As the compiler assumes that all forms of Undefined Behavior can never happen, it will eliminate all branches in the surrounding code that it can determine will invariably lead to a call to <code>unreachable_unchecked()</code>.</p> <p>If the assumptions embedded in using this function turn out to be wrong - that is, if the site which is calling <code>unreachable_unchecked()</code> is actually reachable at runtime - the compiler may have generated nonsensical machine instructions for this situation, including in seemingly unrelated code, causing difficult-to-debug problems.</p> <p>Use this function sparingly. Consider using the <a href="../macro.unreachable" title="macro std::unreachable"><code>unreachable!</code></a> macro, which may prevent some optimizations but will safely panic in case it is actually reached at runtime. Benchmark your code to find out if using <code>unreachable_unchecked()</code> comes with a performance benefit.</p> <h2 id="examples">Examples</h2> <p><code>unreachable_unchecked()</code> can be used in situations where the compiler can’t prove invariants that were previously established. Such situations have a higher chance of occurring if those invariants are upheld by external code that the compiler can’t analyze.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">fn prepare_inputs(divisors: &amp;mut Vec&lt;u32&gt;) {
+    // Note to future-self when making changes: The invariant established
+    // here is NOT checked in `do_computation()`; if this changes, you HAVE
+    // to change `do_computation()`.
+    divisors.retain(|divisor| *divisor != 0)
+}
+
+/// # Safety
+/// All elements of `divisor` must be non-zero.
+unsafe fn do_computation(i: u32, divisors: &amp;[u32]) -&gt; u32 {
+    divisors.iter().fold(i, |acc, divisor| {
+        // Convince the compiler that a division by zero can't happen here
+        // and a check is not needed below.
+        if *divisor == 0 {
+            // Safety: `divisor` can't be zero because of `prepare_inputs`,
+            // but the compiler does not know about this. We *promise*
+            // that we always call `prepare_inputs`.
+            unsafe { std::hint::unreachable_unchecked() }
+        }
+        // The compiler would normally introduce a check here that prevents
+        // a division by zero. However, if `divisor` was zero, the branch
+        // above would reach what we explicitly marked as unreachable.
+        // The compiler concludes that `divisor` can't be zero at this point
+        // and removes the - now proven useless - check.
+        acc / divisor
+    })
+}
+
+let mut divisors = vec![2, 0, 4];
+prepare_inputs(&amp;mut divisors);
+let result = unsafe {
+    // Safety: prepare_inputs() guarantees that divisors is non-zero
+    do_computation(100, &amp;divisors)
+};
+assert_eq!(result, 12);
+</pre></div> <p>While using <code>unreachable_unchecked()</code> is perfectly sound in the following example, as the compiler is able to prove that a division by zero is not possible, benchmarking reveals that <code>unreachable_unchecked()</code> provides no benefit over using <a href="../macro.unreachable" title="macro std::unreachable"><code>unreachable!</code></a>, while the latter does not introduce the possibility of Undefined Behavior.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">fn div_1(a: u32, b: u32) -&gt; u32 {
+    use std::hint::unreachable_unchecked;
+
+    // `b.saturating_add(1)` is always positive (not zero),
+    // hence `checked_div` will never return `None`.
+    // Therefore, the else branch is unreachable.
+    a.checked_div(b.saturating_add(1))
+        .unwrap_or_else(|| unsafe { unreachable_unchecked() })
+}
+
+assert_eq!(div_1(7, 0), 7);
+assert_eq!(div_1(9, 1), 4);
+assert_eq!(div_1(11, u32::MAX), 0);</pre></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/hint/fn.unreachable_unchecked.html" class="_attribution-link">https://doc.rust-lang.org/std/hint/fn.unreachable_unchecked.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

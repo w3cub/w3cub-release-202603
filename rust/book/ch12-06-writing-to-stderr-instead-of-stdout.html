@@ -1,0 +1,186 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>12.06. Redirecting Errors to Standard Error - Rust - W3cubDocs</title>
+  
+  <meta name="description" content="At the moment, we’re writing all of our output to the terminal using the println! macro. In most terminals, there are two kinds of output&#58; &hellip;">
+  <meta name="keywords" content="redirecting, errors, standard, error, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/book/ch12-06-writing-to-stderr-instead-of-stdout.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h2 id="redirecting-errors-to-standard-error">Redirecting Errors to Standard Error</h2> <p>At the moment, we’re writing all of our output to the terminal using the <code>println!</code> macro. In most terminals, there are two kinds of output: <em>standard output</em> (<code>stdout</code>) for general information and <em>standard error</em> (<code>stderr</code>) for error messages. This distinction enables users to choose to direct the successful output of a program to a file but still print error messages to the screen.</p> <p>The <code>println!</code> macro is only capable of printing to standard output, so we have to use something else to print to standard error.</p> <h3 id="checking-where-errors-are-written">Checking Where Errors Are Written</h3> <p>First, let’s observe how the content printed by <code>minigrep</code> is currently being written to standard output, including any error messages we want to write to standard error instead. We’ll do that by redirecting the standard output stream to a file while intentionally causing an error. We won’t redirect the standard error stream, so any content sent to standard error will continue to display on the screen.</p> <p>Command line programs are expected to send error messages to the standard error stream so that we can still see error messages on the screen even if we redirect the standard output stream to a file. Our program is not currently well behaved: We’re about to see that it saves the error message output to a file instead!</p> <p>To demonstrate this behavior, we’ll run the program with <code>&gt;</code> and the file path, <em>output.txt</em>, that we want to redirect the standard output stream to. We won’t pass any arguments, which should cause an error:</p> <pre>$ cargo run &gt; output.txt
+</pre> <p>The <code>&gt;</code> syntax tells the shell to write the contents of standard output to <em>output.txt</em> instead of the screen. We didn’t see the error message we were expecting printed to the screen, so that means it must have ended up in the file. This is what <em>output.txt</em> contains:</p> <pre>Problem parsing arguments: not enough arguments
+</pre> <p>Yup, our error message is being printed to standard output. It’s much more useful for error messages like this to be printed to standard error so that only data from a successful run ends up in the file. We’ll change that.</p> <h3 id="printing-errors-to-standard-error">Printing Errors to Standard Error</h3> <p>We’ll use the code in Listing 12-24 to change how error messages are printed. Because of the refactoring we did earlier in this chapter, all the code that prints error messages is in one function, <code>main</code>. The standard library provides the <code>eprintln!</code> macro that prints to the standard error stream, so let’s change the two places we were calling <code>println!</code> to print errors to use <code>eprintln!</code> instead.</p> <figure class="listing" id="listing-12-24"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">use std::env;
+use std::error::Error;
+use std::fs;
+use std::process;
+
+use minigrep::{search, search_case_insensitive};
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    if let Err(e) = run(config) {
+        eprintln!("Application error: {e}");
+        process::exit(1);
+    }
+}
+
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
+    pub ignore_case: bool,
+}
+
+impl Config {
+    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        if args.len() &lt; 3 {
+            return Err("not enough arguments");
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            query,
+            file_path,
+            ignore_case,
+        })
+    }
+}
+
+fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    let results = if config.ignore_case {
+        search_case_insensitive(&amp;config.query, &amp;contents)
+    } else {
+        search(&amp;config.query, &amp;contents)
+    };
+
+    for line in results {
+        println!("{line}");
+    }
+
+    Ok(())
+}</pre> <figcaption><a href="#listing-12-24">Listing 12-24</a>: Writing error messages to standard error instead of standard output using <code>eprintln!</code></figcaption> </figure> <p>Let’s now run the program again in the same way, without any arguments and redirecting standard output with <code>&gt;</code>:</p> <pre>$ cargo run &gt; output.txt
+Problem parsing arguments: not enough arguments
+</pre> <p>Now we see the error onscreen and <em>output.txt</em> contains nothing, which is the behavior we expect of command line programs.</p> <p>Let’s run the program again with arguments that don’t cause an error but still redirect standard output to a file, like so:</p> <pre>$ cargo run -- to poem.txt &gt; output.txt
+</pre> <p>We won’t see any output to the terminal, and <em>output.txt</em> will contain our results:</p> <p><span class="filename">Filename: output.txt</span></p> <pre>Are you nobody, too?
+How dreary to be somebody!
+</pre> <p>This demonstrates that we’re now using standard output for successful output and standard error for error output as appropriate.</p> <h2 id="summary">Summary</h2> <p>This chapter recapped some of the major concepts you’ve learned so far and covered how to perform common I/O operations in Rust. By using command line arguments, files, environment variables, and the <code>eprintln!</code> macro for printing errors, you’re now prepared to write command line applications. Combined with the concepts in previous chapters, your code will be well organized, store data effectively in the appropriate data structures, handle errors nicely, and be well tested.</p> <p>Next, we’ll explore some Rust features that were influenced by functional languages: closures and iterators.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/book/ch12-06-writing-to-stderr-instead-of-stdout.html" class="_attribution-link">https://doc.rust-lang.org/book/ch12-06-writing-to-stderr-instead-of-stdout.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

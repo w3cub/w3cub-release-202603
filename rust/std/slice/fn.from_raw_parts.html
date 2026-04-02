@@ -1,0 +1,173 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Std&#58;&#58;slice&#58;&#58;from_raw_parts - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Forms a slice from a pointer and a length. ">
+  <meta name="keywords" content="function, from, raw, parts, std, slice, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/slice/fn.from_raw_parts.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Function from_raw_parts </h1>
+<pre class="rust item-decl" data-language="rust">pub const unsafe fn from_raw_parts&lt;'a, T&gt;(data: *const T, len: usize) -&gt; &amp;'a [T]</pre>
+<p>Forms a slice from a pointer and a length.</p> <p>The <code>len</code> argument is the number of <strong>elements</strong>, not the number of bytes.</p> <h2 id="safety">Safety</h2> <p>Behavior is undefined if any of the following conditions are violated:</p> <ul> <li> <p><code>data</code> must be non-null, <a href="../ptr/index#safety" title="mod std::ptr">valid</a> for reads for <code>len * size_of::&lt;T&gt;()</code> many bytes, and it must be properly aligned. This means in particular:</p> <ul> <li>The entire memory range of this slice must be contained within a single allocation! Slices can never span across multiple allocations. See <a href="#incorrect-usage">below</a> for an example incorrectly not taking this into account.</li> <li>
+<code>data</code> must be non-null and aligned even for zero-length slices or slices of ZSTs. One reason for this is that enum layout optimizations may rely on references (including slices of any length) being aligned and non-null to distinguish them from other data. You can obtain a pointer that is usable as <code>data</code> for zero-length slices using <a href="../ptr/struct.nonnull#method.dangling" title="associated function std::ptr::NonNull::dangling"><code>NonNull::dangling()</code></a>.</li> </ul> </li> <li> <p><code>data</code> must point to <code>len</code> consecutive properly initialized values of type <code>T</code>.</p> </li> <li> <p>The memory referenced by the returned slice must not be mutated for the duration of lifetime <code>'a</code>, except inside an <code>UnsafeCell</code>.</p> </li> <li> <p>The total size <code>len * size_of::&lt;T&gt;()</code> of the slice must be no larger than <code>isize::MAX</code>, and adding that size to <code>data</code> must not “wrap around” the address space. See the safety documentation of <a href="../primitive.pointer#method.offset" title="method pointer::offset"><code>pointer::offset</code></a>.</p> </li> </ul> <h2 id="caveat">Caveat</h2> <p>The lifetime for the returned slice is inferred from its usage. To prevent accidental misuse, it’s suggested to tie the lifetime to whichever source lifetime is safe in the context, such as by providing a helper function taking the lifetime of a host value for the slice, or by explicit annotation.</p> <h2 id="examples">Examples</h2> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::slice;
+
+// manifest a slice for a single element
+let x = 42;
+let ptr = &amp;x as *const _;
+let slice = unsafe { slice::from_raw_parts(ptr, 1) };
+assert_eq!(slice[0], 42);</pre></div>
+<h4 id="incorrect-usage">Incorrect usage</h4> <p>The following <code>join_slices</code> function is <strong>unsound</strong> ⚠️</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::slice;
+
+fn join_slices&lt;'a, T&gt;(fst: &amp;'a [T], snd: &amp;'a [T]) -&gt; &amp;'a [T] {
+    let fst_end = fst.as_ptr().wrapping_add(fst.len());
+    let snd_start = snd.as_ptr();
+    assert_eq!(fst_end, snd_start, "Slices must be contiguous!");
+    unsafe {
+        // The assertion above ensures `fst` and `snd` are contiguous, but they might
+        // still be contained within _different allocations_, in which case
+        // creating this slice is undefined behavior.
+        slice::from_raw_parts(fst.as_ptr(), fst.len() + snd.len())
+    }
+}
+
+fn main() {
+    // `a` and `b` are different allocations...
+    let a = 42;
+    let b = 27;
+    // ... which may nevertheless be laid out contiguously in memory: | a | b |
+    let _ = join_slices(slice::from_ref(&amp;a), slice::from_ref(&amp;b)); // UB
+}</pre></div>
+<h4 id="ffi-handling-null-pointers">FFI: Handling null pointers</h4> <p>In languages such as C++, pointers to empty collections are not guaranteed to be non-null. When accepting such pointers, they have to be checked for null-ness to avoid undefined behavior.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::slice;
+
+/// Sum the elements of an FFI slice.
+///
+/// # Safety
+///
+/// If ptr is not NULL, it must be correctly aligned and
+/// point to `len` initialized items of type `f32`.
+unsafe extern "C" fn sum_slice(ptr: *const f32, len: usize) -&gt; f32 {
+    let data = if ptr.is_null() {
+        // `len` is assumed to be 0.
+        &amp;[]
+    } else {
+        // SAFETY: see function docstring.
+        unsafe { slice::from_raw_parts(ptr, len) }
+    };
+    data.into_iter().sum()
+}
+
+// This could be the result of C++'s std::vector::data():
+let ptr = std::ptr::null();
+// And this could be std::vector::size():
+let len = 0;
+assert_eq!(unsafe { sum_slice(ptr, len) }, 0.0);</pre></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/slice/fn.from_raw_parts.html" class="_attribution-link">https://doc.rust-lang.org/std/slice/fn.from_raw_parts.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

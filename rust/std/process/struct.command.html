@@ -1,0 +1,476 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>std&#58;&#58;process&#58;&#58;Command - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" A process builder, providing fine-grained control over how a new process should be spawned. ">
+  <meta name="keywords" content="struct, command, std, process, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/process/struct.command.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Struct Command </h1>
+<pre class="rust item-decl" data-language="rust">pub struct Command { /* private fields */ }</pre>
+<p>A process builder, providing fine-grained control over how a new process should be spawned.</p> <p>A default configuration can be generated using <code>Command::new(program)</code>, where <code>program</code> gives a path to the program to be executed. Additional builder methods allow the configuration to be changed (for example, by adding arguments) prior to spawning:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+let output = if cfg!(target_os = "windows") {
+    Command::new("cmd")
+        .args(["/C", "echo hello"])
+        .output()
+        .expect("failed to execute process")
+} else {
+    Command::new("sh")
+        .arg("-c")
+        .arg("echo hello")
+        .output()
+        .expect("failed to execute process")
+};
+
+let hello = output.stdout;</pre></div> <p><code>Command</code> can be reused to spawn multiple processes. The builder methods change the command without needing to immediately spawn the process.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+let mut echo_hello = Command::new("sh");
+echo_hello.arg("-c").arg("echo hello");
+let hello_1 = echo_hello.output().expect("failed to execute process");
+let hello_2 = echo_hello.output().expect("failed to execute process");</pre></div> <p>Similarly, you can call builder methods after spawning a process and then spawn a new process with the modified settings.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+let mut list_dir = Command::new("ls");
+
+// Execute `ls` in the current directory of the program.
+list_dir.status().expect("process failed to execute");
+
+println!();
+
+// Change `ls` to execute in the root directory.
+list_dir.current_dir("/");
+
+// And then execute `ls` again but in the root directory.
+list_dir.status().expect("process failed to execute");</pre></div>
+<h3 id="implementations" class="section-header">Implementations</h3>
+<div id="implementations-list">
+<summary><section id="impl-Command" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/process.rs.html#605-1233">Source</a><pre class="code-header" data-language="rust">impl Command</pre></section></summary><div class="impl-items">
+<summary><section id="method.new" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#666-668">Source</a></span><pre class="code-header" data-language="rust">pub fn new&lt;S: AsRef&lt;OsStr&gt;&gt;(program: S) -&gt; Command</pre></section></summary><div class="docblock">
+<p>Constructs a new <code>Command</code> for launching the program at path <code>program</code>, with the following default configuration:</p> <ul> <li>No arguments to the program</li> <li>Inherit the current process’s environment</li> <li>Inherit the current process’s working directory</li> <li>Inherit stdin/stdout/stderr for <a href="struct.command#method.spawn" title="method std::process::Command::spawn"><code>spawn</code></a> or <a href="struct.command#method.status" title="method std::process::Command::status"><code>status</code></a>, but create pipes for <a href="struct.command#method.output" title="method std::process::Command::output"><code>output</code></a>
+</li> </ul> <p>Builder methods are provided to change these defaults and otherwise configure the process.</p> <p>If <code>program</code> is not an absolute path, the <code>PATH</code> will be searched in an OS-defined way.</p> <p>The search path to be used may be controlled by setting the <code>PATH</code> environment variable on the Command, but this has some implementation limitations on Windows (see issue #37519).</p> <h5 id="platform-specific-behavior">Platform-specific behavior</h5> <p>Note on Windows: For executable files with the .exe extension, it can be omitted when specifying the program for this Command. However, if the file has a different extension, a filename including the extension needs to be provided, otherwise the file won’t be found.</p> <h5 id="examples">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("sh")
+    .spawn()
+    .expect("sh command failed to start");</pre></div>
+<h5 id="caveats">Caveats</h5> <p><a href="struct.command#method.new" title="associated function std::process::Command::new"><code>Command::new</code></a> is only intended to accept the path of the program. If you pass a program path along with arguments like <code>Command::new("ls -l").spawn()</code>, it will try to search for <code>ls -l</code> literally. The arguments need to be passed separately, such as via <a href="struct.command#method.arg" title="method std::process::Command::arg"><code>arg</code></a> or <a href="struct.command#method.args" title="method std::process::Command::args"><code>args</code></a>.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("ls")
+    .arg("-l") // arg passed separately
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.arg" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#729-732">Source</a></span><pre class="code-header" data-language="rust">pub fn arg&lt;S: AsRef&lt;OsStr&gt;&gt;(&amp;mut self, arg: S) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">
+<p>Adds an argument to pass to the program.</p> <p>Only one argument can be passed per use. So instead of:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">.arg("-C /path/to/repo")</pre></div> <p>usage would be:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">.arg("-C")
+.arg("/path/to/repo")</pre></div> <p>To pass multiple arguments see <a href="struct.command#method.args" title="method std::process::Command::args"><code>args</code></a>.</p> <p>Note that the argument is not passed through a shell, but given literally to the program. This means that shell syntax like quotes, escaped characters, word splitting, glob patterns, variable substitution, etc. have no effect.</p> <div class="warning"> <p>On Windows, use caution with untrusted inputs. Most applications use the standard convention for decoding arguments passed to them. These are safe to use with <code>arg</code>. However, some applications such as <code>cmd.exe</code> and <code>.bat</code> files use a non-standard way of decoding arguments. They are therefore vulnerable to malicious input.</p> <p>In the case of <code>cmd.exe</code> this is especially important because a malicious argument can potentially run arbitrary shell commands.</p> <p>See <a href="index#windows-argument-splitting" title="mod std::process">Windows argument splitting</a> for more details or <a href="../os/windows/process/trait.commandext#tymethod.raw_arg" title="method std::os::windows::process::CommandExt::raw_arg"><code>raw_arg</code></a> for manually implementing non-standard argument encoding.</p> </div> <h5 id="examples-1">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("ls")
+    .arg("-l")
+    .arg("-a")
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.args" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#775-784">Source</a></span><pre class="code-header" data-language="rust">pub fn args&lt;I, S&gt;(&amp;mut self, args: I) -&gt; &amp;mut Commandwhere
+    I: IntoIterator&lt;Item = S&gt;,
+    S: AsRef&lt;OsStr&gt;,</pre></section></summary><div class="docblock">
+<p>Adds multiple arguments to pass to the program.</p> <p>To pass a single argument see <a href="struct.command#method.arg" title="method std::process::Command::arg"><code>arg</code></a>.</p> <p>Note that the arguments are not passed through a shell, but given literally to the program. This means that shell syntax like quotes, escaped characters, word splitting, glob patterns, variable substitution, etc. have no effect.</p> <div class="warning"> <p>On Windows, use caution with untrusted inputs. Most applications use the standard convention for decoding arguments passed to them. These are safe to use with <code>arg</code>. However, some applications such as <code>cmd.exe</code> and <code>.bat</code> files use a non-standard way of decoding arguments. They are therefore vulnerable to malicious input.</p> <p>In the case of <code>cmd.exe</code> this is especially important because a malicious argument can potentially run arbitrary shell commands.</p> <p>See <a href="index#windows-argument-splitting" title="mod std::process">Windows argument splitting</a> for more details or <a href="../os/windows/process/trait.commandext#tymethod.raw_arg" title="method std::os::windows::process::CommandExt::raw_arg"><code>raw_arg</code></a> for manually implementing non-standard argument encoding.</p> </div> <h5 id="examples-2">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("ls")
+    .args(["-l", "-a"])
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.env" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#811-818">Source</a></span><pre class="code-header" data-language="rust">pub fn env&lt;K, V&gt;(&amp;mut self, key: K, val: V) -&gt; &amp;mut Commandwhere
+    K: AsRef&lt;OsStr&gt;,
+    V: AsRef&lt;OsStr&gt;,</pre></section></summary><div class="docblock">
+<p>Inserts or updates an explicit environment variable mapping.</p> <p>This method allows you to add an environment variable mapping to the spawned process or overwrite a previously set value. You can use <a href="struct.command#method.envs" title="method std::process::Command::envs"><code>Command::envs</code></a> to set multiple environment variables simultaneously.</p> <p>Child processes will inherit environment variables from their parent process by default. Environment variables explicitly set using <a href="struct.command#method.env" title="method std::process::Command::env"><code>Command::env</code></a> take precedence over inherited variables. You can disable environment variable inheritance entirely using <a href="struct.command#method.env_clear" title="method std::process::Command::env_clear"><code>Command::env_clear</code></a> or for a single key using <a href="struct.command#method.env_remove" title="method std::process::Command::env_remove"><code>Command::env_remove</code></a>.</p> <p>Note that environment variable names are case-insensitive (but case-preserving) on Windows and case-sensitive on all other platforms.</p> <h5 id="examples-3">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("ls")
+    .env("PATH", "/bin")
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.envs" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.19.0">1.19.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#855-865">Source</a></span><pre class="code-header" data-language="rust">pub fn envs&lt;I, K, V&gt;(&amp;mut self, vars: I) -&gt; &amp;mut Commandwhere
+    I: IntoIterator&lt;Item = (K, V)&gt;,
+    K: AsRef&lt;OsStr&gt;,
+    V: AsRef&lt;OsStr&gt;,</pre></section></summary><div class="docblock">
+<p>Inserts or updates multiple explicit environment variable mappings.</p> <p>This method allows you to add multiple environment variable mappings to the spawned process or overwrite previously set values. You can use <a href="struct.command#method.env" title="method std::process::Command::env"><code>Command::env</code></a> to set a single environment variable.</p> <p>Child processes will inherit environment variables from their parent process by default. Environment variables explicitly set using <a href="struct.command#method.envs" title="method std::process::Command::envs"><code>Command::envs</code></a> take precedence over inherited variables. You can disable environment variable inheritance entirely using <a href="struct.command#method.env_clear" title="method std::process::Command::env_clear"><code>Command::env_clear</code></a> or for a single key using <a href="struct.command#method.env_remove" title="method std::process::Command::env_remove"><code>Command::env_remove</code></a>.</p> <p>Note that environment variable names are case-insensitive (but case-preserving) on Windows and case-sensitive on all other platforms.</p> <h5 id="examples-4">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::{Command, Stdio};
+use std::env;
+use std::collections::HashMap;
+
+let filtered_env : HashMap&lt;String, String&gt; =
+    env::vars().filter(|&amp;(ref k, _)|
+        k == "TERM" || k == "TZ" || k == "LANG" || k == "PATH"
+    ).collect();
+
+Command::new("printenv")
+    .stdin(Stdio::null())
+    .stdout(Stdio::inherit())
+    .env_clear()
+    .envs(&amp;filtered_env)
+    .spawn()
+    .expect("printenv failed to start");</pre></div>
+</div>
+<summary><section id="method.env_remove" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#895-898">Source</a></span><pre class="code-header" data-language="rust">pub fn env_remove&lt;K: AsRef&lt;OsStr&gt;&gt;(&amp;mut self, key: K) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">
+<p>Removes an explicitly set environment variable and prevents inheriting it from a parent process.</p> <p>This method will remove the explicit value of an environment variable set via <a href="struct.command#method.env" title="method std::process::Command::env"><code>Command::env</code></a> or <a href="struct.command#method.envs" title="method std::process::Command::envs"><code>Command::envs</code></a>. In addition, it will prevent the spawned child process from inheriting that environment variable from its parent process.</p> <p>After calling <a href="struct.command#method.env_remove" title="method std::process::Command::env_remove"><code>Command::env_remove</code></a>, the value associated with its key from <a href="struct.command#method.get_envs" title="method std::process::Command::get_envs"><code>Command::get_envs</code></a> will be <a href="../option/enum.option#variant.None" title="variant std::option::Option::None"><code>None</code></a>.</p> <p>To clear all explicitly set environment variables and disable all environment variable inheritance, you can use <a href="struct.command#method.env_clear" title="method std::process::Command::env_clear"><code>Command::env_clear</code></a>.</p> <h5 id="examples-5">Examples</h5> <p>Prevent any inherited <code>GIT_DIR</code> variable from changing the target of the <code>git</code> command, while allowing all other variables, like <code>GIT_AUTHOR_NAME</code>.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("git")
+    .arg("commit")
+    .env_remove("GIT_DIR")
+    .spawn()?;</pre></div>
+</div>
+<summary><section id="method.env_clear" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#927-930">Source</a></span><pre class="code-header" data-language="rust">pub fn env_clear(&amp;mut self) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">
+<p>Clears all explicitly set environment variables and prevents inheriting any parent process environment variables.</p> <p>This method will remove all explicitly added environment variables set via <a href="struct.command#method.env" title="method std::process::Command::env"><code>Command::env</code></a> or <a href="struct.command#method.envs" title="method std::process::Command::envs"><code>Command::envs</code></a>. In addition, it will prevent the spawned child process from inheriting any environment variable from its parent process.</p> <p>After calling <a href="struct.command#method.env_clear" title="method std::process::Command::env_clear"><code>Command::env_clear</code></a>, the iterator from <a href="struct.command#method.get_envs" title="method std::process::Command::get_envs"><code>Command::get_envs</code></a> will be empty.</p> <p>You can use <a href="struct.command#method.env_remove" title="method std::process::Command::env_remove"><code>Command::env_remove</code></a> to clear a single mapping.</p> <h5 id="examples-6">Examples</h5> <p>The behavior of <code>sort</code> is affected by <code>LANG</code> and <code>LC_*</code> environment variables. Clearing the environment makes <code>sort</code>‘s behavior independent of the parent processes’ language.</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("sort")
+    .arg("file.txt")
+    .env_clear()
+    .spawn()?;</pre></div>
+</div>
+<summary><section id="method.current_dir" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#955-958">Source</a></span><pre class="code-header" data-language="rust">pub fn current_dir&lt;P: AsRef&lt;Path&gt;&gt;(&amp;mut self, dir: P) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">
+<p>Sets the working directory for the child process.</p> <h5 id="platform-specific-behavior-1">Platform-specific behavior</h5> <p>If the program path is relative (e.g., <code>"./script.sh"</code>), it’s ambiguous whether it should be interpreted relative to the parent’s working directory or relative to <code>current_dir</code>. The behavior in this case is platform specific and unstable, and it’s recommended to use <a href="../fs/fn.canonicalize" title="fn std::fs::canonicalize"><code>canonicalize</code></a> to get an absolute program path instead.</p> <h5 id="examples-7">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("ls")
+    .current_dir("/bin")
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.stdin" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#982-985">Source</a></span><pre class="code-header" data-language="rust">pub fn stdin&lt;T: Into&lt;Stdio&gt;&gt;(&amp;mut self, cfg: T) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">
+<p>Configuration for the child process’s standard input (stdin) handle.</p> <p>Defaults to <a href="struct.stdio#method.inherit" title="associated function std::process::Stdio::inherit"><code>inherit</code></a> when used with <a href="struct.command#method.spawn" title="method std::process::Command::spawn"><code>spawn</code></a> or <a href="struct.command#method.status" title="method std::process::Command::status"><code>status</code></a>, and defaults to <a href="struct.stdio#method.piped" title="associated function std::process::Stdio::piped"><code>piped</code></a> when used with <a href="struct.command#method.output" title="method std::process::Command::output"><code>output</code></a>.</p> <h5 id="examples-8">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::{Command, Stdio};
+
+Command::new("ls")
+    .stdin(Stdio::null())
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.stdout" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1009-1012">Source</a></span><pre class="code-header" data-language="rust">pub fn stdout&lt;T: Into&lt;Stdio&gt;&gt;(&amp;mut self, cfg: T) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">
+<p>Configuration for the child process’s standard output (stdout) handle.</p> <p>Defaults to <a href="struct.stdio#method.inherit" title="associated function std::process::Stdio::inherit"><code>inherit</code></a> when used with <a href="struct.command#method.spawn" title="method std::process::Command::spawn"><code>spawn</code></a> or <a href="struct.command#method.status" title="method std::process::Command::status"><code>status</code></a>, and defaults to <a href="struct.stdio#method.piped" title="associated function std::process::Stdio::piped"><code>piped</code></a> when used with <a href="struct.command#method.output" title="method std::process::Command::output"><code>output</code></a>.</p> <h5 id="examples-9">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::{Command, Stdio};
+
+Command::new("ls")
+    .stdout(Stdio::null())
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.stderr" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1036-1039">Source</a></span><pre class="code-header" data-language="rust">pub fn stderr&lt;T: Into&lt;Stdio&gt;&gt;(&amp;mut self, cfg: T) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">
+<p>Configuration for the child process’s standard error (stderr) handle.</p> <p>Defaults to <a href="struct.stdio#method.inherit" title="associated function std::process::Stdio::inherit"><code>inherit</code></a> when used with <a href="struct.command#method.spawn" title="method std::process::Command::spawn"><code>spawn</code></a> or <a href="struct.command#method.status" title="method std::process::Command::status"><code>status</code></a>, and defaults to <a href="struct.stdio#method.piped" title="associated function std::process::Stdio::piped"><code>piped</code></a> when used with <a href="struct.command#method.output" title="method std::process::Command::output"><code>output</code></a>.</p> <h5 id="examples-10">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::{Command, Stdio};
+
+Command::new("ls")
+    .stderr(Stdio::null())
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.spawn" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1055-1057">Source</a></span><pre class="code-header" data-language="rust">pub fn spawn(&amp;mut self) -&gt; Result&lt;Child&gt;</pre></section></summary><div class="docblock">
+<p>Executes the command as a child process, returning a handle to it.</p> <p>By default, stdin, stdout and stderr are inherited from the parent.</p> <h5 id="examples-11">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+Command::new("ls")
+    .spawn()
+    .expect("ls command failed to start");</pre></div>
+</div>
+<summary><section id="method.output" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1084-1087">Source</a></span><pre class="code-header" data-language="rust">pub fn output(&amp;mut self) -&gt; Result&lt;Output&gt;</pre></section></summary><div class="docblock">
+<p>Executes the command as a child process, waiting for it to finish and collecting all of its output.</p> <p>By default, stdout and stderr are captured (and used to provide the resulting output). Stdin is not inherited from the parent and any attempt by the child process to read from the stdin stream will result in the stream immediately closing.</p> <h5 id="examples-12">Examples</h5> <div class="example-wrap should_panic">ⓘ<pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+use std::io::{self, Write};
+let output = Command::new("/bin/cat")
+    .arg("file.txt")
+    .output()?;
+
+println!("status: {}", output.status);
+io::stdout().write_all(&amp;output.stdout)?;
+io::stderr().write_all(&amp;output.stderr)?;
+
+assert!(output.status.success());</pre>
+</div>
+</div>
+<summary><section id="method.status" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1109-1114">Source</a></span><pre class="code-header" data-language="rust">pub fn status(&amp;mut self) -&gt; Result&lt;ExitStatus&gt;</pre></section></summary><div class="docblock">
+<p>Executes a command as a child process, waiting for it to finish and collecting its status.</p> <p>By default, stdin, stdout and stderr are inherited from the parent.</p> <h5 id="examples-13">Examples</h5> <div class="example-wrap should_panic">ⓘ<pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+let status = Command::new("/bin/cat")
+    .arg("file.txt")
+    .status()
+    .expect("failed to execute process");
+
+println!("process finished with: {status}");
+
+assert!(status.success());</pre>
+</div>
+</div>
+<summary><section id="method.get_program" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.57.0">1.57.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1128-1130">Source</a></span><pre class="code-header" data-language="rust">pub fn get_program(&amp;self) -&gt; &amp;OsStr</pre></section></summary><div class="docblock">
+<p>Returns the path to the program that was given to <a href="struct.command#method.new" title="associated function std::process::Command::new"><code>Command::new</code></a>.</p> <h5 id="examples-14">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::process::Command;
+
+let cmd = Command::new("echo");
+assert_eq!(cmd.get_program(), "echo");</pre></div>
+</div>
+<summary><section id="method.get_args" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.57.0">1.57.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1150-1152">Source</a></span><pre class="code-header" data-language="rust">pub fn get_args(&amp;self) -&gt; CommandArgs&lt;'_&gt; ⓘ</pre></section></summary><div class="docblock">
+<p>Returns an iterator of the arguments that will be passed to the program.</p> <p>This does not include the path to the program as the first argument; it only includes the arguments specified with <a href="struct.command#method.arg" title="method std::process::Command::arg"><code>Command::arg</code></a> and <a href="struct.command#method.args" title="method std::process::Command::args"><code>Command::args</code></a>.</p> <h5 id="examples-15">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::ffi::OsStr;
+use std::process::Command;
+
+let mut cmd = Command::new("echo");
+cmd.arg("first").arg("second");
+let args: Vec&lt;&amp;OsStr&gt; = cmd.get_args().collect();
+assert_eq!(args, &amp;["first", "second"]);</pre></div>
+</div>
+<summary><section id="method.get_envs" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.57.0">1.57.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1185-1187">Source</a></span><pre class="code-header" data-language="rust">pub fn get_envs(&amp;self) -&gt; CommandEnvs&lt;'_&gt; ⓘ</pre></section></summary><div class="docblock">
+<p>Returns an iterator of the environment variables explicitly set for the child process.</p> <p>Environment variables explicitly set using <a href="struct.command#method.env" title="method std::process::Command::env"><code>Command::env</code></a>, <a href="struct.command#method.envs" title="method std::process::Command::envs"><code>Command::envs</code></a>, and <a href="struct.command#method.env_remove" title="method std::process::Command::env_remove"><code>Command::env_remove</code></a> can be retrieved with this method.</p> <p>Note that this output does not include environment variables inherited from the parent process.</p> <p>Each element is a tuple key/value pair <code>(&amp;OsStr, Option&lt;&amp;OsStr&gt;)</code>. A <a href="../option/enum.option#variant.None" title="variant std::option::Option::None"><code>None</code></a> value indicates its key was explicitly removed via <a href="struct.command#method.env_remove" title="method std::process::Command::env_remove"><code>Command::env_remove</code></a>. The associated key for the <a href="../option/enum.option#variant.None" title="variant std::option::Option::None"><code>None</code></a> value will no longer inherit from its parent process.</p> <p>An empty iterator can indicate that no explicit mappings were added or that <a href="struct.command#method.env_clear" title="method std::process::Command::env_clear"><code>Command::env_clear</code></a> was called. After calling <a href="struct.command#method.env_clear" title="method std::process::Command::env_clear"><code>Command::env_clear</code></a>, the child process will not inherit any environment variables from its parent process.</p> <h5 id="examples-16">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::ffi::OsStr;
+use std::process::Command;
+
+let mut cmd = Command::new("ls");
+cmd.env("TERM", "dumb").env_remove("TZ");
+let envs: Vec&lt;(&amp;OsStr, Option&lt;&amp;OsStr&gt;)&gt; = cmd.get_envs().collect();
+assert_eq!(envs, &amp;[
+    (OsStr::new("TERM"), Some(OsStr::new("dumb"))),
+    (OsStr::new("TZ"), None)
+]);</pre></div>
+</div>
+<summary><section id="method.get_current_dir" class="method"><span class="rightside"><span class="since" title="Stable since Rust version 1.57.0">1.57.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1206-1208">Source</a></span><pre class="code-header" data-language="rust">pub fn get_current_dir(&amp;self) -&gt; Option&lt;&amp;Path&gt;</pre></section></summary><div class="docblock">
+<p>Returns the working directory for the child process.</p> <p>This returns <a href="../option/enum.option#variant.None" title="variant std::option::Option::None"><code>None</code></a> if the working directory will not be changed.</p> <h5 id="examples-17">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">use std::path::Path;
+use std::process::Command;
+
+let mut cmd = Command::new("ls");
+assert_eq!(cmd.get_current_dir(), None);
+cmd.current_dir("/bin");
+assert_eq!(cmd.get_current_dir(), Some(Path::new("/bin")));</pre></div>
+</div>
+<summary><section id="method.get_env_clear" class="method"><a class="src rightside" href="https://doc.rust-lang.org/src/std/process.rs.html#1230-1232">Source</a><pre class="code-header" data-language="rust">pub fn get_env_clear(&amp;self) -&gt; bool</pre></section><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>command_resolved_envs</code> <a href="https://github.com/rust-lang/rust/issues/149070">#149070</a>)</span>
+</div></span></summary><div class="docblock">
+<p>Returns whether the environment will be cleared for the child process.</p> <p>This returns <code>true</code> if <a href="struct.command#method.env_clear" title="method std::process::Command::env_clear"><code>Command::env_clear</code></a> was called, and <code>false</code> otherwise. When <code>true</code>, the child process will not inherit any environment variables from its parent process.</p> <h5 id="examples-18">Examples</h5> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(command_resolved_envs)]
+use std::process::Command;
+
+let mut cmd = Command::new("ls");
+assert_eq!(cmd.get_env_clear(), false);
+
+cmd.env_clear();
+assert_eq!(cmd.get_env_clear(), true);</pre></div>
+</div>
+</div>
+</div>
+<h3 id="trait-implementations" class="section-header">Trait Implementations</h3>
+<div id="trait-implementations-list">
+<summary><section id="impl-CommandExt-for-Command" class="impl"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#224-276">Source</a></span><pre class="code-header" data-language="rust">impl CommandExt for CommandAvailable on Unix only.</pre></section></summary><div class="impl-items">
+<summary><section id="method.uid" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#225-228">Source</a><pre class="code-header" data-language="rust">fn uid(&amp;mut self, id: u32) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">Sets the child process’s user ID. This translates to a <code>setuid</code> call in the child process. Failure in the <code>setuid</code> call will cause the spawn to fail. <a href="../os/unix/process/trait.commandext#tymethod.uid">Read more</a>
+</div>
+<summary><section id="method.gid" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#230-233">Source</a><pre class="code-header" data-language="rust">fn gid(&amp;mut self, id: u32) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">Similar to <code>uid</code>, but sets the group ID of the child process. This has the same semantics as the <code>uid</code> field.</div>
+<summary><section id="method.groups" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#235-238">Source</a><pre class="code-header" data-language="rust">fn groups(&amp;mut self, groups: &amp;[u32]) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>setgroups</code> <a href="https://github.com/rust-lang/rust/issues/90747">#90747</a>)</span>
+</div></span><div class="docblock">Sets the supplementary group IDs for the calling process. Translates to a <code>setgroups</code> call in the child process.</div>
+<summary><section id="method.pre_exec" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#240-246">Source</a><pre class="code-header" data-language="rust">unsafe fn pre_exec&lt;F&gt;(&amp;mut self, f: F) -&gt; &amp;mut Commandwhere
+    F: FnMut() -&gt; Result&lt;()&gt; + Send + Sync + 'static,</pre></section></summary><div class="docblock">Schedules a closure to be run just before the <code>exec</code> function is invoked. <a href="../os/unix/process/trait.commandext#tymethod.pre_exec">Read more</a>
+</div>
+<summary><section id="method.exec" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#248-252">Source</a><pre class="code-header" data-language="rust">fn exec(&amp;mut self) -&gt; Error</pre></section></summary><div class="docblock">Performs all the required setup by this <code>Command</code>, followed by calling the <code>execvp</code> syscall. <a href="../os/unix/process/trait.commandext#tymethod.exec">Read more</a>
+</div>
+<summary><section id="method.arg0" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#254-260">Source</a><pre class="code-header" data-language="rust">fn arg0&lt;S&gt;(&amp;mut self, arg: S) -&gt; &amp;mut Commandwhere
+    S: AsRef&lt;OsStr&gt;,</pre></section></summary><div class="docblock">Set executable argument <a href="../os/unix/process/trait.commandext#tymethod.arg0">Read more</a>
+</div>
+<summary><section id="method.process_group" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#262-265">Source</a><pre class="code-header" data-language="rust">fn process_group(&amp;mut self, pgroup: i32) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">Sets the process group ID (PGID) of the child process. Equivalent to a <code>setpgid</code> call in the child process, but may be more efficient. <a href="../os/unix/process/trait.commandext#tymethod.process_group">Read more</a>
+</div>
+<summary><section id="method.chroot" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#267-270">Source</a><pre class="code-header" data-language="rust">fn chroot&lt;P: AsRef&lt;Path&gt;&gt;(&amp;mut self, dir: P) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>process_chroot</code> <a href="https://github.com/rust-lang/rust/issues/141298">#141298</a>)</span>
+</div></span><div class="docblock">Set the root of the child process. This calls <code>chroot</code> in the child process before executing the command. <a href="../os/unix/process/trait.commandext#tymethod.chroot">Read more</a>
+</div>
+<summary><section id="method.setsid" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#272-275">Source</a><pre class="code-header" data-language="rust">fn setsid(&amp;mut self, setsid: bool) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>process_setsid</code> <a href="https://github.com/rust-lang/rust/issues/105376">#105376</a>)</span>
+</div></span><summary><section id="method.before_exec" class="method trait-impl"><span class="rightside"><span class="since" title="Stable since Rust version 1.15.0">1.15.0</span><a class="src" href="https://doc.rust-lang.org/src/std/os/unix/process.rs.html#128-133">Source</a></span><pre class="code-header" data-language="rust">unsafe fn before_exec&lt;F&gt;(&amp;mut self, f: F) -&gt; &amp;mut Commandwhere
+    F: FnMut() -&gt; Result&lt;()&gt; + Send + Sync + 'static,</pre></section></summary><span class="item-info"><div class="stab deprecated">
+<span class="emoji">👎</span><span>Deprecated since 1.37.0: should be unsafe, use <code>pre_exec</code> instead</span>
+</div></span><div class="docblock">Schedules a closure to be run just before the <code>exec</code> function is invoked. <a href="../os/unix/process/trait.commandext#method.before_exec">Read more</a>
+</div>
+</div>
+<summary><section id="impl-CommandExt-for-Command-1" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/linux/process.rs.html#210-215">Source</a><pre class="code-header" data-language="rust">impl CommandExt for CommandAvailable on Linux only.</pre></section></summary><div class="impl-items">
+<summary><section id="method.create_pidfd" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/linux/process.rs.html#211-214">Source</a><pre class="code-header" data-language="rust">fn create_pidfd(&amp;mut self, val: bool) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>linux_pidfd</code> <a href="https://github.com/rust-lang/rust/issues/82971">#82971</a>)</span>
+</div></span><div class="docblock">Sets whether a <a href="../os/linux/process/struct.pidfd" title="struct std::os::linux::process::PidFd"><code>PidFd</code></a> should be created for the <a href="struct.child" title="struct std::process::Child"><code>Child</code></a> spawned by this <a href="struct.command" title="struct std::process::Command"><code>Command</code></a>. By default, no pidfd will be created. <a href="../os/linux/process/trait.commandext#tymethod.create_pidfd">Read more</a>
+</div>
+</div>
+<summary><section id="impl-CommandExt-for-Command-2" class="impl"><span class="rightside"><span class="since" title="Stable since Rust version 1.16.0">1.16.0</span><a class="src" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#385-443">Source</a></span><pre class="code-header" data-language="rust">impl CommandExt for CommandAvailable on Windows only.</pre></section></summary><div class="impl-items">
+<summary><section id="method.creation_flags" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#386-389">Source</a><pre class="code-header" data-language="rust">fn creation_flags(&amp;mut self, flags: u32) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">Sets the <a href="https://docs.microsoft.com/en-us/windows/win32/procthread/process-creation-flags">process creation flags</a> to be passed to <code>CreateProcess</code>. <a href="../os/windows/process/trait.commandext#tymethod.creation_flags">Read more</a>
+</div>
+<summary><section id="method.show_window" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#391-394">Source</a><pre class="code-header" data-language="rust">fn show_window(&amp;mut self, cmd_show: u16) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_show_window</code> <a href="https://github.com/rust-lang/rust/issues/127544">#127544</a>)</span>
+</div></span><div class="docblock">Sets the field <code>wShowWindow</code> of <a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow">STARTUPINFO</a> that is passed to <code>CreateProcess</code>. Allowed values are the ones listed in <a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow">https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow</a>
+</div>
+<summary><section id="method.force_quotes" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#396-399">Source</a><pre class="code-header" data-language="rust">fn force_quotes(&amp;mut self, enabled: bool) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_force_quotes</code> <a href="https://github.com/rust-lang/rust/issues/82227">#82227</a>)</span>
+</div></span><div class="docblock">Forces all arguments to be wrapped in quote (<code>"</code>) characters. <a href="../os/windows/process/trait.commandext#tymethod.force_quotes">Read more</a>
+</div>
+<summary><section id="method.raw_arg" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#401-404">Source</a><pre class="code-header" data-language="rust">fn raw_arg&lt;S: AsRef&lt;OsStr&gt;&gt;(&amp;mut self, raw_text: S) -&gt; &amp;mut Command</pre></section></summary><div class="docblock">Append literal text to the command line without any quoting or escaping. <a href="../os/windows/process/trait.commandext#tymethod.raw_arg">Read more</a>
+</div>
+<summary><section id="method.async_pipes" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#406-413">Source</a><pre class="code-header" data-language="rust">fn async_pipes(&amp;mut self, always_async: bool) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_async_pipes</code> <a href="https://github.com/rust-lang/rust/issues/98289">#98289</a>)</span>
+</div></span><div class="docblock">When <a href="struct.command" title="struct std::process::Command"><code>process::Command</code></a> creates pipes, request that our side is always async. <a href="../os/windows/process/trait.commandext#tymethod.async_pipes">Read more</a>
+</div>
+<summary><section id="method.spawn_with_attributes" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#415-422">Source</a><pre class="code-header" data-language="rust">fn spawn_with_attributes(
+    &amp;mut self,
+    attribute_list: &amp;ProcThreadAttributeList&lt;'_&gt;,
+) -&gt; Result&lt;Child&gt;</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_raw_attribute</code> <a href="https://github.com/rust-lang/rust/issues/114854">#114854</a>)</span>
+</div></span><div class="docblock">Executes the command as a child process with the given <a href="../os/windows/process/struct.procthreadattributelist" title="struct std::os::windows::process::ProcThreadAttributeList"><code>ProcThreadAttributeList</code></a>, returning a handle to it. <a href="../os/windows/process/trait.commandext#tymethod.spawn_with_attributes">Read more</a>
+</div>
+<summary><section id="method.startupinfo_fullscreen" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#424-427">Source</a><pre class="code-header" data-language="rust">fn startupinfo_fullscreen(&amp;mut self, enabled: bool) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_startupinfo</code> <a href="https://github.com/rust-lang/rust/issues/141010">#141010</a>)</span>
+</div></span><div class="docblock">When true, sets the <code>STARTF_RUNFULLSCREEN</code> flag on the <a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa">STARTUPINFO</a> struct before passing it to <code>CreateProcess</code>.</div>
+<summary><section id="method.startupinfo_untrusted_source" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#429-432">Source</a><pre class="code-header" data-language="rust">fn startupinfo_untrusted_source(&amp;mut self, enabled: bool) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_startupinfo</code> <a href="https://github.com/rust-lang/rust/issues/141010">#141010</a>)</span>
+</div></span><div class="docblock">When true, sets the <code>STARTF_UNTRUSTEDSOURCE</code> flag on the <a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa">STARTUPINFO</a> struct before passing it to <code>CreateProcess</code>.</div>
+<summary><section id="method.startupinfo_force_feedback" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#434-437">Source</a><pre class="code-header" data-language="rust">fn startupinfo_force_feedback(&amp;mut self, enabled: Option&lt;bool&gt;) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_startupinfo</code> <a href="https://github.com/rust-lang/rust/issues/141010">#141010</a>)</span>
+</div></span><div class="docblock">When specified, sets the following flags on the <a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa">STARTUPINFO</a> struct before passing it to <code>CreateProcess</code>: <a href="../os/windows/process/trait.commandext#tymethod.startupinfo_force_feedback">Read more</a>
+</div>
+<summary><section id="method.inherit_handles" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/os/windows/process.rs.html#439-442">Source</a><pre class="code-header" data-language="rust">fn inherit_handles(&amp;mut self, inherit_handles: bool) -&gt; &amp;mut Command</pre></section></summary><span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>windows_process_extensions_inherit_handles</code> <a href="https://github.com/rust-lang/rust/issues/146407">#146407</a>)</span>
+</div></span><div class="docblock">If this flag is set to <code>true</code>, each inheritable handle in the calling process is inherited by the new process. If the flag is <code>false</code>, the handles are not inherited. <a href="../os/windows/process/trait.commandext#tymethod.inherit_handles">Read more</a>
+</div>
+</div>
+<summary><section id="impl-Debug-for-Command" class="impl"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="src" href="https://doc.rust-lang.org/src/std/process.rs.html#1236-1252">Source</a></span><pre class="code-header" data-language="rust">impl Debug for Command</pre></section></summary><div class="impl-items">
+<summary><section id="method.fmt" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/std/process.rs.html#1249-1251">Source</a><pre class="code-header" data-language="rust">fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; Result</pre></section></summary><div class="docblock">
+<p>Format the program and arguments of a Command for display. Any non-utf8 data is lossily converted using the utf8 replacement character.</p> <p>The default format approximates a shell invocation of the program along with its arguments. It does not include most of the other command properties. The output is not guaranteed to work (e.g. due to lack of shell-escaping or differences in path resolution). On some platforms you can use <a href="../fmt/index#sign0" title="mod std::fmt">the alternate syntax</a> to show more fields.</p> <p>Note that the debug implementation is platform-specific.</p> </div>
+</div>
+</div>
+<h3 id="synthetic-implementations" class="section-header">Auto Trait Implementations</h3>
+<div id="synthetic-implementations-list">
+<section id="impl-Freeze-for-Command" class="impl"><pre class="code-header" data-language="rust">impl Freeze for Command</pre></section><section id="impl-RefUnwindSafe-for-Command" class="impl"><pre class="code-header" data-language="rust">impl !RefUnwindSafe for Command</pre></section><section id="impl-Send-for-Command" class="impl"><pre class="code-header" data-language="rust">impl Send for Command</pre></section><section id="impl-Sync-for-Command" class="impl"><pre class="code-header" data-language="rust">impl Sync for Command</pre></section><section id="impl-Unpin-for-Command" class="impl"><pre class="code-header" data-language="rust">impl Unpin for Command</pre></section><section id="impl-UnwindSafe-for-Command" class="impl"><pre class="code-header" data-language="rust">impl !UnwindSafe for Command</pre></section>
+</div>
+<h3 id="blanket-implementations" class="section-header">Blanket Implementations</h3>
+<div id="blanket-implementations-list">
+<summary><section id="impl-Any-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/any.rs.html#138">Source</a><pre class="code-header" data-language="rust">impl&lt;T&gt; Any for Twhere
+    T: 'static + ?Sized,</pre></section></summary><div class="impl-items">
+<summary><section id="method.type_id" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/any.rs.html#139">Source</a><pre class="code-header" data-language="rust">fn type_id(&amp;self) -&gt; TypeId</pre></section></summary><div class="docblock">Gets the <code>TypeId</code> of <code>self</code>. <a href="../any/trait.any#tymethod.type_id">Read more</a>
+</div>
+</div>
+<summary><section id="impl-Borrow%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/borrow.rs.html#212">Source</a><pre class="code-header" data-language="rust">impl&lt;T&gt; Borrow&lt;T&gt; for Twhere
+    T: ?Sized,</pre></section></summary><div class="impl-items">
+<summary><section id="method.borrow" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/borrow.rs.html#214">Source</a><pre class="code-header" data-language="rust">fn borrow(&amp;self) -&gt; &amp;T</pre></section></summary><div class="docblock">Immutably borrows from an owned value. <a href="../borrow/trait.borrow#tymethod.borrow">Read more</a>
+</div>
+</div>
+<summary><section id="impl-BorrowMut%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/borrow.rs.html#221">Source</a><pre class="code-header" data-language="rust">impl&lt;T&gt; BorrowMut&lt;T&gt; for Twhere
+    T: ?Sized,</pre></section></summary><div class="impl-items">
+<summary><section id="method.borrow_mut" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/borrow.rs.html#222">Source</a><pre class="code-header" data-language="rust">fn borrow_mut(&amp;mut self) -&gt; &amp;mut T</pre></section></summary><div class="docblock">Mutably borrows from an owned value. <a href="../borrow/trait.borrowmut#tymethod.borrow_mut">Read more</a>
+</div>
+</div>
+<summary><section id="impl-From%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#785">Source</a><pre class="code-header" data-language="rust">impl&lt;T&gt; From&lt;T&gt; for T</pre></section></summary><div class="impl-items">
+<summary><section id="method.from" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#788">Source</a><pre class="code-header" data-language="rust">fn from(t: T) -&gt; T</pre></section></summary><div class="docblock">
+<p>Returns the argument unchanged.</p> </div>
+</div>
+<summary><section id="impl-Into%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#767-769">Source</a><pre class="code-header" data-language="rust">impl&lt;T, U&gt; Into&lt;U&gt; for Twhere
+    U: From&lt;T&gt;,</pre></section></summary><div class="impl-items">
+<summary><section id="method.into" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#777">Source</a><pre class="code-header" data-language="rust">fn into(self) -&gt; U</pre></section></summary><div class="docblock">
+<p>Calls <code>U::from(self)</code>.</p> <p>That is, this conversion is whatever the implementation of <code><a href="../convert/trait.from" title="trait std::convert::From">From</a>&lt;T&gt; for U</code> chooses to do.</p> </div>
+</div>
+<summary><section id="impl-TryFrom%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#827-829">Source</a><pre class="code-header" data-language="rust">impl&lt;T, U&gt; TryFrom&lt;U&gt; for Twhere
+    U: Into&lt;T&gt;,</pre></section></summary><div class="impl-items">
+<summary><section id="associatedtype.Error-1" class="associatedtype trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#831">Source</a><pre class="code-header" data-language="rust">type Error = Infallible</pre></section></summary><div class="docblock">The type returned in the event of a conversion error.</div>
+<summary><section id="method.try_from" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#834">Source</a><pre class="code-header" data-language="rust">fn try_from(value: U) -&gt; Result&lt;T, &lt;T as TryFrom&lt;U&gt;&gt;::Error&gt;</pre></section></summary><div class="docblock">Performs the conversion.</div>
+</div>
+<summary><section id="impl-TryInto%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#811-813">Source</a><pre class="code-header" data-language="rust">impl&lt;T, U&gt; TryInto&lt;U&gt; for Twhere
+    U: TryFrom&lt;T&gt;,</pre></section></summary><div class="impl-items">
+<summary><section id="associatedtype.Error" class="associatedtype trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#815">Source</a><pre class="code-header" data-language="rust">type Error = &lt;U as TryFrom&lt;T&gt;&gt;::Error</pre></section></summary><div class="docblock">The type returned in the event of a conversion error.</div>
+<summary><section id="method.try_into" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/src/core/convert/mod.rs.html#818">Source</a><pre class="code-header" data-language="rust">fn try_into(self) -&gt; Result&lt;U, &lt;U as TryFrom&lt;T&gt;&gt;::Error&gt;</pre></section></summary><div class="docblock">Performs the conversion.</div>
+</div>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/process/struct.Command.html" class="_attribution-link">https://doc.rust-lang.org/std/process/struct.Command.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

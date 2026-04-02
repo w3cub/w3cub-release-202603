@@ -1,0 +1,229 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Subtyping and Variance - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Subtyping is implicit and can occur at any stage in type checking or inference. ">
+  <meta name="keywords" content="subtyping, and, variance, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/reference/subtyping.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 id="subtyping-and-variance">Subtyping and variance</h1>  <p>Subtyping is implicit and can occur at any stage in type checking or inference.</p>  <p>Subtyping is restricted to two cases: variance with respect to lifetimes and between types with higher ranked lifetimes. If we were to erase lifetimes from types, then the only subtyping would be due to type equality.</p> <p>Consider the following example: string literals always have <code>'static</code> lifetime. Nevertheless, we can assign <code>s</code> to <code>t</code>:</p> <pre data-language="rust">#![allow(unused)]
+fn main() {
+fn bar&lt;'a&gt;() {
+    let s: &amp;'static str = "hi";
+    let t: &amp;'a str = s;
+}
+}</pre> <p>Since <code>'static</code> outlives the lifetime parameter <code>'a</code>, <code>&amp;'static str</code> is a subtype of <code>&amp;'a str</code>.</p>  <p><a href="https://doc.rust-lang.org/nomicon/hrtb.html">Higher-ranked</a> <a href="types/function-pointer">function pointers</a> and <a href="types/trait-object">trait objects</a> have another subtype relation. They are subtypes of types that are given by substitutions of the higher-ranked lifetimes. Some examples:</p> <pre data-language="rust">#![allow(unused)]
+fn main() {
+// Here 'a is substituted for 'static
+let subtype: &amp;(for&lt;'a&gt; fn(&amp;'a i32) -&gt; &amp;'a i32) = &amp;((|x| x) as fn(&amp;_) -&gt; &amp;_);
+let supertype: &amp;(fn(&amp;'static i32) -&gt; &amp;'static i32) = subtype;
+
+// This works similarly for trait objects
+let subtype: &amp;(dyn for&lt;'a&gt; Fn(&amp;'a i32) -&gt; &amp;'a i32) = &amp;|x| x;
+let supertype: &amp;(dyn Fn(&amp;'static i32) -&gt; &amp;'static i32) = subtype;
+
+// We can also substitute one higher-ranked lifetime for another
+let subtype: &amp;(for&lt;'a, 'b&gt; fn(&amp;'a i32, &amp;'b i32)) = &amp;((|x, y| {}) as fn(&amp;_, &amp;_));
+let supertype: &amp;for&lt;'c&gt; fn(&amp;'c i32, &amp;'c i32) = subtype;
+}</pre>  <h2 id="variance">Variance</h2>  <p>Variance is a property that generic types have with respect to their arguments. A generic type’s <em>variance</em> in a parameter is how the subtyping of the parameter affects the subtyping of the type.</p>  <ul> <li>
+<code>F&lt;T&gt;</code> is <em>covariant</em> over <code>T</code> if <code>T</code> being a subtype of <code>U</code> implies that <code>F&lt;T&gt;</code> is a subtype of <code>F&lt;U&gt;</code> (subtyping “passes through”)</li> </ul>  <ul> <li>
+<code>F&lt;T&gt;</code> is <em>contravariant</em> over <code>T</code> if <code>T</code> being a subtype of <code>U</code> implies that <code>F&lt;U&gt;</code> is a subtype of <code>F&lt;T&gt;</code>
+</li> </ul>  <ul> <li>
+<code>F&lt;T&gt;</code> is <em>invariant</em> over <code>T</code> otherwise (no subtyping relation can be derived)</li> </ul>  <p>Variance of types is automatically determined as follows</p> <div class="table-wrapper">
+<table>
+<thead><tr>
+<th>Type</th>
+<th>Variance in <code>'a</code>
+</th>
+<th>Variance in <code>T</code>
+</th>
+</tr></thead>
+<tbody> <tr>
+<td><code>&amp;'a T</code></td>
+<td>covariant</td>
+<td>covariant</td>
+</tr> <tr>
+<td><code>&amp;'a mut T</code></td>
+<td>covariant</td>
+<td>invariant</td>
+</tr> <tr>
+<td><code>*const T</code></td>
+<td></td>
+<td>covariant</td>
+</tr> <tr>
+<td><code>*mut T</code></td>
+<td></td>
+<td>invariant</td>
+</tr> <tr>
+<td>
+<code>[T]</code> and <code>[T; n]</code>
+</td>
+<td></td>
+<td>covariant</td>
+</tr> <tr>
+<td><code>fn() -&gt; T</code></td>
+<td></td>
+<td>covariant</td>
+</tr> <tr>
+<td><code>fn(T) -&gt; ()</code></td>
+<td></td>
+<td>contravariant</td>
+</tr> <tr>
+<td><code>std::cell::UnsafeCell&lt;T&gt;</code></td>
+<td></td>
+<td>invariant</td>
+</tr> <tr>
+<td><code>std::marker::PhantomData&lt;T&gt;</code></td>
+<td></td>
+<td>covariant</td>
+</tr> <tr>
+<td><code>dyn Trait&lt;T&gt; + 'a</code></td>
+<td>covariant</td>
+<td>invariant</td>
+</tr> </tbody>
+</table> </div>
+ <p>The variance of other <code>struct</code>, <code>enum</code>, and <code>union</code> types is decided by looking at the variance of the types of their fields. If the parameter is used in positions with different variances then the parameter is invariant. For example the following struct is covariant in <code>'a</code> and <code>T</code> and invariant in <code>'b</code>, <code>'c</code>, and <code>U</code>.</p> <pre data-language="rust">#![allow(unused)]
+fn main() {
+use std::cell::UnsafeCell;
+struct Variance&lt;'a, 'b, 'c, T, U: 'a&gt; {
+    x: &amp;'a U,               // This makes `Variance` covariant in 'a, and would
+                            // make it covariant in U, but U is used later
+    y: *const T,            // Covariant in T
+    z: UnsafeCell&lt;&amp;'b f64&gt;, // Invariant in 'b
+    w: *mut U,              // Invariant in U, makes the whole struct invariant
+
+    f: fn(&amp;'c ()) -&gt; &amp;'c () // Both co- and contravariant, makes 'c invariant
+                            // in the struct.
+}
+}</pre>  <p>When used outside of an <code>struct</code>, <code>enum</code>, or <code>union</code>, the variance for parameters is checked at each location separately.</p> <pre data-language="rust">#![allow(unused)]
+fn main() {
+use std::cell::UnsafeCell;
+fn generic_tuple&lt;'short, 'long: 'short&gt;(
+    // 'long is used inside of a tuple in both a co- and invariant position.
+    x: (&amp;'long u32, UnsafeCell&lt;&amp;'long u32&gt;),
+) {
+    // As the variance at these positions is computed separately,
+    // we can freely shrink 'long in the covariant position.
+    let _: (&amp;'short u32, UnsafeCell&lt;&amp;'long u32&gt;) = x;
+}
+
+fn takes_fn_ptr&lt;'short, 'middle: 'short&gt;(
+    // 'middle is used in both a co- and contravariant position.
+    f: fn(&amp;'middle ()) -&gt; &amp;'middle (),
+) {
+    // As the variance at these positions is computed separately,
+    // we can freely shrink 'middle in the covariant position
+    // and extend it in the contravariant position.
+    let _: fn(&amp;'static ()) -&gt; &amp;'short () = f;
+}
+}</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/reference/subtyping.html" class="_attribution-link">https://doc.rust-lang.org/reference/subtyping.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

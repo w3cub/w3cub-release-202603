@@ -1,0 +1,168 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Become - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Perform a tail-call of a function. ">
+  <meta name="keywords" content="keyword, become, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/keyword.become.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Keyword become </h1>
+<p>Perform a tail-call of a function.</p> <div class="warning"> <p><code>feature(explicit_tail_calls)</code> is currently incomplete and may not work properly.</p> </div> <p>When tail calling a function, instead of its stack frame being added to the stack, the stack frame of the caller is directly replaced with the callee’s. This means that as long as a loop in a call graph only uses tail calls, the stack growth will be bounded.</p> <p>This is useful for writing functional-style code (since it prevents recursion from exhausting resources) or for code optimization (since a tail call <em>might</em> be cheaper than a normal call, tail calls can be used in a similar manner to computed goto).</p> <p>Example of using <code>become</code> to implement functional-style <code>fold</code>:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(explicit_tail_calls)]
+#![expect(incomplete_features)]
+
+fn fold&lt;T: Copy, S&gt;(slice: &amp;[T], init: S, f: impl Fn(S, T) -&gt; S) -&gt; S {
+    match slice {
+        // without `become`, on big inputs this could easily overflow the
+        // stack. using a tail call guarantees that the stack will not grow unboundedly
+        [first, rest @ ..] =&gt; become fold(rest, f(init, *first), f),
+        [] =&gt; init,
+    }
+}</pre></div> <p>Compilers can already perform “tail call optimization” – they can replace normal calls with tail calls, although there are no guarantees that this will be done. However, to perform TCO, the call needs to be the last thing that happens in the functions and be returned from it. This requirement is often broken by drop code for locals, which is run after computing the return expression:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">fn example() {
+    let string = "meow".to_owned();
+    println!("{string}");
+    return help(); // this is *not* the last thing that happens in `example`...
+}
+
+// ... because it is desugared to this:
+fn example_desugared() {
+    let string = "meow".to_owned();
+    println!("{string}");
+    let tmp = help();
+    drop(string);
+    return tmp;
+}
+
+fn help() {}</pre></div> <p>For this reason, <code>become</code> also changes the drop order, such that locals are dropped <em>before</em> evaluating the call.</p> <p>In order to guarantee that the compiler can perform a tail call, <code>become</code> currently has these requirements:</p> <ol> <li>callee and caller must have the same ABI, arguments, and return type</li> <li>callee and caller must not have varargs</li> <li>caller must not be marked with <code>#[track_caller]</code> <ul> <li>callee is allowed to be marked with <code>#[track_caller]</code> as otherwise adding <code>#[track_caller]</code> would be a breaking change. if callee is marked with <code>#[track_caller]</code> a tail call is not guaranteed.</li> </ul> </li> <li>callee and caller cannot be a closure (unless it’s coerced to a function pointer)</li> </ol> <p>It is possible to tail-call a function pointer:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(explicit_tail_calls)]
+#![expect(incomplete_features)]
+
+#[derive(Copy, Clone)]
+enum Inst { Inc, Dec }
+
+fn dispatch(stream: &amp;[Inst], state: u32) -&gt; u32 {
+    const TABLE: &amp;[fn(&amp;[Inst], u32) -&gt; u32] = &amp;[increment, decrement];
+    match stream {
+        [inst, rest @ ..] =&gt; become TABLE[*inst as usize](rest, state),
+        [] =&gt; state,
+    }
+}
+
+fn increment(stream: &amp;[Inst], state: u32) -&gt; u32 {
+    become dispatch(stream, state + 1)
+}
+
+fn decrement(stream: &amp;[Inst], state: u32) -&gt; u32 {
+    become dispatch(stream, state - 1)
+}
+
+let program = &amp;[Inst::Inc, Inst::Inc, Inst::Dec, Inst::Inc];
+assert_eq!(dispatch(program, 0), 2);</pre></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/keyword.become.html" class="_attribution-link">https://doc.rust-lang.org/std/keyword.become.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

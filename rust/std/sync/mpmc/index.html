@@ -1,0 +1,218 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Std&#58;&#58;sync&#58;&#58;mpmc - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Multi-producer, multi-consumer FIFO queue communication primitives. ">
+  <meta name="keywords" content="module, mpmc, std, sync, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/sync/mpmc/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Module mpmc </h1>
+<span class="item-info"><div class="stab unstable">
+<span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>mpmc_channel</code> <a href="https://github.com/rust-lang/rust/issues/126840">#126840</a>)</span>
+</div></span><p>Multi-producer, multi-consumer FIFO queue communication primitives.</p> <p>This module provides message-based communication over channels, concretely defined by two types:</p> <ul> <li><a href="struct.sender" title="struct std::sync::mpmc::Sender"><code>Sender</code></a></li> <li><a href="struct.receiver" title="struct std::sync::mpmc::Receiver"><code>Receiver</code></a></li> </ul> <p><a href="struct.sender" title="struct std::sync::mpmc::Sender"><code>Sender</code></a>s are used to send data to a set of <a href="struct.receiver" title="struct std::sync::mpmc::Receiver"><code>Receiver</code></a>s. Both sender and receiver are cloneable (multi-producer) such that many threads can send simultaneously to receivers (multi-consumer).</p> <p>These channels come in two flavors:</p> <ol> <li> <p>An asynchronous, infinitely buffered channel. The <a href="fn.channel" title="fn std::sync::mpmc::channel"><code>channel</code></a> function will return a <code>(Sender, Receiver)</code> tuple where all sends will be <strong>asynchronous</strong> (they never block). The channel conceptually has an infinite buffer.</p> </li> <li> <p>A synchronous, bounded channel. The <a href="fn.sync_channel" title="fn std::sync::mpmc::sync_channel"><code>sync_channel</code></a> function will return a <code>(Sender, Receiver)</code> tuple where the storage for pending messages is a pre-allocated buffer of a fixed size. All sends will be <strong>synchronous</strong> by blocking until there is buffer space available. Note that a bound of 0 is allowed, causing the channel to become a “rendezvous” channel where each sender atomically hands off a message to a receiver.</p> </li> </ol> <h3 id="disconnection">Disconnection</h3> <p>The send and receive operations on channels will all return a <a href="../../result/enum.result" title="enum std::result::Result"><code>Result</code></a> indicating whether the operation succeeded or not. An unsuccessful operation is normally indicative of the other half of a channel having “hung up” by being dropped in its corresponding thread.</p> <p>Once half of a channel has been deallocated, most operations can no longer continue to make progress, so <a href="../../result/enum.result#variant.Err" title="variant std::result::Result::Err"><code>Err</code></a> will be returned. Many applications will continue to <a href="../../result/enum.result#method.unwrap" title="method std::result::Result::unwrap"><code>unwrap</code></a> the results returned from this module, instigating a propagation of failure among threads if one unexpectedly dies.</p> <h2 id="examples">Examples</h2> <p>Simple usage:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(mpmc_channel)]
+
+use std::thread;
+use std::sync::mpmc::channel;
+
+// Create a simple streaming channel
+let (tx, rx) = channel();
+thread::spawn(move || {
+    tx.send(10).unwrap();
+});
+assert_eq!(rx.recv().unwrap(), 10);</pre></div> <p>Shared usage:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(mpmc_channel)]
+
+use std::thread;
+use std::sync::mpmc::channel;
+
+thread::scope(|s| {
+    // Create a shared channel that can be sent along from many threads
+    // where tx is the sending half (tx for transmission), and rx is the receiving
+    // half (rx for receiving).
+    let (tx, rx) = channel();
+    for i in 0..10 {
+        let tx = tx.clone();
+        s.spawn(move || {
+            tx.send(i).unwrap();
+        });
+    }
+
+    for _ in 0..5 {
+        let rx1 = rx.clone();
+        let rx2 = rx.clone();
+        s.spawn(move || {
+            let j = rx1.recv().unwrap();
+            assert!(0 &lt;= j &amp;&amp; j &lt; 10);
+        });
+        s.spawn(move || {
+            let j = rx2.recv().unwrap();
+            assert!(0 &lt;= j &amp;&amp; j &lt; 10);
+        });
+    }
+})</pre></div> <p>Propagating panics:</p> <div class="example-wrap"><pre class="rust rust-example-rendered" data-language="rust">#![feature(mpmc_channel)]
+
+use std::sync::mpmc::channel;
+
+// The call to recv() will return an error because the channel has already
+// hung up (or been deallocated)
+let (tx, rx) = channel::&lt;i32&gt;();
+drop(tx);
+assert!(rx.recv().is_err());</pre></div>
+<h3 id="reexports" class="section-header">Re-exports</h3>
+<dl class="item-table reexports">
+<dt id="reexport.RecvError"><code>pub use crate::sync::mpsc::<a class="struct" href="../mpsc/struct.recverror" title="struct std::sync::mpsc::RecvError">RecvError</a>;</code></dt>
+<dt id="reexport.RecvTimeoutError"><code>pub use crate::sync::mpsc::<a class="enum" href="../mpsc/enum.recvtimeouterror" title="enum std::sync::mpsc::RecvTimeoutError">RecvTimeoutError</a>;</code></dt>
+<dt id="reexport.SendError"><code>pub use crate::sync::mpsc::<a class="struct" href="../mpsc/struct.senderror" title="struct std::sync::mpsc::SendError">SendError</a>;</code></dt>
+<dt id="reexport.TryRecvError"><code>pub use crate::sync::mpsc::<a class="enum" href="../mpsc/enum.tryrecverror" title="enum std::sync::mpsc::TryRecvError">TryRecvError</a>;</code></dt>
+<dt id="reexport.TrySendError"><code>pub use crate::sync::mpsc::<a class="enum" href="../mpsc/enum.trysenderror" title="enum std::sync::mpsc::TrySendError">TrySendError</a>;</code></dt>
+</dl>
+<h3 id="structs" class="section-header">Structs</h3>
+<dl class="item-table">
+<dt>
+<a class="struct" href="struct.intoiter" title="struct std::sync::mpmc::IntoIter">Into<wbr>Iter</wbr></a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>An owning iterator over messages on a <a href="struct.receiver" title="struct std::sync::mpmc::Receiver"><code>Receiver</code></a>, created by <a href="struct.receiver#method.into_iter" title="method std::sync::mpmc::Receiver::into_iter"><code>into_iter</code></a>.</dd>
+<dt>
+<a class="struct" href="struct.iter" title="struct std::sync::mpmc::Iter">Iter</a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>An iterator over messages on a <a href="struct.receiver" title="struct std::sync::mpmc::Receiver"><code>Receiver</code></a>, created by <a href="struct.receiver#method.iter" title="method std::sync::mpmc::Receiver::iter"><code>iter</code></a>.</dd>
+<dt>
+<a class="struct" href="struct.receiver" title="struct std::sync::mpmc::Receiver">Receiver</a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>The receiving half of Rust’s <a href="fn.channel" title="fn std::sync::mpmc::channel"><code>channel</code></a> (or <a href="fn.sync_channel" title="fn std::sync::mpmc::sync_channel"><code>sync_channel</code></a>) type. Different threads can share this <a href="struct.receiver" title="struct std::sync::mpmc::Receiver"><code>Receiver</code></a> by cloning it.</dd>
+<dt>
+<a class="struct" href="struct.sender" title="struct std::sync::mpmc::Sender">Sender</a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>The sending-half of Rust’s synchronous <a href="fn.channel" title="fn std::sync::mpmc::channel"><code>channel</code></a> type.</dd>
+<dt>
+<a class="struct" href="struct.tryiter" title="struct std::sync::mpmc::TryIter">TryIter</a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>An iterator that attempts to yield all pending values for a <a href="struct.receiver" title="struct std::sync::mpmc::Receiver"><code>Receiver</code></a>, created by <a href="struct.receiver#method.try_iter" title="method std::sync::mpmc::Receiver::try_iter"><code>try_iter</code></a>.</dd>
+</dl>
+<h3 id="enums" class="section-header">Enums</h3>
+<dl class="item-table">
+<dt>
+<a class="enum" href="enum.sendtimeouterror" title="enum std::sync::mpmc::SendTimeoutError">Send<wbr>Timeout<wbr>Error</wbr></wbr></a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>An error returned from the <a href="struct.sender#method.send_timeout" title="method std::sync::mpmc::Sender::send_timeout"><code>send_timeout</code></a> method.</dd>
+</dl>
+<h3 id="functions" class="section-header">Functions</h3>
+<dl class="item-table">
+<dt>
+<a class="fn" href="fn.channel" title="fn std::sync::mpmc::channel">channel</a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>Creates a new asynchronous channel, returning the sender/receiver halves.</dd>
+<dt>
+<a class="fn" href="fn.sync_channel" title="fn std::sync::mpmc::sync_channel">sync_<wbr>channel</wbr></a><wbr><span class="stab unstable" title="">Experimental</span></wbr>
+</dt>
+<dd>Creates a new synchronous, bounded channel.</dd>
+</dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/sync/mpmc/index.html" class="_attribution-link">https://doc.rust-lang.org/std/sync/mpmc/index.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

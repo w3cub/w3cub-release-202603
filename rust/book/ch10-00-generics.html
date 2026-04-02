@@ -1,0 +1,180 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>10.00. Generic Types, Traits, and Lifetimes - Rust - W3cubDocs</title>
+  
+  <meta name="description" content="Every programming language has tools for effectively handling the duplication of concepts. In Rust, one such tool is generics&#58; abstract stand- &hellip;">
+  <meta name="keywords" content="generic, types, traits, and, lifetimes, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/book/ch10-00-generics.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 id="generic-types-traits-and-lifetimes">Generic Types, Traits, and Lifetimes</h1> <p>Every programming language has tools for effectively handling the duplication of concepts. In Rust, one such tool is <em>generics</em>: abstract stand-ins for concrete types or other properties. We can express the behavior of generics or how they relate to other generics without knowing what will be in their place when compiling and running the code.</p> <p>Functions can take parameters of some generic type, instead of a concrete type like <code>i32</code> or <code>String</code>, in the same way they take parameters with unknown values to run the same code on multiple concrete values. In fact, we already used generics in Chapter 6 with <code>Option&lt;T&gt;</code>, in Chapter 8 with <code>Vec&lt;T&gt;</code> and <code>HashMap&lt;K, V&gt;</code>, and in Chapter 9 with <code>Result&lt;T, E&gt;</code>. In this chapter, you’ll explore how to define your own types, functions, and methods with generics!</p> <p>First, we’ll review how to extract a function to reduce code duplication. We’ll then use the same technique to make a generic function from two functions that differ only in the types of their parameters. We’ll also explain how to use generic types in struct and enum definitions.</p> <p>Then, you’ll learn how to use traits to define behavior in a generic way. You can combine traits with generic types to constrain a generic type to accept only those types that have a particular behavior, as opposed to just any type.</p> <p>Finally, we’ll discuss <em>lifetimes</em>: a variety of generics that give the compiler information about how references relate to each other. Lifetimes allow us to give the compiler enough information about borrowed values so that it can ensure that references will be valid in more situations than it could without our help.</p> <h2 id="removing-duplication-by-extracting-a-function">Removing Duplication by Extracting a Function</h2> <p>Generics allow us to replace specific types with a placeholder that represents multiple types to remove code duplication. Before diving into generics syntax, let’s first look at how to remove duplication in a way that doesn’t involve generic types by extracting a function that replaces specific values with a placeholder that represents multiple values. Then, we’ll apply the same technique to extract a generic function! By looking at how to recognize duplicated code you can extract into a function, you’ll start to recognize duplicated code that can use generics.</p> <p>We’ll begin with the short program in Listing 10-1 that finds the largest number in a list.</p> <figure class="listing" id="listing-10-1"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+    assert_eq!(*largest, 100);
+}</pre> <figcaption><a href="#listing-10-1">Listing 10-1</a>: Finding the largest number in a list of numbers</figcaption> </figure> <p>We store a list of integers in the variable <code>number_list</code> and place a reference to the first number in the list in a variable named <code>largest</code>. We then iterate through all the numbers in the list, and if the current number is greater than the number stored in <code>largest</code>, we replace the reference in that variable. However, if the current number is less than or equal to the largest number seen so far, the variable doesn’t change, and the code moves on to the next number in the list. After considering all the numbers in the list, <code>largest</code> should refer to the largest number, which in this case is 100.</p> <p>We’ve now been tasked with finding the largest number in two different lists of numbers. To do so, we can choose to duplicate the code in Listing 10-1 and use the same logic at two different places in the program, as shown in Listing 10-2.</p> <figure class="listing" id="listing-10-2"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+
+    let number_list = vec![102, 34, 6000, 89, 54, 2, 43, 8];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+}</pre> <figcaption><a href="#listing-10-2">Listing 10-2</a>: Code to find the largest number in <em>two</em> lists of numbers</figcaption> </figure> <p>Although this code works, duplicating code is tedious and error-prone. We also have to remember to update the code in multiple places when we want to change it.</p> <p>To eliminate this duplication, we’ll create an abstraction by defining a function that operates on any list of integers passed in as a parameter. This solution makes our code clearer and lets us express the concept of finding the largest number in a list abstractly.</p> <p>In Listing 10-3, we extract the code that finds the largest number into a function named <code>largest</code>. Then, we call the function to find the largest number in the two lists from Listing 10-2. We could also use the function on any other list of <code>i32</code> values we might have in the future.</p> <figure class="listing" id="listing-10-3"> <span class="file-name">Filename: src/main.rs</span> <pre data-language="rust">fn largest(list: &amp;[i32]) -&gt; &amp;i32 {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+    assert_eq!(*result, 100);
+
+    let number_list = vec![102, 34, 6000, 89, 54, 2, 43, 8];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+    assert_eq!(*result, 6000);
+}</pre> <figcaption><a href="#listing-10-3">Listing 10-3</a>: Abstracted code to find the largest number in two lists</figcaption> </figure> <p>The <code>largest</code> function has a parameter called <code>list</code>, which represents any concrete slice of <code>i32</code> values we might pass into the function. As a result, when we call the function, the code runs on the specific values that we pass in.</p> <p>In summary, here are the steps we took to change the code from Listing 10-2 to Listing 10-3:</p> <ol> <li>Identify duplicate code.</li> <li>Extract the duplicate code into the body of the function, and specify the inputs and return values of that code in the function signature.</li> <li>Update the two instances of duplicated code to call the function instead.</li> </ol> <p>Next, we’ll use these same steps with generics to reduce code duplication. In the same way that the function body can operate on an abstract <code>list</code> instead of specific values, generics allow code to operate on abstract types.</p> <p>For example, say we had two functions: one that finds the largest item in a slice of <code>i32</code> values and one that finds the largest item in a slice of <code>char</code> values. How would we eliminate that duplication? Let’s find out!</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/book/ch10-00-generics.html" class="_attribution-link">https://doc.rust-lang.org/book/ch10-00-generics.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

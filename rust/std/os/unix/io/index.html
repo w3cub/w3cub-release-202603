@@ -1,0 +1,138 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Std&#58;&#58;os&#58;&#58;unix&#58;&#58;io - Rust - W3cubDocs</title>
+  
+  <meta name="description" content=" Unix-specific extensions to general I&#47;O primitives. ">
+  <meta name="keywords" content="module, io, std, os, unix, rust">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/rust/std/os/unix/io/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/rust.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/rust/" class="_nav-link" title="" style="margin-left:0;">Rust</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _rust">
+				
+				
+<h1 class="main-heading">Module io </h1>
+<span class="item-info"><div class="stab portability">Available on <strong>Unix</strong> only.</div></span><p>Unix-specific extensions to general I/O primitives.</p> <p>Just like raw pointers, raw file descriptors point to resources with dynamic lifetimes, and they can dangle if they outlive their resources or be forged if they’re created from invalid values.</p> <p>This module provides three types for representing file descriptors, with different ownership properties: raw, borrowed, and owned, which are analogous to types used for representing pointers. These types reflect concepts of <a href="../../../io/index#io-safety" title="mod std::io">I/O safety</a> on Unix.</p> <div>
+<table>
+<thead><tr>
+<th>Type</th>
+<th>Analogous to</th>
+</tr></thead>
+<tbody> <tr>
+<td><a href="../../fd/type.rawfd" title="type std::os::fd::RawFd"><code>RawFd</code></a></td>
+<td><code>*const _</code></td>
+</tr> <tr>
+<td><a href="../../fd/struct.borrowedfd" title="struct std::os::fd::BorrowedFd"><code>BorrowedFd&lt;'a&gt;</code></a></td>
+<td><code>&amp;'a Arc&lt;_&gt;</code></td>
+</tr> <tr>
+<td><a href="../../fd/struct.ownedfd" title="struct std::os::fd::OwnedFd"><code>OwnedFd</code></a></td>
+<td><code>Arc&lt;_&gt;</code></td>
+</tr> </tbody>
+</table> </div> <p>Like raw pointers, <code>RawFd</code> values are primitive values. And in new code, they should be considered unsafe to do I/O on (analogous to dereferencing them). Rust did not always provide this guidance, so existing code in the Rust ecosystem often doesn’t mark <code>RawFd</code> usage as unsafe. Libraries are encouraged to migrate, either by adding <code>unsafe</code> to APIs that dereference <code>RawFd</code> values, or by using to <code>BorrowedFd</code> or <code>OwnedFd</code> instead.</p> <p>The use of <code>Arc</code> for borrowed/owned file descriptors may be surprising. Unix file descriptors are mere references to internal kernel objects called “open file descriptions”, and the same open file description can be referenced by multiple file descriptors (e.g. if <code>dup</code> is used). State such as the offset within the file is shared among all file descriptors that refer to the same open file description, and the kernel internally does reference-counting to only close the underlying resource once all file descriptors referencing it are closed. That’s why <code>Arc</code> (and not <code>Box</code>) is the closest Rust analogy to an “owned” file descriptor.</p> <p>Like references, <code>BorrowedFd</code> values are tied to a lifetime, to ensure that they don’t outlive the resource they point to. These are safe to use. <code>BorrowedFd</code> values may be used in APIs which provide safe access to any system call except for:</p> <ul> <li> <p><code>close</code>, because that would end the dynamic lifetime of the resource without ending the lifetime of the file descriptor. (Equivalently: an <code>&amp;Arc&lt;_&gt;</code> cannot be <code>drop</code>ed.)</p> </li> <li> <p><code>dup2</code>/<code>dup3</code>, in the second argument, because this argument is closed and assigned a new resource, which may break the assumptions of other code using that file descriptor.</p> </li> </ul> <p><code>BorrowedFd</code> values may be used in APIs which provide safe access to <code>dup</code> system calls, so code working with <code>OwnedFd</code> cannot assume to have exclusive access to the underlying open file description. (Equivalently: <code>&amp;Arc</code> may be used in APIs that provide safe access to <code>clone</code>, so code working with an <code>Arc</code> cannot assume that the reference count is 1.)</p> <p><code>BorrowedFd</code> values may also be used with <code>mmap</code>, since <code>mmap</code> uses the provided file descriptor in a manner similar to <code>dup</code> and does not require the <code>BorrowedFd</code> passed to it to live for the lifetime of the resulting mapping. That said, <code>mmap</code> is unsafe for other reasons: it operates on raw pointers, and it can have undefined behavior if the underlying storage is mutated. Mutations may come from other processes, or from the same process if the API provides <code>BorrowedFd</code> access, since as mentioned earlier, <code>BorrowedFd</code> values may be used in APIs which provide safe access to any system call. Consequently, code using <code>mmap</code> and presenting a safe API must take full responsibility for ensuring that safe Rust code cannot evoke undefined behavior through it.</p> <p>Like <code>Arc</code>, <code>OwnedFd</code> values conceptually own one reference to the resource they point to, and decrement the reference count when they are dropped (by calling <code>close</code>). When the reference count reaches 0, the underlying open file description will be freed by the kernel.</p> <p>See the <a href="../../../io/index#io-safety" title="mod std::io"><code>io</code> module docs</a> for a general explanation of I/O safety.</p> <h3 id="procselfmem-and-similar-os-features">
+<code>/proc/self/mem</code> and similar OS features</h3> <p>Some platforms have special files, such as <code>/proc/self/mem</code>, which provide read and write access to the process’s memory. Such reads and writes happen outside the control of the Rust compiler, so they do not uphold Rust’s memory safety guarantees.</p> <p>This does not mean that all APIs that might allow <code>/proc/self/mem</code> to be opened and read from or written must be <code>unsafe</code>. Rust’s safety guarantees only cover what the program itself can do, and not what entities outside the program can do to it. <code>/proc/self/mem</code> is considered to be such an external entity, along with <code>/proc/self/fd/*</code>, debugging interfaces, and people with physical access to the hardware. This is true even in cases where the program is controlling the external entity.</p> <p>If you desire to comprehensively prevent programs from reaching out and causing external entities to reach back in and violate memory safety, it’s necessary to use <em>sandboxing</em>, which is outside the scope of <code>std</code>.</p> <h3 id="reexports" class="section-header">Re-exports</h3>
+<dl class="item-table reexports"><dt><code>pub use crate::os::<a class="mod" href="../../fd/index" title="mod std::os::fd">fd</a>::*;</code></dt></dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 The Rust Project Developers<br>Licensed under the Apache License, Version 2.0 or the MIT license, at your option.<br>
+    <a href="https://doc.rust-lang.org/std/os/unix/io/index.html" class="_attribution-link">https://doc.rust-lang.org/std/os/unix/io/index.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
