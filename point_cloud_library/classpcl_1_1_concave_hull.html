@@ -1,0 +1,738 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>pcl&#58;&#58;ConcaveHull - PointCloudLibrary - W3cubDocs</title>
+  
+  <meta name="description" content=" ConcaveHull (alpha shapes) using libqhull library. More... ">
+  <meta name="keywords" content="pcl, concavehull, pointcloudlibrary, point_cloud_library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/point_cloud_library/classpcl_1_1_concave_hull.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/point_cloud_library.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/point_cloud_library/" class="_nav-link" title="" style="margin-left:0;">PointCloudLibrary</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _point_cloud_library">
+				
+				
+<p><b><a class="el" href="classpcl_1_1_concave_hull" title="ConcaveHull (alpha shapes) using libqhull library.">ConcaveHull</a></b> (alpha shapes) using libqhull library. <a href="classpcl_1_1_concave_hull#details">More...</a></p> <p><code>#include &lt;<a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">pcl/surface/concave_hull.h</a>&gt;</code></p>  <div id="dynsection-0-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-0-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_concave_hull_3_01_point_in_t_01_4_inherit__map" alt="Inheritance graph"></div> <map name="apcl_1_1_concave_hull_3_01_point_in_t_01_4_inherit__map" id="apcl_1_1_concave_hull_3_01_point_in_t_01_4_inherit__map"> <area shape="rect" title="ConcaveHull (alpha shapes) using libqhull library." alt="" coords="5,352,220,379"> <area shape="rect" href="classpcl_1_1_mesh_construction.html" title="MeshConstruction represents a base surface reconstruction class." alt="" coords="29,261,196,303"> <area shape="rect" href="classpcl_1_1_p_c_l_surface_base.html" title="Pure abstract class." alt="" coords="35,171,190,212"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title=" " alt="" coords="19,95,207,121"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="25,5,201,32"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div>  <div id="dynsection-1-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-1-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_concave_hull_3_01_point_in_t_01_4_coll__map" alt="Collaboration graph"></div> <map name="apcl_1_1_concave_hull_3_01_point_in_t_01_4_coll__map" id="apcl_1_1_concave_hull_3_01_point_in_t_01_4_coll__map"> <area shape="rect" title="ConcaveHull (alpha shapes) using libqhull library." alt="" coords="81,571,295,597"> <area shape="rect" href="classpcl_1_1_mesh_construction.html" title="MeshConstruction represents a base surface reconstruction class." alt="" coords="105,467,271,508"> <area shape="rect" href="classpcl_1_1_p_c_l_surface_base.html" title="Pure abstract class." alt="" coords="111,363,265,404"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title=" " alt="" coords="197,273,385,300"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="220,184,396,211"> <area shape="rect" title=" " alt="" coords="144,5,235,32"> <area shape="rect" title=" " alt="" coords="290,95,457,121"> <area shape="rect" href="structpcl_1_1_point_indices.html" title=" " alt="" coords="353,474,481,501"> <area shape="rect" href="structpcl_1_1_p_c_l_header.html" title=" " alt="" coords="387,370,507,397"> <area shape="rect" title=" " alt="" coords="409,273,484,300"> <area shape="rect" title=" " alt="" coords="508,273,583,300"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div> <table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-types"></a> Public Types</h2></td></tr> <tr class="memitem:abab173fadfb41211f0bf740a16e9d3d6">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:abab173fadfb41211f0bf740a16e9d3d6"></tr> <tr class="memitem:ad161b58ab652751339330af6943c5b24">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ad161b58ab652751339330af6943c5b24">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:ad161b58ab652751339330af6943c5b24"></tr> <tr class="memitem:a76e79027df45e0a71280a12c0f0c5088">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a76e79027df45e0a71280a12c0f0c5088">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a76e79027df45e0a71280a12c0f0c5088"></tr> <tr class="inherit_header pub_types_classpcl_1_1_mesh_construction"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_mesh_construction')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_mesh_construction">pcl::MeshConstruction&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a3103a869666a079253a485d6375cb03f inherit pub_types_classpcl_1_1_mesh_construction">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_mesh_construction#a3103a869666a079253a485d6375cb03f">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_mesh_construction">MeshConstruction</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:a3103a869666a079253a485d6375cb03f inherit pub_types_classpcl_1_1_mesh_construction"></tr> <tr class="memitem:a48f81392c93a4e9e3ce7572fc8331864 inherit pub_types_classpcl_1_1_mesh_construction">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_mesh_construction#a48f81392c93a4e9e3ce7572fc8331864">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_mesh_construction">MeshConstruction</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:a48f81392c93a4e9e3ce7572fc8331864 inherit pub_types_classpcl_1_1_mesh_construction"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_surface_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_surface_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_surface_base">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a63b00af163012878bce98e2649972cd7 inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a63b00af163012878bce98e2649972cd7">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_p_c_l_surface_base">PCLSurfaceBase</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:a63b00af163012878bce98e2649972cd7 inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:a02612b99d45c656409398892fa432e85 inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a02612b99d45c656409398892fa432e85">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_p_c_l_surface_base">PCLSurfaceBase</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:a02612b99d45c656409398892fa432e85 inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:abbc605a6227e56c9cb783114ff46795a inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#abbc605a6227e56c9cb783114ff46795a">KdTree</a> = <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html">pcl::search::Search</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:abbc605a6227e56c9cb783114ff46795a inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:a1c1a9c729a618b9ec8bf20b824d2a674 inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> = typename <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html#ab4688e4899ce5aa6937dba334dc75763">KdTree::Ptr</a>
+</td>
+</tr> <tr class="separator:a1c1a9c729a618b9ec8bf20b824d2a674 inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a4399c6b93663d4762fc3389c1b594eb8">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afe906230f3e673dc2ff10b9d579f4ccb">PointIndicesPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a3c574b78dfbe67c93d09acdbc8ecc499">PointIndices::Ptr</a>
+</td>
+</tr> <tr class="separator:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a6880da079270712d46b0bb348cf124bc">PointIndices::ConstPtr</a>
+</td>
+</tr> <tr class="separator:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-methods"></a> Public Member Functions</h2></td></tr> <tr class="memitem:a63d472319f13646ce16ee57c131617c8">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a63d472319f13646ce16ee57c131617c8">ConcaveHull</a> ()=default</td>
+</tr> <tr class="memdesc:a63d472319f13646ce16ee57c131617c8">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_concave_hull#a63d472319f13646ce16ee57c131617c8">More...</a><br>
+</td>
+</tr> <tr class="separator:a63d472319f13646ce16ee57c131617c8"></tr> <tr class="memitem:a861e94b596d565e263f74c7ced92ba39">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a861e94b596d565e263f74c7ced92ba39">~ConcaveHull</a> () override=default</td>
+</tr> <tr class="memdesc:a861e94b596d565e263f74c7ced92ba39">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty destructor. <a href="classpcl_1_1_concave_hull#a861e94b596d565e263f74c7ced92ba39">More...</a><br>
+</td>
+</tr> <tr class="separator:a861e94b596d565e263f74c7ced92ba39"></tr> <tr class="memitem:aa7364aaab2721664ae667a4dfb4d32c0">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#aa7364aaab2721664ae667a4dfb4d32c0">reconstruct</a> (<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> &amp;points, std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp;polygons)</td>
+</tr> <tr class="memdesc:aa7364aaab2721664ae667a4dfb4d32c0">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Compute a concave hull for all points given. <a href="classpcl_1_1_concave_hull#aa7364aaab2721664ae667a4dfb4d32c0">More...</a><br>
+</td>
+</tr> <tr class="separator:aa7364aaab2721664ae667a4dfb4d32c0"></tr> <tr class="memitem:ae0ff39ec68c6d8205d1999984c39ef7f">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ae0ff39ec68c6d8205d1999984c39ef7f">reconstruct</a> (<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> &amp;output)</td>
+</tr> <tr class="memdesc:ae0ff39ec68c6d8205d1999984c39ef7f">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Compute a concave hull for all points given. <a href="classpcl_1_1_concave_hull#ae0ff39ec68c6d8205d1999984c39ef7f">More...</a><br>
+</td>
+</tr> <tr class="separator:ae0ff39ec68c6d8205d1999984c39ef7f"></tr> <tr class="memitem:ab2e24dc457ff32634aa2549a10bc7562">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ab2e24dc457ff32634aa2549a10bc7562">setAlpha</a> (double alpha)</td>
+</tr> <tr class="memdesc:ab2e24dc457ff32634aa2549a10bc7562">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the alpha value, which limits the size of the resultant hull segments (the smaller the more detailed the hull). <a href="classpcl_1_1_concave_hull#ab2e24dc457ff32634aa2549a10bc7562">More...</a><br>
+</td>
+</tr> <tr class="separator:ab2e24dc457ff32634aa2549a10bc7562"></tr> <tr class="memitem:ae261bc108f87fea3ba3722203709a806">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ae261bc108f87fea3ba3722203709a806">getAlpha</a> ()</td>
+</tr> <tr class="memdesc:ae261bc108f87fea3ba3722203709a806">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the alpha parameter, see <a class="el" href="classpcl_1_1_concave_hull#ab2e24dc457ff32634aa2549a10bc7562" title="Set the alpha value, which limits the size of the resultant hull segments (the smaller the more detai...">setAlpha()</a>. <a href="classpcl_1_1_concave_hull#ae261bc108f87fea3ba3722203709a806">More...</a><br>
+</td>
+</tr> <tr class="separator:ae261bc108f87fea3ba3722203709a806"></tr> <tr class="memitem:a13e8beee87153e19208e444bfabb5df3">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a13e8beee87153e19208e444bfabb5df3">setVoronoiCenters</a> (<a class="el" href="classpcl_1_1_concave_hull#ad161b58ab652751339330af6943c5b24">PointCloudPtr</a> voronoi_centers)</td>
+</tr> <tr class="memdesc:a13e8beee87153e19208e444bfabb5df3">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If set, the voronoi cells center will be saved in <em>voronoi_centers</em> <a href="classpcl_1_1_concave_hull#a13e8beee87153e19208e444bfabb5df3">More...</a><br>
+</td>
+</tr> <tr class="separator:a13e8beee87153e19208e444bfabb5df3"></tr> <tr class="memitem:a3218e3de033d4fd40eabd3cb066bb849">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a3218e3de033d4fd40eabd3cb066bb849">setKeepInformation</a> (bool value)</td>
+</tr> <tr class="memdesc:a3218e3de033d4fd40eabd3cb066bb849">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If keep_information_is set to true the convex hull points keep other information like rgb, normals, ... <a href="classpcl_1_1_concave_hull#a3218e3de033d4fd40eabd3cb066bb849">More...</a><br>
+</td>
+</tr> <tr class="separator:a3218e3de033d4fd40eabd3cb066bb849"></tr> <tr class="memitem:a548937a6f770b680937cf71cfd401d6b">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a548937a6f770b680937cf71cfd401d6b">getDimension</a> () const</td>
+</tr> <tr class="memdesc:a548937a6f770b680937cf71cfd401d6b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the dimensionality (2 or 3) of the calculated hull. <a href="classpcl_1_1_concave_hull#a548937a6f770b680937cf71cfd401d6b">More...</a><br>
+</td>
+</tr> <tr class="separator:a548937a6f770b680937cf71cfd401d6b"></tr> <tr class="memitem:af6016068adc7280b2ac7a6141cf96ba4">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#af6016068adc7280b2ac7a6141cf96ba4">setDimension</a> (int dimension)</td>
+</tr> <tr class="memdesc:af6016068adc7280b2ac7a6141cf96ba4">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Sets the dimension on the input data, 2D or 3D. <a href="classpcl_1_1_concave_hull#af6016068adc7280b2ac7a6141cf96ba4">More...</a><br>
+</td>
+</tr> <tr class="separator:af6016068adc7280b2ac7a6141cf96ba4"></tr> <tr class="memitem:ad196870bcbdfd1f3ad46ca59b0519f87">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ad196870bcbdfd1f3ad46ca59b0519f87">getHullPointIndices</a> (<a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a> &amp;hull_point_indices) const</td>
+</tr> <tr class="memdesc:ad196870bcbdfd1f3ad46ca59b0519f87">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Retrieve the indices of the input point cloud that for the convex hull. <a href="classpcl_1_1_concave_hull#ad196870bcbdfd1f3ad46ca59b0519f87">More...</a><br>
+</td>
+</tr> <tr class="separator:ad196870bcbdfd1f3ad46ca59b0519f87"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_mesh_construction"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_mesh_construction')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_mesh_construction">pcl::MeshConstruction&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a3e7885e1ed7a48b812645bbf15b10a20 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_mesh_construction#a3e7885e1ed7a48b812645bbf15b10a20">MeshConstruction</a> ()=default</td>
+</tr> <tr class="memdesc:a3e7885e1ed7a48b812645bbf15b10a20 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Constructor. <a href="classpcl_1_1_mesh_construction#a3e7885e1ed7a48b812645bbf15b10a20">More...</a><br>
+</td>
+</tr> <tr class="separator:a3e7885e1ed7a48b812645bbf15b10a20 inherit pub_methods_classpcl_1_1_mesh_construction"></tr> <tr class="memitem:a0bf1be3a85867e81ff1216e12f8a69d6 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_mesh_construction#a0bf1be3a85867e81ff1216e12f8a69d6">~MeshConstruction</a> () override=default</td>
+</tr> <tr class="memdesc:a0bf1be3a85867e81ff1216e12f8a69d6 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_mesh_construction#a0bf1be3a85867e81ff1216e12f8a69d6">More...</a><br>
+</td>
+</tr> <tr class="separator:a0bf1be3a85867e81ff1216e12f8a69d6 inherit pub_methods_classpcl_1_1_mesh_construction"></tr> <tr class="memitem:ab6e0aca9e7a4ec1b2a2e015c997f4790 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_mesh_construction#ab6e0aca9e7a4ec1b2a2e015c997f4790">reconstruct</a> (<a class="el" href="https://pointclouds.org/documentation/structpcl_1_1_polygon_mesh.html">pcl::PolygonMesh</a> &amp;output) override</td>
+</tr> <tr class="memdesc:ab6e0aca9e7a4ec1b2a2e015c997f4790 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Base method for surface reconstruction for all points given in &lt;setInputCloud (), setIndices ()&gt; <a href="classpcl_1_1_mesh_construction#ab6e0aca9e7a4ec1b2a2e015c997f4790">More...</a><br>
+</td>
+</tr> <tr class="separator:ab6e0aca9e7a4ec1b2a2e015c997f4790 inherit pub_methods_classpcl_1_1_mesh_construction"></tr> <tr class="memitem:a052b3d739f59f0fab812ebd781387c01 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_mesh_construction#a052b3d739f59f0fab812ebd781387c01">reconstruct</a> (std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp;polygons)</td>
+</tr> <tr class="memdesc:a052b3d739f59f0fab812ebd781387c01 inherit pub_methods_classpcl_1_1_mesh_construction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Base method for mesh construction for all points given in &lt;setInputCloud (), setIndices ()&gt; <a href="classpcl_1_1_mesh_construction#a052b3d739f59f0fab812ebd781387c01">More...</a><br>
+</td>
+</tr> <tr class="separator:a052b3d739f59f0fab812ebd781387c01 inherit pub_methods_classpcl_1_1_mesh_construction"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_surface_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_surface_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_surface_base">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:aa4fba20611b3e995b9cc07dac528e4c3 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#aa4fba20611b3e995b9cc07dac528e4c3">PCLSurfaceBase</a> ()</td>
+</tr> <tr class="memdesc:aa4fba20611b3e995b9cc07dac528e4c3 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_surface_base#aa4fba20611b3e995b9cc07dac528e4c3">More...</a><br>
+</td>
+</tr> <tr class="separator:aa4fba20611b3e995b9cc07dac528e4c3 inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:aef40798a4549d5e9f4ba206b442964f5 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#aef40798a4549d5e9f4ba206b442964f5">~PCLSurfaceBase</a> () override=default</td>
+</tr> <tr class="memdesc:aef40798a4549d5e9f4ba206b442964f5 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty destructor. <a href="classpcl_1_1_p_c_l_surface_base#aef40798a4549d5e9f4ba206b442964f5">More...</a><br>
+</td>
+</tr> <tr class="separator:aef40798a4549d5e9f4ba206b442964f5 inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:af599c9767a18649344ff21d3976f1779 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#af599c9767a18649344ff21d3976f1779">setSearchMethod</a> (const <a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> &amp;tree)</td>
+</tr> <tr class="memdesc:af599c9767a18649344ff21d3976f1779 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide an optional pointer to a search object. <a href="classpcl_1_1_p_c_l_surface_base#af599c9767a18649344ff21d3976f1779">More...</a><br>
+</td>
+</tr> <tr class="separator:af599c9767a18649344ff21d3976f1779 inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:a2249d44038e0869bbf60e486ab3826af inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a2249d44038e0869bbf60e486ab3826af">getSearchMethod</a> ()</td>
+</tr> <tr class="memdesc:a2249d44038e0869bbf60e486ab3826af inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the search method used. <a href="classpcl_1_1_p_c_l_surface_base#a2249d44038e0869bbf60e486ab3826af">More...</a><br>
+</td>
+</tr> <tr class="separator:a2249d44038e0869bbf60e486ab3826af inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">PCLBase</a> ()</td>
+</tr> <tr class="memdesc:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">More...</a><br>
+</td>
+</tr> <tr class="separator:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">PCLBase</a> (const <a class="el" href="classpcl_1_1_p_c_l_base">PCLBase</a> &amp;base)</td>
+</tr> <tr class="memdesc:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Copy constructor. <a href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">More...</a><br>
+</td>
+</tr> <tr class="separator:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">~PCLBase</a> ()=default</td>
+</tr> <tr class="memdesc:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">More...</a><br>
+</td>
+</tr> <tr class="separator:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">setInputCloud</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp;cloud)</td>
+</tr> <tr class="memdesc:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the input dataset. <a href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">getInputCloud</a> () const</td>
+</tr> <tr class="memdesc:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">More...</a><br>
+</td>
+</tr> <tr class="separator:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">More...</a><br>
+</td>
+</tr> <tr class="separator:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">setIndices</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">More...</a><br>
+</td>
+</tr> <tr class="separator:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">setIndices</a> (std::size_t row_start, std::size_t col_start, std::size_t nb_rows, std::size_t nb_cols)</td>
+</tr> <tr class="memdesc:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the indices for the points laying within an interest region of the point cloud. <a href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">More...</a><br>
+</td>
+</tr> <tr class="separator:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">getIndices</a> ()</td>
+</tr> <tr class="memdesc:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">More...</a><br>
+</td>
+</tr> <tr class="separator:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">getIndices</a> () const</td>
+</tr> <tr class="memdesc:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">More...</a><br>
+</td>
+</tr> <tr class="separator:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">const PointInT &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">operator[]</a> (std::size_t pos) const</td>
+</tr> <tr class="memdesc:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Override PointCloud operator[] to shorten code. <a href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">More...</a><br>
+</td>
+</tr> <tr class="separator:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-types"></a> Protected Types</h2></td></tr> <tr class="memitem:a7655e1f791213fa2dffae45cbec5ca94">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a7655e1f791213fa2dffae45cbec5ca94">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_concave_hull">ConcaveHull</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:a7655e1f791213fa2dffae45cbec5ca94"></tr> <tr class="memitem:abef29b775c61cebb6e502fdacd1676d4">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#abef29b775c61cebb6e502fdacd1676d4">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_concave_hull">ConcaveHull</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:abef29b775c61cebb6e502fdacd1676d4"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-methods"></a> Protected Member Functions</h2></td></tr> <tr class="memitem:ad237a8921caeeed34e493d67e0b842c3">
+<td class="memItemLeft" align="right" valign="top">std::string </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ad237a8921caeeed34e493d67e0b842c3">getClassName</a> () const override</td>
+</tr> <tr class="memdesc:ad237a8921caeeed34e493d67e0b842c3">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Class get name method. <a href="classpcl_1_1_concave_hull#ad237a8921caeeed34e493d67e0b842c3">More...</a><br>
+</td>
+</tr> <tr class="separator:ad237a8921caeeed34e493d67e0b842c3"></tr> <tr class="memitem:ada48c56bbbc15ddce89bfcd3749e2df3">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ada48c56bbbc15ddce89bfcd3749e2df3">performReconstruction</a> (<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> &amp;points, std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp;polygons)</td>
+</tr> <tr class="memdesc:ada48c56bbbc15ddce89bfcd3749e2df3">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The actual reconstruction method. <a href="classpcl_1_1_concave_hull#ada48c56bbbc15ddce89bfcd3749e2df3">More...</a><br>
+</td>
+</tr> <tr class="separator:ada48c56bbbc15ddce89bfcd3749e2df3"></tr> <tr class="memitem:ac06adace7dcbc0e2ef0b972522c16380">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ac06adace7dcbc0e2ef0b972522c16380">performReconstruction</a> (<a class="el" href="https://pointclouds.org/documentation/structpcl_1_1_polygon_mesh.html">PolygonMesh</a> &amp;output) override</td>
+</tr> <tr class="memdesc:ac06adace7dcbc0e2ef0b972522c16380">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Abstract surface reconstruction method. <a href="classpcl_1_1_concave_hull#ac06adace7dcbc0e2ef0b972522c16380">More...</a><br>
+</td>
+</tr> <tr class="separator:ac06adace7dcbc0e2ef0b972522c16380"></tr> <tr class="memitem:af654eae0a9569047495db9aad95e1e04">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#af654eae0a9569047495db9aad95e1e04">performReconstruction</a> (std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp;polygons) override</td>
+</tr> <tr class="memdesc:af654eae0a9569047495db9aad95e1e04">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Abstract surface reconstruction method. <a href="classpcl_1_1_concave_hull#af654eae0a9569047495db9aad95e1e04">More...</a><br>
+</td>
+</tr> <tr class="separator:af654eae0a9569047495db9aad95e1e04"></tr> <tr class="inherit_header pro_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">initCompute</a> ()</td>
+</tr> <tr class="memdesc:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called before starting the actual computation. <a href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">More...</a><br>
+</td>
+</tr> <tr class="separator:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">deinitCompute</a> ()</td>
+</tr> <tr class="memdesc:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called after finishing the actual computation. <a href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">More...</a><br>
+</td>
+</tr> <tr class="separator:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-attribs"></a> Protected Attributes</h2></td></tr> <tr class="memitem:a526e439e73beeeae10de2fb0c45da05d">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a526e439e73beeeae10de2fb0c45da05d">alpha_</a> {0.0}</td>
+</tr> <tr class="memdesc:a526e439e73beeeae10de2fb0c45da05d">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The method accepts facets only if the distance from any vertex to the facet-&gt;center (center of the voronoi cell) is smaller than alpha. <a href="classpcl_1_1_concave_hull#a526e439e73beeeae10de2fb0c45da05d">More...</a><br>
+</td>
+</tr> <tr class="separator:a526e439e73beeeae10de2fb0c45da05d"></tr> <tr class="memitem:a9ea1713523e004b383e3677a54525a90">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#a9ea1713523e004b383e3677a54525a90">keep_information_</a> {false}</td>
+</tr> <tr class="memdesc:a9ea1713523e004b383e3677a54525a90">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If set to true, the reconstructed point cloud describing the hull is obtained from the original input cloud by performing a nearest neighbor search from Qhull output. <a href="classpcl_1_1_concave_hull#a9ea1713523e004b383e3677a54525a90">More...</a><br>
+</td>
+</tr> <tr class="separator:a9ea1713523e004b383e3677a54525a90"></tr> <tr class="memitem:aaf3e2f2387e079971a1413d9d0c6c792">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_concave_hull#ad161b58ab652751339330af6943c5b24">PointCloudPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#aaf3e2f2387e079971a1413d9d0c6c792">voronoi_centers_</a> {nullptr}</td>
+</tr> <tr class="memdesc:aaf3e2f2387e079971a1413d9d0c6c792">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">the centers of the voronoi cells <a href="classpcl_1_1_concave_hull#aaf3e2f2387e079971a1413d9d0c6c792">More...</a><br>
+</td>
+</tr> <tr class="separator:aaf3e2f2387e079971a1413d9d0c6c792"></tr> <tr class="memitem:ac67b30e8d387537a116564d37333fed6">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_concave_hull#ac67b30e8d387537a116564d37333fed6">dim_</a> {0}</td>
+</tr> <tr class="memdesc:ac67b30e8d387537a116564d37333fed6">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">the dimensionality of the concave hull <a href="classpcl_1_1_concave_hull#ac67b30e8d387537a116564d37333fed6">More...</a><br>
+</td>
+</tr> <tr class="separator:ac67b30e8d387537a116564d37333fed6"></tr> <tr class="memitem:a48197858510d710dc761634eaee059c1">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_concave_hull#a48197858510d710dc761634eaee059c1">hull_indices_</a></td>
+</tr> <tr class="memdesc:a48197858510d710dc761634eaee059c1">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">vector containing the point cloud indices of the convex hull points. <a href="classpcl_1_1_concave_hull#a48197858510d710dc761634eaee059c1">More...</a><br>
+</td>
+</tr> <tr class="separator:a48197858510d710dc761634eaee059c1"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_mesh_construction"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_mesh_construction')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_mesh_construction">pcl::MeshConstruction&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:af5ff8eafba1264fa83cdadd196b37361 inherit pro_attribs_classpcl_1_1_mesh_construction">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_mesh_construction#af5ff8eafba1264fa83cdadd196b37361">check_tree_</a> {true}</td>
+</tr> <tr class="memdesc:af5ff8eafba1264fa83cdadd196b37361 inherit pro_attribs_classpcl_1_1_mesh_construction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A flag specifying whether or not the derived reconstruction algorithm needs the search object <em>tree</em>. <a href="classpcl_1_1_mesh_construction#af5ff8eafba1264fa83cdadd196b37361">More...</a><br>
+</td>
+</tr> <tr class="separator:af5ff8eafba1264fa83cdadd196b37361 inherit pro_attribs_classpcl_1_1_mesh_construction"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_surface_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_surface_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_surface_base">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a28d2f448602636061ef7d716e0f6e930 inherit pro_attribs_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_surface_base#a28d2f448602636061ef7d716e0f6e930">tree_</a></td>
+</tr> <tr class="memdesc:a28d2f448602636061ef7d716e0f6e930 inherit pro_attribs_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the spatial search object. <a href="classpcl_1_1_p_c_l_surface_base#a28d2f448602636061ef7d716e0f6e930">More...</a><br>
+</td>
+</tr> <tr class="separator:a28d2f448602636061ef7d716e0f6e930 inherit pro_attribs_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">input_</a></td>
+</tr> <tr class="memdesc:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">More...</a><br>
+</td>
+</tr> <tr class="separator:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">indices_</a></td>
+</tr> <tr class="memdesc:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the vector of point indices to use. <a href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">More...</a><br>
+</td>
+</tr> <tr class="separator:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">use_indices_</a></td>
+</tr> <tr class="memdesc:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set to true if point indices are used. <a href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">More...</a><br>
+</td>
+</tr> <tr class="separator:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">fake_indices_</a></td>
+</tr> <tr class="memdesc:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If no set of indices are given, we construct a set of fake indices that mimic the input PointCloud. <a href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">More...</a><br>
+</td>
+</tr> <tr class="separator:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> </table> <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2> <div class="textblock">
+<h3>template&lt;typename PointInT&gt;<br> class pcl::ConcaveHull&lt; PointInT &gt;</h3> <p><b><a class="el" href="classpcl_1_1_concave_hull" title="ConcaveHull (alpha shapes) using libqhull library.">ConcaveHull</a></b> (alpha shapes) using libqhull library. </p> <dl class="section author">
+<dt>Author</dt>
+<dd>Aitor Aldoma </dd>
+</dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00055">55</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> </div>
+<h2 class="groupheader">Member Typedef Documentation</h2> <a id="abef29b775c61cebb6e502fdacd1676d4"></a> <h2 class="memtitle">ConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::<a class="el" href="classpcl_1_1_concave_hull#abef29b775c61cebb6e502fdacd1676d4">ConstPtr</a> = shared_ptr&lt;const <a class="el" href="classpcl_1_1_concave_hull">ConcaveHull</a>&lt;PointInT&gt; &gt;</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00059">59</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> </div> </div> <a id="abab173fadfb41211f0bf740a16e9d3d6"></a> <h2 class="memtitle">PointCloud</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt;PointInT&gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00069">69</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> </div> </div> <a id="a76e79027df45e0a71280a12c0f0c5088"></a> <h2 class="memtitle">PointCloudConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::<a class="el" href="classpcl_1_1_concave_hull#a76e79027df45e0a71280a12c0f0c5088">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00071">71</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> </div> </div> <a id="ad161b58ab652751339330af6943c5b24"></a> <h2 class="memtitle">PointCloudPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::<a class="el" href="classpcl_1_1_concave_hull#ad161b58ab652751339330af6943c5b24">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00070">70</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> </div> </div> <a id="a7655e1f791213fa2dffae45cbec5ca94"></a> <h2 class="memtitle">Ptr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::<a class="el" href="classpcl_1_1_concave_hull#a7655e1f791213fa2dffae45cbec5ca94">Ptr</a> = shared_ptr&lt;<a class="el" href="classpcl_1_1_concave_hull">ConcaveHull</a>&lt;PointInT&gt; &gt;</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00058">58</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> </div> </div> <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2> <a id="a63d472319f13646ce16ee57c131617c8"></a> <h2 class="memtitle">ConcaveHull()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::<a class="el" href="classpcl_1_1_concave_hull">ConcaveHull</a> </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">default</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Empty constructor. </p> </div> </div> <a id="a861e94b596d565e263f74c7ced92ba39"></a> <h2 class="memtitle">~ConcaveHull()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::~<a class="el" href="classpcl_1_1_concave_hull">ConcaveHull</a> </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">default</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Empty destructor. </p> </div> </div> <h2 class="groupheader">Member Function Documentation</h2> <a id="ae261bc108f87fea3ba3722203709a806"></a> <h2 class="memtitle">getAlpha()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::getAlpha </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the alpha parameter, see <a class="el" href="classpcl_1_1_concave_hull#ab2e24dc457ff32634aa2549a10bc7562" title="Set the alpha value, which limits the size of the resultant hull segments (the smaller the more detai...">setAlpha()</a>. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00109">109</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00190">pcl::ConcaveHull&lt; PointInT &gt;::alpha_</a>.</p> </div> </div> <a id="ad237a8921caeeed34e493d67e0b842c3"></a> <h2 class="memtitle">getClassName()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::string <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::getClassName </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Class get name method. </p> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_surface_base#a48ad4ec3aee4a3d8f6092f9d63ddf48c">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00165">165</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00144">pcl::ConcaveHull&lt; PointInT &gt;::setDimension()</a>.</p> </div> </div> <a id="a548937a6f770b680937cf71cfd401d6b"></a> <h2 class="memtitle">getDimension()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">int <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::getDimension </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the dimensionality (2 or 3) of the calculated hull. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00135">135</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00201">pcl::ConcaveHull&lt; PointInT &gt;::dim_</a>.</p> </div> </div> <a id="ad196870bcbdfd1f3ad46ca59b0519f87"></a> <h2 class="memtitle">getHullPointIndices()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::getHullPointIndices </td> <td>(</td> <td class="paramtype">
+<a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a> &amp; </td> <td class="paramname"><em>hull_point_indices</em></td>
+<td>)</td> <td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>Retrieve the indices of the input point cloud that for the convex hull. </p> <dl class="section note">
+<dt>Note</dt>
+<dd>Should only be called after reconstruction was performed and if the <a class="el" href="classpcl_1_1_concave_hull" title="ConcaveHull (alpha shapes) using libqhull library.">ConcaveHull</a> is set to preserve information via setKeepInformation ().</dd>
+</dl> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">hull_point_indices</td>
+<td>The indices of the points forming the point cloud </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html#l00618">618</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html">concave_hull.hpp</a>.</p> </div> </div> <a id="ada48c56bbbc15ddce89bfcd3749e2df3"></a> <h2 class="memtitle">performReconstruction() <span class="overload">[1/3]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::performReconstruction </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> &amp; </td> <td class="paramname">
+<em>points</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp; </td> <td class="paramname">
+<em>polygons</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>The actual reconstruction method. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">points</td>
+<td>the resultant points lying on the concave hull </td>
+</tr> <tr>
+<td class="paramname">polygons</td>
+<td>the resultant concave hull polygons, as a set of vertices. The <a class="el" href="structpcl_1_1_vertices" title="Describes a set of vertices in a polygon mesh, by basically storing an array of indices.">Vertices</a> structure contains an array of point indices. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html#l00119">119</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html">concave_hull.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/centroid_8hpp_source.html#l00057">pcl::compute3DCentroid()</a>, <a class="el" href="https://pointclouds.org/documentation/centroid_8hpp_source.html#l00269">pcl::computeCovarianceMatrixNormalized()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2common_2impl_2io_8hpp_source.html#l00142">pcl::copyPointCloud()</a>, <a class="el" href="https://pointclouds.org/documentation/centroid_8hpp_source.html#l00933">pcl::demeanPointCloud()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2common_2impl_2eigen_8hpp_source.html#l00295">pcl::eigen33()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00820">pcl::PointCloud&lt; PointT &gt;::erase()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2common_2impl_2common_8hpp_source.html#l00383">pcl::getCircumcircleRadius()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00400">pcl::PointCloud&lt; PointT &gt;::height</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00403">pcl::PointCloud&lt; PointT &gt;::is_dense</a>, <a class="el" href="https://pointclouds.org/documentation/kdtree__flann_8hpp_source.html#l00235">pcl::KdTreeFLANN&lt; PointT, Dist &gt;::nearestKSearch()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00395">pcl::PointCloud&lt; PointT &gt;::points</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00663">pcl::PointCloud&lt; PointT &gt;::push_back()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00462">pcl::PointCloud&lt; PointT &gt;::resize()</a>, <a class="el" href="https://pointclouds.org/documentation/kdtree__flann_8hpp_source.html#l00100">pcl::KdTreeFLANN&lt; PointT, Dist &gt;::setInputCloud()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00443">pcl::PointCloud&lt; PointT &gt;::size()</a>, <a class="el" href="https://pointclouds.org/documentation/transforms_8hpp_source.html#l00221">pcl::transformPointCloud()</a>, <a class="el" href="https://pointclouds.org/documentation/_vertices_8h_source.html#l00018">pcl::Vertices::vertices</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00398">pcl::PointCloud&lt; PointT &gt;::width</a>.</p> </div> </div> <a id="ac06adace7dcbc0e2ef0b972522c16380"></a> <h2 class="memtitle">performReconstruction() <span class="overload">[2/3]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::performReconstruction </td> <td>(</td> <td class="paramtype">
+<a class="el" href="https://pointclouds.org/documentation/structpcl_1_1_polygon_mesh.html">PolygonMesh</a> &amp; </td> <td class="paramname"><em>output</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Abstract surface reconstruction method. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">output</td>
+<td>the output polygonal mesh </td>
+</tr> </table> </dd> </dl> <p>Implements <a class="el" href="classpcl_1_1_mesh_construction#aa8fcdad3f757ca304a9776f88510fb83">pcl::MeshConstruction&lt; PointInT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html#l00598">598</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html">concave_hull.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/_polygon_mesh_8h_source.html#l00020">pcl::PolygonMesh::cloud</a>, <a class="el" href="https://pointclouds.org/documentation/_polygon_mesh_8h_source.html#l00022">pcl::PolygonMesh::polygons</a>, and <a class="el" href="https://pointclouds.org/documentation/conversions_8h_source.html#l00372">pcl::toPCLPointCloud2()</a>.</p> </div> </div> <a id="af654eae0a9569047495db9aad95e1e04"></a> <h2 class="memtitle">performReconstruction() <span class="overload">[3/3]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::performReconstruction </td> <td>(</td> <td class="paramtype">std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp; </td> <td class="paramname"><em>polygons</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Abstract surface reconstruction method. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">polygons</td>
+<td>the resultant polygons, as a set of vertices. The <a class="el" href="structpcl_1_1_vertices" title="Describes a set of vertices in a polygon mesh, by basically storing an array of indices.">Vertices</a> structure contains an array of point indices. </td>
+</tr> </table> </dd> </dl> <p>Implements <a class="el" href="classpcl_1_1_mesh_construction#abc10f0d821c51523876d9ff2faa12ccc">pcl::MeshConstruction&lt; PointInT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html#l00610">610</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html">concave_hull.hpp</a>.</p> </div> </div> <a id="ae0ff39ec68c6d8205d1999984c39ef7f"></a> <h2 class="memtitle">reconstruct() <span class="overload">[1/2]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::reconstruct </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> &amp; </td> <td class="paramname"><em>output</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Compute a concave hull for all points given. </p> <p>Software License Agreement (BSD License)</p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">output</td>
+<td>the resultant concave hull vertices</td>
+</tr> </table> </dd> </dl> <p>Point Cloud Library (PCL) - www.pointclouds.org Copyright (c) 2010-2011, Willow Garage, Inc.</p> <p>All rights reserved.</p> <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p> <ul> <li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li> <li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li> <li>Neither the name of Willow Garage, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</li> </ul> <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p> <p>$Id$ </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html#l00059">59</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html">concave_hull.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00885">pcl::PointCloud&lt; PointT &gt;::clear()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00392">pcl::PointCloud&lt; PointT &gt;::header</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00400">pcl::PointCloud&lt; PointT &gt;::height</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00403">pcl::PointCloud&lt; PointT &gt;::is_dense</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00443">pcl::PointCloud&lt; PointT &gt;::size()</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00398">pcl::PointCloud&lt; PointT &gt;::width</a>.</p> </div> </div> <a id="aa7364aaab2721664ae667a4dfb4d32c0"></a> <h2 class="memtitle">reconstruct() <span class="overload">[2/2]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::reconstruct </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_concave_hull#abab173fadfb41211f0bf740a16e9d3d6">PointCloud</a> &amp; </td> <td class="paramname">
+<em>points</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp; </td> <td class="paramname">
+<em>polygons</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Compute a concave hull for all points given. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">points</td>
+<td>the resultant points lying on the concave hull </td>
+</tr> <tr>
+<td class="paramname">polygons</td>
+<td>the resultant concave hull polygons, as a set of vertices. The <a class="el" href="structpcl_1_1_vertices" title="Describes a set of vertices in a polygon mesh, by basically storing an array of indices.">Vertices</a> structure contains an array of point indices. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html#l00088">88</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html">concave_hull.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00885">pcl::PointCloud&lt; PointT &gt;::clear()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00392">pcl::PointCloud&lt; PointT &gt;::header</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00400">pcl::PointCloud&lt; PointT &gt;::height</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00403">pcl::PointCloud&lt; PointT &gt;::is_dense</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00443">pcl::PointCloud&lt; PointT &gt;::size()</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00398">pcl::PointCloud&lt; PointT &gt;::width</a>.</p> </div> </div> <a id="ab2e24dc457ff32634aa2549a10bc7562"></a> <h2 class="memtitle">setAlpha()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::setAlpha </td> <td>(</td> <td class="paramtype">double </td> <td class="paramname"><em>alpha</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Set the alpha value, which limits the size of the resultant hull segments (the smaller the more detailed the hull). </p> <p><br> </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">alpha</td>
+<td>positive, non-zero value, defining the maximum length from a vertex to the facet center (center of the voronoi cell). </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00102">102</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00190">pcl::ConcaveHull&lt; PointInT &gt;::alpha_</a>.</p> </div> </div> <a id="af6016068adc7280b2ac7a6141cf96ba4"></a> <h2 class="memtitle">setDimension()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::setDimension </td> <td>(</td> <td class="paramtype">int </td> <td class="paramname"><em>dimension</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Sets the dimension on the input data, 2D or 3D. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">dimension</td>
+<td>The dimension of the input data. If not set, this will be determined automatically. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00144">144</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00201">pcl::ConcaveHull&lt; PointInT &gt;::dim_</a>, and <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00165">pcl::ConcaveHull&lt; PointInT &gt;::getClassName()</a>.</p> </div> </div> <a id="a3218e3de033d4fd40eabd3cb066bb849"></a> <h2 class="memtitle">setKeepInformation()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::setKeepInformation </td> <td>(</td> <td class="paramtype">bool </td> <td class="paramname"><em>value</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>If keep_information_is set to true the convex hull points keep other information like rgb, normals, ... </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">value</td>
+<td>where to keep the information or not, default is false </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00128">128</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00195">pcl::ConcaveHull&lt; PointInT &gt;::keep_information_</a>.</p> </div> </div> <a id="a13e8beee87153e19208e444bfabb5df3"></a> <h2 class="memtitle">setVoronoiCenters()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::setVoronoiCenters </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_concave_hull#ad161b58ab652751339330af6943c5b24">PointCloudPtr</a> </td> <td class="paramname"><em>voronoi_centers</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>If set, the voronoi cells center will be saved in <em>voronoi_centers</em> </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">voronoi_centers</td>
+<td></td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00118">118</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00198">pcl::ConcaveHull&lt; PointInT &gt;::voronoi_centers_</a>.</p> </div> </div> <h2 class="groupheader">Member Data Documentation</h2> <a id="a526e439e73beeeae10de2fb0c45da05d"></a> <h2 class="memtitle">alpha_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::alpha_ {0.0}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>The method accepts facets only if the distance from any vertex to the facet-&gt;center (center of the voronoi cell) is smaller than alpha. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00190">190</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00109">pcl::ConcaveHull&lt; PointInT &gt;::getAlpha()</a>, and <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00102">pcl::ConcaveHull&lt; PointInT &gt;::setAlpha()</a>.</p> </div> </div> <a id="ac67b30e8d387537a116564d37333fed6"></a> <h2 class="memtitle">dim_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">int <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::dim_ {0}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>the dimensionality of the concave hull </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00201">201</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00135">pcl::ConcaveHull&lt; PointInT &gt;::getDimension()</a>, and <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00144">pcl::ConcaveHull&lt; PointInT &gt;::setDimension()</a>.</p> </div> </div> <a id="a48197858510d710dc761634eaee059c1"></a> <h2 class="memtitle">hull_indices_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a> <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::hull_indices_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>vector containing the point cloud indices of the convex hull points. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00204">204</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> </div> </div> <a id="a9ea1713523e004b383e3677a54525a90"></a> <h2 class="memtitle">keep_information_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::keep_information_ {false}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>If set to true, the reconstructed point cloud describing the hull is obtained from the original input cloud by performing a nearest neighbor search from Qhull output. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00195">195</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00128">pcl::ConcaveHull&lt; PointInT &gt;::setKeepInformation()</a>.</p> </div> </div> <a id="aaf3e2f2387e079971a1413d9d0c6c792"></a> <h2 class="memtitle">voronoi_centers_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_concave_hull#ad161b58ab652751339330af6943c5b24">PointCloudPtr</a> <a class="el" href="classpcl_1_1_concave_hull">pcl::ConcaveHull</a>&lt; PointInT &gt;::voronoi_centers_ {nullptr}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>the centers of the voronoi cells </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00198">198</a> of file <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html#l00118">pcl::ConcaveHull&lt; PointInT &gt;::setVoronoiCenters()</a>.</p> </div> </div> <hr>The documentation for this class was generated from the following files:<ul> <li>pcl/surface/<a class="el" href="https://pointclouds.org/documentation/concave__hull_8h_source.html">concave_hull.h</a>
+</li> <li>pcl/surface/impl/<a class="el" href="https://pointclouds.org/documentation/concave__hull_8hpp_source.html">concave_hull.hpp</a>
+</li> </ul> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2012, Willow Garage, Inc.<br>© 2012–, Open Perception, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://pointclouds.org/documentation/classpcl_1_1_concave_hull.html" class="_attribution-link">https://pointclouds.org/documentation/classpcl_1_1_concave_hull.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

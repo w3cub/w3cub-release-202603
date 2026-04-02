@@ -1,0 +1,827 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>pcl&#58;&#58;MarchingCubes - PointCloudLibrary - W3cubDocs</title>
+  
+  <meta name="description" content=" The marching cubes surface reconstruction algorithm. More... ">
+  <meta name="keywords" content="pcl, marchingcubes, pointcloudlibrary, point_cloud_library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/point_cloud_library/classpcl_1_1_marching_cubes.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/point_cloud_library.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/point_cloud_library/" class="_nav-link" title="" style="margin-left:0;">PointCloudLibrary</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _point_cloud_library">
+				
+				
+<p>The marching cubes surface reconstruction algorithm. <a href="classpcl_1_1_marching_cubes#details">More...</a></p> <p><code>#include &lt;<a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">pcl/surface/marching_cubes.h</a>&gt;</code></p>  <div id="dynsection-0-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-0-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_marching_cubes_3_01_point_n_t_01_4_inherit__map" alt="Inheritance graph"></div> <map name="apcl_1_1_marching_cubes_3_01_point_n_t_01_4_inherit__map" id="apcl_1_1_marching_cubes_3_01_point_n_t_01_4_inherit__map"> <area shape="rect" title="The marching cubes surface reconstruction algorithm." alt="" coords="129,456,278,497"> <area shape="rect" href="classpcl_1_1_marching_cubes_hoppe.html" title="The marching cubes surface reconstruction algorithm, using a signed distance function based on the di..." alt="" coords="5,547,196,588"> <area shape="rect" href="classpcl_1_1_marching_cubes_r_b_f.html" title="The marching cubes surface reconstruction algorithm, using a signed distance function based on radial..." alt="" coords="220,547,395,588"> <area shape="rect" href="classpcl_1_1_surface_reconstruction.html" title=" " alt="" coords="106,365,301,407"> <area shape="rect" href="classpcl_1_1_p_c_l_surface_base.html" title="Pure abstract class." alt="" coords="121,171,275,212"> <area shape="rect" href="classpcl_1_1_surface_reconstruction.html" title="SurfaceReconstruction represents a base surface reconstruction class." alt="" coords="219,261,414,303"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title=" " alt="" coords="104,95,292,121"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="110,5,286,32"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div>  <div id="dynsection-1-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-1-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_marching_cubes_3_01_point_n_t_01_4_coll__map" alt="Collaboration graph"></div> <map name="apcl_1_1_marching_cubes_3_01_point_n_t_01_4_coll__map" id="apcl_1_1_marching_cubes_3_01_point_n_t_01_4_coll__map"> <area shape="rect" title="The marching cubes surface reconstruction algorithm." alt="" coords="28,635,177,676"> <area shape="rect" href="classpcl_1_1_surface_reconstruction.html" title=" " alt="" coords="5,544,200,585"> <area shape="rect" href="classpcl_1_1_p_c_l_surface_base.html" title="Pure abstract class." alt="" coords="20,349,175,391"> <area shape="rect" href="classpcl_1_1_surface_reconstruction.html" title="SurfaceReconstruction represents a base surface reconstruction class." alt="" coords="119,440,313,481"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title=" " alt="" coords="101,273,289,300"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="116,184,292,211"> <area shape="rect" title=" " alt="" coords="71,5,161,32"> <area shape="rect" title=" " alt="" coords="186,95,353,121"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div> <table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-types"></a> Public Types</h2></td></tr> <tr class="memitem:ab41b6108f298978a6c2f98fa77954ecc">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#ab41b6108f298978a6c2f98fa77954ecc">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_marching_cubes">MarchingCubes</a>&lt; PointNT &gt; &gt;</td>
+</tr> <tr class="separator:ab41b6108f298978a6c2f98fa77954ecc"></tr> <tr class="memitem:ab43d85763de58803fbdfe571451dc683">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#ab43d85763de58803fbdfe571451dc683">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_marching_cubes">MarchingCubes</a>&lt; PointNT &gt; &gt;</td>
+</tr> <tr class="separator:ab43d85763de58803fbdfe571451dc683"></tr> <tr class="memitem:aa16a8ebce4546caf80e474055b30d8ba">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#aa16a8ebce4546caf80e474055b30d8ba">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointNT &gt;::<a class="el" href="classpcl_1_1_marching_cubes#ab41b6108f298978a6c2f98fa77954ecc">Ptr</a>
+</td>
+</tr> <tr class="separator:aa16a8ebce4546caf80e474055b30d8ba"></tr> <tr class="memitem:a950d78fedbbd4cd7150c56a2123b839a">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a950d78fedbbd4cd7150c56a2123b839a">KdTree</a> = <a class="el" href="classpcl_1_1_kd_tree">pcl::KdTree</a>&lt; PointNT &gt;</td>
+</tr> <tr class="separator:a950d78fedbbd4cd7150c56a2123b839a"></tr> <tr class="memitem:a6f32da226c7504cea4542f4a817a49df">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a6f32da226c7504cea4542f4a817a49df">KdTreePtr</a> = typename <a class="el" href="classpcl_1_1_kd_tree#aeab3727a7da7b1cb80fe97d40c64242b">KdTree::Ptr</a>
+</td>
+</tr> <tr class="separator:a6f32da226c7504cea4542f4a817a49df"></tr> <tr class="inherit_header pub_types_classpcl_1_1_surface_reconstruction"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_surface_reconstruction')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_surface_reconstruction">pcl::SurfaceReconstruction&lt; PointNT &gt;</a>
+</td></tr> <tr class="memitem:a8d14bf9d51bd6ce98c7d9bb0621b93c6 inherit pub_types_classpcl_1_1_surface_reconstruction">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_surface_reconstruction#a8d14bf9d51bd6ce98c7d9bb0621b93c6">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_surface_reconstruction">SurfaceReconstruction</a>&lt; PointNT &gt; &gt;</td>
+</tr> <tr class="separator:a8d14bf9d51bd6ce98c7d9bb0621b93c6 inherit pub_types_classpcl_1_1_surface_reconstruction"></tr> <tr class="memitem:ac1bd525778a5154310743a520235f14b inherit pub_types_classpcl_1_1_surface_reconstruction">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_surface_reconstruction#ac1bd525778a5154310743a520235f14b">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_surface_reconstruction">SurfaceReconstruction</a>&lt; PointNT &gt; &gt;</td>
+</tr> <tr class="separator:ac1bd525778a5154310743a520235f14b inherit pub_types_classpcl_1_1_surface_reconstruction"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_surface_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_surface_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_surface_base">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a63b00af163012878bce98e2649972cd7 inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a63b00af163012878bce98e2649972cd7">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_p_c_l_surface_base">PCLSurfaceBase</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:a63b00af163012878bce98e2649972cd7 inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:a02612b99d45c656409398892fa432e85 inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a02612b99d45c656409398892fa432e85">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_p_c_l_surface_base">PCLSurfaceBase</a>&lt; PointInT &gt; &gt;</td>
+</tr> <tr class="separator:a02612b99d45c656409398892fa432e85 inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:abbc605a6227e56c9cb783114ff46795a inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#abbc605a6227e56c9cb783114ff46795a">KdTree</a> = <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html">pcl::search::Search</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:abbc605a6227e56c9cb783114ff46795a inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:a1c1a9c729a618b9ec8bf20b824d2a674 inherit pub_types_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> = typename <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html#ab4688e4899ce5aa6937dba334dc75763">KdTree::Ptr</a>
+</td>
+</tr> <tr class="separator:a1c1a9c729a618b9ec8bf20b824d2a674 inherit pub_types_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a4399c6b93663d4762fc3389c1b594eb8">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afe906230f3e673dc2ff10b9d579f4ccb">PointIndicesPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a3c574b78dfbe67c93d09acdbc8ecc499">PointIndices::Ptr</a>
+</td>
+</tr> <tr class="separator:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a6880da079270712d46b0bb348cf124bc">PointIndices::ConstPtr</a>
+</td>
+</tr> <tr class="separator:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-methods"></a> Public Member Functions</h2></td></tr> <tr class="memitem:a8d13581bbfcbb943044f2e5a336bfb3d">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a8d13581bbfcbb943044f2e5a336bfb3d">MarchingCubes</a> (const float percentage_extend_grid=0.0f, const float iso_level=0.0f)</td>
+</tr> <tr class="memdesc:a8d13581bbfcbb943044f2e5a336bfb3d">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Constructor. <a href="classpcl_1_1_marching_cubes#a8d13581bbfcbb943044f2e5a336bfb3d">More...</a><br>
+</td>
+</tr> <tr class="separator:a8d13581bbfcbb943044f2e5a336bfb3d"></tr> <tr class="memitem:ae4c30fa834244e0bfb15047d0005d1ad">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#ae4c30fa834244e0bfb15047d0005d1ad">~MarchingCubes</a> () override</td>
+</tr> <tr class="memdesc:ae4c30fa834244e0bfb15047d0005d1ad">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_marching_cubes#ae4c30fa834244e0bfb15047d0005d1ad">More...</a><br>
+</td>
+</tr> <tr class="separator:ae4c30fa834244e0bfb15047d0005d1ad"></tr> <tr class="memitem:a64dba57c71a3c123f7d6038d0fdfa4eb">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a64dba57c71a3c123f7d6038d0fdfa4eb">setIsoLevel</a> (float iso_level)</td>
+</tr> <tr class="memdesc:a64dba57c71a3c123f7d6038d0fdfa4eb">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method that sets the iso level of the surface to be extracted. <a href="classpcl_1_1_marching_cubes#a64dba57c71a3c123f7d6038d0fdfa4eb">More...</a><br>
+</td>
+</tr> <tr class="separator:a64dba57c71a3c123f7d6038d0fdfa4eb"></tr> <tr class="memitem:aa9d9ebf25d347e3c4f209be645b52c21">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#aa9d9ebf25d347e3c4f209be645b52c21">getIsoLevel</a> ()</td>
+</tr> <tr class="memdesc:aa9d9ebf25d347e3c4f209be645b52c21">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method that returns the iso level of the surface to be extracted. <a href="classpcl_1_1_marching_cubes#aa9d9ebf25d347e3c4f209be645b52c21">More...</a><br>
+</td>
+</tr> <tr class="separator:aa9d9ebf25d347e3c4f209be645b52c21"></tr> <tr class="memitem:aa525f9b2f018d8b0011c943eefb9dcee">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#aa525f9b2f018d8b0011c943eefb9dcee">setGridResolution</a> (int res_x, int res_y, int res_z)</td>
+</tr> <tr class="memdesc:aa525f9b2f018d8b0011c943eefb9dcee">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method that sets the marching cubes grid resolution. <a href="classpcl_1_1_marching_cubes#aa525f9b2f018d8b0011c943eefb9dcee">More...</a><br>
+</td>
+</tr> <tr class="separator:aa525f9b2f018d8b0011c943eefb9dcee"></tr> <tr class="memitem:aea042206805d3f6a03bfbbef53ab0e6d">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#aea042206805d3f6a03bfbbef53ab0e6d">getGridResolution</a> (int &amp;res_x, int &amp;res_y, int &amp;res_z)</td>
+</tr> <tr class="memdesc:aea042206805d3f6a03bfbbef53ab0e6d">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method to get the marching cubes grid resolution. <a href="classpcl_1_1_marching_cubes#aea042206805d3f6a03bfbbef53ab0e6d">More...</a><br>
+</td>
+</tr> <tr class="separator:aea042206805d3f6a03bfbbef53ab0e6d"></tr> <tr class="memitem:a4c84675b01ac7e3dfd1282d2ff6bf822">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a4c84675b01ac7e3dfd1282d2ff6bf822">setPercentageExtendGrid</a> (float percentage)</td>
+</tr> <tr class="memdesc:a4c84675b01ac7e3dfd1282d2ff6bf822">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method that sets the parameter that defines how much free space should be left inside the grid between the bounding box of the point cloud and the grid limits. <a href="classpcl_1_1_marching_cubes#a4c84675b01ac7e3dfd1282d2ff6bf822">More...</a><br>
+</td>
+</tr> <tr class="separator:a4c84675b01ac7e3dfd1282d2ff6bf822"></tr> <tr class="memitem:a1763c8a089cd10977e58f389291757f6">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a1763c8a089cd10977e58f389291757f6">getPercentageExtendGrid</a> ()</td>
+</tr> <tr class="memdesc:a1763c8a089cd10977e58f389291757f6">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method that gets the parameter that defines how much free space should be left inside the grid between the bounding box of the point cloud and the grid limits, as a percentage of the bounding box. <a href="classpcl_1_1_marching_cubes#a1763c8a089cd10977e58f389291757f6">More...</a><br>
+</td>
+</tr> <tr class="separator:a1763c8a089cd10977e58f389291757f6"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_surface_reconstruction"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_surface_reconstruction')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_surface_reconstruction">pcl::SurfaceReconstruction&lt; PointNT &gt;</a>
+</td></tr> <tr class="memitem:a7bff244281e03dc6214073353a9a5f2b inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_surface_reconstruction#a7bff244281e03dc6214073353a9a5f2b">SurfaceReconstruction</a> ()=default</td>
+</tr> <tr class="memdesc:a7bff244281e03dc6214073353a9a5f2b inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Constructor. <a href="classpcl_1_1_surface_reconstruction#a7bff244281e03dc6214073353a9a5f2b">More...</a><br>
+</td>
+</tr> <tr class="separator:a7bff244281e03dc6214073353a9a5f2b inherit pub_methods_classpcl_1_1_surface_reconstruction"></tr> <tr class="memitem:ac9153e257613c949e180d73161a71dc0 inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_surface_reconstruction#ac9153e257613c949e180d73161a71dc0">~SurfaceReconstruction</a> () override=default</td>
+</tr> <tr class="memdesc:ac9153e257613c949e180d73161a71dc0 inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_surface_reconstruction#ac9153e257613c949e180d73161a71dc0">More...</a><br>
+</td>
+</tr> <tr class="separator:ac9153e257613c949e180d73161a71dc0 inherit pub_methods_classpcl_1_1_surface_reconstruction"></tr> <tr class="memitem:a53e1f2937a4a1b1e456253910ab0090c inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_surface_reconstruction#a53e1f2937a4a1b1e456253910ab0090c">reconstruct</a> (<a class="el" href="https://pointclouds.org/documentation/structpcl_1_1_polygon_mesh.html">pcl::PolygonMesh</a> &amp;output) override</td>
+</tr> <tr class="memdesc:a53e1f2937a4a1b1e456253910ab0090c inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Base method for surface reconstruction for all points given in &lt;setInputCloud (), setIndices ()&gt; <a href="classpcl_1_1_surface_reconstruction#a53e1f2937a4a1b1e456253910ab0090c">More...</a><br>
+</td>
+</tr> <tr class="separator:a53e1f2937a4a1b1e456253910ab0090c inherit pub_methods_classpcl_1_1_surface_reconstruction"></tr> <tr class="memitem:aaec1dc0c87b4f8bacaa46ef0899a69f7 inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_surface_reconstruction#aaec1dc0c87b4f8bacaa46ef0899a69f7">reconstruct</a> (<a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointNT &gt; &amp;points, std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp;polygons)</td>
+</tr> <tr class="memdesc:aaec1dc0c87b4f8bacaa46ef0899a69f7 inherit pub_methods_classpcl_1_1_surface_reconstruction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Base method for surface reconstruction for all points given in &lt;setInputCloud (), setIndices ()&gt; <a href="classpcl_1_1_surface_reconstruction#aaec1dc0c87b4f8bacaa46ef0899a69f7">More...</a><br>
+</td>
+</tr> <tr class="separator:aaec1dc0c87b4f8bacaa46ef0899a69f7 inherit pub_methods_classpcl_1_1_surface_reconstruction"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_surface_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_surface_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_surface_base">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:aa4fba20611b3e995b9cc07dac528e4c3 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#aa4fba20611b3e995b9cc07dac528e4c3">PCLSurfaceBase</a> ()</td>
+</tr> <tr class="memdesc:aa4fba20611b3e995b9cc07dac528e4c3 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_surface_base#aa4fba20611b3e995b9cc07dac528e4c3">More...</a><br>
+</td>
+</tr> <tr class="separator:aa4fba20611b3e995b9cc07dac528e4c3 inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:aef40798a4549d5e9f4ba206b442964f5 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#aef40798a4549d5e9f4ba206b442964f5">~PCLSurfaceBase</a> () override=default</td>
+</tr> <tr class="memdesc:aef40798a4549d5e9f4ba206b442964f5 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty destructor. <a href="classpcl_1_1_p_c_l_surface_base#aef40798a4549d5e9f4ba206b442964f5">More...</a><br>
+</td>
+</tr> <tr class="separator:aef40798a4549d5e9f4ba206b442964f5 inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:af599c9767a18649344ff21d3976f1779 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#af599c9767a18649344ff21d3976f1779">setSearchMethod</a> (const <a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> &amp;tree)</td>
+</tr> <tr class="memdesc:af599c9767a18649344ff21d3976f1779 inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide an optional pointer to a search object. <a href="classpcl_1_1_p_c_l_surface_base#af599c9767a18649344ff21d3976f1779">More...</a><br>
+</td>
+</tr> <tr class="separator:af599c9767a18649344ff21d3976f1779 inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="memitem:a2249d44038e0869bbf60e486ab3826af inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a2249d44038e0869bbf60e486ab3826af">getSearchMethod</a> ()</td>
+</tr> <tr class="memdesc:a2249d44038e0869bbf60e486ab3826af inherit pub_methods_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the search method used. <a href="classpcl_1_1_p_c_l_surface_base#a2249d44038e0869bbf60e486ab3826af">More...</a><br>
+</td>
+</tr> <tr class="separator:a2249d44038e0869bbf60e486ab3826af inherit pub_methods_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">PCLBase</a> ()</td>
+</tr> <tr class="memdesc:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">More...</a><br>
+</td>
+</tr> <tr class="separator:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">PCLBase</a> (const <a class="el" href="classpcl_1_1_p_c_l_base">PCLBase</a> &amp;base)</td>
+</tr> <tr class="memdesc:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Copy constructor. <a href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">More...</a><br>
+</td>
+</tr> <tr class="separator:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">~PCLBase</a> ()=default</td>
+</tr> <tr class="memdesc:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">More...</a><br>
+</td>
+</tr> <tr class="separator:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">setInputCloud</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp;cloud)</td>
+</tr> <tr class="memdesc:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the input dataset. <a href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">getInputCloud</a> () const</td>
+</tr> <tr class="memdesc:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">More...</a><br>
+</td>
+</tr> <tr class="separator:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">More...</a><br>
+</td>
+</tr> <tr class="separator:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">setIndices</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">More...</a><br>
+</td>
+</tr> <tr class="separator:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">setIndices</a> (std::size_t row_start, std::size_t col_start, std::size_t nb_rows, std::size_t nb_cols)</td>
+</tr> <tr class="memdesc:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the indices for the points laying within an interest region of the point cloud. <a href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">More...</a><br>
+</td>
+</tr> <tr class="separator:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">getIndices</a> ()</td>
+</tr> <tr class="memdesc:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">More...</a><br>
+</td>
+</tr> <tr class="separator:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">getIndices</a> () const</td>
+</tr> <tr class="memdesc:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">More...</a><br>
+</td>
+</tr> <tr class="separator:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">const PointInT &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">operator[]</a> (std::size_t pos) const</td>
+</tr> <tr class="memdesc:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Override PointCloud operator[] to shorten code. <a href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">More...</a><br>
+</td>
+</tr> <tr class="separator:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-methods"></a> Protected Member Functions</h2></td></tr> <tr class="memitem:a5f7430b8dfd6eecd480525959eb6c669">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a5f7430b8dfd6eecd480525959eb6c669">voxelizeData</a> ()=0</td>
+</tr> <tr class="memdesc:a5f7430b8dfd6eecd480525959eb6c669">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Convert the point cloud into voxel data. <a href="classpcl_1_1_marching_cubes#a5f7430b8dfd6eecd480525959eb6c669">More...</a><br>
+</td>
+</tr> <tr class="separator:a5f7430b8dfd6eecd480525959eb6c669"></tr> <tr class="memitem:aafe0e216b2da0d7645f7d1ba5fff8b2c">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#aafe0e216b2da0d7645f7d1ba5fff8b2c">interpolateEdge</a> (Eigen::Vector3f &amp;p1, Eigen::Vector3f &amp;p2, float val_p1, float val_p2, Eigen::Vector3f &amp;output)</td>
+</tr> <tr class="memdesc:aafe0e216b2da0d7645f7d1ba5fff8b2c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Interpolate along the voxel edge. <a href="classpcl_1_1_marching_cubes#aafe0e216b2da0d7645f7d1ba5fff8b2c">More...</a><br>
+</td>
+</tr> <tr class="separator:aafe0e216b2da0d7645f7d1ba5fff8b2c"></tr> <tr class="memitem:acb28445ab4c23fa2dba878424b29932b">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#acb28445ab4c23fa2dba878424b29932b">createSurface</a> (const std::vector&lt; float &gt; &amp;leaf_node, const Eigen::Vector3i &amp;index_3d, <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointNT &gt; &amp;cloud)</td>
+</tr> <tr class="memdesc:acb28445ab4c23fa2dba878424b29932b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Calculate out the corresponding polygons in the leaf node. <a href="classpcl_1_1_marching_cubes#acb28445ab4c23fa2dba878424b29932b">More...</a><br>
+</td>
+</tr> <tr class="separator:acb28445ab4c23fa2dba878424b29932b"></tr> <tr class="memitem:a9be29d409a9f84b6b5c15dde60ade1a0">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a9be29d409a9f84b6b5c15dde60ade1a0">getBoundingBox</a> ()</td>
+</tr> <tr class="memdesc:a9be29d409a9f84b6b5c15dde60ade1a0">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the bounding box for the input data points. <a href="classpcl_1_1_marching_cubes#a9be29d409a9f84b6b5c15dde60ade1a0">More...</a><br>
+</td>
+</tr> <tr class="separator:a9be29d409a9f84b6b5c15dde60ade1a0"></tr> <tr class="memitem:a869ec9eeb1ec0543ab3ea67cb27fbfc9">
+<td class="memItemLeft" align="right" valign="top">virtual float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a869ec9eeb1ec0543ab3ea67cb27fbfc9">getGridValue</a> (Eigen::Vector3i pos)</td>
+</tr> <tr class="memdesc:a869ec9eeb1ec0543ab3ea67cb27fbfc9">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method that returns the scalar value at the given grid position. <a href="classpcl_1_1_marching_cubes#a869ec9eeb1ec0543ab3ea67cb27fbfc9">More...</a><br>
+</td>
+</tr> <tr class="separator:a869ec9eeb1ec0543ab3ea67cb27fbfc9"></tr> <tr class="memitem:aee54b8224b31fad1671cec5c276d35cd">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#aee54b8224b31fad1671cec5c276d35cd">getNeighborList1D</a> (std::vector&lt; float &gt; &amp;leaf, Eigen::Vector3i &amp;index3d)</td>
+</tr> <tr class="memdesc:aee54b8224b31fad1671cec5c276d35cd">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Method that returns the scalar values of the neighbors of a given 3D position in the grid. <a href="classpcl_1_1_marching_cubes#aee54b8224b31fad1671cec5c276d35cd">More...</a><br>
+</td>
+</tr> <tr class="separator:aee54b8224b31fad1671cec5c276d35cd"></tr> <tr class="memitem:a60671721c7fa7518c7295c0e426e09b8">
+<td class="memItemLeft" align="right" valign="top">std::string </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a60671721c7fa7518c7295c0e426e09b8">getClassName</a> () const override</td>
+</tr> <tr class="memdesc:a60671721c7fa7518c7295c0e426e09b8">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Class get name method. <a href="classpcl_1_1_marching_cubes#a60671721c7fa7518c7295c0e426e09b8">More...</a><br>
+</td>
+</tr> <tr class="separator:a60671721c7fa7518c7295c0e426e09b8"></tr> <tr class="memitem:a745d4c61435459bbf4e376287a6d3b62">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a745d4c61435459bbf4e376287a6d3b62">performReconstruction</a> (<a class="el" href="https://pointclouds.org/documentation/structpcl_1_1_polygon_mesh.html">pcl::PolygonMesh</a> &amp;output) override</td>
+</tr> <tr class="memdesc:a745d4c61435459bbf4e376287a6d3b62">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Extract the surface. <a href="classpcl_1_1_marching_cubes#a745d4c61435459bbf4e376287a6d3b62">More...</a><br>
+</td>
+</tr> <tr class="separator:a745d4c61435459bbf4e376287a6d3b62"></tr> <tr class="memitem:aa244ae8fefbb2eebd4dae00cc712e052">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#aa244ae8fefbb2eebd4dae00cc712e052">performReconstruction</a> (<a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointNT &gt; &amp;points, std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp;polygons) override</td>
+</tr> <tr class="memdesc:aa244ae8fefbb2eebd4dae00cc712e052">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Extract the surface. <a href="classpcl_1_1_marching_cubes#aa244ae8fefbb2eebd4dae00cc712e052">More...</a><br>
+</td>
+</tr> <tr class="separator:aa244ae8fefbb2eebd4dae00cc712e052"></tr> <tr class="inherit_header pro_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">initCompute</a> ()</td>
+</tr> <tr class="memdesc:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called before starting the actual computation. <a href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">More...</a><br>
+</td>
+</tr> <tr class="separator:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">deinitCompute</a> ()</td>
+</tr> <tr class="memdesc:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called after finishing the actual computation. <a href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">More...</a><br>
+</td>
+</tr> <tr class="separator:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-attribs"></a> Protected Attributes</h2></td></tr> <tr class="memitem:a1fe3ace141259294aa47489cf0d8a83c">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; float &gt; </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_marching_cubes#a1fe3ace141259294aa47489cf0d8a83c">grid_</a></td>
+</tr> <tr class="memdesc:a1fe3ace141259294aa47489cf0d8a83c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The data structure storing the 3D grid. <a href="classpcl_1_1_marching_cubes#a1fe3ace141259294aa47489cf0d8a83c">More...</a><br>
+</td>
+</tr> <tr class="separator:a1fe3ace141259294aa47489cf0d8a83c"></tr> <tr class="memitem:a206a6bc55b35bc64c27179c1a303e4d1">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a206a6bc55b35bc64c27179c1a303e4d1">res_x_</a> = 32</td>
+</tr> <tr class="memdesc:a206a6bc55b35bc64c27179c1a303e4d1">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The grid resolution. <a href="classpcl_1_1_marching_cubes#a206a6bc55b35bc64c27179c1a303e4d1">More...</a><br>
+</td>
+</tr> <tr class="separator:a206a6bc55b35bc64c27179c1a303e4d1"></tr> <tr class="memitem:a9554a259acd2469adc16ae36244215fc">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#a9554a259acd2469adc16ae36244215fc">res_y_</a> = 32</td>
+</tr> <tr class="separator:a9554a259acd2469adc16ae36244215fc"></tr> <tr class="memitem:ac45e5686ebb864addfcbad1ee60cf362">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_marching_cubes#ac45e5686ebb864addfcbad1ee60cf362">res_z_</a> = 32</td>
+</tr> <tr class="separator:ac45e5686ebb864addfcbad1ee60cf362"></tr> <tr class="memitem:a5aa1c48c038e2b254da273e7c4732048">
+<td class="memItemLeft" align="right" valign="top">Eigen::Array3f </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_marching_cubes#a5aa1c48c038e2b254da273e7c4732048">upper_boundary_</a></td>
+</tr> <tr class="memdesc:a5aa1c48c038e2b254da273e7c4732048">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">bounding box <a href="classpcl_1_1_marching_cubes#a5aa1c48c038e2b254da273e7c4732048">More...</a><br>
+</td>
+</tr> <tr class="separator:a5aa1c48c038e2b254da273e7c4732048"></tr> <tr class="memitem:ae9080248256274804408ed6e6c64bb0b">
+<td class="memItemLeft" align="right" valign="top">Eigen::Array3f </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_marching_cubes#ae9080248256274804408ed6e6c64bb0b">lower_boundary_</a></td>
+</tr> <tr class="separator:ae9080248256274804408ed6e6c64bb0b"></tr> <tr class="memitem:a8bd249feefa494f22da2c9890d110024">
+<td class="memItemLeft" align="right" valign="top">Eigen::Array3f </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_marching_cubes#a8bd249feefa494f22da2c9890d110024">size_voxel_</a></td>
+</tr> <tr class="memdesc:a8bd249feefa494f22da2c9890d110024">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">size of voxels <a href="classpcl_1_1_marching_cubes#a8bd249feefa494f22da2c9890d110024">More...</a><br>
+</td>
+</tr> <tr class="separator:a8bd249feefa494f22da2c9890d110024"></tr> <tr class="memitem:a939a63ca1f45d1845526672b2de31b69">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_marching_cubes#a939a63ca1f45d1845526672b2de31b69">percentage_extend_grid_</a></td>
+</tr> <tr class="memdesc:a939a63ca1f45d1845526672b2de31b69">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Parameter that defines how much free space should be left inside the grid between the bounding box of the point cloud and the grid limits, as a percentage of the bounding box. <a href="classpcl_1_1_marching_cubes#a939a63ca1f45d1845526672b2de31b69">More...</a><br>
+</td>
+</tr> <tr class="separator:a939a63ca1f45d1845526672b2de31b69"></tr> <tr class="memitem:a68c8035d359bd6f6716be4b62e199c5c">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_marching_cubes#a68c8035d359bd6f6716be4b62e199c5c">iso_level_</a></td>
+</tr> <tr class="memdesc:a68c8035d359bd6f6716be4b62e199c5c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The iso level to be extracted. <a href="classpcl_1_1_marching_cubes#a68c8035d359bd6f6716be4b62e199c5c">More...</a><br>
+</td>
+</tr> <tr class="separator:a68c8035d359bd6f6716be4b62e199c5c"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_surface_reconstruction"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_surface_reconstruction')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_surface_reconstruction">pcl::SurfaceReconstruction&lt; PointNT &gt;</a>
+</td></tr> <tr class="memitem:a28e8c20a22904c2b368e36f5fcc841b1 inherit pro_attribs_classpcl_1_1_surface_reconstruction">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_surface_reconstruction#a28e8c20a22904c2b368e36f5fcc841b1">check_tree_</a></td>
+</tr> <tr class="memdesc:a28e8c20a22904c2b368e36f5fcc841b1 inherit pro_attribs_classpcl_1_1_surface_reconstruction">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A flag specifying whether or not the derived reconstruction algorithm needs the search object <em>tree</em>. <a href="classpcl_1_1_surface_reconstruction#a28e8c20a22904c2b368e36f5fcc841b1">More...</a><br>
+</td>
+</tr> <tr class="separator:a28e8c20a22904c2b368e36f5fcc841b1 inherit pro_attribs_classpcl_1_1_surface_reconstruction"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_surface_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_surface_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_surface_base">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a28d2f448602636061ef7d716e0f6e930 inherit pro_attribs_classpcl_1_1_p_c_l_surface_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_surface_base#a1c1a9c729a618b9ec8bf20b824d2a674">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_surface_base#a28d2f448602636061ef7d716e0f6e930">tree_</a></td>
+</tr> <tr class="memdesc:a28d2f448602636061ef7d716e0f6e930 inherit pro_attribs_classpcl_1_1_p_c_l_surface_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the spatial search object. <a href="classpcl_1_1_p_c_l_surface_base#a28d2f448602636061ef7d716e0f6e930">More...</a><br>
+</td>
+</tr> <tr class="separator:a28d2f448602636061ef7d716e0f6e930 inherit pro_attribs_classpcl_1_1_p_c_l_surface_base"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">input_</a></td>
+</tr> <tr class="memdesc:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">More...</a><br>
+</td>
+</tr> <tr class="separator:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">indices_</a></td>
+</tr> <tr class="memdesc:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the vector of point indices to use. <a href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">More...</a><br>
+</td>
+</tr> <tr class="separator:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">use_indices_</a></td>
+</tr> <tr class="memdesc:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set to true if point indices are used. <a href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">More...</a><br>
+</td>
+</tr> <tr class="separator:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">fake_indices_</a></td>
+</tr> <tr class="memdesc:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If no set of indices are given, we construct a set of fake indices that mimic the input PointCloud. <a href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">More...</a><br>
+</td>
+</tr> <tr class="separator:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> </table> <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2> <div class="textblock">
+<h3>template&lt;typename PointNT&gt;<br> class pcl::MarchingCubes&lt; PointNT &gt;</h3> <p>The marching cubes surface reconstruction algorithm. </p> <p>This is an abstract class that takes a grid and extracts the isosurface as a mesh, based on the original marching cubes paper:</p> <p>Lorensen W.E., Cline H.E., "Marching cubes: A high resolution 3d surface construction algorithm", SIGGRAPH '87</p> <dl class="tparams">
+<dt>Template Parameters</dt>
+<dd> <table class="tparams"> <tr>
+<td class="paramname">PointNT</td>
+<td>Use <code><a class="el" href="structpcl_1_1_point_normal" title="A point structure representing Euclidean xyz coordinates, together with normal coordinates and the su...">pcl::PointNormal</a></code> or <code><a class="el" href="structpcl_1_1_point_x_y_z_r_g_b_normal" title="A point structure representing Euclidean xyz coordinates, and the RGB color, together with normal coo...">pcl::PointXYZRGBNormal</a></code> or <code><a class="el" href="structpcl_1_1_point_x_y_z_i_normal" title="A point structure representing Euclidean xyz coordinates, intensity, together with normal coordinates...">pcl::PointXYZINormal</a></code> </td>
+</tr> </table> </dd> </dl> <dl class="section author">
+<dt>Author</dt>
+<dd>Alexandru E. Ichim </dd>
+</dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00364">364</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div>
+<h2 class="groupheader">Member Typedef Documentation</h2> <a id="ab43d85763de58803fbdfe571451dc683"></a> <h2 class="memtitle">ConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::<a class="el" href="classpcl_1_1_marching_cubes#ab43d85763de58803fbdfe571451dc683">ConstPtr</a> = shared_ptr&lt;const <a class="el" href="classpcl_1_1_marching_cubes">MarchingCubes</a>&lt;PointNT&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00368">368</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="a950d78fedbbd4cd7150c56a2123b839a"></a> <h2 class="memtitle">KdTree</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::<a class="el" href="classpcl_1_1_marching_cubes#a950d78fedbbd4cd7150c56a2123b839a">KdTree</a> = <a class="el" href="classpcl_1_1_kd_tree">pcl::KdTree</a>&lt;PointNT&gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00375">375</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="a6f32da226c7504cea4542f4a817a49df"></a> <h2 class="memtitle">KdTreePtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::<a class="el" href="classpcl_1_1_marching_cubes#a6f32da226c7504cea4542f4a817a49df">KdTreePtr</a> = typename <a class="el" href="classpcl_1_1_kd_tree#aeab3727a7da7b1cb80fe97d40c64242b">KdTree::Ptr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00376">376</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="aa16a8ebce4546caf80e474055b30d8ba"></a> <h2 class="memtitle">PointCloudPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::<a class="el" href="classpcl_1_1_marching_cubes#aa16a8ebce4546caf80e474055b30d8ba">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt;PointNT&gt;::<a class="el" href="classpcl_1_1_marching_cubes#ab41b6108f298978a6c2f98fa77954ecc">Ptr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00373">373</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="ab41b6108f298978a6c2f98fa77954ecc"></a> <h2 class="memtitle">Ptr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::<a class="el" href="classpcl_1_1_marching_cubes#ab41b6108f298978a6c2f98fa77954ecc">Ptr</a> = shared_ptr&lt;<a class="el" href="classpcl_1_1_marching_cubes">MarchingCubes</a>&lt;PointNT&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00367">367</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2> <a id="a8d13581bbfcbb943044f2e5a336bfb3d"></a> <h2 class="memtitle">MarchingCubes()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::<a class="el" href="classpcl_1_1_marching_cubes">MarchingCubes</a> </td> <td>(</td> <td class="paramtype">const float </td> <td class="paramname">
+<em>percentage_extend_grid</em> = <code>0.0f</code>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const float </td> <td class="paramname">
+<em>iso_level</em> = <code>0.0f</code> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Constructor. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00379">379</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="ae4c30fa834244e0bfb15047d0005d1ad"></a> <h2 class="memtitle">~MarchingCubes()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::~<a class="el" href="classpcl_1_1_marching_cubes">MarchingCubes</a> </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">default</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Destructor. </p> </div> </div> <h2 class="groupheader">Member Function Documentation</h2> <a id="acb28445ab4c23fa2dba878424b29932b"></a> <h2 class="memtitle">createSurface()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::createSurface </td> <td>(</td> <td class="paramtype">const std::vector&lt; float &gt; &amp; </td> <td class="paramname">
+<em>leaf_node</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const Eigen::Vector3i &amp; </td> <td class="paramname">
+<em>index_3d</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointNT &gt; &amp; </td> <td class="paramname">
+<em>cloud</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Calculate out the corresponding polygons in the leaf node. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">leaf_node</td>
+<td>the leaf node to be checked </td>
+</tr> <tr>
+<td class="paramname">index_3d</td>
+<td>the 3d index of the leaf node to be checked </td>
+</tr> <tr>
+<td class="paramname">cloud</td>
+<td>point cloud to store the vertices of the polygon </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html#l00081">81</a> of file <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00059">pcl::edgeTable</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00663">pcl::PointCloud&lt; PointT &gt;::push_back()</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00093">pcl::triTable</a>.</p> </div> </div> <a id="a9be29d409a9f84b6b5c15dde60ade1a0"></a> <h2 class="memtitle">getBoundingBox()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::getBoundingBox</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Get the bounding box for the input data points. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html#l00050">50</a> of file <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2common_2impl_2common_8hpp_source.html#l00295">pcl::getMinMax3D()</a>.</p> </div> </div> <a id="a60671721c7fa7518c7295c0e426e09b8"></a> <h2 class="memtitle">getClassName()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::string <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::getClassName </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Class get name method. </p> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_surface_base#a48ad4ec3aee4a3d8f6092f9d63ddf48c">pcl::PCLSurfaceBase&lt; PointInT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00505">505</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="aea042206805d3f6a03bfbbef53ab0e6d"></a> <h2 class="memtitle">getGridResolution()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::getGridResolution </td> <td>(</td> <td class="paramtype">int &amp; </td> <td class="paramname">
+<em>res_x</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">int &amp; </td> <td class="paramname">
+<em>res_y</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">int &amp; </td> <td class="paramname">
+<em>res_z</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method to get the marching cubes grid resolution. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">res_x</td>
+<td>the resolution of the grid along the x-axis </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">res_y</td>
+<td>the resolution of the grid along the y-axis </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">res_z</td>
+<td>the resolution of the grid along the z-axis </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00417">417</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">pcl::MarchingCubes&lt; PointNT &gt;::res_x_</a>, <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">pcl::MarchingCubes&lt; PointNT &gt;::res_y_</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">pcl::MarchingCubes&lt; PointNT &gt;::res_z_</a>.</p> </div> </div> <a id="a869ec9eeb1ec0543ab3ea67cb27fbfc9"></a> <h2 class="memtitle">getGridValue()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">float <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::getGridValue </td> <td>(</td> <td class="paramtype">Eigen::Vector3i </td> <td class="paramname"><em>pos</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method that returns the scalar value at the given grid position. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">pos</td>
+<td>The 3D position in the grid </td>
+</tr> </table> </dd> </dl> <p>TODO what to return?</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html#l00190">190</a> of file <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>.</p> </div> </div> <a id="aa9d9ebf25d347e3c4f209be645b52c21"></a> <h2 class="memtitle">getIsoLevel()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">float <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::getIsoLevel </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method that returns the iso level of the surface to be extracted. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00399">399</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00456">pcl::MarchingCubes&lt; PointNT &gt;::iso_level_</a>.</p> </div> </div> <a id="aee54b8224b31fad1671cec5c276d35cd"></a> <h2 class="memtitle">getNeighborList1D()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::getNeighborList1D </td> <td>(</td> <td class="paramtype">std::vector&lt; float &gt; &amp; </td> <td class="paramname">
+<em>leaf</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">Eigen::Vector3i &amp; </td> <td class="paramname">
+<em>index3d</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method that returns the scalar values of the neighbors of a given 3D position in the grid. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">index3d</td>
+<td>the point in the grid </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">leaf</td>
+<td>the set of values </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html#l00163">163</a> of file <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>.</p> </div> </div> <a id="a1763c8a089cd10977e58f389291757f6"></a> <h2 class="memtitle">getPercentageExtendGrid()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">float <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::getPercentageExtendGrid </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method that gets the parameter that defines how much free space should be left inside the grid between the bounding box of the point cloud and the grid limits, as a percentage of the bounding box. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00434">434</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00453">pcl::MarchingCubes&lt; PointNT &gt;::percentage_extend_grid_</a>.</p> </div> </div> <a id="aafe0e216b2da0d7645f7d1ba5fff8b2c"></a> <h2 class="memtitle">interpolateEdge()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::interpolateEdge </td> <td>(</td> <td class="paramtype">Eigen::Vector3f &amp; </td> <td class="paramname">
+<em>p1</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">Eigen::Vector3f &amp; </td> <td class="paramname">
+<em>p2</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">float </td> <td class="paramname">
+<em>val_p1</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">float </td> <td class="paramname">
+<em>val_p2</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">Eigen::Vector3f &amp; </td> <td class="paramname">
+<em>output</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Interpolate along the voxel edge. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">p1</td>
+<td>The first point on the edge </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">p2</td>
+<td>The second point on the edge </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">val_p1</td>
+<td>The scalar value at p1 </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">val_p2</td>
+<td>The scalar value at p2 </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">output</td>
+<td>The interpolated point along the edge </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html#l00068">68</a> of file <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>.</p> </div> </div> <a id="aa244ae8fefbb2eebd4dae00cc712e052"></a> <h2 class="memtitle">performReconstruction() <span class="overload">[1/2]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::performReconstruction </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointNT &gt; &amp; </td> <td class="paramname">
+<em>points</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">std::vector&lt; <a class="el" href="structpcl_1_1_vertices">pcl::Vertices</a> &gt; &amp; </td> <td class="paramname">
+<em>polygons</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Extract the surface. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">points</td>
+<td>the points of the extracted mesh </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">polygons</td>
+<td>the connectivity between the point of the extracted mesh. </td>
+</tr> </table> </dd> </dl> <p>Implements <a class="el" href="classpcl_1_1_surface_reconstruction#adb79f4f50df09a4b8364a7a9f1920e7a">pcl::SurfaceReconstruction&lt; PointNT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html#l00218">218</a> of file <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00885">pcl::PointCloud&lt; PointT &gt;::clear()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00395">pcl::PointCloud&lt; PointT &gt;::points</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00445">pcl::PointCloud&lt; PointT &gt;::reserve()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00443">pcl::PointCloud&lt; PointT &gt;::size()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00872">pcl::PointCloud&lt; PointT &gt;::swap()</a>, and <a class="el" href="https://pointclouds.org/documentation/_vertices_8h_source.html#l00018">pcl::Vertices::vertices</a>.</p> </div> </div> <a id="a745d4c61435459bbf4e376287a6d3b62"></a> <h2 class="memtitle">performReconstruction() <span class="overload">[2/2]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::performReconstruction </td> <td>(</td> <td class="paramtype">
+<a class="el" href="https://pointclouds.org/documentation/structpcl_1_1_polygon_mesh.html">pcl::PolygonMesh</a> &amp; </td> <td class="paramname"><em>output</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Extract the surface. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">output</td>
+<td>the resultant polygonal mesh </td>
+</tr> </table> </dd> </dl> <p>Implements <a class="el" href="classpcl_1_1_surface_reconstruction#a181cf1cc5feb909f5e8405bb82780cc1">pcl::SurfaceReconstruction&lt; PointNT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html#l00206">206</a> of file <a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/_polygon_mesh_8h_source.html#l00020">pcl::PolygonMesh::cloud</a>, <a class="el" href="https://pointclouds.org/documentation/_polygon_mesh_8h_source.html#l00022">pcl::PolygonMesh::polygons</a>, and <a class="el" href="https://pointclouds.org/documentation/conversions_8h_source.html#l00372">pcl::toPCLPointCloud2()</a>.</p> </div> </div> <a id="aa525f9b2f018d8b0011c943eefb9dcee"></a> <h2 class="memtitle">setGridResolution()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::setGridResolution </td> <td>(</td> <td class="paramtype">int </td> <td class="paramname">
+<em>res_x</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">int </td> <td class="paramname">
+<em>res_y</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">int </td> <td class="paramname">
+<em>res_z</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method that sets the marching cubes grid resolution. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">res_x</td>
+<td>the resolution of the grid along the x-axis </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">res_y</td>
+<td>the resolution of the grid along the y-axis </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">res_z</td>
+<td>the resolution of the grid along the z-axis </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00408">408</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">pcl::MarchingCubes&lt; PointNT &gt;::res_x_</a>, <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">pcl::MarchingCubes&lt; PointNT &gt;::res_y_</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">pcl::MarchingCubes&lt; PointNT &gt;::res_z_</a>.</p> </div> </div> <a id="a64dba57c71a3c123f7d6038d0fdfa4eb"></a> <h2 class="memtitle">setIsoLevel()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::setIsoLevel </td> <td>(</td> <td class="paramtype">float </td> <td class="paramname"><em>iso_level</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method that sets the iso level of the surface to be extracted. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">iso_level</td>
+<td>the iso level. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00394">394</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00456">pcl::MarchingCubes&lt; PointNT &gt;::iso_level_</a>.</p> </div> </div> <a id="a4c84675b01ac7e3dfd1282d2ff6bf822"></a> <h2 class="memtitle">setPercentageExtendGrid()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::setPercentageExtendGrid </td> <td>(</td> <td class="paramtype">float </td> <td class="paramname"><em>percentage</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Method that sets the parameter that defines how much free space should be left inside the grid between the bounding box of the point cloud and the grid limits. </p> <p>Does not affect the resolution of the grid, it just changes the voxel size accordingly. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">percentage</td>
+<td>the percentage of the bounding box that should be left empty between the bounding box and the grid limits. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00427">427</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00453">pcl::MarchingCubes&lt; PointNT &gt;::percentage_extend_grid_</a>.</p> </div> </div> <a id="a5f7430b8dfd6eecd480525959eb6c669"></a> <h2 class="memtitle">voxelizeData()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">virtual void <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::voxelizeData </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Convert the point cloud into voxel data. </p> <p>Implemented in <a class="el" href="classpcl_1_1_marching_cubes_r_b_f#a54c8b47ea196ac3f5749ffb5680cee3c">pcl::MarchingCubesRBF&lt; PointNT &gt;</a>, and <a class="el" href="classpcl_1_1_marching_cubes_hoppe#aa342c0f889182153adcf3a1c3ae40cfd">pcl::MarchingCubesHoppe&lt; PointNT &gt;</a>.</p> </div> </div> <h2 class="groupheader">Member Data Documentation</h2> <a id="a1fe3ace141259294aa47489cf0d8a83c"></a> <h2 class="memtitle">grid_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::vector&lt;float&gt; <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::grid_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>The data structure storing the 3D grid. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00439">439</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="a68c8035d359bd6f6716be4b62e199c5c"></a> <h2 class="memtitle">iso_level_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">float <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::iso_level_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>The iso level to be extracted. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00456">456</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00399">pcl::MarchingCubes&lt; PointNT &gt;::getIsoLevel()</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00394">pcl::MarchingCubes&lt; PointNT &gt;::setIsoLevel()</a>.</p> </div> </div> <a id="ae9080248256274804408ed6e6c64bb0b"></a> <h2 class="memtitle">lower_boundary_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">Eigen::Array3f <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::lower_boundary_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00446">446</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="a939a63ca1f45d1845526672b2de31b69"></a> <h2 class="memtitle">percentage_extend_grid_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">float <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::percentage_extend_grid_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Parameter that defines how much free space should be left inside the grid between the bounding box of the point cloud and the grid limits, as a percentage of the bounding box. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00453">453</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00434">pcl::MarchingCubes&lt; PointNT &gt;::getPercentageExtendGrid()</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00427">pcl::MarchingCubes&lt; PointNT &gt;::setPercentageExtendGrid()</a>.</p> </div> </div> <a id="a206a6bc55b35bc64c27179c1a303e4d1"></a> <h2 class="memtitle">res_x_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">int <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::res_x_ = 32</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>The grid resolution. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">442</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00417">pcl::MarchingCubes&lt; PointNT &gt;::getGridResolution()</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00408">pcl::MarchingCubes&lt; PointNT &gt;::setGridResolution()</a>.</p> </div> </div> <a id="a9554a259acd2469adc16ae36244215fc"></a> <h2 class="memtitle">res_y_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">int <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::res_y_ = 32</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">442</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00417">pcl::MarchingCubes&lt; PointNT &gt;::getGridResolution()</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00408">pcl::MarchingCubes&lt; PointNT &gt;::setGridResolution()</a>.</p> </div> </div> <a id="ac45e5686ebb864addfcbad1ee60cf362"></a> <h2 class="memtitle">res_z_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">int <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::res_z_ = 32</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00442">442</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00417">pcl::MarchingCubes&lt; PointNT &gt;::getGridResolution()</a>, and <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00408">pcl::MarchingCubes&lt; PointNT &gt;::setGridResolution()</a>.</p> </div> </div> <a id="a8bd249feefa494f22da2c9890d110024"></a> <h2 class="memtitle">size_voxel_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">Eigen::Array3f <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::size_voxel_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>size of voxels </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00449">449</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <a id="a5aa1c48c038e2b254da273e7c4732048"></a> <h2 class="memtitle">upper_boundary_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointNT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">Eigen::Array3f <a class="el" href="classpcl_1_1_marching_cubes">pcl::MarchingCubes</a>&lt; PointNT &gt;::upper_boundary_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>bounding box </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html#l00445">445</a> of file <a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>.</p> </div> </div> <hr>The documentation for this class was generated from the following files:<ul> <li>pcl/surface/<a class="el" href="https://pointclouds.org/documentation/surface_2include_2pcl_2surface_2marching__cubes_8h_source.html">marching_cubes.h</a>
+</li> <li>pcl/surface/impl/<a class="el" href="https://pointclouds.org/documentation/marching__cubes_8hpp_source.html">marching_cubes.hpp</a>
+</li> </ul> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2012, Willow Garage, Inc.<br>© 2012–, Open Perception, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://pointclouds.org/documentation/classpcl_1_1_marching_cubes.html" class="_attribution-link">https://pointclouds.org/documentation/classpcl_1_1_marching_cubes.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

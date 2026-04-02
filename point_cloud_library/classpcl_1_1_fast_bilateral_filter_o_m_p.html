@@ -1,0 +1,564 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>pcl&#58;&#58;FastBilateralFilterOMP - PointCloudLibrary - W3cubDocs</title>
+  
+  <meta name="description" content=" Implementation of a fast bilateral filter for smoothing depth information in organized point clouds Based on the following paper&#58; More... ">
+  <meta name="keywords" content="pcl, fastbilateralfilteromp, pointcloudlibrary, point_cloud_library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/point_cloud_library/classpcl_1_1_fast_bilateral_filter_o_m_p.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/point_cloud_library.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/point_cloud_library/" class="_nav-link" title="" style="margin-left:0;">PointCloudLibrary</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _point_cloud_library">
+				
+				
+<p>Implementation of a fast bilateral filter for smoothing depth information in organized point clouds Based on the following paper: <a href="classpcl_1_1_fast_bilateral_filter_o_m_p#details">More...</a></p> <p><code>#include &lt;<a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">pcl/filters/fast_bilateral_omp.h</a>&gt;</code></p>  <div id="dynsection-0-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-0-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_fast_bilateral_filter_o_m_p_3_01_point_t_01_4_inherit__map" alt="Inheritance graph"></div> <map name="apcl_1_1_fast_bilateral_filter_o_m_p_3_01_point_t_01_4_inherit__map" id="apcl_1_1_fast_bilateral_filter_o_m_p_3_01_point_t_01_4_inherit__map"> <area shape="rect" title="Implementation of a fast bilateral filter for smoothing depth information in organized point clouds B..." alt="" coords="12,244,175,285"> <area shape="rect" href="classpcl_1_1_fast_bilateral_filter.html" title="Implementation of a fast bilateral filter for smoothing depth information in organized point clouds B..." alt="" coords="12,155,175,196"> <area shape="rect" href="classpcl_1_1_filter.html" title="Filter represents the base filter class." alt="" coords="17,80,170,107"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="5,5,181,32"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div>  <div id="dynsection-1-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-1-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_fast_bilateral_filter_o_m_p_3_01_point_t_01_4_coll__map" alt="Collaboration graph"></div> <map name="apcl_1_1_fast_bilateral_filter_o_m_p_3_01_point_t_01_4_coll__map" id="apcl_1_1_fast_bilateral_filter_o_m_p_3_01_point_t_01_4_coll__map"> <area shape="rect" title="Implementation of a fast bilateral filter for smoothing depth information in organized point clouds B..." alt="" coords="80,427,243,468"> <area shape="rect" href="classpcl_1_1_fast_bilateral_filter.html" title="Implementation of a fast bilateral filter for smoothing depth information in organized point clouds B..." alt="" coords="80,336,243,377"> <area shape="rect" href="classpcl_1_1_filter.html" title="Filter represents the base filter class." alt="" coords="85,260,238,287"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="5,184,181,211"> <area shape="rect" title=" " alt="" coords="52,5,143,32"> <area shape="rect" title=" " alt="" coords="146,95,313,121"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div> <table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-types"></a> Public Types</h2></td></tr> <tr class="memitem:a9524014ea02840e78f5b85f0638a4337">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#a9524014ea02840e78f5b85f0638a4337">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt;</td>
+</tr> <tr class="separator:a9524014ea02840e78f5b85f0638a4337"></tr> <tr class="memitem:a00cd67c5ad291e486ff8820d1c81902b">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#a00cd67c5ad291e486ff8820d1c81902b">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt;</td>
+</tr> <tr class="separator:a00cd67c5ad291e486ff8820d1c81902b"></tr> <tr class="inherit_header pub_types_classpcl_1_1_fast_bilateral_filter"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_fast_bilateral_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_fast_bilateral_filter">pcl::FastBilateralFilter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a4cb3fe5eafc3779ea7837cfb390e2f3e inherit pub_types_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#a4cb3fe5eafc3779ea7837cfb390e2f3e">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_fast_bilateral_filter">FastBilateralFilter</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt;</td>
+</tr> <tr class="separator:a4cb3fe5eafc3779ea7837cfb390e2f3e inherit pub_types_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:ad3aa954ad98468c6d9c30f51165dba3b inherit pub_types_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#ad3aa954ad98468c6d9c30f51165dba3b">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_fast_bilateral_filter">FastBilateralFilter</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt;</td>
+</tr> <tr class="separator:ad3aa954ad98468c6d9c30f51165dba3b inherit pub_types_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="inherit_header pub_types_classpcl_1_1_filter"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_filter">pcl::Filter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a969e31c2abab3767dc28e223374543f2 inherit pub_types_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#a969e31c2abab3767dc28e223374543f2">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_filter">Filter</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt;</td>
+</tr> <tr class="separator:a969e31c2abab3767dc28e223374543f2 inherit pub_types_classpcl_1_1_filter"></tr> <tr class="memitem:ac406fc010fa1da7fdfed0078eae6931c inherit pub_types_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#ac406fc010fa1da7fdfed0078eae6931c">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_filter">Filter</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt;</td>
+</tr> <tr class="separator:ac406fc010fa1da7fdfed0078eae6931c inherit pub_types_classpcl_1_1_filter"></tr> <tr class="memitem:a36b06d3bbeae91524257fbe3c008e68a inherit pub_types_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#a36b06d3bbeae91524257fbe3c008e68a">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;</td>
+</tr> <tr class="separator:a36b06d3bbeae91524257fbe3c008e68a inherit pub_types_classpcl_1_1_filter"></tr> <tr class="memitem:a520b726c4132052d80748b445a737064 inherit pub_types_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#a520b726c4132052d80748b445a737064">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:a520b726c4132052d80748b445a737064 inherit pub_types_classpcl_1_1_filter"></tr> <tr class="memitem:a6ee74d012d12839cc10222d75113525c inherit pub_types_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#a6ee74d012d12839cc10222d75113525c">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a6ee74d012d12839cc10222d75113525c inherit pub_types_classpcl_1_1_filter"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;</td>
+</tr> <tr class="separator:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a4399c6b93663d4762fc3389c1b594eb8">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afe906230f3e673dc2ff10b9d579f4ccb">PointIndicesPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a3c574b78dfbe67c93d09acdbc8ecc499">PointIndices::Ptr</a>
+</td>
+</tr> <tr class="separator:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a6880da079270712d46b0bb348cf124bc">PointIndices::ConstPtr</a>
+</td>
+</tr> <tr class="separator:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-methods"></a> Public Member Functions</h2></td></tr> <tr class="memitem:a8fa91f12dd5d148e4f151e2489ef8f08">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#a8fa91f12dd5d148e4f151e2489ef8f08">FastBilateralFilterOMP</a> (unsigned int nr_threads=0)</td>
+</tr> <tr class="memdesc:a8fa91f12dd5d148e4f151e2489ef8f08">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_fast_bilateral_filter_o_m_p#a8fa91f12dd5d148e4f151e2489ef8f08">More...</a><br>
+</td>
+</tr> <tr class="separator:a8fa91f12dd5d148e4f151e2489ef8f08"></tr> <tr class="memitem:a5404c2f3e1a63260869f25e24ef7abfb">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#a5404c2f3e1a63260869f25e24ef7abfb">setNumberOfThreads</a> (unsigned int nr_threads=0)</td>
+</tr> <tr class="memdesc:a5404c2f3e1a63260869f25e24ef7abfb">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Initialize the scheduler and set the number of threads to use. <a href="classpcl_1_1_fast_bilateral_filter_o_m_p#a5404c2f3e1a63260869f25e24ef7abfb">More...</a><br>
+</td>
+</tr> <tr class="separator:a5404c2f3e1a63260869f25e24ef7abfb"></tr> <tr class="memitem:a721625d63cbda9195a86c20257d8648c">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#a721625d63cbda9195a86c20257d8648c">applyFilter</a> (<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> &amp;output) override</td>
+</tr> <tr class="memdesc:a721625d63cbda9195a86c20257d8648c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">
+<a class="el" href="classpcl_1_1_filter" title="Filter represents the base filter class.">Filter</a> the input data and store the results into output. <a href="classpcl_1_1_fast_bilateral_filter_o_m_p#a721625d63cbda9195a86c20257d8648c">More...</a><br>
+</td>
+</tr> <tr class="separator:a721625d63cbda9195a86c20257d8648c"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_fast_bilateral_filter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_fast_bilateral_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_fast_bilateral_filter">pcl::FastBilateralFilter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:ad45d75f398ac26d82345afa5ab83336e inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#ad45d75f398ac26d82345afa5ab83336e">FastBilateralFilter</a> ()=default</td>
+</tr> <tr class="memdesc:ad45d75f398ac26d82345afa5ab83336e inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_fast_bilateral_filter#ad45d75f398ac26d82345afa5ab83336e">More...</a><br>
+</td>
+</tr> <tr class="separator:ad45d75f398ac26d82345afa5ab83336e inherit pub_methods_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:a843d838bb9737cf222bba37493dbd831 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#a843d838bb9737cf222bba37493dbd831">~FastBilateralFilter</a> () override=default</td>
+</tr> <tr class="memdesc:a843d838bb9737cf222bba37493dbd831 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty destructor. <a href="classpcl_1_1_fast_bilateral_filter#a843d838bb9737cf222bba37493dbd831">More...</a><br>
+</td>
+</tr> <tr class="separator:a843d838bb9737cf222bba37493dbd831 inherit pub_methods_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:a62f17d57f5d02df4854af84612e36955 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#a62f17d57f5d02df4854af84612e36955">setSigmaS</a> (float sigma_s)</td>
+</tr> <tr class="memdesc:a62f17d57f5d02df4854af84612e36955 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the standard deviation of the Gaussian used by the bilateral filter for the spatial neighborhood/window. <a href="classpcl_1_1_fast_bilateral_filter#a62f17d57f5d02df4854af84612e36955">More...</a><br>
+</td>
+</tr> <tr class="separator:a62f17d57f5d02df4854af84612e36955 inherit pub_methods_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:ad1e3d0eae7a417e52afd5b67d0f6a55f inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#ad1e3d0eae7a417e52afd5b67d0f6a55f">getSigmaS</a> () const</td>
+</tr> <tr class="memdesc:ad1e3d0eae7a417e52afd5b67d0f6a55f inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the size of the Gaussian bilateral filter window as set by the user. <a href="classpcl_1_1_fast_bilateral_filter#ad1e3d0eae7a417e52afd5b67d0f6a55f">More...</a><br>
+</td>
+</tr> <tr class="separator:ad1e3d0eae7a417e52afd5b67d0f6a55f inherit pub_methods_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:ace9aba523421f9c13c79b2fe619c5a40 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#ace9aba523421f9c13c79b2fe619c5a40">setSigmaR</a> (float sigma_r)</td>
+</tr> <tr class="memdesc:ace9aba523421f9c13c79b2fe619c5a40 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the standard deviation of the Gaussian used to control how much an adjacent pixel is downweighted because of the intensity difference (depth in our case). <a href="classpcl_1_1_fast_bilateral_filter#ace9aba523421f9c13c79b2fe619c5a40">More...</a><br>
+</td>
+</tr> <tr class="separator:ace9aba523421f9c13c79b2fe619c5a40 inherit pub_methods_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:ab19a0163b468f86727db5bda738a4936 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#ab19a0163b468f86727db5bda738a4936">getSigmaR</a> () const</td>
+</tr> <tr class="memdesc:ab19a0163b468f86727db5bda738a4936 inherit pub_methods_classpcl_1_1_fast_bilateral_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the standard deviation of the Gaussian for the intensity difference. <a href="classpcl_1_1_fast_bilateral_filter#ab19a0163b468f86727db5bda738a4936">More...</a><br>
+</td>
+</tr> <tr class="separator:ab19a0163b468f86727db5bda738a4936 inherit pub_methods_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_filter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_filter">pcl::Filter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:af31e766a9092a766962f42005c1b84a4 inherit pub_methods_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#af31e766a9092a766962f42005c1b84a4">Filter</a> (bool extract_removed_indices=false)</td>
+</tr> <tr class="memdesc:af31e766a9092a766962f42005c1b84a4 inherit pub_methods_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_filter#af31e766a9092a766962f42005c1b84a4">More...</a><br>
+</td>
+</tr> <tr class="separator:af31e766a9092a766962f42005c1b84a4 inherit pub_methods_classpcl_1_1_filter"></tr> <tr class="memitem:a91e285ae8c702de22ae36b4969f85e0a inherit pub_methods_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#a91e285ae8c702de22ae36b4969f85e0a">getRemovedIndices</a> () const</td>
+</tr> <tr class="memdesc:a91e285ae8c702de22ae36b4969f85e0a inherit pub_methods_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the point indices being removed. <a href="classpcl_1_1_filter#a91e285ae8c702de22ae36b4969f85e0a">More...</a><br>
+</td>
+</tr> <tr class="separator:a91e285ae8c702de22ae36b4969f85e0a inherit pub_methods_classpcl_1_1_filter"></tr> <tr class="memitem:add67775d121c2dd536d3306ef447431e inherit pub_methods_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#add67775d121c2dd536d3306ef447431e">getRemovedIndices</a> (<a class="el" href="structpcl_1_1_point_indices">PointIndices</a> &amp;pi)</td>
+</tr> <tr class="memdesc:add67775d121c2dd536d3306ef447431e inherit pub_methods_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the point indices being removed. <a href="classpcl_1_1_filter#add67775d121c2dd536d3306ef447431e">More...</a><br>
+</td>
+</tr> <tr class="separator:add67775d121c2dd536d3306ef447431e inherit pub_methods_classpcl_1_1_filter"></tr> <tr class="memitem:a17115897ca28f6b12950d023958aa641 inherit pub_methods_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#a17115897ca28f6b12950d023958aa641">filter</a> (<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> &amp;output)</td>
+</tr> <tr class="memdesc:a17115897ca28f6b12950d023958aa641 inherit pub_methods_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Calls the filtering method and returns the filtered dataset in output. <a href="classpcl_1_1_filter#a17115897ca28f6b12950d023958aa641">More...</a><br>
+</td>
+</tr> <tr class="separator:a17115897ca28f6b12950d023958aa641 inherit pub_methods_classpcl_1_1_filter"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">PCLBase</a> ()</td>
+</tr> <tr class="memdesc:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">More...</a><br>
+</td>
+</tr> <tr class="separator:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">PCLBase</a> (const <a class="el" href="classpcl_1_1_p_c_l_base">PCLBase</a> &amp;base)</td>
+</tr> <tr class="memdesc:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Copy constructor. <a href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">More...</a><br>
+</td>
+</tr> <tr class="separator:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">~PCLBase</a> ()=default</td>
+</tr> <tr class="memdesc:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">More...</a><br>
+</td>
+</tr> <tr class="separator:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">setInputCloud</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp;cloud)</td>
+</tr> <tr class="memdesc:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the input dataset. <a href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">getInputCloud</a> () const</td>
+</tr> <tr class="memdesc:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">More...</a><br>
+</td>
+</tr> <tr class="separator:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">More...</a><br>
+</td>
+</tr> <tr class="separator:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">setIndices</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">More...</a><br>
+</td>
+</tr> <tr class="separator:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">setIndices</a> (std::size_t row_start, std::size_t col_start, std::size_t nb_rows, std::size_t nb_cols)</td>
+</tr> <tr class="memdesc:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the indices for the points laying within an interest region of the point cloud. <a href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">More...</a><br>
+</td>
+</tr> <tr class="separator:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">getIndices</a> ()</td>
+</tr> <tr class="memdesc:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">More...</a><br>
+</td>
+</tr> <tr class="separator:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">getIndices</a> () const</td>
+</tr> <tr class="memdesc:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">More...</a><br>
+</td>
+</tr> <tr class="separator:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">const <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">operator[]</a> (std::size_t pos) const</td>
+</tr> <tr class="memdesc:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Override <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a> operator[] to shorten code. <a href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">More...</a><br>
+</td>
+</tr> <tr class="separator:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-types"></a> Protected Types</h2></td></tr> <tr class="memitem:aa9fc4c2b8223b1f8c779fb4f484828fa">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#aa9fc4c2b8223b1f8c779fb4f484828fa">Array3D</a> = typename <a class="el" href="classpcl_1_1_fast_bilateral_filter">FastBilateralFilter</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#aa9fc4c2b8223b1f8c779fb4f484828fa">Array3D</a>
+</td>
+</tr> <tr class="separator:aa9fc4c2b8223b1f8c779fb4f484828fa"></tr> <tr class="memitem:af8e7712f824193cc625567d2c7adbe2d">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#af8e7712f824193cc625567d2c7adbe2d">PointCloud</a> = typename <a class="el" href="classpcl_1_1_filter">Filter</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a>
+</td>
+</tr> <tr class="separator:af8e7712f824193cc625567d2c7adbe2d"></tr> <tr class="inherit_header pro_types_classpcl_1_1_fast_bilateral_filter"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classpcl_1_1_fast_bilateral_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Types inherited from <a class="el" href="classpcl_1_1_fast_bilateral_filter">pcl::FastBilateralFilter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:ad6d1d9482329ad624747386b1767d9b9 inherit pro_types_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#ad6d1d9482329ad624747386b1767d9b9">PointCloud</a> = typename <a class="el" href="classpcl_1_1_filter">Filter</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a>
+</td>
+</tr> <tr class="separator:ad6d1d9482329ad624747386b1767d9b9 inherit pro_types_classpcl_1_1_fast_bilateral_filter"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-attribs"></a> Protected Attributes</h2></td></tr> <tr class="memitem:a065c56d5f0048284ad18ec50bf3a8cbd">
+<td class="memItemLeft" align="right" valign="top">unsigned int </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#a065c56d5f0048284ad18ec50bf3a8cbd">threads_</a></td>
+</tr> <tr class="memdesc:a065c56d5f0048284ad18ec50bf3a8cbd">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The number of threads the scheduler should use. <a href="classpcl_1_1_fast_bilateral_filter_o_m_p#a065c56d5f0048284ad18ec50bf3a8cbd">More...</a><br>
+</td>
+</tr> <tr class="separator:a065c56d5f0048284ad18ec50bf3a8cbd"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_fast_bilateral_filter"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_fast_bilateral_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_fast_bilateral_filter">pcl::FastBilateralFilter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:ac9bcd34cc449817f3eeba91419308a6e inherit pro_attribs_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#ac9bcd34cc449817f3eeba91419308a6e">sigma_s_</a> {15.0f}</td>
+</tr> <tr class="separator:ac9bcd34cc449817f3eeba91419308a6e inherit pro_attribs_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:a0eb1aa274bed6579368c8135926a636c inherit pro_attribs_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#a0eb1aa274bed6579368c8135926a636c">sigma_r_</a> {0.05f}</td>
+</tr> <tr class="separator:a0eb1aa274bed6579368c8135926a636c inherit pro_attribs_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="memitem:afd716f63496d64c896a09b11489adb7b inherit pro_attribs_classpcl_1_1_fast_bilateral_filter">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter#afd716f63496d64c896a09b11489adb7b">early_division_</a> {false}</td>
+</tr> <tr class="separator:afd716f63496d64c896a09b11489adb7b inherit pro_attribs_classpcl_1_1_fast_bilateral_filter"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_filter"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_filter">pcl::Filter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:ae83ccb695ed263cfc64c224210a31936 inherit pro_attribs_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_filter#ae83ccb695ed263cfc64c224210a31936">removed_indices_</a></td>
+</tr> <tr class="memdesc:ae83ccb695ed263cfc64c224210a31936 inherit pro_attribs_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Indices of the points that are removed. <a href="classpcl_1_1_filter#ae83ccb695ed263cfc64c224210a31936">More...</a><br>
+</td>
+</tr> <tr class="separator:ae83ccb695ed263cfc64c224210a31936 inherit pro_attribs_classpcl_1_1_filter"></tr> <tr class="memitem:ad700c7ab56dc82ad8811b87e9f793751 inherit pro_attribs_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">std::string </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_filter#ad700c7ab56dc82ad8811b87e9f793751">filter_name_</a></td>
+</tr> <tr class="memdesc:ad700c7ab56dc82ad8811b87e9f793751 inherit pro_attribs_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The filter name. <a href="classpcl_1_1_filter#ad700c7ab56dc82ad8811b87e9f793751">More...</a><br>
+</td>
+</tr> <tr class="separator:ad700c7ab56dc82ad8811b87e9f793751 inherit pro_attribs_classpcl_1_1_filter"></tr> <tr class="memitem:a77b899631add791703f5d615f085bede inherit pro_attribs_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_filter#a77b899631add791703f5d615f085bede">extract_removed_indices_</a></td>
+</tr> <tr class="memdesc:a77b899631add791703f5d615f085bede inherit pro_attribs_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set to true if we want to return the indices of the removed points. <a href="classpcl_1_1_filter#a77b899631add791703f5d615f085bede">More...</a><br>
+</td>
+</tr> <tr class="separator:a77b899631add791703f5d615f085bede inherit pro_attribs_classpcl_1_1_filter"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">input_</a></td>
+</tr> <tr class="memdesc:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">More...</a><br>
+</td>
+</tr> <tr class="separator:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">indices_</a></td>
+</tr> <tr class="memdesc:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the vector of point indices to use. <a href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">More...</a><br>
+</td>
+</tr> <tr class="separator:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">use_indices_</a></td>
+</tr> <tr class="memdesc:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set to true if point indices are used. <a href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">More...</a><br>
+</td>
+</tr> <tr class="separator:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">fake_indices_</a></td>
+</tr> <tr class="memdesc:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If no set of indices are given, we construct a set of fake indices that mimic the input <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a>. <a href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">More...</a><br>
+</td>
+</tr> <tr class="separator:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="inherited"></a> Additional Inherited Members</h2></td></tr> <tr class="inherit_header pro_methods_classpcl_1_1_filter"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_filter')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_filter">pcl::Filter&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a71040236d2c11da75b715d6d6bf5ba9d inherit pro_methods_classpcl_1_1_filter">
+<td class="memItemLeft" align="right" valign="top">const std::string &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_filter#a71040236d2c11da75b715d6d6bf5ba9d">getClassName</a> () const</td>
+</tr> <tr class="memdesc:a71040236d2c11da75b715d6d6bf5ba9d inherit pro_methods_classpcl_1_1_filter">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a string representation of the name of this class. <a href="classpcl_1_1_filter#a71040236d2c11da75b715d6d6bf5ba9d">More...</a><br>
+</td>
+</tr> <tr class="separator:a71040236d2c11da75b715d6d6bf5ba9d inherit pro_methods_classpcl_1_1_filter"></tr> <tr class="inherit_header pro_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">initCompute</a> ()</td>
+</tr> <tr class="memdesc:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called before starting the actual computation. <a href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">More...</a><br>
+</td>
+</tr> <tr class="separator:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">deinitCompute</a> ()</td>
+</tr> <tr class="memdesc:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called after finishing the actual computation. <a href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">More...</a><br>
+</td>
+</tr> <tr class="separator:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> </table> <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2> <div class="textblock">
+<h3>template&lt;typename PointT&gt;<br> class pcl::FastBilateralFilterOMP&lt; PointT &gt;</h3> <p>Implementation of a fast bilateral filter for smoothing depth information in organized point clouds Based on the following paper: </p> <ul> <li>Sylvain Paris and Fredo Durand "A Fast Approximation of the Bilateral Filter using a Signal Processing Approach" European Conference on Computer Vision (ECCV'06)</li> </ul> <p>More details on the webpage: <a href="http://people.csail.mit.edu/sparis/bf/">http://people.csail.mit.edu/sparis/bf/</a> </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00057">57</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>.</p> </div>
+<h2 class="groupheader">Member Typedef Documentation</h2> <a id="aa9fc4c2b8223b1f8c779fb4f484828fa"></a> <h2 class="memtitle">Array3D</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#aa9fc4c2b8223b1f8c779fb4f484828fa">Array3D</a> = typename <a class="el" href="classpcl_1_1_fast_bilateral_filter">FastBilateralFilter</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt;::<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p#aa9fc4c2b8223b1f8c779fb4f484828fa">Array3D</a>
+</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00064">64</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>.</p> </div> </div> <a id="a00cd67c5ad291e486ff8820d1c81902b"></a> <h2 class="memtitle">ConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_fast_bilateral_filter#ad3aa954ad98468c6d9c30f51165dba3b">ConstPtr</a> = shared_ptr&lt;const <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">FastBilateralFilterOMP</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00071">71</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>.</p> </div> </div> <a id="af8e7712f824193cc625567d2c7adbe2d"></a> <h2 class="memtitle">PointCloud</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = typename <a class="el" href="classpcl_1_1_filter">Filter</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a>
+</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00066">66</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>.</p> </div> </div> <a id="a9524014ea02840e78f5b85f0638a4337"></a> <h2 class="memtitle">Ptr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_fast_bilateral_filter#a4cb3fe5eafc3779ea7837cfb390e2f3e">Ptr</a> = shared_ptr&lt;<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">FastBilateralFilterOMP</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00070">70</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>.</p> </div> </div> <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2> <a id="a8fa91f12dd5d148e4f151e2489ef8f08"></a> <h2 class="memtitle">FastBilateralFilterOMP()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">FastBilateralFilterOMP</a> </td> <td>(</td> <td class="paramtype">unsigned int </td> <td class="paramname">
+<em>nr_threads</em> = <code>0</code>
+</td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Empty constructor. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00074">74</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8hpp_source.html#l00048">pcl::FastBilateralFilterOMP&lt; PointT &gt;::setNumberOfThreads()</a>.</p> </div> </div> <h2 class="groupheader">Member Function Documentation</h2> <a id="a721625d63cbda9195a86c20257d8648c"></a> <h2 class="memtitle">applyFilter()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::applyFilter </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> &amp; </td> <td class="paramname"><em>output</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p><a class="el" href="classpcl_1_1_filter" title="Filter represents the base filter class.">Filter</a> the input data and store the results into output. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">output</td>
+<td>the resultant point cloud </td>
+</tr> </table> </dd> </dl> <p>Reimplemented from <a class="el" href="classpcl_1_1_fast_bilateral_filter#a18bdd38f07209726da71e30271702984">pcl::FastBilateralFilter&lt; PointT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8hpp_source.html#l00062">62</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8hpp_source.html">fast_bilateral_omp.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00262">pcl::PointCloud&lt; PointT &gt;::at()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2common_2impl_2io_8hpp_source.html#l00142">pcl::copyPointCloud()</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00443">pcl::PointCloud&lt; PointT &gt;::size()</a>.</p> </div> </div> <a id="a5404c2f3e1a63260869f25e24ef7abfb"></a> <h2 class="memtitle">setNumberOfThreads()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setNumberOfThreads </td> <td>(</td> <td class="paramtype">unsigned int </td> <td class="paramname">
+<em>nr_threads</em> = <code>0</code>
+</td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Initialize the scheduler and set the number of threads to use. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramname">nr_threads</td>
+<td>the number of hardware threads to use (0 sets the value back to automatic) </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8hpp_source.html#l00048">48</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8hpp_source.html">fast_bilateral_omp.hpp</a>.</p> <p class="reference">Referenced by <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00074">pcl::FastBilateralFilterOMP&lt; PointT &gt;::FastBilateralFilterOMP()</a>.</p> </div> </div> <h2 class="groupheader">Member Data Documentation</h2> <a id="a065c56d5f0048284ad18ec50bf3a8cbd"></a> <h2 class="memtitle">threads_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">unsigned int <a class="el" href="classpcl_1_1_fast_bilateral_filter_o_m_p">pcl::FastBilateralFilterOMP</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::threads_</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>The number of threads the scheduler should use. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html#l00093">93</a> of file <a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>.</p> </div> </div> <hr>The documentation for this class was generated from the following files:<ul> <li>pcl/filters/<a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8h_source.html">fast_bilateral_omp.h</a>
+</li> <li>pcl/filters/impl/<a class="el" href="https://pointclouds.org/documentation/fast__bilateral__omp_8hpp_source.html">fast_bilateral_omp.hpp</a>
+</li> </ul> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2012, Willow Garage, Inc.<br>© 2012–, Open Perception, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://pointclouds.org/documentation/classpcl_1_1_fast_bilateral_filter_o_m_p.html" class="_attribution-link">https://pointclouds.org/documentation/classpcl_1_1_fast_bilateral_filter_o_m_p.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

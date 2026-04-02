@@ -1,0 +1,660 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>pcl&#58;&#58;MomentOfInertiaEstimation - PointCloudLibrary - W3cubDocs</title>
+  
+  <meta name="description" content=" Implements the method for extracting features based on moment of inertia. More... ">
+  <meta name="keywords" content="pcl, momentofinertiaestimation, pointcloudlibrary, point_cloud_library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/point_cloud_library/classpcl_1_1_moment_of_inertia_estimation.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/point_cloud_library.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/point_cloud_library/" class="_nav-link" title="" style="margin-left:0;">PointCloudLibrary</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _point_cloud_library">
+				
+				
+<p>Implements the method for extracting features based on moment of inertia. <a href="classpcl_1_1_moment_of_inertia_estimation#details">More...</a></p> <p><code>#include &lt;<a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html">pcl/features/moment_of_inertia_estimation.h</a>&gt;</code></p>  <div id="dynsection-0-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-0-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_moment_of_inertia_estimation_3_01_point_t_01_4_inherit__map" alt="Inheritance graph"></div> <map name="apcl_1_1_moment_of_inertia_estimation_3_01_point_t_01_4_inherit__map" id="apcl_1_1_moment_of_inertia_estimation_3_01_point_t_01_4_inherit__map"> <area shape="rect" title="Implements the method for extracting features based on moment of inertia." alt="" coords="5,80,236,121"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="33,5,209,32"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div>  <div id="dynsection-1-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-1-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_moment_of_inertia_estimation_3_01_point_t_01_4_coll__map" alt="Collaboration graph"></div> <map name="apcl_1_1_moment_of_inertia_estimation_3_01_point_t_01_4_coll__map" id="apcl_1_1_moment_of_inertia_estimation_3_01_point_t_01_4_coll__map"> <area shape="rect" title="Implements the method for extracting features based on moment of inertia." alt="" coords="5,260,236,301"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="33,184,209,211"> <area shape="rect" title=" " alt="" coords="75,5,166,32"> <area shape="rect" title=" " alt="" coords="169,95,336,121"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div> <table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-types"></a> Public Types</h2></td></tr> <tr class="memitem:a9a5e7f4ea1c89441c5f6aff4232a0cbe">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a9a5e7f4ea1c89441c5f6aff4232a0cbe">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a>
+</td>
+</tr> <tr class="separator:a9a5e7f4ea1c89441c5f6aff4232a0cbe"></tr> <tr class="memitem:ab6883fd224fd33a2eea9f18fe1501e13">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#ab6883fd224fd33a2eea9f18fe1501e13">PointIndicesConstPtr</a> = typename <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a>
+</td>
+</tr> <tr class="separator:ab6883fd224fd33a2eea9f18fe1501e13"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;</td>
+</tr> <tr class="separator:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a4399c6b93663d4762fc3389c1b594eb8">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afe906230f3e673dc2ff10b9d579f4ccb">PointIndicesPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a3c574b78dfbe67c93d09acdbc8ecc499">PointIndices::Ptr</a>
+</td>
+</tr> <tr class="separator:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a6880da079270712d46b0bb348cf124bc">PointIndices::ConstPtr</a>
+</td>
+</tr> <tr class="separator:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-methods"></a> Public Member Functions</h2></td></tr> <tr class="memitem:abc280d476696a49281cf39f404334d45">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#abc280d476696a49281cf39f404334d45">setInputCloud</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp;cloud) override</td>
+</tr> <tr class="memdesc:abc280d476696a49281cf39f404334d45">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the input dataset. <a href="classpcl_1_1_moment_of_inertia_estimation#abc280d476696a49281cf39f404334d45">More...</a><br>
+</td>
+</tr> <tr class="separator:abc280d476696a49281cf39f404334d45"></tr> <tr class="memitem:a263f50819241a9b9929b3c712f6c962b">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a263f50819241a9b9929b3c712f6c962b">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> &amp;indices) override</td>
+</tr> <tr class="memdesc:a263f50819241a9b9929b3c712f6c962b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_moment_of_inertia_estimation#a263f50819241a9b9929b3c712f6c962b">More...</a><br>
+</td>
+</tr> <tr class="separator:a263f50819241a9b9929b3c712f6c962b"></tr> <tr class="memitem:a96dca1bc3ce364eef7cc0af3754247f0">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a96dca1bc3ce364eef7cc0af3754247f0">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> &amp;indices) override</td>
+</tr> <tr class="memdesc:a96dca1bc3ce364eef7cc0af3754247f0">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_moment_of_inertia_estimation#a96dca1bc3ce364eef7cc0af3754247f0">More...</a><br>
+</td>
+</tr> <tr class="separator:a96dca1bc3ce364eef7cc0af3754247f0"></tr> <tr class="memitem:ab5a4ddcbff4164e000b7f949cd90b79a">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#ab5a4ddcbff4164e000b7f949cd90b79a">setIndices</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> &amp;indices) override</td>
+</tr> <tr class="memdesc:ab5a4ddcbff4164e000b7f949cd90b79a">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_moment_of_inertia_estimation#ab5a4ddcbff4164e000b7f949cd90b79a">More...</a><br>
+</td>
+</tr> <tr class="separator:ab5a4ddcbff4164e000b7f949cd90b79a"></tr> <tr class="memitem:a1e761ac1722f5bd61f3fca07ad101a73">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a1e761ac1722f5bd61f3fca07ad101a73">setIndices</a> (std::size_t row_start, std::size_t col_start, std::size_t nb_rows, std::size_t nb_cols) override</td>
+</tr> <tr class="memdesc:a1e761ac1722f5bd61f3fca07ad101a73">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the indices for the points laying within an interest region of the point cloud. <a href="classpcl_1_1_moment_of_inertia_estimation#a1e761ac1722f5bd61f3fca07ad101a73">More...</a><br>
+</td>
+</tr> <tr class="separator:a1e761ac1722f5bd61f3fca07ad101a73"></tr> <tr class="memitem:ab15683239a2e14b2f230782b0db1a8d1">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#ab15683239a2e14b2f230782b0db1a8d1">MomentOfInertiaEstimation</a> ()</td>
+</tr> <tr class="memdesc:ab15683239a2e14b2f230782b0db1a8d1">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Constructor that sets default values for member variables. <a href="classpcl_1_1_moment_of_inertia_estimation#ab15683239a2e14b2f230782b0db1a8d1">More...</a><br>
+</td>
+</tr> <tr class="separator:ab15683239a2e14b2f230782b0db1a8d1"></tr> <tr class="memitem:a0f21ac4bb6df7178e1b6da78f78948ab">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a0f21ac4bb6df7178e1b6da78f78948ab">~MomentOfInertiaEstimation</a> () override</td>
+</tr> <tr class="memdesc:a0f21ac4bb6df7178e1b6da78f78948ab">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Virtual destructor which frees the memory. <a href="classpcl_1_1_moment_of_inertia_estimation#a0f21ac4bb6df7178e1b6da78f78948ab">More...</a><br>
+</td>
+</tr> <tr class="separator:a0f21ac4bb6df7178e1b6da78f78948ab"></tr> <tr class="memitem:aac2fd81cbf6eb02d5f1e1f462d640c6c">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#aac2fd81cbf6eb02d5f1e1f462d640c6c">setAngleStep</a> (const float step)</td>
+</tr> <tr class="memdesc:aac2fd81cbf6eb02d5f1e1f462d640c6c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method allows to set the angle step. <a href="classpcl_1_1_moment_of_inertia_estimation#aac2fd81cbf6eb02d5f1e1f462d640c6c">More...</a><br>
+</td>
+</tr> <tr class="separator:aac2fd81cbf6eb02d5f1e1f462d640c6c"></tr> <tr class="memitem:a0625af4e2c78edf76dda829dcea53ff5">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a0625af4e2c78edf76dda829dcea53ff5">getAngleStep</a> () const</td>
+</tr> <tr class="memdesc:a0625af4e2c78edf76dda829dcea53ff5">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the angle step. <a href="classpcl_1_1_moment_of_inertia_estimation#a0625af4e2c78edf76dda829dcea53ff5">More...</a><br>
+</td>
+</tr> <tr class="separator:a0625af4e2c78edf76dda829dcea53ff5"></tr> <tr class="memitem:aa9149b19d2ffaac9926db2d0f48cff30">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#aa9149b19d2ffaac9926db2d0f48cff30">setNormalizePointMassFlag</a> (bool need_to_normalize)</td>
+</tr> <tr class="memdesc:aa9149b19d2ffaac9926db2d0f48cff30">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method allows to set the normalize_ flag. <a href="classpcl_1_1_moment_of_inertia_estimation#aa9149b19d2ffaac9926db2d0f48cff30">More...</a><br>
+</td>
+</tr> <tr class="separator:aa9149b19d2ffaac9926db2d0f48cff30"></tr> <tr class="memitem:a9d824622d848378fe608c2a0563f07ad">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a9d824622d848378fe608c2a0563f07ad">getNormalizePointMassFlag</a> () const</td>
+</tr> <tr class="memdesc:a9d824622d848378fe608c2a0563f07ad">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the normalize_ flag. <a href="classpcl_1_1_moment_of_inertia_estimation#a9d824622d848378fe608c2a0563f07ad">More...</a><br>
+</td>
+</tr> <tr class="separator:a9d824622d848378fe608c2a0563f07ad"></tr> <tr class="memitem:aaa915646af4de7b704bd227c3374f0b3">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#aaa915646af4de7b704bd227c3374f0b3">setPointMass</a> (const float point_mass)</td>
+</tr> <tr class="memdesc:aaa915646af4de7b704bd227c3374f0b3">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method allows to set point mass that will be used for moment of inertia calculation. <a href="classpcl_1_1_moment_of_inertia_estimation#aaa915646af4de7b704bd227c3374f0b3">More...</a><br>
+</td>
+</tr> <tr class="separator:aaa915646af4de7b704bd227c3374f0b3"></tr> <tr class="memitem:a66a194f783bd25e9a3b27caa260609bb">
+<td class="memItemLeft" align="right" valign="top">float </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a66a194f783bd25e9a3b27caa260609bb">getPointMass</a> () const</td>
+</tr> <tr class="memdesc:a66a194f783bd25e9a3b27caa260609bb">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the mass of point. <a href="classpcl_1_1_moment_of_inertia_estimation#a66a194f783bd25e9a3b27caa260609bb">More...</a><br>
+</td>
+</tr> <tr class="separator:a66a194f783bd25e9a3b27caa260609bb"></tr> <tr class="memitem:a3183fdc19a64022afd1925548fe0c0ba">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a3183fdc19a64022afd1925548fe0c0ba">compute</a> ()</td>
+</tr> <tr class="memdesc:a3183fdc19a64022afd1925548fe0c0ba">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method launches the computation of all features. <a href="classpcl_1_1_moment_of_inertia_estimation#a3183fdc19a64022afd1925548fe0c0ba">More...</a><br>
+</td>
+</tr> <tr class="separator:a3183fdc19a64022afd1925548fe0c0ba"></tr> <tr class="memitem:aa71cd248a65c937f236b3e633250b6c9">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#aa71cd248a65c937f236b3e633250b6c9">getAABB</a> (<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp;min_point, <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp;max_point) const</td>
+</tr> <tr class="memdesc:aa71cd248a65c937f236b3e633250b6c9">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method gives access to the computed axis aligned bounding box. <a href="classpcl_1_1_moment_of_inertia_estimation#aa71cd248a65c937f236b3e633250b6c9">More...</a><br>
+</td>
+</tr> <tr class="separator:aa71cd248a65c937f236b3e633250b6c9"></tr> <tr class="memitem:a86e92ba5fc831ebbe4c106e1e0c60a8b">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a86e92ba5fc831ebbe4c106e1e0c60a8b">getOBB</a> (<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp;min_point, <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp;max_point, <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp;position, Eigen::Matrix3f &amp;rotational_matrix) const</td>
+</tr> <tr class="memdesc:a86e92ba5fc831ebbe4c106e1e0c60a8b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method gives access to the computed oriented bounding box. <a href="classpcl_1_1_moment_of_inertia_estimation#a86e92ba5fc831ebbe4c106e1e0c60a8b">More...</a><br>
+</td>
+</tr> <tr class="separator:a86e92ba5fc831ebbe4c106e1e0c60a8b"></tr> <tr class="memitem:a42e3704f86f836296cc0b4f1aa1daf04">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a42e3704f86f836296cc0b4f1aa1daf04">getEigenValues</a> (float &amp;major, float &amp;middle, float &amp;minor) const</td>
+</tr> <tr class="memdesc:a42e3704f86f836296cc0b4f1aa1daf04">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method gives access to the computed eigen values. <a href="classpcl_1_1_moment_of_inertia_estimation#a42e3704f86f836296cc0b4f1aa1daf04">More...</a><br>
+</td>
+</tr> <tr class="separator:a42e3704f86f836296cc0b4f1aa1daf04"></tr> <tr class="memitem:afe3ee297fd25d8c62bb0311cdfd27cc4">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#afe3ee297fd25d8c62bb0311cdfd27cc4">getEigenVectors</a> (Eigen::Vector3f &amp;major, Eigen::Vector3f &amp;middle, Eigen::Vector3f &amp;minor) const</td>
+</tr> <tr class="memdesc:afe3ee297fd25d8c62bb0311cdfd27cc4">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method gives access to the computed eigen vectors. <a href="classpcl_1_1_moment_of_inertia_estimation#afe3ee297fd25d8c62bb0311cdfd27cc4">More...</a><br>
+</td>
+</tr> <tr class="separator:afe3ee297fd25d8c62bb0311cdfd27cc4"></tr> <tr class="memitem:adfee828daeb216b0590784ff936582ca">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#adfee828daeb216b0590784ff936582ca">getMomentOfInertia</a> (std::vector&lt; float &gt; &amp;moment_of_inertia) const</td>
+</tr> <tr class="memdesc:adfee828daeb216b0590784ff936582ca">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method gives access to the computed moments of inertia. <a href="classpcl_1_1_moment_of_inertia_estimation#adfee828daeb216b0590784ff936582ca">More...</a><br>
+</td>
+</tr> <tr class="separator:adfee828daeb216b0590784ff936582ca"></tr> <tr class="memitem:a7fc76964931393c32661a009b5303a09">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#a7fc76964931393c32661a009b5303a09">getEccentricity</a> (std::vector&lt; float &gt; &amp;eccentricity) const</td>
+</tr> <tr class="memdesc:a7fc76964931393c32661a009b5303a09">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method gives access to the computed ecentricities. <a href="classpcl_1_1_moment_of_inertia_estimation#a7fc76964931393c32661a009b5303a09">More...</a><br>
+</td>
+</tr> <tr class="separator:a7fc76964931393c32661a009b5303a09"></tr> <tr class="memitem:ab21c613778ad9199790079d7491bd030">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation#ab21c613778ad9199790079d7491bd030">getMassCenter</a> (Eigen::Vector3f &amp;mass_center) const</td>
+</tr> <tr class="memdesc:ab21c613778ad9199790079d7491bd030">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method gives access to the computed mass center. <a href="classpcl_1_1_moment_of_inertia_estimation#ab21c613778ad9199790079d7491bd030">More...</a><br>
+</td>
+</tr> <tr class="separator:ab21c613778ad9199790079d7491bd030"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">PCLBase</a> ()</td>
+</tr> <tr class="memdesc:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">More...</a><br>
+</td>
+</tr> <tr class="separator:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">PCLBase</a> (const <a class="el" href="classpcl_1_1_p_c_l_base">PCLBase</a> &amp;base)</td>
+</tr> <tr class="memdesc:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Copy constructor. <a href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">More...</a><br>
+</td>
+</tr> <tr class="separator:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">~PCLBase</a> ()=default</td>
+</tr> <tr class="memdesc:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">More...</a><br>
+</td>
+</tr> <tr class="separator:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">getInputCloud</a> () const</td>
+</tr> <tr class="memdesc:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">getIndices</a> ()</td>
+</tr> <tr class="memdesc:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">More...</a><br>
+</td>
+</tr> <tr class="separator:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">getIndices</a> () const</td>
+</tr> <tr class="memdesc:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">More...</a><br>
+</td>
+</tr> <tr class="separator:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">const <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">operator[]</a> (std::size_t pos) const</td>
+</tr> <tr class="memdesc:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Override <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a> operator[] to shorten code. <a href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">More...</a><br>
+</td>
+</tr> <tr class="separator:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="inherited"></a> Additional Inherited Members</h2></td></tr> <tr class="inherit_header pro_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">initCompute</a> ()</td>
+</tr> <tr class="memdesc:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called before starting the actual computation. <a href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">More...</a><br>
+</td>
+</tr> <tr class="separator:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">deinitCompute</a> ()</td>
+</tr> <tr class="memdesc:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called after finishing the actual computation. <a href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">More...</a><br>
+</td>
+</tr> <tr class="separator:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">input_</a></td>
+</tr> <tr class="memdesc:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">More...</a><br>
+</td>
+</tr> <tr class="separator:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">indices_</a></td>
+</tr> <tr class="memdesc:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the vector of point indices to use. <a href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">More...</a><br>
+</td>
+</tr> <tr class="separator:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">use_indices_</a></td>
+</tr> <tr class="memdesc:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set to true if point indices are used. <a href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">More...</a><br>
+</td>
+</tr> <tr class="separator:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">fake_indices_</a></td>
+</tr> <tr class="memdesc:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If no set of indices are given, we construct a set of fake indices that mimic the input <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a>. <a href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">More...</a><br>
+</td>
+</tr> <tr class="separator:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> </table> <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2> <div class="textblock">
+<h3>template&lt;typename PointT&gt;<br> class pcl::MomentOfInertiaEstimation&lt; PointT &gt;</h3> <p>Implements the method for extracting features based on moment of inertia. </p> <p>It also calculates AABB, OBB and eccentricity of the projected cloud. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html#l00054">54</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html">moment_of_inertia_estimation.h</a>.</p> </div>
+<h2 class="groupheader">Member Typedef Documentation</h2> <a id="a9a5e7f4ea1c89441c5f6aff4232a0cbe"></a> <h2 class="memtitle">PointCloudConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html#l00065">65</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html">moment_of_inertia_estimation.h</a>.</p> </div> </div> <a id="ab6883fd224fd33a2eea9f18fe1501e13"></a> <h2 class="memtitle">PointIndicesConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> = typename <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt;::<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html#l00066">66</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html">moment_of_inertia_estimation.h</a>.</p> </div> </div> <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2> <a id="ab15683239a2e14b2f230782b0db1a8d1"></a> <h2 class="memtitle">MomentOfInertiaEstimation()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_moment_of_inertia_estimation">MomentOfInertiaEstimation</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p>Constructor that sets default values for member variables. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00050">50</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a0f21ac4bb6df7178e1b6da78f78948ab"></a> <h2 class="memtitle">~MomentOfInertiaEstimation()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::~<a class="el" href="classpcl_1_1_moment_of_inertia_estimation">MomentOfInertiaEstimation</a>
+</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Virtual destructor which frees the memory. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00067">67</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <h2 class="groupheader">Member Function Documentation</h2> <a id="a3183fdc19a64022afd1925548fe0c0ba"></a> <h2 class="memtitle">compute()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::compute</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method launches the computation of all features. </p> <p>After execution it sets is_valid_ flag to true and each feature can be accessed with the corresponding get method. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00129">129</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/centroid_8hpp_source.html#l00192">pcl::computeCovarianceMatrix()</a>.</p> </div> </div> <a id="aa71cd248a65c937f236b3e633250b6c9"></a> <h2 class="memtitle">getAABB()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getAABB </td> <td>(</td> <td class="paramtype">
+<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td> <td class="paramname">
+<em>min_point</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td> <td class="paramname">
+<em>max_point</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method gives access to the computed axis aligned bounding box. </p> <p>It returns true if the current values (eccentricity, moment of inertia etc) are valid and false otherwise. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">min_point</td>
+<td>min point of the AABB </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">max_point</td>
+<td>max point of the AABB </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00196">196</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a0625af4e2c78edf76dda829dcea53ff5"></a> <h2 class="memtitle">getAngleStep()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">float <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getAngleStep</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the angle step. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00087">87</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a7fc76964931393c32661a009b5303a09"></a> <h2 class="memtitle">getEccentricity()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getEccentricity </td> <td>(</td> <td class="paramtype">std::vector&lt; float &gt; &amp; </td> <td class="paramname"><em>eccentricity</em></td>
+<td>)</td> <td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method gives access to the computed ecentricities. </p> <p>It returns true if the current values (eccentricity, moment of inertia etc) are valid and false otherwise. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">eccentricity</td>
+<td>computed eccentricities </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00306">306</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a42e3704f86f836296cc0b4f1aa1daf04"></a> <h2 class="memtitle">getEigenValues()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getEigenValues </td> <td>(</td> <td class="paramtype">float &amp; </td> <td class="paramname">
+<em>major</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">float &amp; </td> <td class="paramname">
+<em>middle</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">float &amp; </td> <td class="paramname">
+<em>minor</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method gives access to the computed eigen values. </p> <p>It returns true if the current values (eccentricity, moment of inertia etc) are valid and false otherwise. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">major</td>
+<td>major eigen value </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">middle</td>
+<td>middle eigen value </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">minor</td>
+<td>minor eigen value </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00274">274</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="afe3ee297fd25d8c62bb0311cdfd27cc4"></a> <h2 class="memtitle">getEigenVectors()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getEigenVectors </td> <td>(</td> <td class="paramtype">Eigen::Vector3f &amp; </td> <td class="paramname">
+<em>major</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">Eigen::Vector3f &amp; </td> <td class="paramname">
+<em>middle</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">Eigen::Vector3f &amp; </td> <td class="paramname">
+<em>minor</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method gives access to the computed eigen vectors. </p> <p>It returns true if the current values (eccentricity, moment of inertia etc) are valid and false otherwise. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">major</td>
+<td>axis which corresponds to the eigen vector with the major eigen value </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">middle</td>
+<td>axis which corresponds to the eigen vector with the middle eigen value </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">minor</td>
+<td>axis which corresponds to the eigen vector with the minor eigen value </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00285">285</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="ab21c613778ad9199790079d7491bd030"></a> <h2 class="memtitle">getMassCenter()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getMassCenter </td> <td>(</td> <td class="paramtype">Eigen::Vector3f &amp; </td> <td class="paramname"><em>mass_center</em></td>
+<td>)</td> <td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method gives access to the computed mass center. </p> <p>It returns true if the current values (eccentricity, moment of inertia etc) are valid and false otherwise. Note that when mass center of a cloud is computed, mass point is always considered equal 1. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">mass_center</td>
+<td>computed mass center </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00551">551</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="adfee828daeb216b0590784ff936582ca"></a> <h2 class="memtitle">getMomentOfInertia()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getMomentOfInertia </td> <td>(</td> <td class="paramtype">std::vector&lt; float &gt; &amp; </td> <td class="paramname"><em>moment_of_inertia</em></td>
+<td>)</td> <td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method gives access to the computed moments of inertia. </p> <p>It returns true if the current values (eccentricity, moment of inertia etc) are valid and false otherwise. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">moment_of_inertia</td>
+<td>computed moments of inertia </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00296">296</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a9d824622d848378fe608c2a0563f07ad"></a> <h2 class="memtitle">getNormalizePointMassFlag()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getNormalizePointMassFlag</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the normalize_ flag. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00103">103</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a86e92ba5fc831ebbe4c106e1e0c60a8b"></a> <h2 class="memtitle">getOBB()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getOBB </td> <td>(</td> <td class="paramtype">
+<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td> <td class="paramname">
+<em>min_point</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td> <td class="paramname">
+<em>max_point</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td> <td class="paramname">
+<em>position</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">Eigen::Matrix3f &amp; </td> <td class="paramname">
+<em>rotational_matrix</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </div>
+<div class="memdoc"> <p>This method gives access to the computed oriented bounding box. </p> <p>It returns true if the current values (eccentricity, moment of inertia etc) are valid and false otherwise. Note that in order to get the OBB, each vertex of the given AABB (specified with min_point and max_point) must be rotated with the given rotational matrix (rotation transform) and then positioned. Also pay attention to the fact that this is not the minimal possible bounding box. This is the bounding box which is oriented in accordance with the eigen vectors. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">min_point</td>
+<td>min point of the OBB </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">max_point</td>
+<td>max point of the OBB </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">position</td>
+<td>position of the OBB </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">rotational_matrix</td>
+<td>this matrix represents the rotation transform </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00206">206</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a66a194f783bd25e9a3b27caa260609bb"></a> <h2 class="memtitle">getPointMass()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">float <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getPointMass</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the mass of point. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00122">122</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="aac2fd81cbf6eb02d5f1e1f462d640c6c"></a> <h2 class="memtitle">setAngleStep()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setAngleStep </td> <td>(</td> <td class="paramtype">const float </td> <td class="paramname"><em>step</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>This method allows to set the angle step. </p> <p>It is used for the rotation of the axis which is used for moment of inertia/eccentricity calculation. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">step</td>
+<td>angle step </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00075">75</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="a96dca1bc3ce364eef7cc0af3754247f0"></a> <h2 class="memtitle">setIndices() <span class="overload">[1/4]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setIndices </td> <td>(</td> <td class="paramtype">const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> &amp; </td> <td class="paramname"><em>indices</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Provide a pointer to the vector of indices that represents the input data. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">indices</td>
+<td>a pointer to the vector of indices that represents the input data. </td>
+</tr> </table> </dd> </dl> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">pcl::PCLBase&lt; PointT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00576">576</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/pcl__base_8hpp_source.html#l00072">pcl::PCLBase&lt; PointT &gt;::setIndices()</a>.</p> </div> </div> <a id="a263f50819241a9b9929b3c712f6c962b"></a> <h2 class="memtitle">setIndices() <span class="overload">[2/4]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setIndices </td> <td>(</td> <td class="paramtype">const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> &amp; </td> <td class="paramname"><em>indices</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Provide a pointer to the vector of indices that represents the input data. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">indices</td>
+<td>a pointer to the vector of indices that represents the input data. </td>
+</tr> </table> </dd> </dl> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">pcl::PCLBase&lt; PointT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00568">568</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/pcl__base_8hpp_source.html#l00072">pcl::PCLBase&lt; PointT &gt;::setIndices()</a>.</p> </div> </div> <a id="ab5a4ddcbff4164e000b7f949cd90b79a"></a> <h2 class="memtitle">setIndices() <span class="overload">[3/4]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setIndices </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> &amp; </td> <td class="paramname"><em>indices</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Provide a pointer to the vector of indices that represents the input data. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">indices</td>
+<td>a pointer to the vector of indices that represents the input data. </td>
+</tr> </table> </dd> </dl> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">pcl::PCLBase&lt; PointT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00584">584</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/pcl__base_8hpp_source.html#l00072">pcl::PCLBase&lt; PointT &gt;::setIndices()</a>.</p> </div> </div> <a id="a1e761ac1722f5bd61f3fca07ad101a73"></a> <h2 class="memtitle">setIndices() <span class="overload">[4/4]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setIndices </td> <td>(</td> <td class="paramtype">std::size_t </td> <td class="paramname">
+<em>row_start</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">std::size_t </td> <td class="paramname">
+<em>col_start</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">std::size_t </td> <td class="paramname">
+<em>nb_rows</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">std::size_t </td> <td class="paramname">
+<em>nb_cols</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Set the indices for the points laying within an interest region of the point cloud. </p> <dl class="section note">
+<dt>Note</dt>
+<dd>you shouldn't call this method on unorganized point clouds! </dd>
+</dl> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">row_start</td>
+<td>the offset on rows </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">col_start</td>
+<td>the offset on columns </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">nb_rows</td>
+<td>the number of rows to be considered row_start included </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">nb_cols</td>
+<td>the number of columns to be considered col_start included </td>
+</tr> </table> </dd> </dl> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">pcl::PCLBase&lt; PointT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00592">592</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/pcl__base_8hpp_source.html#l00072">pcl::PCLBase&lt; PointT &gt;::setIndices()</a>.</p> </div> </div> <a id="abc280d476696a49281cf39f404334d45"></a> <h2 class="memtitle">setInputCloud()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setInputCloud </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp; </td> <td class="paramname"><em>cloud</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Provide a pointer to the input dataset. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud</td>
+<td>the const boost shared pointer to a <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a> message </td>
+</tr> </table> </dd> </dl> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">pcl::PCLBase&lt; PointT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00560">560</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/pcl__base_8hpp_source.html#l00065">pcl::PCLBase&lt; PointT &gt;::setInputCloud()</a>.</p> </div> </div> <a id="aa9149b19d2ffaac9926db2d0f48cff30"></a> <h2 class="memtitle">setNormalizePointMassFlag()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setNormalizePointMassFlag </td> <td>(</td> <td class="paramtype">bool </td> <td class="paramname"><em>need_to_normalize</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>This method allows to set the normalize_ flag. </p> <p>If set to false, then point_mass_ will be used to scale the moment of inertia values. Otherwise, point_mass_ will be set to 1 / number_of_points. Default value is true. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">need_to_normalize</td>
+<td>desired value </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00094">94</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <a id="aaa915646af4de7b704bd227c3374f0b3"></a> <h2 class="memtitle">setPointMass()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_moment_of_inertia_estimation">pcl::MomentOfInertiaEstimation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setPointMass </td> <td>(</td> <td class="paramtype">const float </td> <td class="paramname"><em>point_mass</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>This method allows to set point mass that will be used for moment of inertia calculation. </p> <p>It is needed to scale moment of inertia values. default value is 0.0001. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">point_mass</td>
+<td>point mass </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html#l00110">110</a> of file <a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>.</p> </div> </div> <hr>The documentation for this class was generated from the following files:<ul> <li>pcl/features/<a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8h_source.html">moment_of_inertia_estimation.h</a>
+</li> <li>pcl/features/impl/<a class="el" href="https://pointclouds.org/documentation/moment__of__inertia__estimation_8hpp_source.html">moment_of_inertia_estimation.hpp</a>
+</li> </ul> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2012, Willow Garage, Inc.<br>© 2012–, Open Perception, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://pointclouds.org/documentation/classpcl_1_1_moment_of_inertia_estimation.html" class="_attribution-link">https://pointclouds.org/documentation/classpcl_1_1_moment_of_inertia_estimation.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

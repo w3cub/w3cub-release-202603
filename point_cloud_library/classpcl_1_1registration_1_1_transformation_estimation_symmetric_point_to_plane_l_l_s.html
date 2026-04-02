@@ -1,0 +1,453 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>pcl&#58;&#58;registration&#58;&#58;TransformationEstimationSymmetricPointToPlaneLLS - PointCloudLibrary - W3cubDocs</title>
+  
+  <meta name="description" content="TransformationEstimationSymmetricPointToPlaneLLS implements a Linear Least Squares (LLS) approximation for minimizing the symmetric point-to-plane &hellip;">
+  <meta name="keywords" content="pcl, registration, transformationestimationsymmetricpointtoplanells, pointcloudlibrary, point_cloud_library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/point_cloud_library/classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/point_cloud_library.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/point_cloud_library/" class="_nav-link" title="" style="margin-left:0;">PointCloudLibrary</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _point_cloud_library">
+				
+				
+<p><b><a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s" title="TransformationEstimationSymmetricPointToPlaneLLS implements a Linear Least Squares (LLS) approximatio...">TransformationEstimationSymmetricPointToPlaneLLS</a></b> implements a Linear Least Squares (LLS) approximation for minimizing the symmetric point-to-plane distance between two clouds of corresponding points with normals. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#details">More...</a></p> <p><code>#include &lt;<a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">pcl/registration/transformation_estimation_symmetric_point_to_plane_lls.h</a>&gt;</code></p>  <div id="dynsection-0-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-0-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s_3_01_point_source_00_01_point_target_00_01_scalar_01_4_inherit__map" alt="Inheritance graph"></div> <map name="apcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s_3_01_point_source_00_01_point_target_00_01_scalar_01_4_inherit__map" id="apcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s_3_01_point_source_00_01_point_target_00_01_scalar_01_4_inherit__map"> <area shape="rect" title="TransformationEstimationSymmetricPointToPlaneLLS implements a Linear Least Squares (LLS) approximatio..." alt="" coords="5,273,267,344"> <area shape="rect" href="classpcl_1_1registration_1_1_transformation_estimation.html" title=" " alt="" coords="37,153,235,224"> <area shape="rect" href="classpcl_1_1registration_1_1_transformation_estimation.html" title="TransformationEstimation represents the base class for methods for transformation estimation based on..." alt="" coords="37,5,235,76"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div>  <div id="dynsection-1-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-1-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s_3_01_point_source_00_01_point_target_00_01_scalar_01_4_coll__map" alt="Collaboration graph"></div> <map name="apcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s_3_01_point_source_00_01_point_target_00_01_scalar_01_4_coll__map" id="apcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s_3_01_point_source_00_01_point_target_00_01_scalar_01_4_coll__map"> <area shape="rect" title="TransformationEstimationSymmetricPointToPlaneLLS implements a Linear Least Squares (LLS) approximatio..." alt="" coords="5,273,267,344"> <area shape="rect" href="classpcl_1_1registration_1_1_transformation_estimation.html" title=" " alt="" coords="37,153,235,224"> <area shape="rect" href="classpcl_1_1registration_1_1_transformation_estimation.html" title="TransformationEstimation represents the base class for methods for transformation estimation based on..." alt="" coords="37,5,235,76"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div> <table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-types"></a> Public Types</h2></td></tr> <tr class="memitem:a91202f5152fa91a4e8ddd1ab5e4a5db0">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a91202f5152fa91a4e8ddd1ab5e4a5db0">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt; &gt;</td>
+</tr> <tr class="separator:a91202f5152fa91a4e8ddd1ab5e4a5db0"></tr> <tr class="memitem:a57be9d8570d700548f22776317c4a279">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a57be9d8570d700548f22776317c4a279">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt; &gt;</td>
+</tr> <tr class="separator:a57be9d8570d700548f22776317c4a279"></tr> <tr class="memitem:ab7657813c42fb3809e3c7d6e69ac4145">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> = typename <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation">TransformationEstimation</a>&lt; PointSource, PointTarget, Scalar &gt;::<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a>
+</td>
+</tr> <tr class="separator:ab7657813c42fb3809e3c7d6e69ac4145"></tr> <tr class="memitem:a15677486312b220ebda6a98fe7f72cec">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a15677486312b220ebda6a98fe7f72cec">Vector6</a> = Eigen::Matrix&lt; Scalar, 6, 1 &gt;</td>
+</tr> <tr class="separator:a15677486312b220ebda6a98fe7f72cec"></tr> <tr class="inherit_header pub_types_classpcl_1_1registration_1_1_transformation_estimation"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1registration_1_1_transformation_estimation')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation">pcl::registration::TransformationEstimation&lt; PointSource, PointTarget, float &gt;</a>
+</td></tr> <tr class="memitem:a08bebf38677e6504c23e79935c793c6d inherit pub_types_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a08bebf38677e6504c23e79935c793c6d">Matrix4</a> = Eigen::Matrix&lt; float, 4, 4 &gt;</td>
+</tr> <tr class="separator:a08bebf38677e6504c23e79935c793c6d inherit pub_types_classpcl_1_1registration_1_1_transformation_estimation"></tr> <tr class="memitem:a8b205ffcbde37fdf053679641bf392d3 inherit pub_types_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a8b205ffcbde37fdf053679641bf392d3">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation">TransformationEstimation</a>&lt; PointSource, PointTarget, float &gt; &gt;</td>
+</tr> <tr class="separator:a8b205ffcbde37fdf053679641bf392d3 inherit pub_types_classpcl_1_1registration_1_1_transformation_estimation"></tr> <tr class="memitem:a2ed9afed97794b586f8cdca01c1c5df3 inherit pub_types_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a2ed9afed97794b586f8cdca01c1c5df3">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation">TransformationEstimation</a>&lt; PointSource, PointTarget, float &gt; &gt;</td>
+</tr> <tr class="separator:a2ed9afed97794b586f8cdca01c1c5df3 inherit pub_types_classpcl_1_1registration_1_1_transformation_estimation"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-methods"></a> Public Member Functions</h2></td></tr> <tr class="memitem:a2954565b60455ce633322fec0e1615e1">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a2954565b60455ce633322fec0e1615e1">TransformationEstimationSymmetricPointToPlaneLLS</a> ()=default</td>
+</tr> <tr class="separator:a2954565b60455ce633322fec0e1615e1"></tr> <tr class="memitem:aeb955e42355943f2c8753f8ab5e4c22e">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#aeb955e42355943f2c8753f8ab5e4c22e">~TransformationEstimationSymmetricPointToPlaneLLS</a> () override=default</td>
+</tr> <tr class="separator:aeb955e42355943f2c8753f8ab5e4c22e"></tr> <tr class="memitem:a6c3450250087f3818917b94469565600">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a6c3450250087f3818917b94469565600">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp;transformation_matrix) const override</td>
+</tr> <tr class="memdesc:a6c3450250087f3818917b94469565600">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud using SVD. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a6c3450250087f3818917b94469565600">More...</a><br>
+</td>
+</tr> <tr class="separator:a6c3450250087f3818917b94469565600"></tr> <tr class="memitem:a15496657352c3221c6a54abba7c533b7">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a15496657352c3221c6a54abba7c533b7">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;indices_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp;transformation_matrix) const override</td>
+</tr> <tr class="memdesc:a15496657352c3221c6a54abba7c533b7">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud using SVD. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a15496657352c3221c6a54abba7c533b7">More...</a><br>
+</td>
+</tr> <tr class="separator:a15496657352c3221c6a54abba7c533b7"></tr> <tr class="memitem:af2b47f0f8eb350935018c2e7806beb1c">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#af2b47f0f8eb350935018c2e7806beb1c">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;indices_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;indices_tgt, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp;transformation_matrix) const override</td>
+</tr> <tr class="memdesc:af2b47f0f8eb350935018c2e7806beb1c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud using SVD. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#af2b47f0f8eb350935018c2e7806beb1c">More...</a><br>
+</td>
+</tr> <tr class="separator:af2b47f0f8eb350935018c2e7806beb1c"></tr> <tr class="memitem:a78c9ddfb413b0d66227ea5d9daab2b32">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a78c9ddfb413b0d66227ea5d9daab2b32">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a5f8e904e5c6f763188a410832f96ac00">pcl::Correspondences</a> &amp;correspondences, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp;transformation_matrix) const override</td>
+</tr> <tr class="memdesc:a78c9ddfb413b0d66227ea5d9daab2b32">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud using SVD. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a78c9ddfb413b0d66227ea5d9daab2b32">More...</a><br>
+</td>
+</tr> <tr class="separator:a78c9ddfb413b0d66227ea5d9daab2b32"></tr> <tr class="memitem:aeaa5469f9ae437c28304179c64606b07">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#aeaa5469f9ae437c28304179c64606b07">setEnforceSameDirectionNormals</a> (bool enforce_same_direction_normals)</td>
+</tr> <tr class="memdesc:aeaa5469f9ae437c28304179c64606b07">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set whether or not to negate source or target normals on a per-point basis such that they point in the same direction. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#aeaa5469f9ae437c28304179c64606b07">More...</a><br>
+</td>
+</tr> <tr class="separator:aeaa5469f9ae437c28304179c64606b07"></tr> <tr class="memitem:a2b5a053513518102a24a39c4729914e1">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a2b5a053513518102a24a39c4729914e1">getEnforceSameDirectionNormals</a> ()</td>
+</tr> <tr class="memdesc:a2b5a053513518102a24a39c4729914e1">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Obtain whether source or target normals are negated on a per-point basis such that they point in the same direction or not. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a2b5a053513518102a24a39c4729914e1">More...</a><br>
+</td>
+</tr> <tr class="separator:a2b5a053513518102a24a39c4729914e1"></tr> <tr class="inherit_header pub_methods_classpcl_1_1registration_1_1_transformation_estimation"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1registration_1_1_transformation_estimation')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation">pcl::registration::TransformationEstimation&lt; PointSource, PointTarget, float &gt;</a>
+</td></tr> <tr class="memitem:a0561858711cb35719a415733a882c7a6 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a0561858711cb35719a415733a882c7a6">TransformationEstimation</a> ()=default</td>
+</tr> <tr class="separator:a0561858711cb35719a415733a882c7a6 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation"></tr> <tr class="memitem:a6cee5fcf3e311af5b69f953047208686 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">virtual </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a6cee5fcf3e311af5b69f953047208686">~TransformationEstimation</a> ()=default</td>
+</tr> <tr class="separator:a6cee5fcf3e311af5b69f953047208686 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation"></tr> <tr class="memitem:ae6cce6a02e4cb990b1183fd1f8c1cb59 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#ae6cce6a02e4cb990b1183fd1f8c1cb59">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a08bebf38677e6504c23e79935c793c6d">Matrix4</a> &amp;transformation_matrix) const=0</td>
+</tr> <tr class="memdesc:ae6cce6a02e4cb990b1183fd1f8c1cb59 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud. <a href="classpcl_1_1registration_1_1_transformation_estimation#ae6cce6a02e4cb990b1183fd1f8c1cb59">More...</a><br>
+</td>
+</tr> <tr class="separator:ae6cce6a02e4cb990b1183fd1f8c1cb59 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation"></tr> <tr class="memitem:a9c791b16102f31a3ccf789c6790ca71d inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a9c791b16102f31a3ccf789c6790ca71d">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;indices_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a08bebf38677e6504c23e79935c793c6d">Matrix4</a> &amp;transformation_matrix) const=0</td>
+</tr> <tr class="memdesc:a9c791b16102f31a3ccf789c6790ca71d inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud. <a href="classpcl_1_1registration_1_1_transformation_estimation#a9c791b16102f31a3ccf789c6790ca71d">More...</a><br>
+</td>
+</tr> <tr class="separator:a9c791b16102f31a3ccf789c6790ca71d inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation"></tr> <tr class="memitem:a961cb1f6ab32cd1171e561fc272336c7 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a961cb1f6ab32cd1171e561fc272336c7">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;indices_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;indices_tgt, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a08bebf38677e6504c23e79935c793c6d">Matrix4</a> &amp;transformation_matrix) const=0</td>
+</tr> <tr class="memdesc:a961cb1f6ab32cd1171e561fc272336c7 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud. <a href="classpcl_1_1registration_1_1_transformation_estimation#a961cb1f6ab32cd1171e561fc272336c7">More...</a><br>
+</td>
+</tr> <tr class="separator:a961cb1f6ab32cd1171e561fc272336c7 inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation"></tr> <tr class="memitem:a29eac92312d3f445ba840a02e92fa5db inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a29eac92312d3f445ba840a02e92fa5db">estimateRigidTransformation</a> (const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp;cloud_src, const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp;cloud_tgt, const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a5f8e904e5c6f763188a410832f96ac00">pcl::Correspondences</a> &amp;correspondences, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation#a08bebf38677e6504c23e79935c793c6d">Matrix4</a> &amp;transformation_matrix) const=0</td>
+</tr> <tr class="memdesc:a29eac92312d3f445ba840a02e92fa5db inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target point cloud. <a href="classpcl_1_1registration_1_1_transformation_estimation#a29eac92312d3f445ba840a02e92fa5db">More...</a><br>
+</td>
+</tr> <tr class="separator:a29eac92312d3f445ba840a02e92fa5db inherit pub_methods_classpcl_1_1registration_1_1_transformation_estimation"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-methods"></a> Protected Member Functions</h2></td></tr> <tr class="memitem:a88ae26c8b31709fbbea56ab6ebda9894">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a88ae26c8b31709fbbea56ab6ebda9894">estimateRigidTransformation</a> (<a class="el" href="classpcl_1_1_const_cloud_iterator">ConstCloudIterator</a>&lt; PointSource &gt; &amp;source_it, <a class="el" href="classpcl_1_1_const_cloud_iterator">ConstCloudIterator</a>&lt; PointTarget &gt; &amp;target_it, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp;transformation_matrix) const</td>
+</tr> <tr class="memdesc:a88ae26c8b31709fbbea56ab6ebda9894">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Estimate a rigid rotation transformation between a source and a target. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a88ae26c8b31709fbbea56ab6ebda9894">More...</a><br>
+</td>
+</tr> <tr class="separator:a88ae26c8b31709fbbea56ab6ebda9894"></tr> <tr class="memitem:afde4ea98dcfe8ec370a42c4778197a24">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#afde4ea98dcfe8ec370a42c4778197a24">constructTransformationMatrix</a> (const <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a15677486312b220ebda6a98fe7f72cec">Vector6</a> &amp;parameters, <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp;transformation_matrix) const</td>
+</tr> <tr class="memdesc:afde4ea98dcfe8ec370a42c4778197a24">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Construct a 4 by 4 transformation matrix from the provided rotation and translation. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#afde4ea98dcfe8ec370a42c4778197a24">More...</a><br>
+</td>
+</tr> <tr class="separator:afde4ea98dcfe8ec370a42c4778197a24"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-attribs"></a> Protected Attributes</h2></td></tr> <tr class="memitem:a0839402f22c8f0a0257a21e582ee9abd">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a0839402f22c8f0a0257a21e582ee9abd">enforce_same_direction_normals_</a> {true}</td>
+</tr> <tr class="memdesc:a0839402f22c8f0a0257a21e582ee9abd">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Whether or not to negate source and/or target normals such that they point in the same direction. <a href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a0839402f22c8f0a0257a21e582ee9abd">More...</a><br>
+</td>
+</tr> <tr class="separator:a0839402f22c8f0a0257a21e582ee9abd"></tr> </table> <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2> <div class="textblock">
+<h3>template&lt;typename PointSource, typename PointTarget, typename Scalar = float&gt;<br> class pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS&lt; PointSource, PointTarget, Scalar &gt;</h3> <p><b><a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s" title="TransformationEstimationSymmetricPointToPlaneLLS implements a Linear Least Squares (LLS) approximatio...">TransformationEstimationSymmetricPointToPlaneLLS</a></b> implements a Linear Least Squares (LLS) approximation for minimizing the symmetric point-to-plane distance between two clouds of corresponding points with normals. </p> <p>For additional details, see "Linear Least-Squares Optimization for Point-to-Plane ICP Surface Registration", Kok-Lim Low, 2004 "A Symmetric Objective Function for ICP", Szymon Rusinkiewicz, 2019</p> <dl class="section note">
+<dt>Note</dt>
+<dd>The class is templated on the source and target point types as well as on the output scalar of the transformation matrix (i.e., float or double). Default: float. </dd>
+</dl> <dl class="section author">
+<dt>Author</dt>
+<dd>Matthew Cong </dd>
+</dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html#l00059">59</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">transformation_estimation_symmetric_point_to_plane_lls.h</a>.</p> </div>
+<h2 class="groupheader">Member Typedef Documentation</h2> <a id="a57be9d8570d700548f22776317c4a279"></a> <h2 class="memtitle">ConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar = float&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a57be9d8570d700548f22776317c4a279">ConstPtr</a> = shared_ptr&lt;const <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">TransformationEstimationSymmetricPointToPlaneLLS</a>&lt;PointSource, PointTarget, Scalar&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html#l00065">65</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">transformation_estimation_symmetric_point_to_plane_lls.h</a>.</p> </div> </div> <a id="ab7657813c42fb3809e3c7d6e69ac4145"></a> <h2 class="memtitle">Matrix4</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar = float&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> = typename <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation">TransformationEstimation</a>&lt;PointSource, PointTarget, Scalar&gt;::<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html#l00070">70</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">transformation_estimation_symmetric_point_to_plane_lls.h</a>.</p> </div> </div> <a id="a91202f5152fa91a4e8ddd1ab5e4a5db0"></a> <h2 class="memtitle">Ptr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar = float&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a91202f5152fa91a4e8ddd1ab5e4a5db0">Ptr</a> = shared_ptr&lt;<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">TransformationEstimationSymmetricPointToPlaneLLS</a>&lt;PointSource, PointTarget, Scalar&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html#l00062">62</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">transformation_estimation_symmetric_point_to_plane_lls.h</a>.</p> </div> </div> <a id="a15677486312b220ebda6a98fe7f72cec"></a> <h2 class="memtitle">Vector6</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar = float&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a15677486312b220ebda6a98fe7f72cec">Vector6</a> = Eigen::Matrix&lt;Scalar, 6, 1&gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html#l00072">72</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">transformation_estimation_symmetric_point_to_plane_lls.h</a>.</p> </div> </div> <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2> <a id="a2954565b60455ce633322fec0e1615e1"></a> <h2 class="memtitle">TransformationEstimationSymmetricPointToPlaneLLS()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar = float&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">TransformationEstimationSymmetricPointToPlaneLLS</a> </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">default</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> </div> </div> <a id="aeb955e42355943f2c8753f8ab5e4c22e"></a> <h2 class="memtitle">~TransformationEstimationSymmetricPointToPlaneLLS()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar = float&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::~<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">TransformationEstimationSymmetricPointToPlaneLLS</a> </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">default</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> </div> </div> <h2 class="groupheader">Member Function Documentation</h2> <a id="afde4ea98dcfe8ec370a42c4778197a24"></a> <h2 class="memtitle">constructTransformationMatrix()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::constructTransformationMatrix </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#a15677486312b220ebda6a98fe7f72cec">Vector6</a> &amp; </td> <td class="paramname">
+<em>parameters</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp; </td> <td class="paramname">
+<em>transformation_matrix</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Construct a 4 by 4 transformation matrix from the provided rotation and translation. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">parameters</td>
+<td>(alpha, beta, gamma, tx, ty, tz) specifying rotation about the x, y, and z-axis and translation along the the x, y, and z-axis respectively</td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">transformation_matrix</td>
+<td>the resultant transformation matrix </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00130">130</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> </div> </div> <a id="af2b47f0f8eb350935018c2e7806beb1c"></a> <h2 class="memtitle">estimateRigidTransformation() <span class="overload">[1/5]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::estimateRigidTransformation </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp; </td> <td class="paramname">
+<em>cloud_src</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp; </td> <td class="paramname">
+<em>indices_src</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp; </td> <td class="paramname">
+<em>cloud_tgt</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp; </td> <td class="paramname">
+<em>indices_tgt</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp; </td> <td class="paramname">
+<em>transformation_matrix</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Estimate a rigid rotation transformation between a source and a target point cloud using SVD. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_src</td>
+<td>the source point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">indices_src</td>
+<td>the vector of indices describing the points of interest in <em>cloud_src</em> </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_tgt</td>
+<td>the target point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">indices_tgt</td>
+<td>the vector of indices describing the correspondences of the interest points from <em>indices_src</em> </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">transformation_matrix</td>
+<td>the resultant transformation matrix </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00093">93</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> </div> </div> <a id="a15496657352c3221c6a54abba7c533b7"></a> <h2 class="memtitle">estimateRigidTransformation() <span class="overload">[2/5]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::estimateRigidTransformation </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp; </td> <td class="paramname">
+<em>cloud_src</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp; </td> <td class="paramname">
+<em>indices_src</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp; </td> <td class="paramname">
+<em>cloud_tgt</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp; </td> <td class="paramname">
+<em>transformation_matrix</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Estimate a rigid rotation transformation between a source and a target point cloud using SVD. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_src</td>
+<td>the source point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">indices_src</td>
+<td>the vector of indices describing the points of interest in <em>cloud_src</em> </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_tgt</td>
+<td>the target point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">transformation_matrix</td>
+<td>the resultant transformation matrix </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00070">70</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00443">pcl::PointCloud&lt; PointT &gt;::size()</a>.</p> </div> </div> <a id="a78c9ddfb413b0d66227ea5d9daab2b32"></a> <h2 class="memtitle">estimateRigidTransformation() <span class="overload">[3/5]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::estimateRigidTransformation </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp; </td> <td class="paramname">
+<em>cloud_src</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp; </td> <td class="paramname">
+<em>cloud_tgt</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a5f8e904e5c6f763188a410832f96ac00">pcl::Correspondences</a> &amp; </td> <td class="paramname">
+<em>correspondences</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp; </td> <td class="paramname">
+<em>transformation_matrix</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Estimate a rigid rotation transformation between a source and a target point cloud using SVD. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_src</td>
+<td>the source point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_tgt</td>
+<td>the target point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">correspondences</td>
+<td>the vector of correspondences between source and target point cloud</td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">transformation_matrix</td>
+<td>the resultant transformation matrix </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00117">117</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> </div> </div> <a id="a6c3450250087f3818917b94469565600"></a> <h2 class="memtitle">estimateRigidTransformation() <span class="overload">[4/5]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::estimateRigidTransformation </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointSource &gt; &amp; </td> <td class="paramname">
+<em>cloud_src</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">const <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointTarget &gt; &amp; </td> <td class="paramname">
+<em>cloud_tgt</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp; </td> <td class="paramname">
+<em>transformation_matrix</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Estimate a rigid rotation transformation between a source and a target point cloud using SVD. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_src</td>
+<td>the source point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud_tgt</td>
+<td>the target point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">transformation_matrix</td>
+<td>the resultant transformation matrix </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00048">48</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00443">pcl::PointCloud&lt; PointT &gt;::size()</a>.</p> </div> </div> <a id="a88ae26c8b31709fbbea56ab6ebda9894"></a> <h2 class="memtitle">estimateRigidTransformation() <span class="overload">[5/5]</span>
+</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::estimateRigidTransformation </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_const_cloud_iterator">ConstCloudIterator</a>&lt; PointSource &gt; &amp; </td> <td class="paramname">
+<em>source_it</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_const_cloud_iterator">ConstCloudIterator</a>&lt; PointTarget &gt; &amp; </td> <td class="paramname">
+<em>target_it</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">
+<a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s#ab7657813c42fb3809e3c7d6e69ac4145">Matrix4</a> &amp; </td> <td class="paramname">
+<em>transformation_matrix</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Estimate a rigid rotation transformation between a source and a target. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">source_it</td>
+<td>an iterator over the source point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">target_it</td>
+<td>an iterator over the target point cloud dataset </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">transformation_matrix</td>
+<td>the resultant transformation matrix </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00151">151</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/cloud__iterator_8hpp_source.html#l00547">pcl::ConstCloudIterator&lt; PointT &gt;::isValid()</a>, and <a class="el" href="https://pointclouds.org/documentation/cloud__iterator_8hpp_source.html#l00540">pcl::ConstCloudIterator&lt; PointT &gt;::reset()</a>.</p> </div> </div> <a id="a2b5a053513518102a24a39c4729914e1"></a> <h2 class="memtitle">getEnforceSameDirectionNormals()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::getEnforceSameDirectionNormals</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Obtain whether source or target normals are negated on a per-point basis such that they point in the same direction or not. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00213">213</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> </div> </div> <a id="aeaa5469f9ae437c28304179c64606b07"></a> <h2 class="memtitle">setEnforceSameDirectionNormals()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::setEnforceSameDirectionNormals </td> <td>(</td> <td class="paramtype">bool </td> <td class="paramname"><em>enforce_same_direction_normals</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Set whether or not to negate source or target normals on a per-point basis such that they point in the same direction. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">enforce_same_direction_normals</td>
+<td>whether to negate source or target normals on a per-point basis such that they point in the same direction. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html#l00205">205</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>.</p> </div> </div> <h2 class="groupheader">Member Data Documentation</h2> <a id="a0839402f22c8f0a0257a21e582ee9abd"></a> <h2 class="memtitle">enforce_same_direction_normals_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointSource , typename PointTarget , typename Scalar = float&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s">pcl::registration::TransformationEstimationSymmetricPointToPlaneLLS</a>&lt; PointSource, PointTarget, Scalar &gt;::enforce_same_direction_normals_ {true}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Whether or not to negate source and/or target normals such that they point in the same direction. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html#l00163">163</a> of file <a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">transformation_estimation_symmetric_point_to_plane_lls.h</a>.</p> </div> </div> <hr>The documentation for this class was generated from the following files:<ul> <li>pcl/registration/<a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8h_source.html">transformation_estimation_symmetric_point_to_plane_lls.h</a>
+</li> <li>pcl/registration/impl/<a class="el" href="https://pointclouds.org/documentation/transformation__estimation__symmetric__point__to__plane__lls_8hpp_source.html">transformation_estimation_symmetric_point_to_plane_lls.hpp</a>
+</li> </ul> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2012, Willow Garage, Inc.<br>© 2012–, Open Perception, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://pointclouds.org/documentation/classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s.html" class="_attribution-link">https://pointclouds.org/documentation/classpcl_1_1registration_1_1_transformation_estimation_symmetric_point_to_plane_l_l_s.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

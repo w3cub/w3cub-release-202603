@@ -1,0 +1,963 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>pcl&#58;&#58;MinCutSegmentation - PointCloudLibrary - W3cubDocs</title>
+  
+  <meta name="description" content=" This class implements the segmentation algorithm based on minimal cut of the graph. More... ">
+  <meta name="keywords" content="pcl, mincutsegmentation, pointcloudlibrary, point_cloud_library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/point_cloud_library/classpcl_1_1_min_cut_segmentation.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/point_cloud_library.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/point_cloud_library/" class="_nav-link" title="" style="margin-left:0;">PointCloudLibrary</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _point_cloud_library">
+				
+				
+<p>This class implements the segmentation algorithm based on minimal cut of the graph. <a href="classpcl_1_1_min_cut_segmentation#details">More...</a></p> <p><code>#include &lt;<a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">pcl/segmentation/min_cut_segmentation.h</a>&gt;</code></p>  <div id="dynsection-0-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-0-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_min_cut_segmentation_3_01_point_t_01_4_inherit__map" alt="Inheritance graph"></div> <map name="apcl_1_1_min_cut_segmentation_3_01_point_t_01_4_inherit__map" id="apcl_1_1_min_cut_segmentation_3_01_point_t_01_4_inherit__map"> <area shape="rect" title="This class implements the segmentation algorithm based on minimal cut of the graph." alt="" coords="5,80,192,121"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="11,5,187,32"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div>  <div id="dynsection-1-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-1-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZsAAAE/CAMAAACny54yAAACxFBMVEVHcEydOWYAAAAAAAIAAAAAAAAAAAC+vr6/v78AAAAAAAAAAAABAQWaMs0AAAAyAGcAAAC/v78AAAC/v78AAAAAAAMAAACaMc4AAACZMs0AAAAAAACZNMsAAAAAAAAAAAAAAAC/v7++vr4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALCwstLS0YGHIAAACaMc4XF22aMs0AAACaMs2aMs0AAAAAAAAAAACaMc7/pQAAAAAAAAAAAAAAAACaMs0AAACaMs2aMs2aMs0AAAAAAACaMs0AAAD/ogAAAACXRbubMc6aMc7/pQCaMc4AAAAAAACaMs2bMs0AAACaMs2aMs0AAAAAAAAAAAAAAAAAAACaMs2aMs0AAAAAAAAAAACaMs3/rACaMs2aMs2aMs2aMs2aMs3AwMD/pQD/pQCaMs2aMc4AAAAAAAAAAACaMs2aMs2aMs3CwsIAAAD/pgCYMs2aMs3/pQD/pQAAAAD+pQYAAAD/pQD/pQCaMs3/pQD/pQL/pQKbM8wAAAAAAAD/owD/pQD/pQCaMs3/pQD/pQD/pQD/pAAAAAAAAAD/pQD/pQD/pQD/pgAAAAAZGW8AAAD+pgcAAAgAAAAYGG4ZGXCufca4qMDgsl4ZGXAYGHCkWMm+vr7AwMDAwMAYGHAYGHC9vb2/v78AAAChTMoYGHAHByANDTa/v78AAACaMs1/f3//pQAZGXApKSkiIiIICAh0dHSlpaUbGxu+vr44ODi1tbYlJSWpqal6enpbW1t3d3cQEBBRUVGvr6+5ubkuLi41NTWSkpJLS0u4t7iXl5cWFRdERESenp6srKxmZmaFhYUNCxA/Pz9VVVWNjY0DAwWzs7OKiopra2tiYmI8PDyZMs1wcHCqb8f/pACkV8rJu6K0lMNtI5C3oMLksVN+fn87E06eQMzurDRHcEyChg8tAAAA7HRSTlMAARQjq9BcVqtWyGUH+xICl7/zlx8NkP5BCOC4DYS19sPsatcKEOg8h2ruKjUX+vpBYB4V5czweXc/GyP88Yyf3DxvzKz2+kRyxAlzA2RT+Vste4k1Ry/EnDn+zo9ES09MrxUEadrfmRFBei3T6jHkJpG7tBWiIhmg686yN6ihRIIbZLsoWb8Oxlqm2eKSTmvLh2/zFH8zXa0D3fLIfWB8kGulJdi3V6Yyf1O7fb3M////////////////////////////////////////////////////////////////////////////////AFhf9R8AABq6SURBVHja7J1rUxNZGsc7IrqD9MTNghgEZeXmqrwwFYNKKzIQxAgGBcELMEq4bQJeYAUSI5eEWYIhrBC2xKlyrJrZqZqtfUF35eXWfoL9APPK8jK1U7X7Kbbv6dw7Sffpjjn/F0KkOac5v37Oec7p0/9GECgoKCgoKCgoafX338inH2DzZqXf/k0uMj/u/hE2b3ZsfidXyX+CbCAbyAaygWygkrIp3JfilxrwPZANZAPZZM/m7BnIBrLJUzZflR+rekiyqfyzrvoWghzF75bf1DCfvyk9VH7xaAnJ5aiu+i9hNoUnqnT36pHnOI4XMQdCNnKwedxeX3znEtne5adrbtaRUJDXDy+TbV1Yd+c18uBoQemle1qkam9DwUsBm5OHS89d3MPEDX0gZCMHmwLdDaa9ryFILX6BCaXn5OebCHKB+qy9eKMAb0CQK8K4If+pPsCyuQn7NLn6tPtHzjbfYMabYrwA+eKeDsevkp9fIUg9Tuv+eR15XImAzQHyn6OVLJtXkI18uYB238Uajk3Dz1+Xar4qYliV3P2SiS0qbg4L2FQycfPyTHQSAdlIyebKiYLiM+2lHJuSu4eL75SzbJAHzx7XnH5QjFzdu6egSDjenC+9ptuDPBt4DdnIyKb43OVjhV+H+7Rrde1FAxyb0kvf6orIH16IztOu6grryT6vur0IspF/fpOOEs+FIBvIBrKJUgmTtjWLZrPtcMDGBhw3iUWzsS271+wBrz8YCtlhY6uFjc3zq9e3joVCmNX6IURqETa2auLG/b9QhFZhY6uoT3vrxMJo/LCtVTXerAYwK4vG6luEgZMumx/3x9V3b76jv3z/Ju6P377dn0rHqVzA4WJDB1sPYb5NyCctNrux+vcv7z8S78lv/vOR+LgbV59Cv37aTSUqh9Z6gkzoOJbXAv4Q5oVNnqk0K13zYwSBEq16fdckQRC9CQ70hqyb4oJgeSFExk5QS3+/tgXbOBN19na0mQgUJd4RqKlvyfQOJdC2RAdvkN2U02MTVfAGmUpHx4vDswxbXKz00yQKglXZNEp/jzYlDLB1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" border="0" usemap="#apcl_1_1_min_cut_segmentation_3_01_point_t_01_4_coll__map" alt="Collaboration graph"></div> <map name="apcl_1_1_min_cut_segmentation_3_01_point_t_01_4_coll__map" id="apcl_1_1_min_cut_segmentation_3_01_point_t_01_4_coll__map"> <area shape="rect" title="This class implements the segmentation algorithm based on minimal cut of the graph." alt="" coords="29,272,216,313"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="35,196,211,223"> <area shape="rect" title=" " alt="" coords="84,5,175,32"> <area shape="rect" title=" " alt="" coords="123,95,290,121"> <area shape="rect" title=" " alt="" coords="232,145,405,172"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div> <table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-types"></a> Public Types</h2></td></tr> <tr class="memitem:a92e34825e956e983b45e7356303e47ce">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a92e34825e956e983b45e7356303e47ce">KdTree</a> = <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html">pcl::search::Search</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;</td>
+</tr> <tr class="separator:a92e34825e956e983b45e7356303e47ce"></tr> <tr class="memitem:ad1f14c39a1c99ad8b9be3e0365a47790">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> = typename <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html#ab4688e4899ce5aa6937dba334dc75763">KdTree::Ptr</a>
+</td>
+</tr> <tr class="separator:ad1f14c39a1c99ad8b9be3e0365a47790"></tr> <tr class="memitem:a2e6a99735e4d7e7ebff5af85d458bd10">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a2e6a99735e4d7e7ebff5af85d458bd10">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;</td>
+</tr> <tr class="separator:a2e6a99735e4d7e7ebff5af85d458bd10"></tr> <tr class="memitem:ac9476b45e44c2474a558a3950e0e10ec">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ac9476b45e44c2474a558a3950e0e10ec">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:ac9476b45e44c2474a558a3950e0e10ec"></tr> <tr class="memitem:aedb4e8e6e92609fc947d71c2ebc7aa29">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#aedb4e8e6e92609fc947d71c2ebc7aa29">Traits</a> = boost::adjacency_list_traits&lt; boost::vecS, boost::vecS, boost::directedS &gt;</td>
+</tr> <tr class="separator:aedb4e8e6e92609fc947d71c2ebc7aa29"></tr> <tr class="memitem:ad55ac69e3d8625a14133c9267d6e1dc2">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a> = boost::adjacency_list&lt; boost::vecS, boost::vecS, boost::directedS, boost::property&lt; boost::vertex_name_t, std::string, boost::property&lt; boost::vertex_index_t, long, boost::property&lt; boost::vertex_color_t, boost::default_color_type, boost::property&lt; boost::vertex_distance_t, long, boost::property&lt; boost::vertex_predecessor_t, Traits::edge_descriptor &gt; &gt; &gt; &gt; &gt;, boost::property&lt; boost::edge_capacity_t, double, boost::property&lt; boost::edge_residual_capacity_t, double, boost::property&lt; boost::edge_reverse_t, Traits::edge_descriptor &gt; &gt; &gt; &gt;</td>
+</tr> <tr class="separator:ad55ac69e3d8625a14133c9267d6e1dc2"></tr> <tr class="memitem:a75f62c52cf2fb863ee22c80d508f2796">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a75f62c52cf2fb863ee22c80d508f2796">CapacityMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::edge_capacity_t &gt;::type</td>
+</tr> <tr class="separator:a75f62c52cf2fb863ee22c80d508f2796"></tr> <tr class="memitem:a976f48b91b9d342ee2c7ead6f33d81aa">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a976f48b91b9d342ee2c7ead6f33d81aa">ReverseEdgeMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::edge_reverse_t &gt;::type</td>
+</tr> <tr class="separator:a976f48b91b9d342ee2c7ead6f33d81aa"></tr> <tr class="memitem:ab9700966b14d27c60a49da043be9b60f">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> = Traits::vertex_descriptor</td>
+</tr> <tr class="separator:ab9700966b14d27c60a49da043be9b60f"></tr> <tr class="memitem:ade44e94e686bf615a6ce3b69386b9786">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ade44e94e686bf615a6ce3b69386b9786">EdgeDescriptor</a> = boost::graph_traits&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a> &gt;::edge_descriptor</td>
+</tr> <tr class="separator:ade44e94e686bf615a6ce3b69386b9786"></tr> <tr class="memitem:a615b27cf9548375c7bba0c3dbf9736f5">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a615b27cf9548375c7bba0c3dbf9736f5">OutEdgeIterator</a> = boost::graph_traits&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a> &gt;::out_edge_iterator</td>
+</tr> <tr class="separator:a615b27cf9548375c7bba0c3dbf9736f5"></tr> <tr class="memitem:ac98471982f0571255aa487b7a1b2eb91">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ac98471982f0571255aa487b7a1b2eb91">VertexIterator</a> = boost::graph_traits&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a> &gt;::vertex_iterator</td>
+</tr> <tr class="separator:ac98471982f0571255aa487b7a1b2eb91"></tr> <tr class="memitem:ae5782a12370a262979981c945ed85c01">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ae5782a12370a262979981c945ed85c01">ResidualCapacityMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::edge_residual_capacity_t &gt;::type</td>
+</tr> <tr class="separator:ae5782a12370a262979981c945ed85c01"></tr> <tr class="memitem:a2585b3f2bea21d9122d6f2d7377e9243">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a2585b3f2bea21d9122d6f2d7377e9243">IndexMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::vertex_index_t &gt;::type</td>
+</tr> <tr class="separator:a2585b3f2bea21d9122d6f2d7377e9243"></tr> <tr class="memitem:ae3cdf3aa667c962aee202c588dd85e3a">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ae3cdf3aa667c962aee202c588dd85e3a">InEdgeIterator</a> = boost::graph_traits&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a> &gt;::in_edge_iterator</td>
+</tr> <tr class="separator:ae3cdf3aa667c962aee202c588dd85e3a"></tr> <tr class="memitem:a9fb8c5c3309d5bbc53500ad73d9f2244">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a9fb8c5c3309d5bbc53500ad73d9f2244">mGraphPtr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a> &gt;</td>
+</tr> <tr class="separator:a9fb8c5c3309d5bbc53500ad73d9f2244"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;</td>
+</tr> <tr class="separator:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a4399c6b93663d4762fc3389c1b594eb8">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afe906230f3e673dc2ff10b9d579f4ccb">PointIndicesPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a3c574b78dfbe67c93d09acdbc8ecc499">PointIndices::Ptr</a>
+</td>
+</tr> <tr class="separator:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a6880da079270712d46b0bb348cf124bc">PointIndices::ConstPtr</a>
+</td>
+</tr> <tr class="separator:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-methods"></a> Public Member Functions</h2></td></tr> <tr class="memitem:a3358e32d052b3d259940c0894ef5ef56">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a3358e32d052b3d259940c0894ef5ef56">MinCutSegmentation</a> ()</td>
+</tr> <tr class="memdesc:a3358e32d052b3d259940c0894ef5ef56">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Constructor that sets default values for member variables. <a href="classpcl_1_1_min_cut_segmentation#a3358e32d052b3d259940c0894ef5ef56">More...</a><br>
+</td>
+</tr> <tr class="separator:a3358e32d052b3d259940c0894ef5ef56"></tr> <tr class="memitem:a5b8ead5be6f1e05705c6a4d812cdf35d">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a5b8ead5be6f1e05705c6a4d812cdf35d">~MinCutSegmentation</a> () override</td>
+</tr> <tr class="memdesc:a5b8ead5be6f1e05705c6a4d812cdf35d">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor that frees memory. <a href="classpcl_1_1_min_cut_segmentation#a5b8ead5be6f1e05705c6a4d812cdf35d">More...</a><br>
+</td>
+</tr> <tr class="separator:a5b8ead5be6f1e05705c6a4d812cdf35d"></tr> <tr class="memitem:a514261617ab81a0565573287eb295459">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a514261617ab81a0565573287eb295459">setInputCloud</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp;cloud) override</td>
+</tr> <tr class="memdesc:a514261617ab81a0565573287eb295459">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method simply sets the input point cloud. <a href="classpcl_1_1_min_cut_segmentation#a514261617ab81a0565573287eb295459">More...</a><br>
+</td>
+</tr> <tr class="separator:a514261617ab81a0565573287eb295459"></tr> <tr class="memitem:a2cf966684ce9f2e7a1c5d96d96786020">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a2cf966684ce9f2e7a1c5d96d96786020">getSigma</a> () const</td>
+</tr> <tr class="memdesc:a2cf966684ce9f2e7a1c5d96d96786020">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns normalization value for binary potentials. <a href="classpcl_1_1_min_cut_segmentation#a2cf966684ce9f2e7a1c5d96d96786020">More...</a><br>
+</td>
+</tr> <tr class="separator:a2cf966684ce9f2e7a1c5d96d96786020"></tr> <tr class="memitem:a26efd4b2a858c81e4512ccf690085ff1">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a26efd4b2a858c81e4512ccf690085ff1">setSigma</a> (double sigma)</td>
+</tr> <tr class="memdesc:a26efd4b2a858c81e4512ccf690085ff1">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Allows to set the normalization value for the binary potentials as described in the article. <a href="classpcl_1_1_min_cut_segmentation#a26efd4b2a858c81e4512ccf690085ff1">More...</a><br>
+</td>
+</tr> <tr class="separator:a26efd4b2a858c81e4512ccf690085ff1"></tr> <tr class="memitem:aac2fb3661dfd5f39fc5a42b9b104d390">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#aac2fb3661dfd5f39fc5a42b9b104d390">getRadius</a> () const</td>
+</tr> <tr class="memdesc:aac2fb3661dfd5f39fc5a42b9b104d390">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns radius to the background. <a href="classpcl_1_1_min_cut_segmentation#aac2fb3661dfd5f39fc5a42b9b104d390">More...</a><br>
+</td>
+</tr> <tr class="separator:aac2fb3661dfd5f39fc5a42b9b104d390"></tr> <tr class="memitem:a34aa0dbb62461ceab61a740049ad4a08">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a34aa0dbb62461ceab61a740049ad4a08">setRadius</a> (double radius)</td>
+</tr> <tr class="memdesc:a34aa0dbb62461ceab61a740049ad4a08">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Allows to set the radius to the background. <a href="classpcl_1_1_min_cut_segmentation#a34aa0dbb62461ceab61a740049ad4a08">More...</a><br>
+</td>
+</tr> <tr class="separator:a34aa0dbb62461ceab61a740049ad4a08"></tr> <tr class="memitem:a4383ecee7232537f04b1479da2943bb1">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a4383ecee7232537f04b1479da2943bb1">getSourceWeight</a> () const</td>
+</tr> <tr class="memdesc:a4383ecee7232537f04b1479da2943bb1">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns weight that every edge from the source point has. <a href="classpcl_1_1_min_cut_segmentation#a4383ecee7232537f04b1479da2943bb1">More...</a><br>
+</td>
+</tr> <tr class="separator:a4383ecee7232537f04b1479da2943bb1"></tr> <tr class="memitem:a5b32dd2aedd67923ae756c2e61428bb6">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a5b32dd2aedd67923ae756c2e61428bb6">setSourceWeight</a> (double weight)</td>
+</tr> <tr class="memdesc:a5b32dd2aedd67923ae756c2e61428bb6">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Allows to set weight for source edges. <a href="classpcl_1_1_min_cut_segmentation#a5b32dd2aedd67923ae756c2e61428bb6">More...</a><br>
+</td>
+</tr> <tr class="separator:a5b32dd2aedd67923ae756c2e61428bb6"></tr> <tr class="memitem:a00e419aac4bbf35fe1d4cfa97610711a">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a00e419aac4bbf35fe1d4cfa97610711a">getSearchMethod</a> () const</td>
+</tr> <tr class="memdesc:a00e419aac4bbf35fe1d4cfa97610711a">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns search method that is used for finding KNN. <a href="classpcl_1_1_min_cut_segmentation#a00e419aac4bbf35fe1d4cfa97610711a">More...</a><br>
+</td>
+</tr> <tr class="separator:a00e419aac4bbf35fe1d4cfa97610711a"></tr> <tr class="memitem:aa504b20035dfe255e74dab541804743a">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#aa504b20035dfe255e74dab541804743a">setSearchMethod</a> (const <a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> &amp;tree)</td>
+</tr> <tr class="memdesc:aa504b20035dfe255e74dab541804743a">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Allows to set search method for finding KNN. <a href="classpcl_1_1_min_cut_segmentation#aa504b20035dfe255e74dab541804743a">More...</a><br>
+</td>
+</tr> <tr class="separator:aa504b20035dfe255e74dab541804743a"></tr> <tr class="memitem:a70bd3fe4a5e258a1af47833b73e43846">
+<td class="memItemLeft" align="right" valign="top">unsigned int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a70bd3fe4a5e258a1af47833b73e43846">getNumberOfNeighbours</a> () const</td>
+</tr> <tr class="memdesc:a70bd3fe4a5e258a1af47833b73e43846">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the number of neighbours to find. <a href="classpcl_1_1_min_cut_segmentation#a70bd3fe4a5e258a1af47833b73e43846">More...</a><br>
+</td>
+</tr> <tr class="separator:a70bd3fe4a5e258a1af47833b73e43846"></tr> <tr class="memitem:abd719f299ce28585bc9438205fe0ba5a">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#abd719f299ce28585bc9438205fe0ba5a">setNumberOfNeighbours</a> (unsigned int neighbour_number)</td>
+</tr> <tr class="memdesc:abd719f299ce28585bc9438205fe0ba5a">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Allows to set the number of neighbours to find. <a href="classpcl_1_1_min_cut_segmentation#abd719f299ce28585bc9438205fe0ba5a">More...</a><br>
+</td>
+</tr> <tr class="separator:abd719f299ce28585bc9438205fe0ba5a"></tr> <tr class="memitem:ad2677ea7d911964bc6269cc6663cb095">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ad2677ea7d911964bc6269cc6663cb095">getForegroundPoints</a> () const</td>
+</tr> <tr class="memdesc:ad2677ea7d911964bc6269cc6663cb095">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the points that must belong to foreground. <a href="classpcl_1_1_min_cut_segmentation#ad2677ea7d911964bc6269cc6663cb095">More...</a><br>
+</td>
+</tr> <tr class="separator:ad2677ea7d911964bc6269cc6663cb095"></tr> <tr class="memitem:ae8913ee5fe048ab82c24bc9492a12be9">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ae8913ee5fe048ab82c24bc9492a12be9">setForegroundPoints</a> (typename <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::Ptr foreground_points)</td>
+</tr> <tr class="memdesc:ae8913ee5fe048ab82c24bc9492a12be9">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Allows to specify points which are known to be the points of the object. <a href="classpcl_1_1_min_cut_segmentation#ae8913ee5fe048ab82c24bc9492a12be9">More...</a><br>
+</td>
+</tr> <tr class="separator:ae8913ee5fe048ab82c24bc9492a12be9"></tr> <tr class="memitem:ab31a4bfba3fc92a0d073fa15c9eef640">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab31a4bfba3fc92a0d073fa15c9eef640">getBackgroundPoints</a> () const</td>
+</tr> <tr class="memdesc:ab31a4bfba3fc92a0d073fa15c9eef640">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the points that must belong to background. <a href="classpcl_1_1_min_cut_segmentation#ab31a4bfba3fc92a0d073fa15c9eef640">More...</a><br>
+</td>
+</tr> <tr class="separator:ab31a4bfba3fc92a0d073fa15c9eef640"></tr> <tr class="memitem:a5eb2142a48bbe017b758efcdb24f9e49">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a5eb2142a48bbe017b758efcdb24f9e49">setBackgroundPoints</a> (typename <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::Ptr background_points)</td>
+</tr> <tr class="memdesc:a5eb2142a48bbe017b758efcdb24f9e49">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Allows to specify points which are known to be the points of the background. <a href="classpcl_1_1_min_cut_segmentation#a5eb2142a48bbe017b758efcdb24f9e49">More...</a><br>
+</td>
+</tr> <tr class="separator:a5eb2142a48bbe017b758efcdb24f9e49"></tr> <tr class="memitem:a35e9b08800c71f287e78864356be288b">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a35e9b08800c71f287e78864356be288b">extract</a> (std::vector&lt; <a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a> &gt; &amp;clusters)</td>
+</tr> <tr class="memdesc:a35e9b08800c71f287e78864356be288b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method launches the segmentation algorithm and returns the clusters that were obtained during the segmentation. <a href="classpcl_1_1_min_cut_segmentation#a35e9b08800c71f287e78864356be288b">More...</a><br>
+</td>
+</tr> <tr class="separator:a35e9b08800c71f287e78864356be288b"></tr> <tr class="memitem:a7618043c7d9bbdb0eb603359f9fb9d68">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a7618043c7d9bbdb0eb603359f9fb9d68">getMaxFlow</a> () const</td>
+</tr> <tr class="memdesc:a7618043c7d9bbdb0eb603359f9fb9d68">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns that flow value that was calculated during the segmentation. <a href="classpcl_1_1_min_cut_segmentation#a7618043c7d9bbdb0eb603359f9fb9d68">More...</a><br>
+</td>
+</tr> <tr class="separator:a7618043c7d9bbdb0eb603359f9fb9d68"></tr> <tr class="memitem:a48af14d98401cf71a291ba6919a4a0b9">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a9fb8c5c3309d5bbc53500ad73d9f2244">mGraphPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a48af14d98401cf71a291ba6919a4a0b9">getGraph</a> () const</td>
+</tr> <tr class="memdesc:a48af14d98401cf71a291ba6919a4a0b9">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the graph that was build for finding the minimum cut. <a href="classpcl_1_1_min_cut_segmentation#a48af14d98401cf71a291ba6919a4a0b9">More...</a><br>
+</td>
+</tr> <tr class="separator:a48af14d98401cf71a291ba6919a4a0b9"></tr> <tr class="memitem:aeb4784e5b04612cf2a802017ab1b7908">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">pcl::PointXYZRGB</a> &gt;::Ptr </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#aeb4784e5b04612cf2a802017ab1b7908">getColoredCloud</a> ()</td>
+</tr> <tr class="memdesc:aeb4784e5b04612cf2a802017ab1b7908">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the colored cloud. <a href="classpcl_1_1_min_cut_segmentation#aeb4784e5b04612cf2a802017ab1b7908">More...</a><br>
+</td>
+</tr> <tr class="separator:aeb4784e5b04612cf2a802017ab1b7908"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">PCLBase</a> ()</td>
+</tr> <tr class="memdesc:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">More...</a><br>
+</td>
+</tr> <tr class="separator:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">PCLBase</a> (const <a class="el" href="classpcl_1_1_p_c_l_base">PCLBase</a> &amp;base)</td>
+</tr> <tr class="memdesc:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Copy constructor. <a href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">More...</a><br>
+</td>
+</tr> <tr class="separator:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">~PCLBase</a> ()=default</td>
+</tr> <tr class="memdesc:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">More...</a><br>
+</td>
+</tr> <tr class="separator:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">getInputCloud</a> () const</td>
+</tr> <tr class="memdesc:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">More...</a><br>
+</td>
+</tr> <tr class="separator:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">More...</a><br>
+</td>
+</tr> <tr class="separator:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">setIndices</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">More...</a><br>
+</td>
+</tr> <tr class="separator:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">setIndices</a> (std::size_t row_start, std::size_t col_start, std::size_t nb_rows, std::size_t nb_cols)</td>
+</tr> <tr class="memdesc:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the indices for the points laying within an interest region of the point cloud. <a href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">More...</a><br>
+</td>
+</tr> <tr class="separator:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">getIndices</a> ()</td>
+</tr> <tr class="memdesc:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">More...</a><br>
+</td>
+</tr> <tr class="separator:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">getIndices</a> () const</td>
+</tr> <tr class="memdesc:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">More...</a><br>
+</td>
+</tr> <tr class="separator:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">const <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">operator[]</a> (std::size_t pos) const</td>
+</tr> <tr class="memdesc:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Override <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a> operator[] to shorten code. <a href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">More...</a><br>
+</td>
+</tr> <tr class="separator:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-methods"></a> Protected Member Functions</h2></td></tr> <tr class="memitem:a71f7ad8214722aaa8545477203f67707">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a71f7ad8214722aaa8545477203f67707">buildGraph</a> ()</td>
+</tr> <tr class="memdesc:a71f7ad8214722aaa8545477203f67707">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method simply builds the graph that will be used during the segmentation. <a href="classpcl_1_1_min_cut_segmentation#a71f7ad8214722aaa8545477203f67707">More...</a><br>
+</td>
+</tr> <tr class="separator:a71f7ad8214722aaa8545477203f67707"></tr> <tr class="memitem:a1f781e16f6cd6a06616f9a670c82743f">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a1f781e16f6cd6a06616f9a670c82743f">calculateUnaryPotential</a> (int point, double &amp;source_weight, double &amp;sink_weight) const</td>
+</tr> <tr class="memdesc:a1f781e16f6cd6a06616f9a670c82743f">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns unary potential(data cost) for the given point index. <a href="classpcl_1_1_min_cut_segmentation#a1f781e16f6cd6a06616f9a670c82743f">More...</a><br>
+</td>
+</tr> <tr class="separator:a1f781e16f6cd6a06616f9a670c82743f"></tr> <tr class="memitem:ab396eeeedc207e63fcaf949f279e2392">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab396eeeedc207e63fcaf949f279e2392">addEdge</a> (int source, int target, double weight)</td>
+</tr> <tr class="memdesc:ab396eeeedc207e63fcaf949f279e2392">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method simply adds the edge from the source point to the target point with a given weight. <a href="classpcl_1_1_min_cut_segmentation#ab396eeeedc207e63fcaf949f279e2392">More...</a><br>
+</td>
+</tr> <tr class="separator:ab396eeeedc207e63fcaf949f279e2392"></tr> <tr class="memitem:aaf267587c36efe7de6b9bfdf377bce81">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#aaf267587c36efe7de6b9bfdf377bce81">calculateBinaryPotential</a> (int source, int target) const</td>
+</tr> <tr class="memdesc:aaf267587c36efe7de6b9bfdf377bce81">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the binary potential(smooth cost) for the given indices of points. <a href="classpcl_1_1_min_cut_segmentation#aaf267587c36efe7de6b9bfdf377bce81">More...</a><br>
+</td>
+</tr> <tr class="separator:aaf267587c36efe7de6b9bfdf377bce81"></tr> <tr class="memitem:a901198878dc0418e5e46317a177a71a8">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a901198878dc0418e5e46317a177a71a8">recalculateUnaryPotentials</a> ()</td>
+</tr> <tr class="memdesc:a901198878dc0418e5e46317a177a71a8">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method recalculates unary potentials(data cost) if some changes were made, instead of creating new graph. <a href="classpcl_1_1_min_cut_segmentation#a901198878dc0418e5e46317a177a71a8">More...</a><br>
+</td>
+</tr> <tr class="separator:a901198878dc0418e5e46317a177a71a8"></tr> <tr class="memitem:ab26ac12e2ef703f09d725889bd0b91d4">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab26ac12e2ef703f09d725889bd0b91d4">recalculateBinaryPotentials</a> ()</td>
+</tr> <tr class="memdesc:ab26ac12e2ef703f09d725889bd0b91d4">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method recalculates binary potentials(smooth cost) if some changes were made, instead of creating new graph. <a href="classpcl_1_1_min_cut_segmentation#ab26ac12e2ef703f09d725889bd0b91d4">More...</a><br>
+</td>
+</tr> <tr class="separator:ab26ac12e2ef703f09d725889bd0b91d4"></tr> <tr class="memitem:af43dc5077b719fdbcc86efbe626e3e70">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#af43dc5077b719fdbcc86efbe626e3e70">assembleLabels</a> (<a class="el" href="classpcl_1_1_min_cut_segmentation#ae5782a12370a262979981c945ed85c01">ResidualCapacityMap</a> &amp;residual_capacity)</td>
+</tr> <tr class="memdesc:af43dc5077b719fdbcc86efbe626e3e70">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method analyzes the residual network and assigns a label to every point in the cloud. <a href="classpcl_1_1_min_cut_segmentation#af43dc5077b719fdbcc86efbe626e3e70">More...</a><br>
+</td>
+</tr> <tr class="separator:af43dc5077b719fdbcc86efbe626e3e70"></tr> <tr class="inherit_header pro_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">initCompute</a> ()</td>
+</tr> <tr class="memdesc:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called before starting the actual computation. <a href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">More...</a><br>
+</td>
+</tr> <tr class="separator:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">deinitCompute</a> ()</td>
+</tr> <tr class="memdesc:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called after finishing the actual computation. <a href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">More...</a><br>
+</td>
+</tr> <tr class="separator:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-attribs"></a> Protected Attributes</h2></td></tr> <tr class="memitem:a04e46f7ecd322ebdfa22324d483d963f">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a04e46f7ecd322ebdfa22324d483d963f">inverse_sigma_</a> {16.0}</td>
+</tr> <tr class="memdesc:a04e46f7ecd322ebdfa22324d483d963f">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the sigma coefficient. <a href="classpcl_1_1_min_cut_segmentation#a04e46f7ecd322ebdfa22324d483d963f">More...</a><br>
+</td>
+</tr> <tr class="separator:a04e46f7ecd322ebdfa22324d483d963f"></tr> <tr class="memitem:ad3439f5a0b4f842a21907860de594a57">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ad3439f5a0b4f842a21907860de594a57">binary_potentials_are_valid_</a> {false}</td>
+</tr> <tr class="memdesc:ad3439f5a0b4f842a21907860de594a57">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Signalizes if the binary potentials are valid. <a href="classpcl_1_1_min_cut_segmentation#ad3439f5a0b4f842a21907860de594a57">More...</a><br>
+</td>
+</tr> <tr class="separator:ad3439f5a0b4f842a21907860de594a57"></tr> <tr class="memitem:a3ac465316ff95b03c37bee47cca9d69b">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a3ac465316ff95b03c37bee47cca9d69b">epsilon_</a> {0.0001}</td>
+</tr> <tr class="memdesc:a3ac465316ff95b03c37bee47cca9d69b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Used for comparison of the floating point numbers. <a href="classpcl_1_1_min_cut_segmentation#a3ac465316ff95b03c37bee47cca9d69b">More...</a><br>
+</td>
+</tr> <tr class="separator:a3ac465316ff95b03c37bee47cca9d69b"></tr> <tr class="memitem:af7a1105703e87b4b5d2e849a7c2f0a1c">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#af7a1105703e87b4b5d2e849a7c2f0a1c">radius_</a> {16.0}</td>
+</tr> <tr class="memdesc:af7a1105703e87b4b5d2e849a7c2f0a1c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the distance to the background. <a href="classpcl_1_1_min_cut_segmentation#af7a1105703e87b4b5d2e849a7c2f0a1c">More...</a><br>
+</td>
+</tr> <tr class="separator:af7a1105703e87b4b5d2e849a7c2f0a1c"></tr> <tr class="memitem:a647a6895b703b08f8ff4ebc38ee06e48">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a647a6895b703b08f8ff4ebc38ee06e48">unary_potentials_are_valid_</a> {false}</td>
+</tr> <tr class="memdesc:a647a6895b703b08f8ff4ebc38ee06e48">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Signalizes if the unary potentials are valid. <a href="classpcl_1_1_min_cut_segmentation#a647a6895b703b08f8ff4ebc38ee06e48">More...</a><br>
+</td>
+</tr> <tr class="separator:a647a6895b703b08f8ff4ebc38ee06e48"></tr> <tr class="memitem:a1d636907e2069fb39755d032a490fc76">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a1d636907e2069fb39755d032a490fc76">source_weight_</a> {0.8}</td>
+</tr> <tr class="memdesc:a1d636907e2069fb39755d032a490fc76">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the weight for every edge that comes from source point. <a href="classpcl_1_1_min_cut_segmentation#a1d636907e2069fb39755d032a490fc76">More...</a><br>
+</td>
+</tr> <tr class="separator:a1d636907e2069fb39755d032a490fc76"></tr> <tr class="memitem:a6d8935d88f9846f502900c5fe6ebaa67">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a6d8935d88f9846f502900c5fe6ebaa67">search_</a> {nullptr}</td>
+</tr> <tr class="memdesc:a6d8935d88f9846f502900c5fe6ebaa67">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the search method that will be used for finding K nearest neighbors. <a href="classpcl_1_1_min_cut_segmentation#a6d8935d88f9846f502900c5fe6ebaa67">More...</a><br>
+</td>
+</tr> <tr class="separator:a6d8935d88f9846f502900c5fe6ebaa67"></tr> <tr class="memitem:a0d82b2ccc52f3e0a9e44c43c4531c560">
+<td class="memItemLeft" align="right" valign="top">unsigned int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a0d82b2ccc52f3e0a9e44c43c4531c560">number_of_neighbours_</a> {14}</td>
+</tr> <tr class="memdesc:a0d82b2ccc52f3e0a9e44c43c4531c560">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the number of neighbors to find. <a href="classpcl_1_1_min_cut_segmentation#a0d82b2ccc52f3e0a9e44c43c4531c560">More...</a><br>
+</td>
+</tr> <tr class="separator:a0d82b2ccc52f3e0a9e44c43c4531c560"></tr> <tr class="memitem:a88802f7cbb134bf7855d1bd752f1f5c8">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a88802f7cbb134bf7855d1bd752f1f5c8">graph_is_valid_</a> {false}</td>
+</tr> <tr class="memdesc:a88802f7cbb134bf7855d1bd752f1f5c8">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Signalizes if the graph is valid. <a href="classpcl_1_1_min_cut_segmentation#a88802f7cbb134bf7855d1bd752f1f5c8">More...</a><br>
+</td>
+</tr> <tr class="separator:a88802f7cbb134bf7855d1bd752f1f5c8"></tr> <tr class="memitem:a5287935fbec11266ac94c8aa6b95bfad">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a5287935fbec11266ac94c8aa6b95bfad">foreground_points_</a> {}</td>
+</tr> <tr class="memdesc:a5287935fbec11266ac94c8aa6b95bfad">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the points that are known to be in the foreground. <a href="classpcl_1_1_min_cut_segmentation#a5287935fbec11266ac94c8aa6b95bfad">More...</a><br>
+</td>
+</tr> <tr class="separator:a5287935fbec11266ac94c8aa6b95bfad"></tr> <tr class="memitem:ac987734d5a94c3530b843d3614ad514b">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ac987734d5a94c3530b843d3614ad514b">background_points_</a> {}</td>
+</tr> <tr class="memdesc:ac987734d5a94c3530b843d3614ad514b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the points that are known to be in the background. <a href="classpcl_1_1_min_cut_segmentation#ac987734d5a94c3530b843d3614ad514b">More...</a><br>
+</td>
+</tr> <tr class="separator:ac987734d5a94c3530b843d3614ad514b"></tr> <tr class="memitem:a298d8827832655f2dfe6feb675126df3">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a> &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a298d8827832655f2dfe6feb675126df3">clusters_</a> {}</td>
+</tr> <tr class="memdesc:a298d8827832655f2dfe6feb675126df3">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">After the segmentation it will contain the segments. <a href="classpcl_1_1_min_cut_segmentation#a298d8827832655f2dfe6feb675126df3">More...</a><br>
+</td>
+</tr> <tr class="separator:a298d8827832655f2dfe6feb675126df3"></tr> <tr class="memitem:a2c62ceb19b60c39c01fb9ba34ab32cc9">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a9fb8c5c3309d5bbc53500ad73d9f2244">mGraphPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a2c62ceb19b60c39c01fb9ba34ab32cc9">graph_</a> {nullptr}</td>
+</tr> <tr class="memdesc:a2c62ceb19b60c39c01fb9ba34ab32cc9">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the graph for finding the maximum flow. <a href="classpcl_1_1_min_cut_segmentation#a2c62ceb19b60c39c01fb9ba34ab32cc9">More...</a><br>
+</td>
+</tr> <tr class="separator:a2c62ceb19b60c39c01fb9ba34ab32cc9"></tr> <tr class="memitem:a73b4e69d75bbb8ed7c3fb7253e25171e">
+<td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#a75f62c52cf2fb863ee22c80d508f2796">CapacityMap</a> &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a73b4e69d75bbb8ed7c3fb7253e25171e">capacity_</a> {nullptr}</td>
+</tr> <tr class="memdesc:a73b4e69d75bbb8ed7c3fb7253e25171e">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the capacity of every edge in the graph. <a href="classpcl_1_1_min_cut_segmentation#a73b4e69d75bbb8ed7c3fb7253e25171e">More...</a><br>
+</td>
+</tr> <tr class="separator:a73b4e69d75bbb8ed7c3fb7253e25171e"></tr> <tr class="memitem:a01573a6beb9a6edcd91efd50e9205103">
+<td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#a976f48b91b9d342ee2c7ead6f33d81aa">ReverseEdgeMap</a> &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a01573a6beb9a6edcd91efd50e9205103">reverse_edges_</a> {nullptr}</td>
+</tr> <tr class="memdesc:a01573a6beb9a6edcd91efd50e9205103">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores reverse edges for every edge in the graph. <a href="classpcl_1_1_min_cut_segmentation#a01573a6beb9a6edcd91efd50e9205103">More...</a><br>
+</td>
+</tr> <tr class="separator:a01573a6beb9a6edcd91efd50e9205103"></tr> <tr class="memitem:abdfddf7d3ecbd4fb522797eb0ab7cd42">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#abdfddf7d3ecbd4fb522797eb0ab7cd42">vertices_</a> {}</td>
+</tr> <tr class="memdesc:abdfddf7d3ecbd4fb522797eb0ab7cd42">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the vertices of the graph. <a href="classpcl_1_1_min_cut_segmentation#abdfddf7d3ecbd4fb522797eb0ab7cd42">More...</a><br>
+</td>
+</tr> <tr class="separator:abdfddf7d3ecbd4fb522797eb0ab7cd42"></tr> <tr class="memitem:ac9a963e3527427de8a2ef04999b73fe6">
+<td class="memItemLeft" align="right" valign="top">std::vector&lt; std::set&lt; int &gt; &gt; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ac9a963e3527427de8a2ef04999b73fe6">edge_marker_</a> {}</td>
+</tr> <tr class="memdesc:ac9a963e3527427de8a2ef04999b73fe6">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the information about the edges that were added to the graph. <a href="classpcl_1_1_min_cut_segmentation#ac9a963e3527427de8a2ef04999b73fe6">More...</a><br>
+</td>
+</tr> <tr class="separator:ac9a963e3527427de8a2ef04999b73fe6"></tr> <tr class="memitem:a774e1b55a05d339a82c37f0dfd2b8b12">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a774e1b55a05d339a82c37f0dfd2b8b12">source_</a> {}</td>
+</tr> <tr class="memdesc:a774e1b55a05d339a82c37f0dfd2b8b12">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the vertex that serves as source. <a href="classpcl_1_1_min_cut_segmentation#a774e1b55a05d339a82c37f0dfd2b8b12">More...</a><br>
+</td>
+</tr> <tr class="separator:a774e1b55a05d339a82c37f0dfd2b8b12"></tr> <tr class="memitem:a63a7947942d068f57850fea4215c1819">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a63a7947942d068f57850fea4215c1819">sink_</a> {}</td>
+</tr> <tr class="memdesc:a63a7947942d068f57850fea4215c1819">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the vertex that serves as sink. <a href="classpcl_1_1_min_cut_segmentation#a63a7947942d068f57850fea4215c1819">More...</a><br>
+</td>
+</tr> <tr class="separator:a63a7947942d068f57850fea4215c1819"></tr> <tr class="memitem:a02c2ee83963e0bbeb5673f9c371fa0f7">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a02c2ee83963e0bbeb5673f9c371fa0f7">max_flow_</a> {0.0}</td>
+</tr> <tr class="memdesc:a02c2ee83963e0bbeb5673f9c371fa0f7">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Stores the maximum flow value that was calculated during the segmentation. <a href="classpcl_1_1_min_cut_segmentation#a02c2ee83963e0bbeb5673f9c371fa0f7">More...</a><br>
+</td>
+</tr> <tr class="separator:a02c2ee83963e0bbeb5673f9c371fa0f7"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointT &gt;</a>
+</td></tr> <tr class="memitem:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">input_</a></td>
+</tr> <tr class="memdesc:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">More...</a><br>
+</td>
+</tr> <tr class="separator:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">indices_</a></td>
+</tr> <tr class="memdesc:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the vector of point indices to use. <a href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">More...</a><br>
+</td>
+</tr> <tr class="separator:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">use_indices_</a></td>
+</tr> <tr class="memdesc:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set to true if point indices are used. <a href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">More...</a><br>
+</td>
+</tr> <tr class="separator:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">fake_indices_</a></td>
+</tr> <tr class="memdesc:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If no set of indices are given, we construct a set of fake indices that mimic the input <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a>. <a href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">More...</a><br>
+</td>
+</tr> <tr class="separator:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> </table> <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2> <div class="textblock">
+<h3>template&lt;typename PointT&gt;<br> class pcl::MinCutSegmentation&lt; PointT &gt;</h3> <p>This class implements the segmentation algorithm based on minimal cut of the graph. </p> <p>The description can be found in the article: "Min-Cut Based Segmentation of Point Clouds" </p>
+<dl class="section author">
+<dt>Author</dt>
+<dd>: Aleksey Golovinskiy and Thomas Funkhouser. </dd>
+</dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00060">60</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div>
+<h2 class="groupheader">Member Typedef Documentation</h2> <a id="a75f62c52cf2fb863ee22c80d508f2796"></a> <h2 class="memtitle">CapacityMap</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#a75f62c52cf2fb863ee22c80d508f2796">CapacityMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::edge_capacity_t &gt;::type</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00088">88</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ade44e94e686bf615a6ce3b69386b9786"></a> <h2 class="memtitle">EdgeDescriptor</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ade44e94e686bf615a6ce3b69386b9786">EdgeDescriptor</a> = boost::graph_traits&lt;<a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>&gt;::edge_descriptor</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00094">94</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a2585b3f2bea21d9122d6f2d7377e9243"></a> <h2 class="memtitle">IndexMap</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#a2585b3f2bea21d9122d6f2d7377e9243">IndexMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::vertex_index_t &gt;::type</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00102">102</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ae3cdf3aa667c962aee202c588dd85e3a"></a> <h2 class="memtitle">InEdgeIterator</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ae3cdf3aa667c962aee202c588dd85e3a">InEdgeIterator</a> = boost::graph_traits&lt;<a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>&gt;::in_edge_iterator</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00104">104</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a92e34825e956e983b45e7356303e47ce"></a> <h2 class="memtitle">KdTree</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#a92e34825e956e983b45e7356303e47ce">KdTree</a> = <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html">pcl::search::Search</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00064">64</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ad1f14c39a1c99ad8b9be3e0365a47790"></a> <h2 class="memtitle">KdTreePtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> = typename <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html#ab4688e4899ce5aa6937dba334dc75763">KdTree::Ptr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00065">65</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ad55ac69e3d8625a14133c9267d6e1dc2"></a> <h2 class="memtitle">mGraph</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a> = boost::adjacency_list&lt; boost::vecS, boost::vecS, boost::directedS, boost::property&lt; boost::vertex_name_t, std::string, boost::property&lt; boost::vertex_index_t, long, boost::property&lt; boost::vertex_color_t, boost::default_color_type, boost::property&lt; boost::vertex_distance_t, long, boost::property&lt; boost::vertex_predecessor_t, Traits::edge_descriptor &gt; &gt; &gt; &gt; &gt;, boost::property&lt; boost::edge_capacity_t, double, boost::property&lt; boost::edge_residual_capacity_t, double, boost::property&lt; boost::edge_reverse_t, Traits::edge_descriptor &gt; &gt; &gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00078">78</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a9fb8c5c3309d5bbc53500ad73d9f2244"></a> <h2 class="memtitle">mGraphPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#a9fb8c5c3309d5bbc53500ad73d9f2244">mGraphPtr</a> = shared_ptr&lt;<a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>&gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00106">106</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a615b27cf9548375c7bba0c3dbf9736f5"></a> <h2 class="memtitle">OutEdgeIterator</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#a615b27cf9548375c7bba0c3dbf9736f5">OutEdgeIterator</a> = boost::graph_traits&lt;<a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>&gt;::out_edge_iterator</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00096">96</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a2e6a99735e4d7e7ebff5af85d458bd10"></a> <h2 class="memtitle">PointCloud</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00066">66</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ac9476b45e44c2474a558a3950e0e10ec"></a> <h2 class="memtitle">PointCloudConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00067">67</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ae5782a12370a262979981c945ed85c01"></a> <h2 class="memtitle">ResidualCapacityMap</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ae5782a12370a262979981c945ed85c01">ResidualCapacityMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::edge_residual_capacity_t &gt;::type</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00100">100</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a976f48b91b9d342ee2c7ead6f33d81aa"></a> <h2 class="memtitle">ReverseEdgeMap</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#a976f48b91b9d342ee2c7ead6f33d81aa">ReverseEdgeMap</a> = boost::property_map&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>, boost::edge_reverse_t&gt;::type</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00090">90</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="aedb4e8e6e92609fc947d71c2ebc7aa29"></a> <h2 class="memtitle">Traits</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#aedb4e8e6e92609fc947d71c2ebc7aa29">Traits</a> = boost::adjacency_list_traits&lt; boost::vecS, boost::vecS, boost::directedS &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00076">76</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ab9700966b14d27c60a49da043be9b60f"></a> <h2 class="memtitle">VertexDescriptor</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> = Traits::vertex_descriptor</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00092">92</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ac98471982f0571255aa487b7a1b2eb91"></a> <h2 class="memtitle">VertexIterator</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ac98471982f0571255aa487b7a1b2eb91">VertexIterator</a> = boost::graph_traits&lt;<a class="el" href="classpcl_1_1_min_cut_segmentation#ad55ac69e3d8625a14133c9267d6e1dc2">mGraph</a>&gt;::vertex_iterator</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00098">98</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2> <a id="a3358e32d052b3d259940c0894ef5ef56"></a> <h2 class="memtitle">MinCutSegmentation()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation">MinCutSegmentation</a> </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">default</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Constructor that sets default values for member variables. </p> </div> </div> <a id="a5b8ead5be6f1e05705c6a4d812cdf35d"></a> <h2 class="memtitle">~MinCutSegmentation()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::~<a class="el" href="classpcl_1_1_min_cut_segmentation">MinCutSegmentation</a>
+</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Destructor that frees memory. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00054">54</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <h2 class="groupheader">Member Function Documentation</h2> <a id="ab396eeeedc207e63fcaf949f279e2392"></a> <h2 class="memtitle">addEdge()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::addEdge </td> <td>(</td> <td class="paramtype">int </td> <td class="paramname">
+<em>source</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">int </td> <td class="paramname">
+<em>target</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">double </td> <td class="paramname">
+<em>weight</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>This method simply adds the edge from the source point to the target point with a given weight. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">source</td>
+<td>index of the source point of the edge </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">target</td>
+<td>index of the target point of the edge </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">weight</td>
+<td>weight that will be assigned to the (source, target) edge </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00404">404</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="af43dc5077b719fdbcc86efbe626e3e70"></a> <h2 class="memtitle">assembleLabels()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::assembleLabels </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ae5782a12370a262979981c945ed85c01">ResidualCapacityMap</a> &amp; </td> <td class="paramname"><em>residual_capacity</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>This method analyzes the residual network and assigns a label to every point in the cloud. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">residual_capacity</td>
+<td>residual network that was obtained during the segmentation </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00515">515</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/_point_indices_8h_source.html#l00020">pcl::PointIndices::indices</a>.</p> </div> </div> <a id="a71f7ad8214722aaa8545477203f67707"></a> <h2 class="memtitle">buildGraph()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::buildGraph</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>This method simply builds the graph that will be used during the segmentation. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00284">284</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="aaf267587c36efe7de6b9bfdf377bce81"></a> <h2 class="memtitle">calculateBinaryPotential()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::calculateBinaryPotential </td> <td>(</td> <td class="paramtype">int </td> <td class="paramname">
+<em>source</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">int </td> <td class="paramname">
+<em>target</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the binary potential(smooth cost) for the given indices of points. </p> <p>In other words it returns weight that must be assigned to the edge from source to target point. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">source</td>
+<td>index of the source point of the edge </td>
+</tr> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">target</td>
+<td>index of the target point of the edge </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00430">430</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2common_2geometry_8h_source.html#l00060">pcl::geometry::distance()</a>.</p> </div> </div> <a id="a1f781e16f6cd6a06616f9a670c82743f"></a> <h2 class="memtitle">calculateUnaryPotential()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::calculateUnaryPotential </td> <td>(</td> <td class="paramtype">int </td> <td class="paramname">
+<em>point</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">double &amp; </td> <td class="paramname">
+<em>source_weight</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">double &amp; </td> <td class="paramname">
+<em>sink_weight</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td> const</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns unary potential(data cost) for the given point index. </p> <p>In other words it calculates weights for (source, point) and (point, sink) edges. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">point</td>
+<td>index of the point for which weights will be calculated </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">source_weight</td>
+<td>calculated weight for the (source, point) edge </td>
+</tr> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">sink_weight</td>
+<td>calculated weight for the (point, sink) edge </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00348">348</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a35e9b08800c71f287e78864356be288b"></a> <h2 class="memtitle">extract()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::extract </td> <td>(</td> <td class="paramtype">std::vector&lt; <a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a> &gt; &amp; </td> <td class="paramname"><em>clusters</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>This method launches the segmentation algorithm and returns the clusters that were obtained during the segmentation. </p> <p>The indices of points that belong to the object will be stored in the cluster with index 1, other indices will be stored in the cluster with index 0. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[out]</td>
+<td class="paramname">clusters</td>
+<td>clusters that were obtained. Each cluster is an array of point indices. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00199">199</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="ab31a4bfba3fc92a0d073fa15c9eef640"></a> <h2 class="memtitle">getBackgroundPoints()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">std::vector&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getBackgroundPoints</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the points that must belong to background. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00181">181</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="aeb4784e5b04612cf2a802017ab1b7908"></a> <h2 class="memtitle">getColoredCloud()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">pcl::PointXYZRGB</a> &gt;::Ptr <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getColoredCloud</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the colored cloud. </p> <p>Points that belong to the object have the same color. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00542">542</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00400">pcl::PointCloud&lt; PointT &gt;::height</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00403">pcl::PointCloud&lt; PointT &gt;::is_dense</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00395">pcl::PointCloud&lt; PointT &gt;::points</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00398">pcl::PointCloud&lt; PointT &gt;::width</a>.</p> </div> </div> <a id="ad2677ea7d911964bc6269cc6663cb095"></a> <h2 class="memtitle">getForegroundPoints()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">std::vector&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt; &gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getForegroundPoints</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the points that must belong to foreground. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00163">163</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a48af14d98401cf71a291ba6919a4a0b9"></a> <h2 class="memtitle">getGraph()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#a9fb8c5c3309d5bbc53500ad73d9f2244">mGraphPtr</a> <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getGraph</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the graph that was build for finding the minimum cut. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00277">277</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a7618043c7d9bbdb0eb603359f9fb9d68"></a> <h2 class="memtitle">getMaxFlow()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getMaxFlow</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns that flow value that was calculated during the segmentation. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00270">270</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a70bd3fe4a5e258a1af47833b73e43846"></a> <h2 class="memtitle">getNumberOfNeighbours()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">unsigned int <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getNumberOfNeighbours</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the number of neighbours to find. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00143">143</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="aac2fb3661dfd5f39fc5a42b9b104d390"></a> <h2 class="memtitle">getRadius()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getRadius</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns radius to the background. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00093">93</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a00e419aac4bbf35fe1d4cfa97610711a"></a> <h2 class="memtitle">getSearchMethod()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::<a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getSearchMethod</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns search method that is used for finding KNN. </p> <p>The graph is build such way that it contains the edges that connect point and its KNN. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00129">129</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a2cf966684ce9f2e7a1c5d96d96786020"></a> <h2 class="memtitle">getSigma()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getSigma</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns normalization value for binary potentials. </p> <p>For more information see the article. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00075">75</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a4383ecee7232537f04b1479da2943bb1"></a> <h2 class="memtitle">getSourceWeight()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::getSourceWeight</td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns weight that every edge from the source point has. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00111">111</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="ab26ac12e2ef703f09d725889bd0b91d4"></a> <h2 class="memtitle">recalculateBinaryPotentials()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::recalculateBinaryPotentials</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>This method recalculates binary potentials(smooth cost) if some changes were made, instead of creating new graph. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00470">470</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a901198878dc0418e5e46317a177a71a8"></a> <h2 class="memtitle">recalculateUnaryPotentials()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::recalculateUnaryPotentials</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>This method recalculates unary potentials(data cost) if some changes were made, instead of creating new graph. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00445">445</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a5eb2142a48bbe017b758efcdb24f9e49"></a> <h2 class="memtitle">setBackgroundPoints()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setBackgroundPoints </td> <td>(</td> <td class="paramtype">typename <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::Ptr </td> <td class="paramname"><em>background_points</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Allows to specify points which are known to be the points of the background. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">background_points</td>
+<td>point cloud that contains background points. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00188">188</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00433">pcl::PointCloud&lt; PointT &gt;::cbegin()</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00434">pcl::PointCloud&lt; PointT &gt;::cend()</a>.</p> </div> </div> <a id="ae8913ee5fe048ab82c24bc9492a12be9"></a> <h2 class="memtitle">setForegroundPoints()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setForegroundPoints </td> <td>(</td> <td class="paramtype">typename <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::Ptr </td> <td class="paramname"><em>foreground_points</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Allows to specify points which are known to be the points of the object. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">foreground_points</td>
+<td>point cloud that contains foreground points. At least one point must be specified. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00170">170</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00433">pcl::PointCloud&lt; PointT &gt;::cbegin()</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00434">pcl::PointCloud&lt; PointT &gt;::cend()</a>.</p> </div> </div> <a id="a514261617ab81a0565573287eb295459"></a> <h2 class="memtitle">setInputCloud()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setInputCloud </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp; </td> <td class="paramname"><em>cloud</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>This method simply sets the input point cloud. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">cloud</td>
+<td>the const boost shared pointer to a <a class="el" href="classpcl_1_1_point_cloud" title="PointCloud represents the base class in PCL for storing collections of 3D points.">PointCloud</a> </td>
+</tr> </table> </dd> </dl> <p>Reimplemented from <a class="el" href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">pcl::PCLBase&lt; PointT &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00065">65</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="abd719f299ce28585bc9438205fe0ba5a"></a> <h2 class="memtitle">setNumberOfNeighbours()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setNumberOfNeighbours </td> <td>(</td> <td class="paramtype">unsigned int </td> <td class="paramname"><em>neighbour_number</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Allows to set the number of neighbours to find. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">neighbour_number</td>
+<td>new number of neighbours </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00150">150</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a34aa0dbb62461ceab61a740049ad4a08"></a> <h2 class="memtitle">setRadius()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setRadius </td> <td>(</td> <td class="paramtype">double </td> <td class="paramname"><em>radius</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Allows to set the radius to the background. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">radius</td>
+<td>new radius to the background </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00100">100</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="aa504b20035dfe255e74dab541804743a"></a> <h2 class="memtitle">setSearchMethod()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setSearchMethod </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> &amp; </td> <td class="paramname"><em>tree</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Allows to set search method for finding KNN. </p> <p>The graph is build such way that it contains the edges that connect point and its KNN. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">tree</td>
+<td>search method that will be used for finding KNN. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00136">136</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a26efd4b2a858c81e4512ccf690085ff1"></a> <h2 class="memtitle">setSigma()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setSigma </td> <td>(</td> <td class="paramtype">double </td> <td class="paramname"><em>sigma</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Allows to set the normalization value for the binary potentials as described in the article. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">sigma</td>
+<td>new normalization value </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00082">82</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <a id="a5b32dd2aedd67923ae756c2e61428bb6"></a> <h2 class="memtitle">setSourceWeight()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::setSourceWeight </td> <td>(</td> <td class="paramtype">double </td> <td class="paramname"><em>weight</em></td>
+<td>)</td> <td></td> </tr> </table> </div>
+<div class="memdoc"> <p>Allows to set weight for source edges. </p> <p>Every edge that comes from the source point will have that weight. </p>
+<dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">weight</td>
+<td>new weight </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html#l00118">118</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>.</p> </div> </div> <h2 class="groupheader">Member Data Documentation</h2> <a id="ac987734d5a94c3530b843d3614ad514b"></a> <h2 class="memtitle">background_points_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::vector&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt; &gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::background_points_ {}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the points that are known to be in the background. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00294">294</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ad3439f5a0b4f842a21907860de594a57"></a> <h2 class="memtitle">binary_potentials_are_valid_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::binary_potentials_are_valid_ {false}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Signalizes if the binary potentials are valid. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00267">267</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a73b4e69d75bbb8ed7c3fb7253e25171e"></a> <h2 class="memtitle">capacity_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::shared_ptr&lt;<a class="el" href="classpcl_1_1_min_cut_segmentation#a75f62c52cf2fb863ee22c80d508f2796">CapacityMap</a>&gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::capacity_ {nullptr}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the capacity of every edge in the graph. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00303">303</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a298d8827832655f2dfe6feb675126df3"></a> <h2 class="memtitle">clusters_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::vector&lt;<a class="el" href="structpcl_1_1_point_indices">pcl::PointIndices</a>&gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::clusters_ {}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>After the segmentation it will contain the segments. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00297">297</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="ac9a963e3527427de8a2ef04999b73fe6"></a> <h2 class="memtitle">edge_marker_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::vector&lt; std::set&lt;int&gt; &gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::edge_marker_ {}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the information about the edges that were added to the graph. </p> <p>It is used to avoid the duplicate edges. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00312">312</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a3ac465316ff95b03c37bee47cca9d69b"></a> <h2 class="memtitle">epsilon_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::epsilon_ {0.0001}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Used for comparison of the floating point numbers. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00270">270</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a5287935fbec11266ac94c8aa6b95bfad"></a> <h2 class="memtitle">foreground_points_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::vector&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>, Eigen::aligned_allocator&lt;<a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a>&gt; &gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::foreground_points_ {}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the points that are known to be in the foreground. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00291">291</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a2c62ceb19b60c39c01fb9ba34ab32cc9"></a> <h2 class="memtitle">graph_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#a9fb8c5c3309d5bbc53500ad73d9f2244">mGraphPtr</a> <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::graph_ {nullptr}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the graph for finding the maximum flow. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00300">300</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a88802f7cbb134bf7855d1bd752f1f5c8"></a> <h2 class="memtitle">graph_is_valid_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::graph_is_valid_ {false}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Signalizes if the graph is valid. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00288">288</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a04e46f7ecd322ebdfa22324d483d963f"></a> <h2 class="memtitle">inverse_sigma_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::inverse_sigma_ {16.0}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the sigma coefficient. </p> <p>It is used for finding smooth costs. More information can be found in the article. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00264">264</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a02c2ee83963e0bbeb5673f9c371fa0f7"></a> <h2 class="memtitle">max_flow_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::max_flow_ {0.0}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the maximum flow value that was calculated during the segmentation. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00321">321</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a0d82b2ccc52f3e0a9e44c43c4531c560"></a> <h2 class="memtitle">number_of_neighbours_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">unsigned int <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::number_of_neighbours_ {14}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the number of neighbors to find. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00285">285</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="af7a1105703e87b4b5d2e849a7c2f0a1c"></a> <h2 class="memtitle">radius_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::radius_ {16.0}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the distance to the background. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00273">273</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a01573a6beb9a6edcd91efd50e9205103"></a> <h2 class="memtitle">reverse_edges_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::shared_ptr&lt;<a class="el" href="classpcl_1_1_min_cut_segmentation#a976f48b91b9d342ee2c7ead6f33d81aa">ReverseEdgeMap</a>&gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::reverse_edges_ {nullptr}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores reverse edges for every edge in the graph. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00306">306</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a6d8935d88f9846f502900c5fe6ebaa67"></a> <h2 class="memtitle">search_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ad1f14c39a1c99ad8b9be3e0365a47790">KdTreePtr</a> <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::search_ {nullptr}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the search method that will be used for finding K nearest neighbors. </p> <p>Neighbours are used for building the graph. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00282">282</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a63a7947942d068f57850fea4215c1819"></a> <h2 class="memtitle">sink_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::sink_ {}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the vertex that serves as sink. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00318">318</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a774e1b55a05d339a82c37f0dfd2b8b12"></a> <h2 class="memtitle">source_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::source_ {}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the vertex that serves as source. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00315">315</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a1d636907e2069fb39755d032a490fc76"></a> <h2 class="memtitle">source_weight_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">double <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::source_weight_ {0.8}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the weight for every edge that comes from source point. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00279">279</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="a647a6895b703b08f8ff4ebc38ee06e48"></a> <h2 class="memtitle">unary_potentials_are_valid_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::unary_potentials_are_valid_ {false}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Signalizes if the unary potentials are valid. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00276">276</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <a id="abdfddf7d3ecbd4fb522797eb0ab7cd42"></a> <h2 class="memtitle">vertices_</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::vector&lt; <a class="el" href="classpcl_1_1_min_cut_segmentation#ab9700966b14d27c60a49da043be9b60f">VertexDescriptor</a> &gt; <a class="el" href="classpcl_1_1_min_cut_segmentation">pcl::MinCutSegmentation</a>&lt; <a class="el" href="structpcl_1_1_point_x_y_z_r_g_b">PointT</a> &gt;::vertices_ {}</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Stores the vertices of the graph. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html#l00309">309</a> of file <a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>.</p> </div> </div> <hr>The documentation for this class was generated from the following files:<ul> <li>pcl/segmentation/<a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8h_source.html">min_cut_segmentation.h</a>
+</li> <li>pcl/segmentation/impl/<a class="el" href="https://pointclouds.org/documentation/min__cut__segmentation_8hpp_source.html">min_cut_segmentation.hpp</a>
+</li> </ul> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2012, Willow Garage, Inc.<br>© 2012–, Open Perception, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://pointclouds.org/documentation/classpcl_1_1_min_cut_segmentation.html" class="_attribution-link">https://pointclouds.org/documentation/classpcl_1_1_min_cut_segmentation.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>pcl&#58;&#58;BriskKeypoint2D - PointCloudLibrary - W3cubDocs</title>
+  
+  <meta name="description" content=" Detects BRISK interest points based on the original code and paper reference by. More... ">
+  <meta name="keywords" content="pcl, briskkeypoint, d, pointcloudlibrary, point_cloud_library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/point_cloud_library/classpcl_1_1_brisk_keypoint2_d.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/point_cloud_library.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/point_cloud_library/" class="_nav-link" title="" style="margin-left:0;">PointCloudLibrary</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _point_cloud_library">
+				
+				
+<p>Detects BRISK interest points based on the original code and paper reference by. <a href="classpcl_1_1_brisk_keypoint2_d#details">More...</a></p> <p><code>#include &lt;<a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">pcl/keypoints/brisk_2d.h</a>&gt;</code></p>  <div id="dynsection-0-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-0-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_brisk_keypoint2_d_3_01_point_in_t_00_01_point_out_t_00_01_intensity_t_01_4_inherit__map" alt="Inheritance graph"></div> <map name="apcl_1_1_brisk_keypoint2_d_3_01_point_in_t_00_01_point_out_t_00_01_intensity_t_01_4_inherit__map" id="apcl_1_1_brisk_keypoint2_d_3_01_point_in_t_00_01_point_out_t_00_01_intensity_t_01_4_inherit__map"> <area shape="rect" title="Detects BRISK interest points based on the original code and paper reference by." alt="" coords="21,365,188,421"> <area shape="rect" href="classpcl_1_1_keypoint.html" title=" " alt="" coords="15,275,194,316"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title=" " alt="" coords="5,95,193,121"> <area shape="rect" href="classpcl_1_1_keypoint.html" title="Keypoint represents the base class for key points." alt="" coords="121,171,328,197"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="11,5,187,32"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div>  <div id="dynsection-1-summary" class="dynsummary" style="display:block;"> </div> <div id="dynsection-1-content" class="dyncontent" style="display:none;"> <div class="center"><img src="data:image/png;base64,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" border="0" usemap="#apcl_1_1_brisk_keypoint2_d_3_01_point_in_t_00_01_point_out_t_00_01_intensity_t_01_4_coll__map" alt="Collaboration graph"></div> <map name="apcl_1_1_brisk_keypoint2_d_3_01_point_in_t_00_01_point_out_t_00_01_intensity_t_01_4_coll__map" id="apcl_1_1_brisk_keypoint2_d_3_01_point_in_t_00_01_point_out_t_00_01_intensity_t_01_4_coll__map"> <area shape="rect" title="Detects BRISK interest points based on the original code and paper reference by." alt="" coords="71,547,237,603"> <area shape="rect" href="classpcl_1_1_keypoint.html" title=" " alt="" coords="65,456,243,497"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title=" " alt="" coords="41,276,229,303"> <area shape="rect" href="classpcl_1_1_keypoint.html" title="Keypoint represents the base class for key points." alt="" coords="171,352,377,379"> <area shape="rect" href="classpcl_1_1_p_c_l_base.html" title="PCL base class." alt="" coords="47,185,223,212"> <area shape="rect" title=" " alt="" coords="107,5,198,32"> <area shape="rect" title=" " alt="" coords="69,95,236,121"> </map> <center><span class="legend">[<a href="graph_legend">legend</a>]</span></center>
+</div> <table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-types"></a> Public Types</h2></td></tr> <tr class="memitem:adc257397588b8a925cc6d91d29e3ee40">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#adc257397588b8a925cc6d91d29e3ee40">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_brisk_keypoint2_d">BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt; &gt;</td>
+</tr> <tr class="separator:adc257397588b8a925cc6d91d29e3ee40"></tr> <tr class="memitem:a40c07aaf8d5ba8427eb82fe49073c779">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a40c07aaf8d5ba8427eb82fe49073c779">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_brisk_keypoint2_d">BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt; &gt;</td>
+</tr> <tr class="separator:a40c07aaf8d5ba8427eb82fe49073c779"></tr> <tr class="memitem:a30c48b9a817988850078724cc7ad185f">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a30c48b9a817988850078724cc7ad185f">PointCloudIn</a> = typename <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt; PointInT, PointOutT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a30c48b9a817988850078724cc7ad185f">PointCloudIn</a>
+</td>
+</tr> <tr class="separator:a30c48b9a817988850078724cc7ad185f"></tr> <tr class="memitem:a33eca38658c08b7bc20b8aad32e7180f">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a33eca38658c08b7bc20b8aad32e7180f">PointCloudOut</a> = typename <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt; PointInT, PointOutT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a33eca38658c08b7bc20b8aad32e7180f">PointCloudOut</a>
+</td>
+</tr> <tr class="separator:a33eca38658c08b7bc20b8aad32e7180f"></tr> <tr class="memitem:a58e65e7dd04f5afa53d58910e35cd25d">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a58e65e7dd04f5afa53d58910e35cd25d">KdTree</a> = typename <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt; PointInT, PointOutT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a58e65e7dd04f5afa53d58910e35cd25d">KdTree</a>
+</td>
+</tr> <tr class="separator:a58e65e7dd04f5afa53d58910e35cd25d"></tr> <tr class="memitem:afc49a5e6237d461804418c0b55a136e5">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#afc49a5e6237d461804418c0b55a136e5">PointCloudInConstPtr</a> = typename PointCloudIn::ConstPtr</td>
+</tr> <tr class="separator:afc49a5e6237d461804418c0b55a136e5"></tr> <tr class="inherit_header pub_types_classpcl_1_1_keypoint"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_keypoint')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_keypoint">pcl::Keypoint&lt; PointInT, pcl::PointWithScale &gt;</a>
+</td></tr> <tr class="memitem:a4a298ad83990caf9cc4615ff5f47d835 inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a4a298ad83990caf9cc4615ff5f47d835">Ptr</a> = shared_ptr&lt; <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt; PointInT, PointOutT &gt; &gt;</td>
+</tr> <tr class="separator:a4a298ad83990caf9cc4615ff5f47d835 inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:aef0828810a45adcdaa517406806e921f inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#aef0828810a45adcdaa517406806e921f">ConstPtr</a> = shared_ptr&lt; const <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt; PointInT, PointOutT &gt; &gt;</td>
+</tr> <tr class="separator:aef0828810a45adcdaa517406806e921f inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:a285575f8ba202d203c1372079d1223a7 inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a285575f8ba202d203c1372079d1223a7">BaseClass</a> = <a class="el" href="classpcl_1_1_p_c_l_base">PCLBase</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:a285575f8ba202d203c1372079d1223a7 inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:af313d9edfa4fc522eda42e9c4012295e inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#af313d9edfa4fc522eda42e9c4012295e">KdTree</a> = <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html">pcl::search::Search</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:af313d9edfa4fc522eda42e9c4012295e inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:ab09feffc3cd41fdd9cd3bc52a22809cb inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#ab09feffc3cd41fdd9cd3bc52a22809cb">KdTreePtr</a> = typename <a class="el" href="https://pointclouds.org/documentation/classpcl_1_1search_1_1_search.html#ab4688e4899ce5aa6937dba334dc75763">KdTree::Ptr</a>
+</td>
+</tr> <tr class="separator:ab09feffc3cd41fdd9cd3bc52a22809cb inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:a800c9ea45061d5fc5234beb4db8d20ac inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a800c9ea45061d5fc5234beb4db8d20ac">PointCloudIn</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:a800c9ea45061d5fc5234beb4db8d20ac inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:a6ba87d8026b0470cfcd5684e430c0649 inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a6ba87d8026b0470cfcd5684e430c0649">PointCloudInPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloudIn::Ptr</a>
+</td>
+</tr> <tr class="separator:a6ba87d8026b0470cfcd5684e430c0649 inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:a8e964def6d3ebe2e75ca1efa722225bf inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a8e964def6d3ebe2e75ca1efa722225bf">PointCloudInConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloudIn::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a8e964def6d3ebe2e75ca1efa722225bf inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:aaeded99ebd94de46117047c2f2857ee5 inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#aaeded99ebd94de46117047c2f2857ee5">PointCloudOut</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointOutT &gt;</td>
+</tr> <tr class="separator:aaeded99ebd94de46117047c2f2857ee5 inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:a3b37a2ca33f818178aa6b35fbc805620 inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a3b37a2ca33f818178aa6b35fbc805620">SearchMethod</a> = std::function&lt; int(<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a45edbae979af563e6a1e39fd1aad3911">pcl::index_t</a>, double, <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;, std::vector&lt; float &gt; &amp;)&gt;</td>
+</tr> <tr class="separator:a3b37a2ca33f818178aa6b35fbc805620 inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="memitem:a425c6984bd98ddbe8da154aaf31d7c66 inherit pub_types_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a425c6984bd98ddbe8da154aaf31d7c66">SearchMethodSurface</a> = std::function&lt; int(const <a class="el" href="classpcl_1_1_keypoint#a800c9ea45061d5fc5234beb4db8d20ac">PointCloudIn</a> &amp;cloud, <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a45edbae979af563e6a1e39fd1aad3911">pcl::index_t</a> index, double, <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;, std::vector&lt; float &gt; &amp;)&gt;</td>
+</tr> <tr class="separator:a425c6984bd98ddbe8da154aaf31d7c66 inherit pub_types_classpcl_1_1_keypoint"></tr> <tr class="inherit_header pub_types_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Types inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a69de4001826d45c280087187322d779d">PointCloud</a> = <a class="el" href="classpcl_1_1_point_cloud">pcl::PointCloud</a>&lt; PointInT &gt;</td>
+</tr> <tr class="separator:a69de4001826d45c280087187322d779d inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a4399c6b93663d4762fc3389c1b594eb8">PointCloudPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#ab805ba3b19e952ad19d084a9caa3dc60">PointCloud::Ptr</a>
+</td>
+</tr> <tr class="separator:a4399c6b93663d4762fc3389c1b594eb8 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> = typename <a class="el" href="classpcl_1_1_point_cloud#af70fd81ce582ccabf683dd782ed3f032">PointCloud::ConstPtr</a>
+</td>
+</tr> <tr class="separator:a575135fb579dc86f7845ed9dba1ea276 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afe906230f3e673dc2ff10b9d579f4ccb">PointIndicesPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a3c574b78dfbe67c93d09acdbc8ecc499">PointIndices::Ptr</a>
+</td>
+</tr> <tr class="separator:afe906230f3e673dc2ff10b9d579f4ccb inherit pub_types_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">using </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> = <a class="el" href="structpcl_1_1_point_indices#a6880da079270712d46b0bb348cf124bc">PointIndices::ConstPtr</a>
+</td>
+</tr> <tr class="separator:ae4b0d9b8a0867631ef2b9114116f9618 inherit pub_types_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pub-methods"></a> Public Member Functions</h2></td></tr> <tr class="memitem:a68418f802729d2fb580e6cde185e799c">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a68418f802729d2fb580e6cde185e799c">BriskKeypoint2D</a> (int octaves=4, int threshold=60)</td>
+</tr> <tr class="memdesc:a68418f802729d2fb580e6cde185e799c">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Constructor. <a href="classpcl_1_1_brisk_keypoint2_d#a68418f802729d2fb580e6cde185e799c">More...</a><br>
+</td>
+</tr> <tr class="separator:a68418f802729d2fb580e6cde185e799c"></tr> <tr class="memitem:a09c4b7bf26fe83fc84e006d52bb4a7f5">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a09c4b7bf26fe83fc84e006d52bb4a7f5">~BriskKeypoint2D</a> () override=default</td>
+</tr> <tr class="memdesc:a09c4b7bf26fe83fc84e006d52bb4a7f5">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_brisk_keypoint2_d#a09c4b7bf26fe83fc84e006d52bb4a7f5">More...</a><br>
+</td>
+</tr> <tr class="separator:a09c4b7bf26fe83fc84e006d52bb4a7f5"></tr> <tr class="memitem:a0ec5e3aa61678bcbe86e0136636d643d">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a0ec5e3aa61678bcbe86e0136636d643d">setThreshold</a> (const int threshold)</td>
+</tr> <tr class="memdesc:a0ec5e3aa61678bcbe86e0136636d643d">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Sets the threshold for corner detection. <a href="classpcl_1_1_brisk_keypoint2_d#a0ec5e3aa61678bcbe86e0136636d643d">More...</a><br>
+</td>
+</tr> <tr class="separator:a0ec5e3aa61678bcbe86e0136636d643d"></tr> <tr class="memitem:a6806669d8fd37aac8c12b945477f1000">
+<td class="memItemLeft" align="right" valign="top">std::size_t </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a6806669d8fd37aac8c12b945477f1000">getThreshold</a> ()</td>
+</tr> <tr class="memdesc:a6806669d8fd37aac8c12b945477f1000">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the threshold for corner detection, as set by the user. <a href="classpcl_1_1_brisk_keypoint2_d#a6806669d8fd37aac8c12b945477f1000">More...</a><br>
+</td>
+</tr> <tr class="separator:a6806669d8fd37aac8c12b945477f1000"></tr> <tr class="memitem:a8a58c65d1a846763e52e4068a301811f">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a8a58c65d1a846763e52e4068a301811f">setOctaves</a> (const int octaves)</td>
+</tr> <tr class="memdesc:a8a58c65d1a846763e52e4068a301811f">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the number of octaves to use. <a href="classpcl_1_1_brisk_keypoint2_d#a8a58c65d1a846763e52e4068a301811f">More...</a><br>
+</td>
+</tr> <tr class="separator:a8a58c65d1a846763e52e4068a301811f"></tr> <tr class="memitem:abeaf0bb89b1a94e8f15822584e94ef43">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#abeaf0bb89b1a94e8f15822584e94ef43">getOctaves</a> ()</td>
+</tr> <tr class="memdesc:abeaf0bb89b1a94e8f15822584e94ef43">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Returns the number of octaves used. <a href="classpcl_1_1_brisk_keypoint2_d#abeaf0bb89b1a94e8f15822584e94ef43">More...</a><br>
+</td>
+</tr> <tr class="separator:abeaf0bb89b1a94e8f15822584e94ef43"></tr> <tr class="memitem:afd263e0bb459ce78e7c0fed57dd2899b">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#afd263e0bb459ce78e7c0fed57dd2899b">setRemoveInvalid3DKeypoints</a> (bool remove)</td>
+</tr> <tr class="memdesc:afd263e0bb459ce78e7c0fed57dd2899b">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Specify whether we should do a 2nd pass through the list of keypoints found, and remove the ones that do not have a valid 3D (x-y-z) position (i.e., are NaN or Inf). <a href="classpcl_1_1_brisk_keypoint2_d#afd263e0bb459ce78e7c0fed57dd2899b">More...</a><br>
+</td>
+</tr> <tr class="separator:afd263e0bb459ce78e7c0fed57dd2899b"></tr> <tr class="memitem:a5c53a903009694e3fc7e5694995af95a">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a5c53a903009694e3fc7e5694995af95a">getRemoveInvalid3DKeypoints</a> ()</td>
+</tr> <tr class="memdesc:a5c53a903009694e3fc7e5694995af95a">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Specify whether the keypoints that do not have a valid 3D position are kept (false) or removed (true). <a href="classpcl_1_1_brisk_keypoint2_d#a5c53a903009694e3fc7e5694995af95a">More...</a><br>
+</td>
+</tr> <tr class="separator:a5c53a903009694e3fc7e5694995af95a"></tr> <tr class="memitem:acfa3d4aad370671d480afe840da29954">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#acfa3d4aad370671d480afe840da29954">bilinearInterpolation</a> (const <a class="el" href="classpcl_1_1_brisk_keypoint2_d#afc49a5e6237d461804418c0b55a136e5">PointCloudInConstPtr</a> &amp;cloud, float x, float y, PointOutT &amp;pt)</td>
+</tr> <tr class="separator:acfa3d4aad370671d480afe840da29954"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_keypoint"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_keypoint')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_keypoint">pcl::Keypoint&lt; PointInT, pcl::PointWithScale &gt;</a>
+</td></tr> <tr class="memitem:a196c2d59225b820f79938b859c241b1a inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a196c2d59225b820f79938b859c241b1a">Keypoint</a> ()=default</td>
+</tr> <tr class="separator:a196c2d59225b820f79938b859c241b1a inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:ac7d244c1f7ec9a3a3c14438a9e983f15 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#ac7d244c1f7ec9a3a3c14438a9e983f15">Keypoint</a> ()</td>
+</tr> <tr class="memdesc:ac7d244c1f7ec9a3a3c14438a9e983f15 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_keypoint#ac7d244c1f7ec9a3a3c14438a9e983f15">More...</a><br>
+</td>
+</tr> <tr class="separator:ac7d244c1f7ec9a3a3c14438a9e983f15 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:ac3192deeb5d74d647768b472ec44baa6 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#ac3192deeb5d74d647768b472ec44baa6">harrisCorner</a> (PointInT &amp;output, PointInT &amp;input, const float sigma_d, const float sigma_i, const float alpha, const float thresh)</td>
+</tr> <tr class="separator:ac3192deeb5d74d647768b472ec44baa6 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:aa75a9bc1a92a269bd02d702314cf84ad inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#aa75a9bc1a92a269bd02d702314cf84ad">hessianBlob</a> (PointInT &amp;output, PointInT &amp;input, const float sigma, bool SCALE)</td>
+</tr> <tr class="separator:aa75a9bc1a92a269bd02d702314cf84ad inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a01397730ac2f3fc03286ba676ca3b5e4 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a01397730ac2f3fc03286ba676ca3b5e4">hessianBlob</a> (PointInT &amp;output, PointInT &amp;input, const float start_scale, const float scaling_factor, const int num_scales)</td>
+</tr> <tr class="separator:a01397730ac2f3fc03286ba676ca3b5e4 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a5d0f6762964c3be793623ab491aff190 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a5d0f6762964c3be793623ab491aff190">imageElementMultiply</a> (PointInT &amp;output, PointInT &amp;input1, PointInT &amp;input2)</td>
+</tr> <tr class="separator:a5d0f6762964c3be793623ab491aff190 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a25e054782d64b43f4e8341251737f059 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a25e054782d64b43f4e8341251737f059">~Keypoint</a> () override=default</td>
+</tr> <tr class="memdesc:a25e054782d64b43f4e8341251737f059 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty destructor. <a href="classpcl_1_1_keypoint#a25e054782d64b43f4e8341251737f059">More...</a><br>
+</td>
+</tr> <tr class="separator:a25e054782d64b43f4e8341251737f059 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a8f6040453f5a649ed1b81708a902a001 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a8f6040453f5a649ed1b81708a902a001">setSearchSurface</a> (const <a class="el" href="classpcl_1_1_keypoint#a8e964def6d3ebe2e75ca1efa722225bf">PointCloudInConstPtr</a> &amp;cloud)</td>
+</tr> <tr class="memdesc:a8f6040453f5a649ed1b81708a902a001 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the input dataset that we need to estimate features at every point for. <a href="classpcl_1_1_keypoint#a8f6040453f5a649ed1b81708a902a001">More...</a><br>
+</td>
+</tr> <tr class="separator:a8f6040453f5a649ed1b81708a902a001 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a3f72be743468d12e937449ccfe1f97b3 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_keypoint#a8e964def6d3ebe2e75ca1efa722225bf">PointCloudInConstPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a3f72be743468d12e937449ccfe1f97b3">getSearchSurface</a> ()</td>
+</tr> <tr class="memdesc:a3f72be743468d12e937449ccfe1f97b3 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the surface point cloud dataset. <a href="classpcl_1_1_keypoint#a3f72be743468d12e937449ccfe1f97b3">More...</a><br>
+</td>
+</tr> <tr class="separator:a3f72be743468d12e937449ccfe1f97b3 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a517b02131e34e0f767b2724f2db0b2a1 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a517b02131e34e0f767b2724f2db0b2a1">setSearchMethod</a> (const <a class="el" href="classpcl_1_1_keypoint#ab09feffc3cd41fdd9cd3bc52a22809cb">KdTreePtr</a> &amp;tree)</td>
+</tr> <tr class="memdesc:a517b02131e34e0f767b2724f2db0b2a1 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the search object. <a href="classpcl_1_1_keypoint#a517b02131e34e0f767b2724f2db0b2a1">More...</a><br>
+</td>
+</tr> <tr class="separator:a517b02131e34e0f767b2724f2db0b2a1 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a9b44d41140d1be871ffa4d97dc7ad9e0 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_keypoint#ab09feffc3cd41fdd9cd3bc52a22809cb">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a9b44d41140d1be871ffa4d97dc7ad9e0">getSearchMethod</a> ()</td>
+</tr> <tr class="memdesc:a9b44d41140d1be871ffa4d97dc7ad9e0 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the search method used. <a href="classpcl_1_1_keypoint#a9b44d41140d1be871ffa4d97dc7ad9e0">More...</a><br>
+</td>
+</tr> <tr class="separator:a9b44d41140d1be871ffa4d97dc7ad9e0 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:af23d203edfbb003629cbbdea17f13261 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#af23d203edfbb003629cbbdea17f13261">getSearchParameter</a> ()</td>
+</tr> <tr class="memdesc:af23d203edfbb003629cbbdea17f13261 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the internal search parameter. <a href="classpcl_1_1_keypoint#af23d203edfbb003629cbbdea17f13261">More...</a><br>
+</td>
+</tr> <tr class="separator:af23d203edfbb003629cbbdea17f13261 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:aec339206fd5c9500cb33ae466b4499cc inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#aec339206fd5c9500cb33ae466b4499cc">setKSearch</a> (int k)</td>
+</tr> <tr class="memdesc:aec339206fd5c9500cb33ae466b4499cc inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the number of k nearest neighbors to use for the feature estimation. <a href="classpcl_1_1_keypoint#aec339206fd5c9500cb33ae466b4499cc">More...</a><br>
+</td>
+</tr> <tr class="separator:aec339206fd5c9500cb33ae466b4499cc inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a39c2a03fec74e16a3edd91c0487dfb5b inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a39c2a03fec74e16a3edd91c0487dfb5b">getKSearch</a> ()</td>
+</tr> <tr class="memdesc:a39c2a03fec74e16a3edd91c0487dfb5b inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">get the number of k nearest neighbors used for the feature estimation. <a href="classpcl_1_1_keypoint#a39c2a03fec74e16a3edd91c0487dfb5b">More...</a><br>
+</td>
+</tr> <tr class="separator:a39c2a03fec74e16a3edd91c0487dfb5b inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a27915fb9299cb8f5a3516a6e33cf37e7 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a27915fb9299cb8f5a3516a6e33cf37e7">setRadiusSearch</a> (double radius)</td>
+</tr> <tr class="memdesc:a27915fb9299cb8f5a3516a6e33cf37e7 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the sphere radius that is to be used for determining the nearest neighbors used for the key point detection. <a href="classpcl_1_1_keypoint#a27915fb9299cb8f5a3516a6e33cf37e7">More...</a><br>
+</td>
+</tr> <tr class="separator:a27915fb9299cb8f5a3516a6e33cf37e7 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a689793d4c81267dedf587b5473f3b254 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a689793d4c81267dedf587b5473f3b254">getRadiusSearch</a> ()</td>
+</tr> <tr class="memdesc:a689793d4c81267dedf587b5473f3b254 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get the sphere radius used for determining the neighbors. <a href="classpcl_1_1_keypoint#a689793d4c81267dedf587b5473f3b254">More...</a><br>
+</td>
+</tr> <tr class="separator:a689793d4c81267dedf587b5473f3b254 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a6dbb9d7b0ae0b61585fcde757a32a3c0 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#aaf931dfa9573efdfea6ca35cb8a52993">pcl::PointIndicesConstPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a6dbb9d7b0ae0b61585fcde757a32a3c0">getKeypointsIndices</a> ()</td>
+</tr> <tr class="separator:a6dbb9d7b0ae0b61585fcde757a32a3c0 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a046a7cd11598b06d2076da69a3100e4b inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a046a7cd11598b06d2076da69a3100e4b">compute</a> (<a class="el" href="classpcl_1_1_keypoint#aaeded99ebd94de46117047c2f2857ee5">PointCloudOut</a> &amp;output)</td>
+</tr> <tr class="memdesc:a046a7cd11598b06d2076da69a3100e4b inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Base method for key point detection for all points given in &lt;setInputCloud (), setIndices ()&gt; using the surface in setSearchSurface () and the spatial locator in setSearchMethod () <a href="classpcl_1_1_keypoint#a046a7cd11598b06d2076da69a3100e4b">More...</a><br>
+</td>
+</tr> <tr class="separator:a046a7cd11598b06d2076da69a3100e4b inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:ad800dd7d20259aeb975ba8bbccbad036 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#ad800dd7d20259aeb975ba8bbccbad036">searchForNeighbors</a> (<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a45edbae979af563e6a1e39fd1aad3911">pcl::index_t</a> index, double parameter, <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a8bfe09b8680e7129dd0fd6177c1a2ce6">pcl::Indices</a> &amp;indices, std::vector&lt; float &gt; &amp;distances) const</td>
+</tr> <tr class="memdesc:ad800dd7d20259aeb975ba8bbccbad036 inherit pub_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Search for k-nearest neighbors using the spatial locator from <em>setSearchmethod</em>, and the given surface from <em>setSearchSurface</em>. <a href="classpcl_1_1_keypoint#ad800dd7d20259aeb975ba8bbccbad036">More...</a><br>
+</td>
+</tr> <tr class="separator:ad800dd7d20259aeb975ba8bbccbad036 inherit pub_methods_classpcl_1_1_keypoint"></tr> <tr class="inherit_header pub_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Public Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">PCLBase</a> ()</td>
+</tr> <tr class="memdesc:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Empty constructor. <a href="classpcl_1_1_p_c_l_base#af4fbc5eb005057f8a0fc6d60bde595df">More...</a><br>
+</td>
+</tr> <tr class="separator:af4fbc5eb005057f8a0fc6d60bde595df inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top"> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">PCLBase</a> (const <a class="el" href="classpcl_1_1_p_c_l_base">PCLBase</a> &amp;base)</td>
+</tr> <tr class="memdesc:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Copy constructor. <a href="classpcl_1_1_p_c_l_base#a7a6dd7a91275d7737cf1b18005b47244">More...</a><br>
+</td>
+</tr> <tr class="separator:a7a6dd7a91275d7737cf1b18005b47244 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">~PCLBase</a> ()=default</td>
+</tr> <tr class="memdesc:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Destructor. <a href="classpcl_1_1_p_c_l_base#ace0baa9034497232920bbe6e5a9f393b">More...</a><br>
+</td>
+</tr> <tr class="separator:ace0baa9034497232920bbe6e5a9f393b inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">setInputCloud</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> &amp;cloud)</td>
+</tr> <tr class="memdesc:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the input dataset. <a href="classpcl_1_1_p_c_l_base#a1952d7101f3942bac3b69ed55c1ca7ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a1952d7101f3942bac3b69ed55c1ca7ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">getInputCloud</a> () const</td>
+</tr> <tr class="memdesc:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a8cd745c4f7a792212f4fc3720b9d46ea">More...</a><br>
+</td>
+</tr> <tr class="separator:a8cd745c4f7a792212f4fc3720b9d46ea inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#ab219359de6eb34c9d51e2e976dd1a0d1">More...</a><br>
+</td>
+</tr> <tr class="separator:ab219359de6eb34c9d51e2e976dd1a0d1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">setIndices</a> (const <a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#a436c68c74b31e4dd00000adfbb11ca7c">More...</a><br>
+</td>
+</tr> <tr class="separator:a436c68c74b31e4dd00000adfbb11ca7c inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">setIndices</a> (const <a class="el" href="classpcl_1_1_p_c_l_base#ae4b0d9b8a0867631ef2b9114116f9618">PointIndicesConstPtr</a> &amp;indices)</td>
+</tr> <tr class="memdesc:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Provide a pointer to the vector of indices that represents the input data. <a href="classpcl_1_1_p_c_l_base#af9cc90d8364ce968566f75800d3773ca">More...</a><br>
+</td>
+</tr> <tr class="separator:af9cc90d8364ce968566f75800d3773ca inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">setIndices</a> (std::size_t row_start, std::size_t col_start, std::size_t nb_rows, std::size_t nb_cols)</td>
+</tr> <tr class="memdesc:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set the indices for the points laying within an interest region of the point cloud. <a href="classpcl_1_1_p_c_l_base#a554d92d5605748c0573f6d1c7428f5a7">More...</a><br>
+</td>
+</tr> <tr class="separator:a554d92d5605748c0573f6d1c7428f5a7 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">getIndices</a> ()</td>
+</tr> <tr class="memdesc:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#af46c8513100321ca44df399abb494ad1">More...</a><br>
+</td>
+</tr> <tr class="separator:af46c8513100321ca44df399abb494ad1 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a011f84e43d80cb736d9ec9abd0930024">IndicesConstPtr</a> const </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">getIndices</a> () const</td>
+</tr> <tr class="memdesc:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a pointer to the vector of indices used. <a href="classpcl_1_1_p_c_l_base#acae187b37230758959572ceb1e6e2045">More...</a><br>
+</td>
+</tr> <tr class="separator:acae187b37230758959572ceb1e6e2045 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">const PointInT &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">operator[]</a> (std::size_t pos) const</td>
+</tr> <tr class="memdesc:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Override PointCloud operator[] to shorten code. <a href="classpcl_1_1_p_c_l_base#ae97525f1375a8eec6d3119bf3de16ef0">More...</a><br>
+</td>
+</tr> <tr class="separator:ae97525f1375a8eec6d3119bf3de16ef0 inherit pub_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="pro-methods"></a> Protected Member Functions</h2></td></tr> <tr class="memitem:addbc56630209e2d547e79b03d1f8b415">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#addbc56630209e2d547e79b03d1f8b415">initCompute</a> () override</td>
+</tr> <tr class="memdesc:addbc56630209e2d547e79b03d1f8b415">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Initializes everything and checks whether input data is fine. <a href="classpcl_1_1_brisk_keypoint2_d#addbc56630209e2d547e79b03d1f8b415">More...</a><br>
+</td>
+</tr> <tr class="separator:addbc56630209e2d547e79b03d1f8b415"></tr> <tr class="memitem:a19558d10925200524bea743011be4a87">
+<td class="memItemLeft" align="right" valign="top">void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a19558d10925200524bea743011be4a87">detectKeypoints</a> (<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a33eca38658c08b7bc20b8aad32e7180f">PointCloudOut</a> &amp;output) override</td>
+</tr> <tr class="memdesc:a19558d10925200524bea743011be4a87">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Detects the keypoints. <a href="classpcl_1_1_brisk_keypoint2_d#a19558d10925200524bea743011be4a87">More...</a><br>
+</td>
+</tr> <tr class="separator:a19558d10925200524bea743011be4a87"></tr> <tr class="inherit_header pro_methods_classpcl_1_1_keypoint"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_keypoint')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_keypoint">pcl::Keypoint&lt; PointInT, pcl::PointWithScale &gt;</a>
+</td></tr> <tr class="memitem:ae5f2c37cadfe3957635dcd2b0d310d2e inherit pro_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">const std::string &amp; </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#ae5f2c37cadfe3957635dcd2b0d310d2e">getClassName</a> () const</td>
+</tr> <tr class="memdesc:ae5f2c37cadfe3957635dcd2b0d310d2e inherit pro_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Get a string representation of the name of this class. <a href="classpcl_1_1_keypoint#ae5f2c37cadfe3957635dcd2b0d310d2e">More...</a><br>
+</td>
+</tr> <tr class="separator:ae5f2c37cadfe3957635dcd2b0d310d2e inherit pro_methods_classpcl_1_1_keypoint"></tr> <tr class="memitem:a12304417bb48d0f5a460dc7ab7538a86 inherit pro_methods_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">virtual void </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_keypoint#a12304417bb48d0f5a460dc7ab7538a86">detectKeypoints</a> (<a class="el" href="classpcl_1_1_keypoint#aaeded99ebd94de46117047c2f2857ee5">PointCloudOut</a> &amp;output)=0</td>
+</tr> <tr class="memdesc:a12304417bb48d0f5a460dc7ab7538a86 inherit pro_methods_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Abstract key point detection method. <a href="classpcl_1_1_keypoint#a12304417bb48d0f5a460dc7ab7538a86">More...</a><br>
+</td>
+</tr> <tr class="separator:a12304417bb48d0f5a460dc7ab7538a86 inherit pro_methods_classpcl_1_1_keypoint"></tr> <tr class="inherit_header pro_methods_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Member Functions inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">initCompute</a> ()</td>
+</tr> <tr class="memdesc:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called before starting the actual computation. <a href="classpcl_1_1_p_c_l_base#acceb20854934f4cf77e266eb5a44d4f0">More...</a><br>
+</td>
+</tr> <tr class="separator:acceb20854934f4cf77e266eb5a44d4f0 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">deinitCompute</a> ()</td>
+</tr> <tr class="memdesc:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">This method should get called after finishing the actual computation. <a href="classpcl_1_1_p_c_l_base#afc426c4eebb94b7734d4fa556bff1420">More...</a><br>
+</td>
+</tr> <tr class="separator:afc426c4eebb94b7734d4fa556bff1420 inherit pro_methods_classpcl_1_1_p_c_l_base"></tr> </table>
+<table class="memberdecls"> <tr class="heading"><td colspan="2"><h2 class="groupheader">
+<a name="inherited"></a> Additional Inherited Members</h2></td></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_keypoint"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_keypoint')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_keypoint">pcl::Keypoint&lt; PointInT, pcl::PointWithScale &gt;</a>
+</td></tr> <tr class="memitem:a73ddedd264e48db32db023bd067b4063 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">std::string </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#a73ddedd264e48db32db023bd067b4063">name_</a></td>
+</tr> <tr class="memdesc:a73ddedd264e48db32db023bd067b4063 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The key point detection method's name. <a href="classpcl_1_1_keypoint#a73ddedd264e48db32db023bd067b4063">More...</a><br>
+</td>
+</tr> <tr class="separator:a73ddedd264e48db32db023bd067b4063 inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:a091691263bc4f2186245ce570e85bccb inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_keypoint#a3b37a2ca33f818178aa6b35fbc805620">SearchMethod</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#a091691263bc4f2186245ce570e85bccb">search_method_</a></td>
+</tr> <tr class="memdesc:a091691263bc4f2186245ce570e85bccb inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The search method template for indices. <a href="classpcl_1_1_keypoint#a091691263bc4f2186245ce570e85bccb">More...</a><br>
+</td>
+</tr> <tr class="separator:a091691263bc4f2186245ce570e85bccb inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:a9d5631c580e91f46c5d985cd61eef2bd inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_keypoint#a425c6984bd98ddbe8da154aaf31d7c66">SearchMethodSurface</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#a9d5631c580e91f46c5d985cd61eef2bd">search_method_surface_</a></td>
+</tr> <tr class="memdesc:a9d5631c580e91f46c5d985cd61eef2bd inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The search method template for points. <a href="classpcl_1_1_keypoint#a9d5631c580e91f46c5d985cd61eef2bd">More...</a><br>
+</td>
+</tr> <tr class="separator:a9d5631c580e91f46c5d985cd61eef2bd inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:abc5cea2fc91608ada491c3aac5f01149 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_keypoint#a8e964def6d3ebe2e75ca1efa722225bf">PointCloudInConstPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#abc5cea2fc91608ada491c3aac5f01149">surface_</a></td>
+</tr> <tr class="memdesc:abc5cea2fc91608ada491c3aac5f01149 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">An input point cloud describing the surface that is to be used for nearest neighbors estimation. <a href="classpcl_1_1_keypoint#abc5cea2fc91608ada491c3aac5f01149">More...</a><br>
+</td>
+</tr> <tr class="separator:abc5cea2fc91608ada491c3aac5f01149 inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:ab648013526b96620698070b379b3a5c1 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_keypoint#ab09feffc3cd41fdd9cd3bc52a22809cb">KdTreePtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#ab648013526b96620698070b379b3a5c1">tree_</a></td>
+</tr> <tr class="memdesc:ab648013526b96620698070b379b3a5c1 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the spatial search object. <a href="classpcl_1_1_keypoint#ab648013526b96620698070b379b3a5c1">More...</a><br>
+</td>
+</tr> <tr class="separator:ab648013526b96620698070b379b3a5c1 inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:a878a69812dad1821d2d36fa58199b5cb inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#a878a69812dad1821d2d36fa58199b5cb">search_parameter_</a></td>
+</tr> <tr class="memdesc:a878a69812dad1821d2d36fa58199b5cb inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The actual search parameter (casted from either <em>search_radius_</em> or <em>k_</em>). <a href="classpcl_1_1_keypoint#a878a69812dad1821d2d36fa58199b5cb">More...</a><br>
+</td>
+</tr> <tr class="separator:a878a69812dad1821d2d36fa58199b5cb inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:aced70776be62dcb88f8293e9a5d46ae9 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">double </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#aced70776be62dcb88f8293e9a5d46ae9">search_radius_</a></td>
+</tr> <tr class="memdesc:aced70776be62dcb88f8293e9a5d46ae9 inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The nearest neighbors search radius for each point. <a href="classpcl_1_1_keypoint#aced70776be62dcb88f8293e9a5d46ae9">More...</a><br>
+</td>
+</tr> <tr class="separator:aced70776be62dcb88f8293e9a5d46ae9 inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:a6f79ff083299e0b67316b26d1931613e inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">int </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#a6f79ff083299e0b67316b26d1931613e">k_</a></td>
+</tr> <tr class="memdesc:a6f79ff083299e0b67316b26d1931613e inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The number of K nearest neighbors to use for each point. <a href="classpcl_1_1_keypoint#a6f79ff083299e0b67316b26d1931613e">More...</a><br>
+</td>
+</tr> <tr class="separator:a6f79ff083299e0b67316b26d1931613e inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="memitem:a9c24f114f3a640326cb42386b4c4051c inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#a9648b74014e6b52eb855a7f75dad9806">pcl::PointIndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_keypoint#a9c24f114f3a640326cb42386b4c4051c">keypoints_indices_</a></td>
+</tr> <tr class="memdesc:a9c24f114f3a640326cb42386b4c4051c inherit pro_attribs_classpcl_1_1_keypoint">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Indices of the keypoints in the input cloud. <a href="classpcl_1_1_keypoint#a9c24f114f3a640326cb42386b4c4051c">More...</a><br>
+</td>
+</tr> <tr class="separator:a9c24f114f3a640326cb42386b4c4051c inherit pro_attribs_classpcl_1_1_keypoint"></tr> <tr class="inherit_header pro_attribs_classpcl_1_1_p_c_l_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classpcl_1_1_p_c_l_base')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR42mNAB8u3TfuPLoZVEQgTVATDBBQhMAFFCEy5SST5jqhwAgB7GEmjN9dVewAAAABJRU5ErkJggg==" alt="-"> Protected Attributes inherited from <a class="el" href="classpcl_1_1_p_c_l_base">pcl::PCLBase&lt; PointInT &gt;</a>
+</td></tr> <tr class="memitem:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classpcl_1_1_p_c_l_base#a575135fb579dc86f7845ed9dba1ea276">PointCloudConstPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">input_</a></td>
+</tr> <tr class="memdesc:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">The input point cloud dataset. <a href="classpcl_1_1_p_c_l_base#a09c70d8e06e3fb4f07903fe6f8d67869">More...</a><br>
+</td>
+</tr> <tr class="separator:a09c70d8e06e3fb4f07903fe6f8d67869 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">
+<a class="el" href="https://pointclouds.org/documentation/namespacepcl.html#ab11731b62628e35f6adc312d1cdaf372">IndicesPtr</a> </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">indices_</a></td>
+</tr> <tr class="memdesc:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">A pointer to the vector of point indices to use. <a href="classpcl_1_1_p_c_l_base#aaee847c8a517ebf365bad2cb182a6626">More...</a><br>
+</td>
+</tr> <tr class="separator:aaee847c8a517ebf365bad2cb182a6626 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">use_indices_</a></td>
+</tr> <tr class="memdesc:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">Set to true if point indices are used. <a href="classpcl_1_1_p_c_l_base#ada1eadb824d34ca9206a86343d9760bb">More...</a><br>
+</td>
+</tr> <tr class="separator:ada1eadb824d34ca9206a86343d9760bb inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> <tr class="memitem:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="memItemLeft" align="right" valign="top">bool </td>
+<td class="memItemRight" valign="bottom"><a class="el" href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">fake_indices_</a></td>
+</tr> <tr class="memdesc:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base">
+<td class="mdescLeft"> </td>
+<td class="mdescRight">If no set of indices are given, we construct a set of fake indices that mimic the input PointCloud. <a href="classpcl_1_1_p_c_l_base#adadb0299f144528020ed558af6879662">More...</a><br>
+</td>
+</tr> <tr class="separator:adadb0299f144528020ed558af6879662 inherit pro_attribs_classpcl_1_1_p_c_l_base"></tr> </table> <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2> <div class="textblock">
+<h3>template&lt;typename PointInT, typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt;<br> class pcl::BriskKeypoint2D&lt; PointInT, PointOutT, IntensityT &gt;</h3> <p>Detects BRISK interest points based on the original code and paper reference by. </p> <dl class="section user">
+<dt></dt>
+<dd>Stefan Leutenegger,Margarita Chli and Roland Siegwart, BRISK: Binary Robust Invariant Scalable Keypoints, in Proceedings of the IEEE International Conference on Computer Vision (ICCV2011).</dd>
+</dl> <p>Code example:</p> <pre class="fragment" data-language="cpp">pcl::PointCloud&lt;pcl::PointXYZRGBA&gt; cloud;
+pcl::BriskKeypoint2D&lt;pcl::PointXYZRGBA&gt; brisk;
+brisk.setThreshold (60);
+brisk.setOctaves (4);
+brisk.setInputCloud (cloud);
+ 
+PointCloud&lt;pcl::PointWithScale&gt; keypoints;
+brisk.compute (keypoints);
+pcl::BriskKeypoint2DDetects BRISK interest points based on the original code and paper reference by.Definition: brisk_2d.h:74
+pcl::BriskKeypoint2D
+Detects BRISK interest points based on the original code and paper reference by.
+Definition: brisk_2d.h:74
+pcl::BriskKeypoint2D::setThresholdvoid setThreshold(const int threshold)Sets the threshold for corner detection.Definition: brisk_2d.h:105
+pcl::BriskKeypoint2D::setThreshold
+void setThreshold(const int threshold)
+Sets the threshold for corner detection.
+Definition: brisk_2d.h:105
+pcl::BriskKeypoint2D::setOctavesvoid setOctaves(const int octaves)Set the number of octaves to use.Definition: brisk_2d.h:121
+pcl::BriskKeypoint2D::setOctaves
+void setOctaves(const int octaves)
+Set the number of octaves to use.
+Definition: brisk_2d.h:121
+pcl::Keypoint::computevoid compute(PointCloudOut &amp;output)Base method for key point detection for all points given in &lt;setInputCloud (), setIndices ()&gt; using t...Definition: keypoint.hpp:137
+pcl::Keypoint::compute
+void compute(PointCloudOut &amp;output)
+Base method for key point detection for all points given in &lt;setInputCloud (), setIndices ()&gt; using t...
+Definition: keypoint.hpp:137
+pcl::PCLBase::setInputCloudvirtual void setInputCloud(const PointCloudConstPtr &amp;cloud)Provide a pointer to the input dataset.Definition: pcl_base.hpp:65
+pcl::PCLBase::setInputCloud
+virtual void setInputCloud(const PointCloudConstPtr &amp;cloud)
+Provide a pointer to the input dataset.
+Definition: pcl_base.hpp:65
+pcl::PointCloud&lt; pcl::PointXYZRGBA &gt;
+pcl::PointCloud&lt; pcl::PointXYZRGBA &gt;
+</pre>
+<dl class="section author">
+<dt>Author</dt>
+<dd>Radu B. Rusu, Stefan Holzer </dd>
+</dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00073">73</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div>
+<h2 class="groupheader">Member Typedef Documentation</h2> <a id="a40c07aaf8d5ba8427eb82fe49073c779"></a> <h2 class="memtitle">ConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a40c07aaf8d5ba8427eb82fe49073c779">ConstPtr</a> = shared_ptr&lt;const <a class="el" href="classpcl_1_1_brisk_keypoint2_d">BriskKeypoint2D</a>&lt;PointInT, PointOutT, IntensityT&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00077">77</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="a58e65e7dd04f5afa53d58910e35cd25d"></a> <h2 class="memtitle">KdTree</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a58e65e7dd04f5afa53d58910e35cd25d">KdTree</a> = typename <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt;PointInT, PointOutT&gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a58e65e7dd04f5afa53d58910e35cd25d">KdTree</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00081">81</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="a30c48b9a817988850078724cc7ad185f"></a> <h2 class="memtitle">PointCloudIn</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a30c48b9a817988850078724cc7ad185f">PointCloudIn</a> = typename <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt;PointInT, PointOutT&gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a30c48b9a817988850078724cc7ad185f">PointCloudIn</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00079">79</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="afc49a5e6237d461804418c0b55a136e5"></a> <h2 class="memtitle">PointCloudInConstPtr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#afc49a5e6237d461804418c0b55a136e5">PointCloudInConstPtr</a> = typename PointCloudIn::ConstPtr</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00082">82</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="a33eca38658c08b7bc20b8aad32e7180f"></a> <h2 class="memtitle">PointCloudOut</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a33eca38658c08b7bc20b8aad32e7180f">PointCloudOut</a> = typename <a class="el" href="classpcl_1_1_keypoint">Keypoint</a>&lt;PointInT, PointOutT&gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a33eca38658c08b7bc20b8aad32e7180f">PointCloudOut</a>
+</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00080">80</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="adc257397588b8a925cc6d91d29e3ee40"></a> <h2 class="memtitle">Ptr</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="memname"> <tr> <td class="memname">using <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d#adc257397588b8a925cc6d91d29e3ee40">Ptr</a> = shared_ptr&lt;<a class="el" href="classpcl_1_1_brisk_keypoint2_d">BriskKeypoint2D</a>&lt;PointInT, PointOutT, IntensityT&gt; &gt;</td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00076">76</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2> <a id="a68418f802729d2fb580e6cde185e799c"></a> <h2 class="memtitle">BriskKeypoint2D()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::<a class="el" href="classpcl_1_1_brisk_keypoint2_d">BriskKeypoint2D</a> </td> <td>(</td> <td class="paramtype">int </td> <td class="paramname">
+<em>octaves</em> = <code>4</code>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">int </td> <td class="paramname">
+<em>threshold</em> = <code>60</code> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Constructor. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00090">90</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2keypoint_8h_source.html#l00188">pcl::Keypoint&lt; PointInT, pcl::PointWithScale &gt;::k_</a>, and <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2keypoint_8h_source.html#l00167">pcl::Keypoint&lt; PointInT, pcl::PointWithScale &gt;::name_</a>.</p> </div> </div> <a id="a09c4b7bf26fe83fc84e006d52bb4a7f5"></a> <h2 class="memtitle">~BriskKeypoint2D()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::~<a class="el" href="classpcl_1_1_brisk_keypoint2_d">BriskKeypoint2D</a> </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">default</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Destructor. </p> </div> </div> <h2 class="groupheader">Member Function Documentation</h2> <a id="acfa3d4aad370671d480afe840da29954"></a> <h2 class="memtitle">bilinearInterpolation()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::bilinearInterpolation </td> <td>(</td> <td class="paramtype">const <a class="el" href="classpcl_1_1_brisk_keypoint2_d#afc49a5e6237d461804418c0b55a136e5">PointCloudInConstPtr</a> &amp; </td> <td class="paramname">
+<em>cloud</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">float </td> <td class="paramname">
+<em>x</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">float </td> <td class="paramname">
+<em>y</em>, </td> </tr> <tr> <td class="paramkey"></td> <td></td> <td class="paramtype">PointOutT &amp; </td> <td class="paramname">
+<em>pt</em> </td> </tr> <tr> <td></td> <td>)</td> <td></td>
+<td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00155">155</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> <p class="reference">References <a class="el" href="https://pointclouds.org/documentation/point__tests_8h_source.html#l00055">pcl::isFinite()</a>.</p> </div> </div> <a id="a19558d10925200524bea743011be4a87"></a> <h2 class="memtitle">detectKeypoints()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT , typename IntensityT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::detectKeypoints </td> <td>(</td> <td class="paramtype">
+<a class="el" href="classpcl_1_1_brisk_keypoint2_d#a33eca38658c08b7bc20b8aad32e7180f">PointCloudOut</a> &amp; </td> <td class="paramname"><em>output</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Detects the keypoints. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2impl_2brisk__2d_8hpp_source.html#l00069">69</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2impl_2brisk__2d_8hpp_source.html">brisk_2d.hpp</a>.</p> <p class="reference">References <a class="el" href="classpcl_1_1keypoints_1_1brisk_1_1_scale_space#a7d76800cce5c06421299877f195dc0ba">pcl::keypoints::brisk::ScaleSpace::constructPyramid()</a>, <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2common_2impl_2io_8hpp_source.html#l00142">pcl::copyPointCloud()</a>, <a class="el" href="classpcl_1_1keypoints_1_1brisk_1_1_scale_space#ad3bd3803a23dc47879288696538f4749">pcl::keypoints::brisk::ScaleSpace::getKeypoints()</a>, <a class="el" href="https://pointclouds.org/documentation/point__tests_8h_source.html#l00055">pcl::isFinite()</a>, and <a class="el" href="https://pointclouds.org/documentation/common_2include_2pcl_2point__cloud_8h_source.html#l00395">pcl::PointCloud&lt; PointT &gt;::points</a>.</p> </div> </div> <a id="abeaf0bb89b1a94e8f15822584e94ef43"></a> <h2 class="memtitle">getOctaves()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">int <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::getOctaves </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Returns the number of octaves used. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00128">128</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="a5c53a903009694e3fc7e5694995af95a"></a> <h2 class="memtitle">getRemoveInvalid3DKeypoints()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::getRemoveInvalid3DKeypoints </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Specify whether the keypoints that do not have a valid 3D position are kept (false) or removed (true). </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00148">148</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="a6806669d8fd37aac8c12b945477f1000"></a> <h2 class="memtitle">getThreshold()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">std::size_t <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::getThreshold </td> <td>(</td> <td class="paramname"></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Get the threshold for corner detection, as set by the user. </p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00112">112</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="addbc56630209e2d547e79b03d1f8b415"></a> <h2 class="memtitle">initCompute()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT , typename IntensityT &gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">bool <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::initCompute</td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Initializes everything and checks whether input data is fine. </p> <p>Reimplemented from <a class="el" href="classpcl_1_1_keypoint#a7eeb86d927038a60afabb226429f54db">pcl::Keypoint&lt; PointInT, pcl::PointWithScale &gt;</a>.</p> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2impl_2brisk__2d_8hpp_source.html#l00050">50</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2impl_2brisk__2d_8hpp_source.html">brisk_2d.hpp</a>.</p> </div> </div> <a id="a8a58c65d1a846763e52e4068a301811f"></a> <h2 class="memtitle">setOctaves()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::setOctaves </td> <td>(</td> <td class="paramtype">const int </td> <td class="paramname"><em>octaves</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Set the number of octaves to use. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">octaves</td>
+<td>the number of octaves to use </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00121">121</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="afd263e0bb459ce78e7c0fed57dd2899b"></a> <h2 class="memtitle">setRemoveInvalid3DKeypoints()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::setRemoveInvalid3DKeypoints </td> <td>(</td> <td class="paramtype">bool </td> <td class="paramname"><em>remove</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Specify whether we should do a 2nd pass through the list of keypoints found, and remove the ones that do not have a valid 3D (x-y-z) position (i.e., are NaN or Inf). </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">remove</td>
+<td>set to true whether we want the invalid 3D keypoints removed </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00139">139</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <a id="a0ec5e3aa61678bcbe86e0136636d643d"></a> <h2 class="memtitle">setThreshold()</h2> <div class="memitem"> <div class="memproto"> <div class="memtemplate"> template&lt;typename PointInT , typename PointOutT = pcl::PointWithScale, typename IntensityT = pcl::common::IntensityFieldAccessor&lt;PointInT&gt;&gt; </div> <table class="mlabels"> <tr> <td class="mlabels-left"> <table class="memname"> <tr> <td class="memname">void <a class="el" href="classpcl_1_1_brisk_keypoint2_d">pcl::BriskKeypoint2D</a>&lt; PointInT, PointOutT, IntensityT &gt;::setThreshold </td> <td>(</td> <td class="paramtype">const int </td> <td class="paramname"><em>threshold</em></td>
+<td>)</td> <td></td> </tr> </table> </td> <td class="mlabels-right"> <span class="mlabels"><span class="mlabel">inline</span></span> </td> </tr> </table> </div>
+<div class="memdoc"> <p>Sets the threshold for corner detection. </p> <dl class="params">
+<dt>Parameters</dt>
+<dd> <table class="params"> <tr>
+<td class="paramdir">[in]</td>
+<td class="paramname">threshold</td>
+<td>the threshold used for corner detection. </td>
+</tr> </table> </dd> </dl> <p class="definition">Definition at line <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html#l00105">105</a> of file <a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>.</p> </div> </div> <hr>The documentation for this class was generated from the following files:<ul> <li>pcl/keypoints/<a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2brisk__2d_8h_source.html">brisk_2d.h</a>
+</li> <li>pcl/keypoints/impl/<a class="el" href="https://pointclouds.org/documentation/keypoints_2include_2pcl_2keypoints_2impl_2brisk__2d_8hpp_source.html">brisk_2d.hpp</a>
+</li> </ul> <div class="_attribution">
+  <p class="_attribution-p">
+    © 2009–2012, Willow Garage, Inc.<br>© 2012–, Open Perception, Inc.<br>Licensed under the BSD License.<br>
+    <a href="https://pointclouds.org/documentation/classpcl_1_1_brisk_keypoint2_d.html" class="_attribution-link">https://pointclouds.org/documentation/classpcl_1_1_brisk_keypoint2_d.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
