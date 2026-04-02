@@ -1,0 +1,231 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Constraints &#38; Circularities - Sequelize 6 - W3cubDocs</title>
+  
+  <meta name="description" content="Adding constraints between tables means that tables must be created in the database in a certain order, when using sequelize.sync. If Task has a &hellip;">
+  <meta name="keywords" content="constraints, &#38;, circularities, sequelize, sequelize~6">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/sequelize~6/other-topics/constraints-and-circularities/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/sequelize~6.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/sequelize~6/" class="_nav-link" title="" style="margin-left:0;">Sequelize 6</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>Constraints &amp; Circularities</h1>
+<p>Adding constraints between tables means that tables must be created in the database in a certain order, when using <code>sequelize.sync</code>. If <code>Task</code> has a reference to <code>User</code>, the <code>User</code> table must be created before the <code>Task</code> table can be created. This can sometimes lead to circular references, where Sequelize cannot find an order in which to sync. Imagine a scenario of documents and versions. A document can have multiple versions, and for convenience, a document has a reference to its current version.</p> <div class="language-js codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-js codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa" data-language="js">const { Sequelize, Model, DataTypes } = require('sequelize');
+
+class Document extends Model {}
+Document.init(
+  {
+    author: DataTypes.STRING,
+  },
+  { sequelize, modelName: 'document' },
+);
+
+class Version extends Model {}
+Version.init(
+  {
+    timestamp: DataTypes.DATE,
+  },
+  { sequelize, modelName: 'version' },
+);
+
+Document.hasMany(Version); // This adds documentId attribute to version
+Document.belongsTo(Version, {
+  as: 'Current',
+  foreignKey: 'currentVersionId',
+}); // This adds currentVersionId attribute to document</pre>
+
+</div></div> <p>However, unfortunately the code above will result in the following error:</p> <div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa" data-language="text">Cyclic dependency found. documents is dependent of itself. Dependency chain: documents -&gt; versions =&gt; documents</pre>
+
+</div></div> <p>In order to alleviate that, we can pass <code>constraints: false</code> to one of the associations:</p> <div class="language-js codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-js codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa" data-language="js">Document.hasMany(Version);
+Document.belongsTo(Version, {
+  as: 'Current',
+  foreignKey: 'currentVersionId',
+  constraints: false,
+});</pre>
+
+</div></div> <p>Which will allow us to sync the tables correctly:</p> <div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa" data-language="sql">CREATE TABLE IF NOT EXISTS "documents" (
+  "id" SERIAL,
+  "author" VARCHAR(255),
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL,
+  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL,
+  "currentVersionId" INTEGER,
+  PRIMARY KEY ("id")
+);
+
+CREATE TABLE IF NOT EXISTS "versions" (
+  "id" SERIAL,
+  "timestamp" TIMESTAMP WITH TIME ZONE,
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL,
+  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL,
+  "documentId" INTEGER REFERENCES "documents" ("id") ON DELETE
+  SET
+    NULL ON UPDATE CASCADE,
+    PRIMARY KEY ("id")
+);</pre>
+
+</div></div> <h2 class="anchor anchorWithStickyNavbar_LWe7" id="enforcing-a-foreign-key-reference-without-constraints">Enforcing a foreign key reference without constraints<a href="#enforcing-a-foreign-key-reference-without-constraints" class="hash-link" aria-label="Direct link to Enforcing a foreign key reference without constraints" title="Direct link to Enforcing a foreign key reference without constraints">​</a>
+</h2> <p>Sometimes you may want to reference another table, without adding any constraints, or associations. In that case you can manually add the reference attributes to your schema definition, and mark the relations between them.</p> <div class="language-js codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex">
+<pre tabindex="0" class="prism-code language-js codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa" data-language="js">class Trainer extends Model {}
+Trainer.init(
+  {
+    firstName: Sequelize.STRING,
+    lastName: Sequelize.STRING,
+  },
+  { sequelize, modelName: 'trainer' },
+);
+
+// Series will have a trainerId = Trainer.id foreign reference key
+// after we call Trainer.hasMany(series)
+class Series extends Model {}
+Series.init(
+  {
+    title: Sequelize.STRING,
+    subTitle: Sequelize.STRING,
+    description: Sequelize.TEXT,
+    // Set FK relationship (hasMany) with `Trainer`
+    trainerId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Trainer,
+        key: 'id',
+      },
+    },
+  },
+  { sequelize, modelName: 'series' },
+);
+
+// Video will have seriesId = Series.id foreign reference key
+// after we call Series.hasOne(Video)
+class Video extends Model {}
+Video.init(
+  {
+    title: Sequelize.STRING,
+    sequence: Sequelize.INTEGER,
+    description: Sequelize.TEXT,
+    // set relationship (hasOne) with `Series`
+    seriesId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Series, // Can be both a string representing the table name or a Sequelize model
+        key: 'id',
+      },
+    },
+  },
+  { sequelize, modelName: 'video' },
+);
+
+Series.hasOne(Video);
+Trainer.hasMany(Series);</pre>
+
+</div></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    Copyright © 2014–present Sequelize contributors<br>Licensed under the MIT License.<br>
+    <a href="https://sequelize.org/docs/v6/other-topics/constraints-and-circularities/" class="_attribution-link">https://sequelize.org/docs/v6/other-topics/constraints-and-circularities/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
