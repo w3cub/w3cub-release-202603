@@ -1,0 +1,189 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>JSON - Crystal - W3cubDocs</title>
+  
+  <meta name="description" content=" The JSON module allows parsing and generating JSON documents. ">
+  <meta name="keywords" content="module, json, crystal">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/crystal/json.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/crystal.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/crystal/" class="_nav-link" title="" style="margin-left:0;">Crystal</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _crystal">
+				
+				
+<h1 class="type-name">  module  JSON </h1> <h2>  Overview </h2> <p>The JSON module allows parsing and generating <a href="http://json.org/">JSON</a> documents.</p> <p>NOTE To use <code><a href="json">JSON</a></code> or its children, you must explicitly import it with <code>require "json"</code></p> <h3>
+General type-safe interface</h3> <p>The general type-safe interface for parsing JSON is to invoke <code>T.from_json</code> on a target type <code>T</code> and pass either a <code><a href="string">String</a></code> or <code><a href="io">IO</a></code> as an argument.</p> <pre data-language="crystal">require "json"
+
+json_text = %([1, 2, 3])
+Array(Int32).from_json(json_text) # =&gt; [1, 2, 3]
+
+json_text = %({"x": 1, "y": 2})
+Hash(String, Int32).from_json(json_text) # =&gt; {"x" =&gt; 1, "y" =&gt; 2}</pre> <p>Serializing is achieved by invoking <code>to_json</code>, which returns a <code><a href="string">String</a></code>, or <code>to_json(io : <a href="io">IO</a>)</code>, which will stream the JSON to an <code><a href="io">IO</a></code>.</p> <pre data-language="crystal">require "json"
+
+[1, 2, 3].to_json            # =&gt; "[1,2,3]"
+{"x" =&gt; 1, "y" =&gt; 2}.to_json # =&gt; "{\"x\":1,\"y\":2}"</pre> <p>Most types in the standard library implement these methods. For user-defined types you can define a <code>self.new(pull : JSON::PullParser)</code> for parsing and <code>to_json(builder : <a href="json/builder">JSON::Builder</a>)</code> for serializing. The following sections show convenient ways to do this using <code><a href="json/serializable">JSON::Serializable</a></code>.</p> <p>NOTE JSON object keys are always strings but they can still be parsed and deserialized to other types. To deserialize, define a <code>T.from_json_object_key?(key : String) : T?</code> method, which can return <code>nil</code> if the string can't be parsed into that type. To serialize, define a <code>to_json_object_key : <a href="string">String</a></code> method can be serialized that way. All integer and float types in the standard library can be deserialized that way.</p> <pre data-language="crystal">require "json"
+
+json_text = %({"1": 2, "3": 4})
+Hash(Int32, Int32).from_json(json_text) # =&gt; {1 =&gt; 2, 3 =&gt; 4}
+
+{1.5 =&gt; 2}.to_json # =&gt; "{\"1.5\":2}"</pre> <h3>
+Parsing with <code><a href="json#parse%28input%3AString%7CIO%29%3AAny-class-method">JSON.parse</a></code>
+</h3> <p><code><a href="json#parse%28input%3AString%7CIO%29%3AAny-class-method">JSON.parse</a></code> will return an <code><a href="json/any">Any</a></code>, which is a convenient wrapper around all possible JSON types, making it easy to traverse a complex JSON structure but requires some casts from time to time, mostly via some method invocations.</p> <pre data-language="crystal">require "json"
+
+value = JSON.parse("[1, 2, 3]") # : JSON::Any
+
+value[0]               # =&gt; 1
+typeof(value[0])       # =&gt; JSON::Any
+value[0].as_i          # =&gt; 1
+typeof(value[0].as_i)  # =&gt; Int32
+value[0].as_i?         # =&gt; 1
+typeof(value[0].as_i?) # =&gt; Int32 | Nil
+value[0].as_s?         # =&gt; nil
+typeof(value[0].as_s?) # =&gt; String | Nil
+
+value[0] + 1       # Error, because value[0] is JSON::Any
+value[0].as_i + 10 # =&gt; 11</pre> <p><code><a href="json#parse%28input%3AString%7CIO%29%3AAny-class-method">JSON.parse</a></code> can read from an <code><a href="io">IO</a></code> directly (such as a file) which saves allocating a string:</p> <pre data-language="crystal">require "json"
+
+json = File.open("path/to/file.json") do |file|
+  JSON.parse(file)
+end</pre> <p>Parsing with <code><a href="json#parse%28input%3AString%7CIO%29%3AAny-class-method">JSON.parse</a></code> is useful for dealing with a dynamic JSON structure.</p> <h3>
+Generating with <code><a href="json#build%28indent%3AString%7CInt%7CNil%3Dnil%2C%26%29-class-method">JSON.build</a></code>
+</h3> <p>Use <code><a href="json#build%28indent%3AString%7CInt%7CNil%3Dnil%2C%26%29-class-method">JSON.build</a></code>, which uses <code><a href="json/builder">JSON::Builder</a></code>, to generate JSON by emitting scalars, arrays and objects:</p> <pre data-language="crystal">require "json"
+
+string = JSON.build do |json|
+  json.object do
+    json.field "name", "foo"
+    json.field "values" do
+      json.array do
+        json.number 1
+        json.number 2
+        json.number 3
+      end
+    end
+  end
+end
+string # =&gt; %&lt;{"name":"foo","values":[1,2,3]}&gt;</pre> <h3>
+Generating with <code>to_json</code>
+</h3> <p><code>to_json</code>, <code>to_json(<a href="io">IO</a>)</code> and <code>to_json(<a href="json/builder">JSON::Builder</a>)</code> methods are provided for primitive types, but you need to define <code>to_json(<a href="json/builder">JSON::Builder</a>)</code> for custom objects, either manually or using <code><a href="json/serializable">JSON::Serializable</a></code>.</p> <h2>  Defined in: </h2> <a href="https://github.com/crystal-lang/crystal/blob/5a4407796/src/json.cr#L116" target="_blank"> json.cr </a> <br> <a href="https://github.com/crystal-lang/crystal/blob/5a4407796/src/json/builder.cr#L413" target="_blank"> json/builder.cr </a> <br> <a href="https://github.com/crystal-lang/crystal/blob/5a4407796/src/json/serialization.cr#L1" target="_blank"> json/serialization.cr </a> <br> <h2>  Class Method Summary </h2> <ul class="list-summary"> <li class="entry-summary"> <a href="#build%28indent%3AString%7CInt%7CNil%3Dnil%2C%26%29-class-method" class="signature"><strong>.build</strong>(indent : String | Int | Nil = nil, &amp;)</a> <div class="summary"><p>Returns the resulting <code><a href="string">String</a></code> of writing JSON to the yielded <code><a href="json/builder">JSON::Builder</a></code>.</p></div> </li> <li class="entry-summary"> <a href="#build%28io%3AIO%2Cindent%3AString%7CInt%7CNil%3Dnil%2C%26%29%3ANil-class-method" class="signature"><strong>.build</strong>(io : IO, indent : String | Int | Nil = nil, &amp;) : Nil</a> <div class="summary"><p>Writes JSON into the given <code><a href="io">IO</a></code>.</p></div> </li> <li class="entry-summary"> <a href="#parse%28input%3AString%7CIO%29%3AAny-class-method" class="signature"><strong>.parse</strong>(input : String | IO) : Any</a> <div class="summary"><p>Parses a JSON document as a <code><a href="json/any">JSON::Any</a></code>.</p></div> </li> </ul>  <h2>  Class Method Detail </h2> <div class="entry-detail" id="build(indent:String|Int|Nil=nil,&amp;)-class-method"> <h3 class="signature">def self.<strong>build</strong>(indent : <a href="string">String</a> | <a href="int">Int</a> | <a href="nil">Nil</a> = nil, &amp;)<a href="https://github.com/crystal-lang/crystal/blob/5a4407796/src/json/builder.cr#L436" target="_blank" class="view-source">Source</a>
+</h3> <div class="doc"> <p>Returns the resulting <code><a href="string">String</a></code> of writing JSON to the yielded <code><a href="json/builder">JSON::Builder</a></code>.</p> <pre data-language="crystal">require "json"
+
+string = JSON.build do |json|
+  json.object do
+    json.field "name", "foo"
+    json.field "values" do
+      json.array do
+        json.number 1
+        json.number 2
+        json.number 3
+      end
+    end
+  end
+end
+string # =&gt; %&lt;{"name":"foo","values":[1,2,3]}&gt;</pre> <p>Accepts an indent parameter which can either be an <code><a href="int">Int</a></code> (number of spaces to indent) or a <code><a href="string">String</a></code>, which will prefix each level with the string a corresponding amount of times.</p> </div>   </div> <div class="entry-detail" id="build(io:IO,indent:String|Int|Nil=nil,&amp;):Nil-class-method"> <h3 class="signature">def self.<strong>build</strong>(io : <a href="io">IO</a>, indent : <a href="string">String</a> | <a href="int">Int</a> | <a href="nil">Nil</a> = nil, &amp;) : <a href="nil">Nil</a><a href="https://github.com/crystal-lang/crystal/blob/5a4407796/src/json/builder.cr#L445" target="_blank" class="view-source">Source</a>
+</h3> <div class="doc"> <p>Writes JSON into the given <code><a href="io">IO</a></code>. A <code><a href="json/builder">JSON::Builder</a></code> is yielded to the block.</p> </div>   </div> <div class="entry-detail" id="parse(input:String|IO):Any-class-method"> <h3 class="signature">def self.<strong>parse</strong>(input : <a href="string">String</a> | <a href="io">IO</a>) : <a href="json/any">Any</a><a href="https://github.com/crystal-lang/crystal/blob/5a4407796/src/json.cr#L161" target="_blank" class="view-source">Source</a>
+</h3> <div class="doc"> <p>Parses a JSON document as a <code><a href="json/any">JSON::Any</a></code>.</p> </div>   </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2012–2026 Manas Technology Solutions.<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://crystal-lang.org/api/1.19.0/JSON.html" class="_attribution-link">https://crystal-lang.org/api/1.19.0/JSON.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
