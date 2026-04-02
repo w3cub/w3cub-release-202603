@@ -1,0 +1,740 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>MessageFormat - OpenJDK 25 - W3cubDocs</title>
+  
+  <meta name="description" content=" MessageFormat takes a set of objects, formats them, then inserts the formatted strings into the pattern at the appropriate places. ">
+  <meta name="keywords" content="class, messageformat, openjdk, openjdk~25">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/openjdk~25/java.base/java/text/messageformat.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/openjdk~25.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/openjdk~25/" class="_nav-link" title="" style="margin-left:0;">OpenJDK 25</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _openjdk">
+				
+				
+<h1 title="Class MessageFormat" class="title">Class MessageFormat</h1> <div class="inheritance" title="Inheritance Tree">
+<a href="../lang/object" title="class in java.lang">java.lang.Object</a> <div class="inheritance">
+<a href="format" title="class in java.text">java.text.Format</a> <div class="inheritance">java.text.MessageFormat</div> </div> </div> <section class="class-description" id="class-description"> <dl class="notes"> <dt>All Implemented Interfaces:</dt> <dd><code><a href="../io/serializable" title="interface in java.io">Serializable</a>, <a href="../lang/cloneable" title="interface in java.lang">Cloneable</a></code></dd> </dl>  <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public class MessageFormat extends Format</pre> <div class="block">
+<code>MessageFormat</code> provides a means to produce concatenated messages in a language-neutral way. Use this class to construct messages displayed for end users. <p> <code>MessageFormat</code> takes a set of objects, formats them, then inserts the formatted strings into the pattern at the appropriate places. </p>
+<p> <strong>Note:</strong> <code>MessageFormat</code> differs from the other <code>Format</code> classes in that you create a <code>MessageFormat</code> object with one of its constructors (not with a <code>getInstance</code> style factory method). The factory methods aren't necessary because <code>MessageFormat</code> itself doesn't implement locale specific behavior. Any locale specific behavior is defined by the pattern that you provide as well as the subformats used for inserted arguments. </p>
+<h2><a id="patterns">Patterns and Their Interpretation</a></h2> <code>MessageFormat</code> uses patterns of the following form: <blockquote><pre>
+<i>MessageFormatPattern:</i>
+        <i>String</i>
+        <i>MessageFormatPattern</i> <i>FormatElement</i> <i>String</i>
+
+<i>FormatElement:</i>
+        { <i>ArgumentIndex</i> }
+        { <i>ArgumentIndex</i> , <i>FormatType</i> }
+        { <i>ArgumentIndex</i> , <i>FormatType</i> , <i>FormatStyle</i> }
+
+<i>FormatType:</i>
+        number
+        dtf_date
+        dtf_time
+        dtf_datetime
+        <i>pre-defined DateTimeFormatter(s)</i>
+        date
+        time
+        choice
+        list
+
+<i>FormatStyle:</i>
+        short
+        medium
+        long
+        full
+        integer
+        currency
+        percent
+        compact_short
+        compact_long
+        or
+        unit
+        <i>SubformatPattern</i>
+</pre></blockquote> <p> The <code>ArgumentIndex</code> value is a non-negative integer written using the digits <code>'0'</code> through <code>'9'</code>, and represents an index into the <code>arguments</code> array passed to the <code>format</code> methods or the result array returned by the <code>parse</code> methods. </p>
+<p> Any constructor or method that takes a String pattern parameter will throw an <code>IllegalArgumentException</code> if the pattern contains an <code>ArgumentIndex</code> value that is equal to or exceeds an implementation limit. </p>
+<p> The <code>FormatType</code> and <code>FormatStyle</code> values are used to create a <code>Format</code> instance for the format element. The following table shows how the values map to <code>Format</code> instances. These values are case-insensitive when passed to <a href="#applyPattern(java.lang.String)"><code>applyPattern(String)</code></a>. Combinations not shown in the table are illegal. A <i>SubformatPattern</i> must be a valid pattern string for the <code>Format</code> subclass used.</p>
+</div> <dl class="notes"> <dt>Implementation Note:</dt> <dd>In the reference implementation, the limit of <code>ArgumentIndex</code> is 10,000. <table class="plain"> <caption style="display:none">Shows how FormatType and FormatStyle values map to Format instances</caption> <thead> <tr> <th scope="col" class="TableHeadingColor">FormatType </th>
+<th scope="col" class="TableHeadingColor">FormatStyle </th>
+<th scope="col" class="TableHeadingColor">Subformat Created </th>
+</tr>
+</thead> <tbody> <tr> <th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<code>null</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="7">
+<code>number</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<a href="numberformat#getInstance(java.util.Locale)"><code>NumberFormat.getInstance</code></a><code>(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>integer</code> </th>
+<td>
+<a href="numberformat#getIntegerInstance(java.util.Locale)"><code>NumberFormat.getIntegerInstance</code></a><code>(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>currency</code> </th>
+<td>
+<a href="numberformat#getCurrencyInstance(java.util.Locale)"><code>NumberFormat.getCurrencyInstance</code></a><code>(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>percent</code> </th>
+<td>
+<a href="numberformat#getPercentInstance(java.util.Locale)"><code>NumberFormat.getPercentInstance</code></a><code>(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>compact_short</code> </th>
+<td>
+<a href="numberformat#getCompactNumberInstance(java.util.Locale,java.text.NumberFormat.Style)"><code>NumberFormat.getCompactNumberInstance</code></a><code>(getLocale(),</code> <a href="numberformat.style#SHORT"><code>NumberFormat.Style.SHORT</code></a>) </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>compact_long</code> </th>
+<td>
+<a href="numberformat#getCompactNumberInstance(java.util.Locale,java.text.NumberFormat.Style)"><code>NumberFormat.getCompactNumberInstance</code></a><code>(getLocale(),</code> <a href="numberformat.style#LONG"><code>NumberFormat.Style.LONG</code></a>) </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<i>SubformatPattern</i> </th>
+<td>
+<code>new</code> <a href="decimalformat#%3Cinit%3E(java.lang.String,java.text.DecimalFormatSymbols)"><code>DecimalFormat</code></a><code>(subformatPattern,</code> <a href="decimalformatsymbols#getInstance(java.util.Locale)"><code>DecimalFormatSymbols.getInstance</code></a><code>(getLocale()))</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="6">
+<code>dtf_date</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDate(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDate(</code></a><a href="../time/format/formatstyle#MEDIUM"><code>FormatStyle.MEDIUM</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>short</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDate(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDate(</code></a><a href="../time/format/formatstyle#SHORT"><code>FormatStyle.SHORT</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>medium</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDate(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDate(</code></a><a href="../time/format/formatstyle#MEDIUM"><code>FormatStyle.MEDIUM</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>long</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDate(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDate(</code></a><a href="../time/format/formatstyle#LONG"><code>FormatStyle.LONG</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>full</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDate(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDate(</code></a><a href="../time/format/formatstyle#FULL"><code>FormatStyle.FULL</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<i>SubformatPattern</i> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofPattern(java.lang.String,java.util.Locale)"><code>DateTimeFormatter.ofPattern</code></a><code>(subformatPattern, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="6">
+<code>dtf_time</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedTime(</code></a><a href="../time/format/formatstyle#MEDIUM"><code>FormatStyle.MEDIUM</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>short</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedTime(</code></a><a href="../time/format/formatstyle#SHORT"><code>FormatStyle.SHORT</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>medium</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedTime(</code></a><a href="../time/format/formatstyle#MEDIUM"><code>FormatStyle.MEDIUM</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>long</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedTime(</code></a><a href="../time/format/formatstyle#LONG"><code>FormatStyle.LONG</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>full</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedTime(</code></a><a href="../time/format/formatstyle#FULL"><code>FormatStyle.FULL</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<i>SubformatPattern</i> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofPattern(java.lang.String,java.util.Locale)"><code>DateTimeFormatter.ofPattern</code></a><code>(subformatPattern, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="6">
+<code>dtf_datetime</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDateTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDateTime(</code></a><a href="../time/format/formatstyle#MEDIUM"><code>FormatStyle.MEDIUM</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>short</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDateTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDateTime(</code></a><a href="../time/format/formatstyle#SHORT"><code>FormatStyle.SHORT</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>medium</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDateTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDateTime(</code></a><a href="../time/format/formatstyle#MEDIUM"><code>FormatStyle.MEDIUM</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>long</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDateTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDateTime(</code></a><a href="../time/format/formatstyle#LONG"><code>FormatStyle.LONG</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>full</code> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofLocalizedDateTime(java.time.format.FormatStyle)"><code>DateTimeFormatter.ofLocalizedDateTime(</code></a><a href="../time/format/formatstyle#FULL"><code>FormatStyle.FULL</code></a><code>).withLocale(getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<i>SubformatPattern</i> </th>
+<td>
+<a href="../time/format/datetimeformatter#ofPattern(java.lang.String,java.util.Locale)"><code>DateTimeFormatter.ofPattern</code></a><code>(subformatPattern, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="1">
+<code>pre-defined DateTimeFormatter(s)</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>The <code>pre-defined DateTimeFormatter(s)</code> are used as a <code>FormatType</code> : <a href="../time/format/datetimeformatter#BASIC_ISO_DATE"><code>BASIC_ISO_DATE</code></a>, <a href="../time/format/datetimeformatter#ISO_LOCAL_DATE"><code>ISO_LOCAL_DATE</code></a>, <a href="../time/format/datetimeformatter#ISO_OFFSET_DATE"><code>ISO_OFFSET_DATE</code></a>, <a href="../time/format/datetimeformatter#ISO_DATE"><code>ISO_DATE</code></a>, <a href="../time/format/datetimeformatter#ISO_LOCAL_TIME"><code>ISO_LOCAL_TIME</code></a>, <a href="../time/format/datetimeformatter#ISO_OFFSET_TIME"><code>ISO_OFFSET_TIME</code></a>, <a href="../time/format/datetimeformatter#ISO_TIME"><code>ISO_TIME</code></a>, <a href="../time/format/datetimeformatter#ISO_LOCAL_DATE_TIME"><code>ISO_LOCAL_DATE_TIME</code></a>, <a href="../time/format/datetimeformatter#ISO_OFFSET_DATE_TIME"><code>ISO_OFFSET_DATE_TIME</code></a>, <a href="../time/format/datetimeformatter#ISO_ZONED_DATE_TIME"><code>ISO_ZONED_DATE_TIME</code></a>, <a href="../time/format/datetimeformatter#ISO_DATE_TIME"><code>ISO_DATE_TIME</code></a>, <a href="../time/format/datetimeformatter#ISO_ORDINAL_DATE"><code>ISO_ORDINAL_DATE</code></a>, <a href="../time/format/datetimeformatter#ISO_WEEK_DATE"><code>ISO_WEEK_DATE</code></a>, <a href="../time/format/datetimeformatter#ISO_INSTANT"><code>ISO_INSTANT</code></a>, <a href="../time/format/datetimeformatter#RFC_1123_DATE_TIME"><code>RFC_1123_DATE_TIME</code></a> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="6">
+<code>date</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<a href="dateformat#getDateInstance(int,java.util.Locale)"><code>DateFormat.getDateInstance</code></a><code>(</code><a href="dateformat#DEFAULT"><code>DateFormat.DEFAULT</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>short</code> </th>
+<td>
+<a href="dateformat#getDateInstance(int,java.util.Locale)"><code>DateFormat.getDateInstance</code></a><code>(</code><a href="dateformat#SHORT"><code>DateFormat.SHORT</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>medium</code> </th>
+<td>
+<a href="dateformat#getDateInstance(int,java.util.Locale)"><code>DateFormat.getDateInstance</code></a><code>(</code><a href="dateformat#MEDIUM"><code>DateFormat.MEDIUM</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>long</code> </th>
+<td>
+<a href="dateformat#getDateInstance(int,java.util.Locale)"><code>DateFormat.getDateInstance</code></a><code>(</code><a href="dateformat#LONG"><code>DateFormat.LONG</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>full</code> </th>
+<td>
+<a href="dateformat#getDateInstance(int,java.util.Locale)"><code>DateFormat.getDateInstance</code></a><code>(</code><a href="dateformat#FULL"><code>DateFormat.FULL</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<i>SubformatPattern</i> </th>
+<td>
+<code>new</code> <a href="simpledateformat#%3Cinit%3E(java.lang.String,java.util.Locale)"><code>SimpleDateFormat</code></a><code>(subformatPattern, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="6">
+<code>time</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<a href="dateformat#getTimeInstance(int,java.util.Locale)"><code>DateFormat.getTimeInstance</code></a><code>(</code><a href="dateformat#DEFAULT"><code>DateFormat.DEFAULT</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>short</code> </th>
+<td>
+<a href="dateformat#getTimeInstance(int,java.util.Locale)"><code>DateFormat.getTimeInstance</code></a><code>(</code><a href="dateformat#SHORT"><code>DateFormat.SHORT</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>medium</code> </th>
+<td>
+<a href="dateformat#getTimeInstance(int,java.util.Locale)"><code>DateFormat.getTimeInstance</code></a><code>(</code><a href="dateformat#MEDIUM"><code>DateFormat.MEDIUM</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>long</code> </th>
+<td>
+<a href="dateformat#getTimeInstance(int,java.util.Locale)"><code>DateFormat.getTimeInstance</code></a><code>(</code><a href="dateformat#LONG"><code>DateFormat.LONG</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>full</code> </th>
+<td>
+<a href="dateformat#getTimeInstance(int,java.util.Locale)"><code>DateFormat.getTimeInstance</code></a><code>(</code><a href="dateformat#FULL"><code>DateFormat.FULL</code></a><code>, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<i>SubformatPattern</i> </th>
+<td>
+<code>new</code> <a href="simpledateformat#%3Cinit%3E(java.lang.String,java.util.Locale)"><code>SimpleDateFormat</code></a><code>(subformatPattern, getLocale())</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>choice</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>SubformatPattern</i> </th>
+<td>
+<code>new</code> <a href="choiceformat#%3Cinit%3E(java.lang.String)"><code>ChoiceFormat</code></a><code>(subformatPattern)</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="3">
+<code>list</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>(none)</i> </th>
+<td>
+<a href="listformat#getInstance(java.util.Locale,java.text.ListFormat.Type,java.text.ListFormat.Style)"><code>ListFormat.getInstance</code></a><code>(getLocale()</code>, <a href="listformat.type#STANDARD"><code>ListFormat.Type.STANDARD</code></a>, <a href="listformat.style#FULL"><code>ListFormat.Style.FULL</code></a><code>)</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>or</code> </th>
+<td>
+<a href="listformat#getInstance(java.util.Locale,java.text.ListFormat.Type,java.text.ListFormat.Style)"><code>ListFormat.getInstance</code></a><code>(getLocale()</code>, <a href="listformat.type#OR"><code>ListFormat.Type.OR</code></a>, <a href="listformat.style#FULL"><code>ListFormat.Style.FULL</code></a><code>)</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>unit</code> </th>
+<td>
+<a href="listformat#getInstance(java.util.Locale,java.text.ListFormat.Type,java.text.ListFormat.Style)"><code>ListFormat.getInstance</code></a><code>(getLocale()</code>, <a href="listformat.type#UNIT"><code>ListFormat.Type.UNIT</code></a>, <a href="listformat.style#FULL"><code>ListFormat.Style.FULL</code></a><code>)</code> </td>
+</tr>
+</tbody> </table> <h3 id="quoting-rules-in-patterns-heading">Quoting Rules in Patterns</h3> <p>Within a <i>String</i>, a pair of single quotes can be used to quote any arbitrary characters except single quotes. For example, pattern string <code>"'{0}'"</code> represents string <code>"{0}"</code>, not a <i>FormatElement</i>. A single quote itself must be represented by doubled single quotes <code>''</code> throughout a <i>String</i>. For example, pattern string <code>"'{''}'"</code> is interpreted as a sequence of <code>'{</code> (start of quoting and a left curly brace), <code>''</code> (a single quote), and <code>}'</code> (a right curly brace and end of quoting), <em>not</em> <code>'{'</code> and <code>'}'</code> (quoted left and right curly braces): representing string <code>"{'}"</code>, <em>not</em> <code>"{}"</code>. </p>
+<p>A <i>SubformatPattern</i> is interpreted by its corresponding subformat, and subformat-dependent pattern rules apply. For example, pattern string <code>"{1,number,<u>$'#',##</u>}"</code> (<i>SubformatPattern</i> with underline) will produce a number format with the pound-sign quoted, with a result such as: <code>
+"$#31,45"</code>. Refer to each <code>Format</code> subclass documentation for details. </p>
+<p>Any unmatched quote is treated as closed at the end of the given pattern. For example, pattern string <code>"'{0}"</code> is treated as pattern <code>"'{0}'"</code>. </p>
+<p>Any curly braces within an unquoted pattern must be balanced. For example, <code>"ab {0} de"</code> and <code>"ab '}' de"</code> are valid patterns, but <code>"ab {0'}' de"</code>, <code>"ab } de"</code> and <code>"''{''"</code> are not. </p>
+<dl>
+<dt><b>Warning:</b></dt>
+<dd>The rules for using quotes within message format patterns unfortunately have shown to be somewhat confusing. In particular, it isn't always obvious to localizers whether single quotes need to be doubled or not. Make sure to inform localizers about the rules, and tell them (for example, by using comments in resource bundle source files) which strings will be processed by <code>MessageFormat</code>. Note that localizers may need to use single quotes in translated strings where the original version doesn't have them. </dd>
+</dl> <h2 id="usage-information-heading">Usage Information</h2> The following example demonstrates a general usage of <code>MessageFormat</code>. In internationalized programs, the message format pattern and other static strings will likely be obtained from resource bundles. <div class="snippet-container"> <pre class="lang-java" id="snippet-java.text.MessageFormat1" data-language="java"><code class="language-java">int planet = 7;
+String event = "a disturbance in the Force";
+String result = MessageFormat.format(
+    "At {1,time} on {1,date}, there was {2} on planet {0,number,integer}.",
+    planet, new GregorianCalendar(2053, Calendar.JULY, 3, 12, 30).getTime(), event);
+</code></pre> </div> <code>result</code> returns the following: <blockquote><pre>
+At 12:30:00 PM on Jul 3, 2053, there was a disturbance in the Force on planet 7.
+</pre></blockquote> <p> For more sophisticated patterns, <a href="choiceformat" title="class in java.text"><code>ChoiceFormat</code></a> can be used with <code>MessageFormat</code> to produce accurate forms for singular and plural: </p>
+<div class="snippet-container"> <pre class="lang-java" id="snippet-java.text.MessageFormat2" data-language="java"><code class="language-java">MessageFormat msgFmt = new MessageFormat("The disk \"{0}\" contains {1,choice,0#no files|1#one file|1&lt; {1,number,integer} files}.");
+Object[] args = {"MyDisk", fileCount};
+String result = msgFmt.format(args);
+</code></pre> </div> <code>result</code> with different values for <code>fileCount</code>, returns the following: <blockquote><pre>
+The disk "MyDisk" contains no files.
+The disk "MyDisk" contains one file.
+The disk "MyDisk" contains 1,273 files.
+</pre></blockquote> <p> <strong id="pattern_caveats">Notes:</strong> As seen in the previous snippet, the string produced by a <code>ChoiceFormat</code> in <code>MessageFormat</code> is treated as special; occurrences of '{' are used to indicate subformats, and cause recursion. If a <code>FormatElement</code> is defined in the <code>ChoiceFormat</code> pattern, it will only be formatted according to the <code>FormatType</code> and <code>FormatStyle</code> pattern provided. The associated subformats of the top level <code>MessageFormat</code> will not be applied to the <code>FormatElement</code> defined in the <code>ChoiceFormat</code> pattern. If you create both a <code>MessageFormat</code> and <code>ChoiceFormat</code> programmatically (instead of using the string patterns), then be careful not to produce a format that recurses on itself, which will cause an infinite loop. </p>
+<h2 id="formatting-date-and-time-heading">Formatting Date and Time</h2> MessageFormat provides patterns that support the date/time formatters in the <a href="../time/format/package-summary"><code>java.time.format</code></a> and <a href="package-summary"><code>java.text</code></a> packages. Consider the following three examples, with a date of 11/16/2023: <p>1) a <i>date</i> <code>FormatType</code> with a <i>full</i> <code>FormatStyle</code>, </p>
+<div class="snippet-container"> <pre class="lang-java" id="snippet-java.text.MessageFormat3" data-language="java"><code class="language-java">Object[] arg = {new GregorianCalendar(2023, Calendar.NOVEMBER, 16).getTime()};
+var fmt = new MessageFormat("The date was {0,date,full}");
+fmt.format(arg); // returns "The date was Thursday, November 16, 2023"
+</code></pre> </div> <p>2) a <i>dtf_date</i> <code>FormatType</code> with a <i>full</i> <code>FormatStyle</code>, </p>
+<div class="snippet-container"> <pre class="lang-java" id="snippet-java.text.MessageFormat4" data-language="java"><code class="language-java">Object[] arg = {LocalDate.of(2023, 11, 16)};
+var fmt = new MessageFormat("The date was {0,dtf_date,full}");
+fmt.format(arg); // returns "The date was Thursday, November 16, 2023"
+</code></pre> </div> <p>3) an <i>ISO_LOCAL_DATE</i> <code>FormatType</code>, </p>
+<div class="snippet-container"> <pre class="lang-java" id="snippet-java.text.MessageFormat5" data-language="java"><code class="language-java">Object[] arg = {LocalDate.of(2023, 11, 16)};
+var fmt = new MessageFormat("The date was {0,ISO_LOCAL_DATE}");
+fmt.format(arg); // returns "The date was 2023-11-16"
+</code></pre> </div> <h3 id="parsing-heading">Parsing</h3> <p> When a single argument is parsed more than once in the string, the last match will be the final result of the parsing. For example, </p>
+<div class="snippet-container"> <pre class="lang-java" id="snippet-java.text.MessageFormat6" data-language="java"><code class="language-java">MessageFormat mf = new MessageFormat("{0,number,#.##}, {0,number,#.#}");
+Object[] objs = {Double.valueOf(3.1415)};
+String result = mf.format( objs );
+// result now equals "3.14, 3.1"
+objs = mf.parse(result, new ParsePosition(0));
+// objs now equals {Double.valueOf(3.1)}
+</code></pre> </div> <p> Likewise, parsing with a <code>MessageFormat</code> object using patterns containing multiple occurrences of the same argument would return the last match. For example, </p>
+<div class="snippet-container"> <pre class="lang-java" id="snippet-java.text.MessageFormat7" data-language="java"><code class="language-java">MessageFormat mf = new MessageFormat("{0}, {0}, {0}");
+String forParsing = "x, y, z";
+Object[] objs = mf.parse(forParsing, new ParsePosition(0));
+// objs now equals {new String("z")}
+</code></pre> </div> <h3><a id="synchronization">Synchronization</a></h3> <p> Message formats are not synchronized. It is recommended to create separate format instances for each thread. If multiple threads access a format concurrently, it must be synchronized externally.</p>
+</dd> <dt>Since:</dt> <dd>1.1</dd> <dt>See Also:</dt> <dd> <ul class="tag-list"> <li><a href="../util/locale" title="class in java.util"><code>Locale</code></a></li> <li><a href="format" title="class in java.text"><code>Format</code></a></li> <li><a href="numberformat" title="class in java.text"><code>NumberFormat</code></a></li> <li><a href="decimalformat" title="class in java.text"><code>DecimalFormat</code></a></li> <li><a href="decimalformatsymbols" title="class in java.text"><code>DecimalFormatSymbols</code></a></li> <li><a href="choiceformat" title="class in java.text"><code>ChoiceFormat</code></a></li> <li><a href="dateformat" title="class in java.text"><code>DateFormat</code></a></li> <li><a href="simpledateformat" title="class in java.text"><code>SimpleDateFormat</code></a></li> <li><a href="../time/format/datetimeformatter" title="class in java.time.format"><code>DateTimeFormatter</code></a></li> <li><a href="https://docs.oracle.com/en/java/javase/25/docs/api/serialized-form.html#java.text.MessageFormat">Serialized Form</a></li> </ul> </dd> </dl> </div> </section> <section class="summary"> <section class="nested-class-summary" id="nested-class-summary"> <h2>Nested Class Summary</h2>  <table class="summary-table three-column-summary">       <tr>
+<th>Modifier and Type</th>
+<th>Class</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><code>static class </code></td>
+<td><code><a href="messageformat.field" class="type-name-link" title="class in java.text">MessageFormat.Field</a></code></td>
+<td> <div class="block">Defines constants that are used as attribute keys in the <code>AttributedCharacterIterator</code> returned from <code>MessageFormat.formatToCharacterIterator</code>.</div> </td>
+</tr>
+</table> </section><section class="constructor-summary" id="constructor-summary"> <h2>Constructor Summary</h2>  <table class="summary-table two-column-summary">       <tr>
+<th>Constructor</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><code><a href="#%3Cinit%3E(java.lang.String)" class="member-name-link">MessageFormat</a><wbr>(<a href="../lang/string" title="class in java.lang">String</a> pattern)</wbr></code></td>
+<td> <div class="block">Constructs a MessageFormat for the default <a href="../util/locale.category#FORMAT"><code>FORMAT</code></a> locale and the specified pattern.</div> </td>
+</tr>
+<tr>
+<td><code><a href="#%3Cinit%3E(java.lang.String,java.util.Locale)" class="member-name-link">MessageFormat</a><wbr>(<a href="../lang/string" title="class in java.lang">String</a> pattern,
+ <a href="../util/locale" title="class in java.util">Locale</a> locale)</wbr></code></td>
+<td> <div class="block">Constructs a MessageFormat for the specified locale and pattern.</div> </td>
+</tr>
+</table> </section><section class="method-summary" id="method-summary"> <h2>Method Summary</h2> <div id="method-summary-table">  <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0"> <table class="summary-table three-column-summary">                                                                   <tr>
+<th>Modifier and Type</th>
+<th>Method</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code><a href="#applyPattern(java.lang.String)" class="member-name-link">applyPattern</a><wbr>(<a href="../lang/string" title="class in java.lang">String</a> pattern)</wbr></code></td>
+<td> <div class="block">Sets the pattern used by this message format.</div> </td>
+</tr>
+<tr>
+<td><code><a href="../lang/object" title="class in java.lang">Object</a></code></td>
+<td><code><a href="#clone()" class="member-name-link">clone</a>()</code></td>
+<td> <div class="block">Creates and returns a copy of this object.</div> </td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="../lang/object" title="class in java.lang">Object</a> obj)</wbr></code></td>
+<td> <div class="block">Compares the specified object with this <code>MessageFormat</code> for equality.</div> </td>
+</tr>
+<tr>
+<td><code>final <a href="../lang/stringbuffer" title="class in java.lang">StringBuffer</a></code></td>
+<td><code><a href="#format(java.lang.Object%5B%5D,java.lang.StringBuffer,java.text.FieldPosition)" class="member-name-link">format</a><wbr>(<a href="../lang/object" title="class in java.lang">Object</a>[] arguments,
+ <a href="../lang/stringbuffer" title="class in java.lang">StringBuffer</a> result,
+ <a href="fieldposition" title="class in java.text">FieldPosition</a> pos)</wbr></code></td>
+<td> <div class="block">Formats an array of objects and appends the <code>MessageFormat</code>'s pattern, with format elements replaced by the formatted objects, to the provided <code>StringBuffer</code>.</div> </td>
+</tr>
+<tr>
+<td><code>final <a href="../lang/stringbuffer" title="class in java.lang">StringBuffer</a></code></td>
+<td><code><a href="#format(java.lang.Object,java.lang.StringBuffer,java.text.FieldPosition)" class="member-name-link">format</a><wbr>(<a href="../lang/object" title="class in java.lang">Object</a> arguments,
+ <a href="../lang/stringbuffer" title="class in java.lang">StringBuffer</a> result,
+ <a href="fieldposition" title="class in java.text">FieldPosition</a> pos)</wbr></code></td>
+<td> <div class="block">Formats an array of objects and appends the <code>MessageFormat</code>'s pattern, with format elements replaced by the formatted objects, to the provided <code>StringBuffer</code>.</div> </td>
+</tr>
+<tr>
+<td><code>static <a href="../lang/string" title="class in java.lang">String</a></code></td>
+<td><code><a href="#format(java.lang.String,java.lang.Object...)" class="member-name-link">format</a><wbr>(<a href="../lang/string" title="class in java.lang">String</a> pattern,
+ <a href="../lang/object" title="class in java.lang">Object</a>... arguments)</wbr></code></td>
+<td> <div class="block">Creates a MessageFormat with the given pattern and uses it to format the given arguments.</div> </td>
+</tr>
+<tr>
+<td><code><a href="attributedcharacteriterator" title="interface in java.text">AttributedCharacterIterator</a></code></td>
+<td><code><a href="#formatToCharacterIterator(java.lang.Object)" class="member-name-link">formatToCharacterIterator</a><wbr>(<a href="../lang/object" title="class in java.lang">Object</a> arguments)</wbr></code></td>
+<td> <div class="block">Formats an array of objects and inserts them into the <code>MessageFormat</code>'s pattern, producing an <code>AttributedCharacterIterator</code>.</div> </td>
+</tr>
+<tr>
+<td><code><a href="format" title="class in java.text">Format</a>[]</code></td>
+<td><code><a href="#getFormats()" class="member-name-link">getFormats</a>()</code></td>
+<td> <div class="block">Gets the formats used for the format elements in the previously set pattern string.</div> </td>
+</tr>
+<tr>
+<td><code><a href="format" title="class in java.text">Format</a>[]</code></td>
+<td><code><a href="#getFormatsByArgumentIndex()" class="member-name-link">getFormatsByArgumentIndex</a>()</code></td>
+<td> <div class="block">Gets the formats used for the values passed into <code>format</code> methods or returned from <code>parse</code> methods.</div> </td>
+</tr>
+<tr>
+<td><code><a href="../util/locale" title="class in java.util">Locale</a></code></td>
+<td><code><a href="#getLocale()" class="member-name-link">getLocale</a>()</code></td>
+<td> <div class="block">Gets the locale that's used when creating or comparing subformats.</div> </td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></td>
+<td> <div class="block">Returns the hash code value for this <code>MessageFormat</code>.</div> </td>
+</tr>
+<tr>
+<td><code><a href="../lang/object" title="class in java.lang">Object</a>[]</code></td>
+<td><code><a href="#parse(java.lang.String)" class="member-name-link">parse</a><wbr>(<a href="../lang/string" title="class in java.lang">String</a> source)</wbr></code></td>
+<td> <div class="block">Parses text from the beginning of the given string to produce an object array.</div> </td>
+</tr>
+<tr>
+<td><code><a href="../lang/object" title="class in java.lang">Object</a>[]</code></td>
+<td><code><a href="#parse(java.lang.String,java.text.ParsePosition)" class="member-name-link">parse</a><wbr>(<a href="../lang/string" title="class in java.lang">String</a> source,
+ <a href="parseposition" title="class in java.text">ParsePosition</a> pos)</wbr></code></td>
+<td> <div class="block">Parses the string.</div> </td>
+</tr>
+<tr>
+<td><code><a href="../lang/object" title="class in java.lang">Object</a></code></td>
+<td><code><a href="#parseObject(java.lang.String,java.text.ParsePosition)" class="member-name-link">parseObject</a><wbr>(<a href="../lang/string" title="class in java.lang">String</a> source,
+ <a href="parseposition" title="class in java.text">ParsePosition</a> pos)</wbr></code></td>
+<td> <div class="block">Parses text from a string to produce an object array.</div> </td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code><a href="#setFormat(int,java.text.Format)" class="member-name-link">setFormat</a><wbr>(int formatElementIndex,
+ <a href="format" title="class in java.text">Format</a> newFormat)</wbr></code></td>
+<td> <div class="block">Sets the format to use for the format element with the given format element index within the previously set pattern string.</div> </td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code><a href="#setFormatByArgumentIndex(int,java.text.Format)" class="member-name-link">setFormatByArgumentIndex</a><wbr>(int argumentIndex,
+ <a href="format" title="class in java.text">Format</a> newFormat)</wbr></code></td>
+<td> <div class="block">Sets the format to use for the format elements within the previously set pattern string that use the given argument index.</div> </td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code><a href="#setFormats(java.text.Format%5B%5D)" class="member-name-link">setFormats</a><wbr>(<a href="format" title="class in java.text">Format</a>[] newFormats)</wbr></code></td>
+<td> <div class="block">Sets the formats to use for the format elements in the previously set pattern string.</div> </td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code><a href="#setFormatsByArgumentIndex(java.text.Format%5B%5D)" class="member-name-link">setFormatsByArgumentIndex</a><wbr>(<a href="format" title="class in java.text">Format</a>[] newFormats)</wbr></code></td>
+<td> <div class="block">Sets the formats to use for the values passed into <code>format</code> methods or returned from <code>parse</code> methods.</div> </td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td><code><a href="#setLocale(java.util.Locale)" class="member-name-link">setLocale</a><wbr>(<a href="../util/locale" title="class in java.util">Locale</a> locale)</wbr></code></td>
+<td> <div class="block">Sets the locale to be used when creating or comparing subformats.</div> </td>
+</tr>
+<tr>
+<td><code><a href="../lang/string" title="class in java.lang">String</a></code></td>
+<td><code><a href="#toPattern()" class="member-name-link">toPattern</a>()</code></td>
+<td> <div class="block">Returns a String pattern adhering to the <a href="#patterns"><code>patterns section</code></a> that represents the current state of this <code>MessageFormat</code>.</div> </td>
+</tr>
+<tr>
+<td><code><a href="../lang/string" title="class in java.lang">String</a></code></td>
+<td><code><a href="#toString()" class="member-name-link">toString</a>()</code></td>
+<td> <div class="block">Returns a string identifying this <code>MessageFormat</code>, for debugging.</div> </td>
+</tr>
+</table> </div> </div> <div class="inherited-list"> <h3 id="methods-inherited-from-class-java.text.Format">Methods declared in class <a href="format#method-summary" title="class in java.text">Format</a>
+</h3> <code><a href="format#format(java.lang.Object)" title="format(Object)">format</a>, <a href="format#parseObject(java.lang.String)" title="parseObject(String)">parseObject</a></code>
+</div> <div class="inherited-list"> <h3 id="methods-inherited-from-class-java.lang.Object">Methods declared in class <a href="../lang/object#method-summary" title="class in java.lang">Object</a>
+</h3> <code><a href="../lang/object#finalize()" title="finalize()">finalize</a>, <a href="../lang/object#getClass()" title="getClass()">getClass</a>, <a href="../lang/object#notify()" title="notify()">notify</a>, <a href="../lang/object#notifyAll()" title="notifyAll()">notifyAll</a>, <a href="../lang/object#wait()" title="wait()">wait</a>, <a href="../lang/object#wait(long)" title="wait(long)">wait</a>, <a href="../lang/object#wait(long,int)" title="wait(long, int)">wait</a></code>
+</div> </section> </section> <section class="details"> <section class="constructor-details" id="constructor-detail"> <h2>Constructor Details</h2>  </section><section class="detail" id="&lt;init&gt;(java.lang.String)"> <h3>MessageFormat</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public MessageFormat(String pattern)</pre> <div class="block">Constructs a MessageFormat for the default <a href="../util/locale.category#FORMAT"><code>FORMAT</code></a> locale and the specified pattern. The constructor first sets the locale, then parses the pattern and creates a list of subformats for the format elements contained in it. Patterns and their interpretation are specified in the <a href="#patterns">class description</a>.</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>pattern</code> - the pattern for this message format</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/illegalargumentexception" title="class in java.lang">IllegalArgumentException</a></code> - if the pattern is invalid</dd> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>pattern</code> is <code>null</code>
+</dd> </dl> </div> </section><section class="detail" id="&lt;init&gt;(java.lang.String,java.util.Locale)"> <h3>MessageFormat</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public MessageFormat(String pattern, Locale locale)</pre> <div class="block">Constructs a MessageFormat for the specified locale and pattern. The constructor first sets the locale, then parses the pattern and creates a list of subformats for the format elements contained in it. Patterns and their interpretation are specified in the <a href="#patterns">class description</a>.</div> <dl class="notes"> <dt>Implementation Requirements:</dt> <dd>The default implementation throws a <code>NullPointerException</code> if <code>locale</code> is <code>null</code> either during the creation of the <code>MessageFormat</code> object or later when <code>format()</code> is called by a <code>MessageFormat</code> instance with a null locale and the implementation utilizes a locale-dependent subformat.</dd> <dt>Parameters:</dt> <dd>
+<code>pattern</code> - the pattern for this message format</dd> <dd>
+<code>locale</code> - the locale for this message format</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/illegalargumentexception" title="class in java.lang">IllegalArgumentException</a></code> - if the pattern is invalid</dd> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>pattern</code> is <code>null</code> or <code>locale</code> is <code>null</code> and the implementation uses a locale-dependent subformat.</dd> <dt>Since:</dt> <dd>1.4</dd> </dl> </div> </section><section class="method-details" id="method-detail"> <h2>Method Details</h2>  </section><section class="detail" id="setLocale(java.util.Locale)"> <h3>setLocale</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public void setLocale(Locale locale)</pre> <div class="block">Sets the locale to be used when creating or comparing subformats. This affects subsequent calls <ul> <li>to the <a href="#applyPattern(java.lang.String)"><code>applyPattern</code></a> and <a href="#toPattern()"><code>toPattern</code></a> methods if format elements specify a format type and therefore have the subformats created in the <code>applyPattern</code> method, as well as </li>
+<li>to the <code>format</code> and <a href="#formatToCharacterIterator(java.lang.Object)"><code>formatToCharacterIterator</code></a> methods if format elements do not specify a format type and therefore have the subformats created in the formatting methods. </li>
+</ul> Subformats that have already been created are not affected.</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>locale</code> - the locale to be used when creating or comparing subformats</dd> </dl> </div> </section><section class="detail" id="getLocale()"> <h3>getLocale</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public Locale getLocale()</pre> <div class="block">Gets the locale that's used when creating or comparing subformats.</div> <dl class="notes"> <dt>Returns:</dt> <dd>the locale used when creating or comparing subformats</dd> </dl> </div> </section><section class="detail" id="applyPattern(java.lang.String)"> <h3>applyPattern</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public void applyPattern(String pattern)</pre> <div class="block">Sets the pattern used by this message format. The method parses the pattern and creates a list of subformats for the format elements contained in it. Patterns and their interpretation are specified in the <a href="#patterns">class description</a>.</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>pattern</code> - the pattern for this message format</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/illegalargumentexception" title="class in java.lang">IllegalArgumentException</a></code> - if the pattern is invalid</dd> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>pattern</code> is <code>null</code>
+</dd> </dl> </div> </section><section class="detail" id="toPattern()"> <h3>toPattern</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public String toPattern()</pre> <div class="block">Returns a String pattern adhering to the <a href="#patterns"><code>patterns section</code></a> that represents the current state of this <code>MessageFormat</code>. The string is constructed from internal information and therefore does not necessarily equal the previously applied pattern. The order of <code>FormatStyle</code> matching is not guaranteed. That is, a <code>
+FormatStyle</code> produced may not be equivalent to the corresponding style passed, in the instance that multiple styles are equivalent.</div> <dl class="notes"> <dt>Implementation Requirements:</dt> <dd>The implementation in <a href="messageformat" title="class in java.text"><code>MessageFormat</code></a> returns a string that, when passed to a <code>MessageFormat()</code> constructor or <a href="#applyPattern(java.lang.String)"><code>applyPattern()</code></a>, produces an instance that is semantically equivalent to this instance. If a subformat cannot be converted to a String pattern, the <code>FormatType</code> and <code>FormatStyle</code> will be omitted from the <code>FormatElement</code>.</dd> <dt>Returns:</dt> <dd>a String pattern adhering to the <a href="#patterns"><code>patterns section</code></a> that represents the current state of this <code>MessageFormat</code>
+</dd> </dl> </div> </section><section class="detail" id="setFormatsByArgumentIndex(java.text.Format[])"> <h3>setFormatsByArgumentIndex</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public void setFormatsByArgumentIndex(Format[] newFormats)</pre> <div class="block">Sets the formats to use for the values passed into <code>format</code> methods or returned from <code>parse</code> methods. The indices of elements in <code>newFormats</code> correspond to the argument indices used in the previously set pattern string. The order of formats in <code>newFormats</code> thus corresponds to the order of elements in the <code>arguments</code> array passed to the <code>format</code> methods or the result array returned by the <code>parse</code> methods. <p> If an argument index is used for more than one format element in the pattern string, then the corresponding new format is used for all such format elements. If an argument index is not used for any format element in the pattern string, then the corresponding new format is ignored. If fewer formats are provided than needed, then only the formats for argument indices less than <code>newFormats.length</code> are replaced.</p>
+</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>newFormats</code> - the new formats to use</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>newFormats</code> is null</dd> <dt>Since:</dt> <dd>1.4</dd> </dl> </div> </section><section class="detail" id="setFormats(java.text.Format[])"> <h3>setFormats</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public void setFormats(Format[] newFormats)</pre> <div class="block">Sets the formats to use for the format elements in the previously set pattern string. The order of formats in <code>newFormats</code> corresponds to the order of format elements in the pattern string. <p> If more formats are provided than needed by the pattern string, the remaining ones are ignored. If fewer formats are provided than needed, then only the first <code>newFormats.length</code> formats are replaced. </p>
+<p> Since the order of format elements in a pattern string often changes during localization, it is generally better to use the <a href="#setFormatsByArgumentIndex(java.text.Format%5B%5D)"><code>setFormatsByArgumentIndex</code></a> method, which assumes an order of formats corresponding to the order of elements in the <code>arguments</code> array passed to the <code>format</code> methods or the result array returned by the <code>parse</code> methods.</p>
+</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>newFormats</code> - the new formats to use</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>newFormats</code> is null</dd> </dl> </div> </section><section class="detail" id="setFormatByArgumentIndex(int,java.text.Format)"> <h3>setFormatByArgumentIndex</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public void setFormatByArgumentIndex(int argumentIndex, Format newFormat)</pre> <div class="block">Sets the format to use for the format elements within the previously set pattern string that use the given argument index. The argument index is part of the format element definition and represents an index into the <code>arguments</code> array passed to the <code>format</code> methods or the result array returned by the <code>parse</code> methods. <p> If the argument index is used for more than one format element in the pattern string, then the new format is used for all such format elements. If the argument index is not used for any format element in the pattern string, then the new format is ignored.</p>
+</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>argumentIndex</code> - the argument index for which to use the new format</dd> <dd>
+<code>newFormat</code> - the new format to use</dd> <dt>Since:</dt> <dd>1.4</dd> </dl> </div> </section><section class="detail" id="setFormat(int,java.text.Format)"> <h3>setFormat</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public void setFormat(int formatElementIndex, Format newFormat)</pre> <div class="block">Sets the format to use for the format element with the given format element index within the previously set pattern string. The format element index is the zero-based number of the format element counting from the start of the pattern string. <p> Since the order of format elements in a pattern string often changes during localization, it is generally better to use the <a href="#setFormatByArgumentIndex(int,java.text.Format)"><code>setFormatByArgumentIndex</code></a> method, which accesses format elements based on the argument index they specify.</p>
+</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>formatElementIndex</code> - the index of a format element within the pattern</dd> <dd>
+<code>newFormat</code> - the format to use for the specified format element</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/arrayindexoutofboundsexception" title="class in java.lang">ArrayIndexOutOfBoundsException</a></code> - if <code>formatElementIndex</code> is equal to or larger than the number of format elements in the pattern string</dd> </dl> </div> </section><section class="detail" id="getFormatsByArgumentIndex()"> <h3>getFormatsByArgumentIndex</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public Format[] getFormatsByArgumentIndex()</pre> <div class="block">Gets the formats used for the values passed into <code>format</code> methods or returned from <code>parse</code> methods. The indices of elements in the returned array correspond to the argument indices used in the previously set pattern string. The order of formats in the returned array thus corresponds to the order of elements in the <code>arguments</code> array passed to the <code>format</code> methods or the result array returned by the <code>parse</code> methods. <p> If an argument index is used for more than one format element in the pattern string, then the format used for the last such format element is returned in the array. If an argument index is not used for any format element in the pattern string, then null is returned in the array.</p>
+</div> <dl class="notes"> <dt>Returns:</dt> <dd>the formats used for the arguments within the pattern</dd> <dt>Since:</dt> <dd>1.4</dd> </dl> </div> </section><section class="detail" id="getFormats()"> <h3>getFormats</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public Format[] getFormats()</pre> <div class="block">Gets the formats used for the format elements in the previously set pattern string. The order of formats in the returned array corresponds to the order of format elements in the pattern string. <p> Since the order of format elements in a pattern string often changes during localization, it's generally better to use the <a href="#getFormatsByArgumentIndex()"><code>getFormatsByArgumentIndex</code></a> method, which assumes an order of formats corresponding to the order of elements in the <code>arguments</code> array passed to the <code>format</code> methods or the result array returned by the <code>parse</code> methods.</p>
+</div> <dl class="notes"> <dt>Returns:</dt> <dd>the formats used for the format elements in the pattern</dd> </dl> </div> </section><section class="detail" id="format(java.lang.Object[],java.lang.StringBuffer,java.text.FieldPosition)"> <h3>format</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public final StringBuffer format(Object[] arguments, StringBuffer result, FieldPosition pos)</pre> <div class="block">Formats an array of objects and appends the <code>MessageFormat</code>'s pattern, with format elements replaced by the formatted objects, to the provided <code>StringBuffer</code>. <p> The text substituted for the individual format elements is derived from the current subformat of the format element and the <code>arguments</code> element at the format element's argument index as indicated by the first matching line of the following table. An argument is <i>unavailable</i> if <code>arguments</code> is <code>null</code> or has fewer than argumentIndex+1 elements. </p>
+<table class="plain"> <caption style="display:none">Examples of subformat, argument, and formatted text</caption> <thead> <tr> <th scope="col">Subformat </th>
+<th scope="col">Argument </th>
+<th scope="col">Formatted Text </th>
+</tr>
+</thead> <tbody> <tr> <th scope="row" style="font-weight:normal" rowspan="2">
+<i>any</i> </th>
+<th scope="row" style="font-weight:normal">
+<i>unavailable</i> </th>
+<td>
+<code>"{" + argumentIndex + "}"</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>null</code> </th>
+<td>
+<code>"null"</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>instanceof ChoiceFormat</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>any</i> </th>
+<td>
+<code>subformat.format(argument).indexOf('{') &gt;= 0 ?<br>
+          (new MessageFormat(subformat.format(argument), getLocale())).format(argument) :
+          subformat.format(argument)</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>!= null</code> </th>
+<th scope="row" style="font-weight:normal">
+<i>any</i> </th>
+<td>
+<code>subformat.format(argument)</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal" rowspan="4">
+<code>null</code> </th>
+<th scope="row" style="font-weight:normal">
+<code>instanceof Number</code> </th>
+<td>
+<code>NumberFormat.getInstance(getLocale()).format(argument)</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>instanceof Date</code> </th>
+<td>
+<code>DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale()).format(argument)</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<code>instanceof String</code> </th>
+<td>
+<code>argument</code> </td>
+</tr>
+<tr> <th scope="row" style="font-weight:normal">
+<i>any</i> </th>
+<td>
+<code>argument.toString()</code> </td>
+</tr>
+</tbody> </table> <p> If <code>pos</code> is non-null, and refers to <code>Field.ARGUMENT</code>, the location of the first formatted string will be returned.</p>
+</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>arguments</code> - an array of objects to be formatted and substituted.</dd> <dd>
+<code>result</code> - where text is appended.</dd> <dd>
+<code>pos</code> - keeps track on the position of the first replaced argument in the output string.</dd> <dt>Returns:</dt> <dd>the string buffer passed in as <code>result</code>, with formatted text appended</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/illegalargumentexception" title="class in java.lang">IllegalArgumentException</a></code> - if an argument in the <code>arguments</code> array is not of the type expected by the format element(s) that use it.</dd> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>result</code> is <code>null</code> or if the <code>MessageFormat</code> instance that calls this method has locale set to null, and the implementation uses a locale-dependent subformat.</dd> </dl> </div> </section><section class="detail" id="format(java.lang.String,java.lang.Object...)"> <h3>format</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public static String format(String pattern, Object... arguments)</pre> <div class="block">Creates a MessageFormat with the given pattern and uses it to format the given arguments. This method returns a string that would be equal to the string returned by <blockquote> <code>(new <a href="#%3Cinit%3E(java.lang.String)"><code>MessageFormat</code></a>(pattern)).<a href="#format(java.lang.Object%5B%5D,java.lang.StringBuffer,java.text.FieldPosition)"><code>format</code></a>(arguments, new StringBuffer(), null).toString()</code> </blockquote>
+</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>pattern</code> - the pattern string</dd> <dd>
+<code>arguments</code> - object(s) to format</dd> <dt>Returns:</dt> <dd>the formatted string</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/illegalargumentexception" title="class in java.lang">IllegalArgumentException</a></code> - if the pattern is invalid, or if an argument in the <code>arguments</code> array is not of the type expected by the format element(s) that use it.</dd> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>pattern</code> is <code>null</code>
+</dd> </dl> </div> </section><section class="detail" id="format(java.lang.Object,java.lang.StringBuffer,java.text.FieldPosition)"> <h3>format</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public final StringBuffer format(Object arguments, StringBuffer result, FieldPosition pos)</pre> <div class="block">Formats an array of objects and appends the <code>MessageFormat</code>'s pattern, with format elements replaced by the formatted objects, to the provided <code>StringBuffer</code>. This is equivalent to <blockquote> <code><a href="#format(java.lang.Object%5B%5D,java.lang.StringBuffer,java.text.FieldPosition)"><code>format</code></a>((Object[]) arguments, result, pos)</code> </blockquote>
+</div> <dl class="notes"> <dt>Specified by:</dt> <dd>
+<code><a href="format#format(java.lang.Object,java.lang.StringBuffer,java.text.FieldPosition)">format</a></code> in class <code><a href="format" title="class in java.text">Format</a></code>
+</dd> <dt>Parameters:</dt> <dd>
+<code>arguments</code> - an array of objects to be formatted and substituted.</dd> <dd>
+<code>result</code> - where text is appended.</dd> <dd>
+<code>pos</code> - keeps track on the position of the first replaced argument in the output string.</dd> <dt>Returns:</dt> <dd>the string buffer passed in as <code>toAppendTo</code>, with formatted text appended</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/illegalargumentexception" title="class in java.lang">IllegalArgumentException</a></code> - if an argument in the <code>arguments</code> array is not of the type expected by the format element(s) that use it.</dd> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>result</code> is <code>null</code> or if the <code>MessageFormat</code> instance that calls this method has locale set to null, and the implementation uses a locale-dependent subformat.</dd> </dl> </div> </section><section class="detail" id="formatToCharacterIterator(java.lang.Object)"> <h3>formatToCharacterIterator</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public AttributedCharacterIterator formatToCharacterIterator(Object arguments)</pre> <div class="block">Formats an array of objects and inserts them into the <code>MessageFormat</code>'s pattern, producing an <code>AttributedCharacterIterator</code>. You can use the returned <code>AttributedCharacterIterator</code> to build the resulting String, as well as to determine information about the resulting String. <p> The text of the returned <code>AttributedCharacterIterator</code> is the same that would be returned by </p>
+<blockquote> <code><a href="#format(java.lang.Object%5B%5D,java.lang.StringBuffer,java.text.FieldPosition)"><code>format</code></a>(arguments, new StringBuffer(), null).toString()</code> </blockquote> <p> In addition, the <code>AttributedCharacterIterator</code> contains at least attributes indicating where text was generated from an argument in the <code>arguments</code> array. The keys of these attributes are of type <code>MessageFormat.Field</code>, their values are <code>Integer</code> objects indicating the index in the <code>arguments</code> array of the argument from which the text was generated. </p>
+<p> The attributes/value from the underlying <code>Format</code> instances that <code>MessageFormat</code> uses will also be placed in the resulting <code>AttributedCharacterIterator</code>. This allows you to not only find where an argument is placed in the resulting String, but also which fields it contains in turn.</p>
+</div> <dl class="notes"> <dt>Overrides:</dt> <dd>
+<code><a href="format#formatToCharacterIterator(java.lang.Object)">formatToCharacterIterator</a></code> in class <code><a href="format" title="class in java.text">Format</a></code>
+</dd> <dt>Parameters:</dt> <dd>
+<code>arguments</code> - an array of objects to be formatted and substituted.</dd> <dt>Returns:</dt> <dd>AttributedCharacterIterator describing the formatted value.</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>arguments</code> is null.</dd> <dd>
+<code><a href="../lang/illegalargumentexception" title="class in java.lang">IllegalArgumentException</a></code> - if an argument in the <code>arguments</code> array is not of the type expected by the format element(s) that use it.</dd> <dt>Since:</dt> <dd>1.4</dd> </dl> </div> </section><section class="detail" id="parse(java.lang.String,java.text.ParsePosition)"> <h3>parse</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public Object[] parse(String source, ParsePosition pos)</pre> <div class="block">Parses the string. <p>Caveats: The parse may fail in a number of circumstances. For example: </p>
+<ul> <li>If one of the arguments does not occur in the pattern. </li>
+<li>If the format of an argument loses information, such as with a choice format where a large number formats to "many". </li>
+<li>Does not yet handle recursion (where the substituted strings contain {n} references.) </li>
+<li>Will not always find a match (or the correct match) if some part of the parse is ambiguous. For example, if the pattern "{1},{2}" is used with the string arguments {"a,b", "c"}, it will format as "a,b,c". When the result is parsed, it will return {"a", "b,c"}. </li>
+<li>If a single argument is parsed more than once in the string, then the later parse wins. </li>
+</ul> When the parse fails, use ParsePosition.getErrorIndex() to find out where in the string the parsing failed. The returned error index is the starting offset of the sub-patterns that the string is comparing with. For example, if the parsing string "AAA {0} BBB" is comparing against the pattern "AAD {0} BBB", the error index is 0. When an error occurs, the call to this method will return null. If the source is null, return an empty array.</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>source</code> - the string to parse</dd> <dd>
+<code>pos</code> - the parse position</dd> <dt>Returns:</dt> <dd>an array of parsed objects</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>pos</code> is <code>null</code> for a non-null <code>source</code> string.</dd> </dl> </div> </section><section class="detail" id="parse(java.lang.String)"> <h3>parse</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public Object[] parse(String source) throws ParseException</pre> <div class="block">Parses text from the beginning of the given string to produce an object array. The method may not use the entire text of the given string. <p> See the <a href="#parse(java.lang.String,java.text.ParsePosition)"><code>parse(String, ParsePosition)</code></a> method for more information on message parsing.</p>
+</div> <dl class="notes"> <dt>Parameters:</dt> <dd>
+<code>source</code> - A <code>String</code> whose beginning should be parsed.</dd> <dt>Returns:</dt> <dd>An <code>Object</code> array parsed from the string.</dd> <dt>Throws:</dt> <dd>
+<code><a href="parseexception" title="class in java.text">ParseException</a></code> - if the beginning of the specified string cannot be parsed.</dd> </dl> </div> </section><section class="detail" id="parseObject(java.lang.String,java.text.ParsePosition)"> <h3>parseObject</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public Object parseObject(String source, ParsePosition pos)</pre> <div class="block">Parses text from a string to produce an object array. <p> The method attempts to parse text starting at the index given by <code>pos</code>. If parsing succeeds, then the index of <code>pos</code> is updated to the index after the last character used (parsing does not necessarily use all characters up to the end of the string), and the parsed object array is returned. The updated <code>pos</code> can be used to indicate the starting point for the next call to this method. If an error occurs, then the index of <code>pos</code> is not changed, the error index of <code>pos</code> is set to the index of the character where the error occurred, and null is returned. </p>
+<p> See the <a href="#parse(java.lang.String,java.text.ParsePosition)"><code>parse(String, ParsePosition)</code></a> method for more information on message parsing.</p>
+</div> <dl class="notes"> <dt>Specified by:</dt> <dd>
+<code><a href="format#parseObject(java.lang.String,java.text.ParsePosition)">parseObject</a></code> in class <code><a href="format" title="class in java.text">Format</a></code>
+</dd> <dt>Parameters:</dt> <dd>
+<code>source</code> - A <code>String</code>, part of which should be parsed.</dd> <dd>
+<code>pos</code> - A <code>ParsePosition</code> object with index and error index information as described above.</dd> <dt>Returns:</dt> <dd>An <code>Object</code> array parsed from the string. In case of error, returns null.</dd> <dt>Throws:</dt> <dd>
+<code><a href="../lang/nullpointerexception" title="class in java.lang">NullPointerException</a></code> - if <code>pos</code> is null.</dd> </dl> </div> </section><section class="detail" id="clone()"> <h3>clone</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public Object clone()</pre> <div class="block">Creates and returns a copy of this object.</div> <dl class="notes"> <dt>Overrides:</dt> <dd>
+<code><a href="format#clone()">clone</a></code> in class <code><a href="format" title="class in java.text">Format</a></code>
+</dd> <dt>Returns:</dt> <dd>a clone of this instance.</dd> <dt>See Also:</dt> <dd> <ul class="tag-list"> <li><a href="../lang/cloneable" title="interface in java.lang"><code>Cloneable</code></a></li> </ul> </dd> </dl> </div> </section><section class="detail" id="equals(java.lang.Object)"> <h3>equals</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public boolean equals(Object obj)</pre> <div class="block">Compares the specified object with this <code>MessageFormat</code> for equality. Returns true if the object is also a <code>MessageFormat</code> and the two formats would format any value the same.</div> <dl class="notes"> <dt>Overrides:</dt> <dd>
+<code><a href="../lang/object#equals(java.lang.Object)">equals</a></code> in class <code><a href="../lang/object" title="class in java.lang">Object</a></code>
+</dd> <dt>Implementation Requirements:</dt> <dd>This method performs an equality check with a notion of class identity based on <code>getClass()</code>, rather than <code>instanceof</code>. Therefore, in the equals methods in subclasses, no instance of this class should compare as equal to an instance of a subclass.</dd> <dt>Parameters:</dt> <dd>
+<code>obj</code> - object to be compared for equality</dd> <dt>Returns:</dt> <dd>
+<code>true</code> if the specified object is equal to this <code>MessageFormat</code>
+</dd> <dt>See Also:</dt> <dd> <ul class="tag-list"> <li><a href="../lang/object#equals(java.lang.Object)"><code>Object.equals(Object)</code></a></li> </ul> </dd> </dl> </div> </section><section class="detail" id="hashCode()"> <h3>hashCode</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public int hashCode()</pre> <div class="block">Returns the hash code value for this <code>MessageFormat</code>.</div> <dl class="notes"> <dt>Overrides:</dt> <dd>
+<code><a href="../lang/object#hashCode()">hashCode</a></code> in class <code><a href="../lang/object" title="class in java.lang">Object</a></code>
+</dd> <dt>Implementation Requirements:</dt> <dd>This method calculates the hash code value using the value returned by <a href="#toPattern()"><code>toPattern()</code></a>.</dd> <dt>Returns:</dt> <dd>the hash code value for this <code>MessageFormat</code>
+</dd> <dt>See Also:</dt> <dd> <ul class="tag-list"> <li><a href="../lang/object#hashCode()"><code>Object.hashCode()</code></a></li> </ul> </dd> </dl> </div> </section><section class="detail" id="toString()"> <h3>toString</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">public String toString()</pre> <div class="block">Returns a string identifying this <code>MessageFormat</code>, for debugging.</div> <dl class="notes"> <dt>Overrides:</dt> <dd>
+<code><a href="../lang/object#toString()">toString</a></code> in class <code><a href="../lang/object" title="class in java.lang">Object</a></code>
+</dd> <dt>Returns:</dt> <dd>a string identifying this <code>MessageFormat</code>, for debugging</dd> </dl> </div> </section> </section>  <footer role="contentinfo">  <p class="legal-copy"><small><a href="https://bugreport.java.com/bugreport/">Report a bug or suggest an enhancement</a><br> For further API reference and developer documentation see the <a href="https://docs.oracle.com/pls/topic/lookup?ctx=javase25&amp;id=homepage" target="_blank">Java SE Documentation</a>, which contains more detailed, developer-targeted descriptions with conceptual overviews, definitions of terms, workarounds, and working code examples. <a href="https://docs.oracle.com/en/java/javase/index.html">Other versions.</a><br> Java is a trademark or registered trademark of Oracle and/or its affiliates in the US and other countries.<br> <a href="https://docs.oracle.com/en/java/javase/25/docs/legal/copyright.html">Copyright</a> © 1993, 2025, Oracle and/or its affiliates, 500 Oracle Parkway, Redwood Shores, CA 94065 USA.<br>All rights reserved. Use is subject to <a href="https://www.oracle.com/java/javase/terms/license/java25speclicense.html">license terms</a> and the <a href="https://www.oracle.com/technetwork/java/redist-137594.html">documentation redistribution policy</a>. </small></p> </footer><div class="_attribution">
+  <p class="_attribution-p">
+    © 1993, 2025, Oracle and/or its affiliates. All rights reserved.<br>Documentation extracted from Debian's OpenJDK Development Kit package.<br>Licensed under the GNU General Public License, version 2, with the Classpath Exception.<br>Various third party code in OpenJDK is licensed under different licenses (see Debian package).<br>Java and OpenJDK are trademarks or registered trademarks of Oracle and/or its affiliates.<br>
+    <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/MessageFormat.html" class="_attribution-link">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/MessageFormat.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Annotation DescriptorKey - OpenJDK 25 - W3cubDocs</title>
+  
+  <meta name="description" content="Meta-annotation that describes how an annotation element relates to a field in a Descriptor. This can be the Descriptor for an MBean, or for an &hellip;">
+  <meta name="keywords" content="annotation, interface, descriptorkey, openjdk, openjdk~25">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/openjdk~25/java.management/javax/management/descriptorkey.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/openjdk~25.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/openjdk~25/" class="_nav-link" title="" style="margin-left:0;">OpenJDK 25</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _openjdk">
+				
+				
+<h1 title="Annotation Interface DescriptorKey" class="title">Annotation Interface DescriptorKey</h1> <section class="class-description" id="class-description">  <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">@Documented @Retention(RUNTIME) @Target(METHOD) public @interface DescriptorKey</pre> <div class="block">
+<p>Meta-annotation that describes how an annotation element relates to a field in a <a href="descriptor" title="interface in javax.management"><code>Descriptor</code></a>. This can be the Descriptor for an MBean, or for an attribute, operation, or constructor in an MBean, or for a parameter of an operation or constructor.</p> <p>Consider this annotation for example:</p> <pre>
+@Documented
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Units {
+    <b>@DescriptorKey("units")</b>
+    String value();
+}
+</pre> <p>and this use of the annotation:</p> <pre>
+public interface CacheControlMBean {
+    <b>@Units("bytes")</b>
+    public long getCacheSize();
+}
+</pre> <p>When a Standard MBean is made from the <code>CacheControlMBean</code>, the usual rules mean that it will have an attribute called <code>CacheSize</code> of type <code>long</code>. The <code>@Units</code> annotation, given the above definition, will ensure that the <a href="mbeanattributeinfo" title="class in javax.management"><code>MBeanAttributeInfo</code></a> for this attribute will have a <code>Descriptor</code> that has a field called <code>units</code> with corresponding value <code>bytes</code>.</p> <p>Similarly, if the annotation looks like this:</p> <pre>
+@Documented
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Units {
+    <b>@DescriptorKey("units")</b>
+    String value();
+
+    <b>@DescriptorKey("descriptionResourceKey")</b>
+    String resourceKey() default "";
+
+    <b>@DescriptorKey("descriptionResourceBundleBaseName")</b>
+    String resourceBundleBaseName() default "";
+}
+</pre> <p>and it is used like this:</p> <pre>
+public interface CacheControlMBean {
+    <b>@Units("bytes",
+           resourceKey="bytes.key",
+           resourceBundleBaseName="com.example.foo.MBeanResources")</b>
+    public long getCacheSize();
+}
+</pre> <p>then the resulting <code>Descriptor</code> will contain the following fields:</p> <table class="striped"> <caption style="display:none">Descriptor Fields</caption> <thead> <tr>
+<th scope="col">Name</th>
+<th scope="col">Value</th>
+</tr> </thead> <tbody style="text-align:left"> <tr>
+<th scope="row">units</th>
+<td>"bytes"</td>
+</tr> <tr>
+<th scope="row">descriptionResourceKey</th>
+<td>"bytes.key"</td>
+</tr> <tr>
+<th scope="row">descriptionResourceBundleBaseName</th> <td>"com.example.foo.MBeanResources"</td>
+</tr> </tbody> </table> <p>An annotation such as <code>@Units</code> can be applied to:</p> <ul> <li>a Standard MBean or MXBean interface; </li>
+<li>a method in such an interface; </li>
+<li>a parameter of a method in a Standard MBean or MXBean interface when that method is an operation (not a getter or setter for an attribute); </li>
+<li>a public constructor in the class that implements a Standard MBean or MXBean; </li>
+<li>a parameter in such a constructor. </li>
+</ul> <p>Other uses of the annotation are ignored.</p> <p>Interface annotations are checked only on the exact interface that defines the management interface of a Standard MBean or an MXBean, not on its parent interfaces. Method annotations are checked only in the most specific interface in which the method appears; in other words, if a child interface overrides a method from a parent interface, only <code>@DescriptorKey</code> annotations in the method in the child interface are considered. </p>
+<p>The Descriptor fields contributed in this way by different annotations on the same program element must be consistent. That is, two different annotations, or two members of the same annotation, must not define a different value for the same Descriptor field. Fields from annotations on a getter method must also be consistent with fields from annotations on the corresponding setter method.</p> <p>The Descriptor resulting from these annotations will be merged with any Descriptor fields provided by the implementation, such as the <a href="descriptor#immutableInfo"><code>
+immutableInfo</code></a> field for an MBean. The fields from the annotations must be consistent with these fields provided by the implementation.</p> <p>An annotation element to be converted into a descriptor field can be of any type allowed by the Java language, except an annotation or an array of annotations. The value of the field is derived from the value of the annotation element as follows:</p> <table class="striped"> <caption style="display:none">Descriptor Field Types</caption> <thead> <tr>
+<th scope="col">Annotation element</th>
+<th scope="col">Descriptor field</th>
+</tr> </thead> <tbody style="text-align:left"> <tr>
+<th scope="row">Primitive value (<code>5</code>, <code>false</code>, etc)</th> <td>Wrapped value (<code>Integer.valueOf(5)</code>, <code>Boolean.FALSE</code>, etc)</td>
+</tr> <tr>
+<th scope="row">Class constant (e.g. <code>Thread.class</code>)</th> <td>Class name from <a href="../../../java.base/java/lang/class#getName()"><code>Class.getName()</code></a> (e.g. <code>"java.lang.Thread"</code>)</td>
+</tr> <tr>
+<th scope="row">Enum constant (e.g. <a href="../../../java.base/java/lang/annotation/elementtype#FIELD"><code>ElementType.FIELD</code></a>)</th> <td>Constant name from <a href="../../../java.base/java/lang/enum#name()"><code>Enum.name()</code></a> (e.g. <code>"FIELD"</code>)</td>
+</tr> <tr>
+<th scope="row">Array of class constants or enum constants</th> <td>String array derived by applying these rules to each element</td>
+</tr> <tr>
+<th scope="row">Value of any other type<br> (<code>String</code>, <code>String[]</code>, <code>int[]</code>, etc)</th> <td>The same value</td>
+</tr> </tbody> </table>
+</div> <dl class="notes"> <dt>Since:</dt> <dd>1.6</dd> </dl> </div> </section> <section class="summary"> <section class="member-summary" id="annotation-interface-required-element-summary"> <h2>Required Element Summary</h2>  <table class="summary-table three-column-summary">       <tr>
+<th>Modifier and Type</th>
+<th>Required Element</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><code><a href="../../../java.base/java/lang/string" title="class in java.lang">String</a></code></td>
+<td><code><a href="#value()" class="member-name-link">value</a></code></td>
+<td> <div class="block">Returns the descriptor key.</div> </td>
+</tr>
+</table> </section> </section> <section class="details" id="annotation-interface-element-detail"> <section class="member-details"> <h2>Element Details</h2>  </section><section class="detail" id="value()"> <h3>value</h3> <div class="horizontal-scroll"> <pre class="lang-java" data-language="java">String value</pre> <div class="block">Returns the descriptor key.</div> <dl class="notes"> <dt>Returns:</dt> <dd>the descriptor key</dd> </dl> </div> </section> </section>  <footer role="contentinfo">  <p class="legal-copy"><small><a href="https://bugreport.java.com/bugreport/">Report a bug or suggest an enhancement</a><br> For further API reference and developer documentation see the <a href="https://docs.oracle.com/pls/topic/lookup?ctx=javase25&amp;id=homepage" target="_blank">Java SE Documentation</a>, which contains more detailed, developer-targeted descriptions with conceptual overviews, definitions of terms, workarounds, and working code examples. <a href="https://docs.oracle.com/en/java/javase/index.html">Other versions.</a><br> Java is a trademark or registered trademark of Oracle and/or its affiliates in the US and other countries.<br> <a href="https://docs.oracle.com/en/java/javase/25/docs/legal/copyright.html">Copyright</a> © 1993, 2025, Oracle and/or its affiliates, 500 Oracle Parkway, Redwood Shores, CA 94065 USA.<br>All rights reserved. Use is subject to <a href="https://www.oracle.com/java/javase/terms/license/java25speclicense.html">license terms</a> and the <a href="https://www.oracle.com/technetwork/java/redist-137594.html">documentation redistribution policy</a>. </small></p> </footer><div class="_attribution">
+  <p class="_attribution-p">
+    © 1993, 2025, Oracle and/or its affiliates. All rights reserved.<br>Documentation extracted from Debian's OpenJDK Development Kit package.<br>Licensed under the GNU General Public License, version 2, with the Classpath Exception.<br>Various third party code in OpenJDK is licensed under different licenses (see Debian package).<br>Java and OpenJDK are trademarks or registered trademarks of Oracle and/or its affiliates.<br>
+    <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.management/javax/management/DescriptorKey.html" class="_attribution-link">https://docs.oracle.com/en/java/javase/25/docs/api/java.management/javax/management/DescriptorKey.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
