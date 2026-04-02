@@ -1,0 +1,323 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Tensor Parallelism - torch.distributed.tensor.parallel - PyTorch 2.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Created On&#58; Jun 13, 2025 | Last Updated On&#58; Jun 13, 2025 ">
+  <meta name="keywords" content="tensor, parallelism, torch, distributed, parallel, pytorch, pytorch~2.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pytorch~2.9/distributed.tensor.parallel.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pytorch~2.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pytorch~2.9/" class="_nav-link" title="" style="margin-left:0;">PyTorch 2.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<div style="display:none;" itemscope itemtype="https://schema.org/BreadcrumbList"> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Reference API"> <meta itemprop="position" content="1"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"> <meta itemprop="name" content="Tensor Parallelism - torch.distributed.tensor.parallel"> <meta itemprop="position" content="2"> </div> </div>  <article class="bd-article">  <h1 id="tensor-parallelism-torch-distributed-tensor-parallel">Tensor Parallelism - torch.distributed.tensor.parallel</h1> <p class="date-info-last-verified" style="color: #6c6c6d; font-size: small;">Created On: Jun 13, 2025 | Last Updated On: Jun 13, 2025</p> <p>Tensor Parallelism(TP) is built on top of the PyTorch DistributedTensor (DTensor)[https://github.com/pytorch/pytorch/blob/main/torch/distributed/tensor/README.md] and provides different parallelism styles: Colwise, Rowwise, and Sequence Parallelism.</p> <div class="admonition warning"> <p class="admonition-title">Warning</p> <p>Tensor Parallelism APIs are experimental and subject to change.</p> </div> <p>The entrypoint to parallelize your <code>nn.Module</code> using Tensor Parallelism is:</p> <dl class="py function" id="module-torch.distributed.tensor.parallel"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.parallelize_module">
+<code>torch.distributed.tensor.parallel.parallelize_module(module, device_mesh=None, parallelize_plan=None, *, src_data_rank=0)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/api.py#L15"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Apply Tensor Parallelism in PyTorch by parallelizing modules or sub-modules based on a user-specified plan.</p> <p>We parallelize module or sub_modules based on a parallelize_plan. The parallelize_plan contains <code>ParallelStyle</code>, which indicates how user wants the module or sub_module to be parallelized.</p> <p>User can also specify different parallel style per module fully qualified name (FQN).</p> <p>Note that <code>parallelize_module</code> only accepts a 1-D <code>DeviceMesh</code>, if you have a 2-D or N-D <code>DeviceMesh</code>, slice the DeviceMesh to a 1-D sub DeviceMesh first then pass to this API(i.e. <code>device_mesh["tp"]</code>)</p> <dl class="field-list simple"> <dt class="field-odd">Parameters</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>module</strong> (<code>nn.Module</code>) – Module to be parallelized.</li> <li>
+<strong>device_mesh</strong> (<code>DeviceMesh</code>, optional) – Object which describes the mesh topology of devices for the DTensor. If not specified, the call must be under a DeviceMesh context.</li> <li>
+<strong>parallelize_plan</strong> (Union[<code>ParallelStyle</code>, Dict[str, <code>ParallelStyle</code>]], optional) – The plan used to parallelize the module. It can be either a <code>ParallelStyle</code> object which contains how we prepare input/output for Tensor Parallelism or it can be a dict of module FQN and its corresponding <code>ParallelStyle</code> object. If not specified, the call will do nothing at the moment.</li> </ul> </dd> <dt class="field-even">Keyword Arguments</dt> <dd class="field-even">
+<p><strong>src_data_rank</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a><em>, </em><em>optional</em>) – the rank of the source data for the logical/global tensor, it is used by <code>distribute_tensor()</code> to scatter/broadcast the shards/replicas to other ranks. By default, we use <code>group_rank=0</code> on each DeviceMesh dimension as the source data to preserve the single-device semantic. If passing <code>None</code> explicitly, <a class="reference internal" href="#torch.distributed.tensor.parallel.parallelize_module" title="torch.distributed.tensor.parallel.parallelize_module"><code>parallelize_module()</code></a> simply uses its local data instead of trying to preserve the single-device semantic via scatter/broadcast. Default: 0</p> </dd> <dt class="field-odd">Returns</dt> <dd class="field-odd">
+<p>A <code>nn.Module</code> object parallelized.</p> </dd> <dt class="field-even">Return type</dt> <dd class="field-even">
+
+
+<a class="reference internal" href="generated/torch.nn.module#torch.nn.Module" title="torch.nn.modules.module.Module">Module</a> </dd> </dl> <dl> <dt>Example::</dt>
+<dd>
+<pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import parallelize_module, ColwiseParallel
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt;
+&gt;&gt;&gt; # Define the module.
+&gt;&gt;&gt; m = Model(...)
+&gt;&gt;&gt; tp_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt; m = parallelize_module(m, tp_mesh, {"w1": ColwiseParallel(), "w2": RowwiseParallel()})
+&gt;&gt;&gt;
+</pre> </dd> </dl> <div class="admonition note"> <p class="admonition-title">Note</p> <p>For complex module architecture like Attention, MLP layers, we recommend composing different ParallelStyles together (i.e. <code>ColwiseParallel</code> and <code>RowwiseParallel</code>) and pass as a parallelize_plan, to achieves the desired sharding computation.</p> </div> </dd>
+</dl> <p>Tensor Parallelism supports the following parallel styles:</p> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.ColwiseParallel">
+<code>class torch.distributed.tensor.parallel.ColwiseParallel(*, input_layouts=None, output_layouts=None, use_local_output=True)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/style.py#L45"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Partition a compatible nn.Module in a column-wise fashion. Currently supports nn.Linear and nn.Embedding. Users can compose it together with RowwiseParallel to achieve the sharding of more complicated modules. (i.e. MLP, Attention)</p> <dl class="field-list simple"> <dt class="field-odd">Keyword Arguments</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>input_layouts</strong> (<a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>optional</em>) – The DTensor layout of input tensor for the nn.Module, this is used to annotate the input tensor to become a DTensor. If not specified, we assume the input tensor to be replicated.</li> <li>
+<strong>output_layouts</strong> (<a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>optional</em>) – The DTensor layout of the output for the nn.Module, this is used to ensure the output of the nn.Module with the user desired layout. If not specified, the output tensor is sharded on the last dimension.</li> <li>
+<strong>use_local_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a><em>, </em><em>optional</em>) – Whether to use local <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> instead of <code>DTensor</code> for the module output, default: True.</li> </ul> </dd> <dt class="field-even">Returns</dt> <dd class="field-even">
+<p>A <code>ParallelStyle</code> object that represents Colwise sharding of the nn.Module.</p> </dd> </dl> <dl> <dt>Example::</dt>
+<dd>
+<pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import parallelize_module, ColwiseParallel
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt; ...
+&gt;&gt;&gt; m = Model(...)  # m is a nn.Module that contains a "w1" nn.Linear submodule
+&gt;&gt;&gt; tp_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt;
+&gt;&gt;&gt; # By default, the input of the "w1" Linear will be converted to Replicated DTensor
+&gt;&gt;&gt; # and the output of "w1" will return :class:`torch.Tensor` that shards on the last dim.
+&gt;&gt;&gt;
+&gt;&gt;&gt; sharded_mod = parallelize_module(m, tp_mesh, {"w1": ColwiseParallel()})
+&gt;&gt;&gt; ...
+</pre> </dd> </dl> <div class="admonition note"> <p class="admonition-title">Note</p> <p>By default <code>ColwiseParallel</code> output is sharded on the last dimension if the <code>output_layouts</code> not specified, if there’re operators that require specific tensor shape (i.e. before the paired <code>RowwiseParallel</code>), keep in mind that if the output is sharded the operator might need to be adjusted to the sharded size.</p> </div> </dd>
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.RowwiseParallel">
+<code>class torch.distributed.tensor.parallel.RowwiseParallel(*, input_layouts=None, output_layouts=None, use_local_output=True)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/style.py#L179"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Partition a compatible nn.Module in a row-wise fashion. Currently supports nn.Linear and nn.Embedding. Users can compose it with ColwiseParallel to achieve the sharding of more complicated modules. (i.e. MLP, Attention)</p> <dl class="field-list simple"> <dt class="field-odd">Keyword Arguments</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>input_layouts</strong> (<a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>optional</em>) – The DTensor layout of input tensor for the nn.Module, this is used to annotate the input tensor to become a DTensor. If not specified, we assume the input tensor to be sharded on the last dimension.</li> <li>
+<strong>output_layouts</strong> (<a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>optional</em>) – The DTensor layout of the output for the nn.Module, this is used to ensure the output of the nn.Module with the user desired layout. If not specified, the output tensor is replicated.</li> <li>
+<strong>use_local_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a><em>, </em><em>optional</em>) – Whether to use local <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> instead of <code>DTensor</code> for the module output, default: True.</li> </ul> </dd> <dt class="field-even">Returns</dt> <dd class="field-even">
+<p>A <code>ParallelStyle</code> object that represents Rowwise sharding of the nn.Module.</p> </dd> </dl> <dl> <dt>Example::</dt>
+<dd>
+<pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import parallelize_module, RowwiseParallel
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt; ...
+&gt;&gt;&gt; m = Model(...)  # m is a nn.Module that contains a "w2" nn.Linear submodule
+&gt;&gt;&gt; tp_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt;
+&gt;&gt;&gt; # By default, the input of the "w2" Linear will be converted to DTensor that shards on the last dim
+&gt;&gt;&gt; # and the output of "w2" will return a replicated :class:`torch.Tensor`.
+&gt;&gt;&gt;
+&gt;&gt;&gt; sharded_mod = parallelize_module(m, tp_mesh, {"w2": RowwiseParallel()}),
+&gt;&gt;&gt; ...
+</pre> </dd> </dl> </dd>
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.SequenceParallel">
+<code>class torch.distributed.tensor.parallel.SequenceParallel(*, sequence_dim=1, use_local_output=False)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/style.py#L324"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>SequenceParallel replicates a compatible <code>nn.Module</code> parameters and runs the sharded computation with input sharded on the sequence dimension. This currently supports <code>nn.LayerNorm</code>, <code>nn.Dropout</code>, and the <a class="reference external" href="https://github.com/facebookresearch/llama/blob/main/llama/model.py#L34">RMSNorm python implementation</a></p> <p>This style implements the operation that is described in the paper <a class="reference external" href="https://arxiv.org/abs/2205.05198">Reducing Activation Recomputation in Large Transformer Models</a></p> <p>If the input passed in to this <code>nn.Module</code> is a <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a>, it assumes that the input is already sharded on the sequence dimension and converts the input to a <code>DTensor</code> sharded on the sequence dimension. If the input passed in to this <code>nn.Module</code> is already a <code>DTensor</code> but is not sharded on the sequence dimension, it would redistribute the input to be sharded on the sequence dimension.</p> <p>The output of the <code>nn.Module</code> will be sharded on the sequence dimension.</p> <dl class="field-list simple"> <dt class="field-odd">Keyword Arguments</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>sequence_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a><em>, </em><em>optional</em>) – The sequence dimension of the input tensor for the <code>nn.Module</code>, this is used to annotate the input tensor to become a DTensor that is sharded on the sequence dimension, default: 1.</li> <li>
+<strong>use_local_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a><em>, </em><em>optional</em>) – Whether to use local <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> instead of <code>DTensor</code> for the module output, default: False.</li> </ul> </dd> <dt class="field-even">Returns</dt> <dd class="field-even">
+<p>A <code>ParallelStyle</code> object that represents Sequence Parallel of the <code>nn.Module</code>.</p> </dd> </dl> <dl> <dt>Example::</dt>
+<dd>
+<pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import parallelize_module, SequenceParallel
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt; ...
+&gt;&gt;&gt; m = Model(...)  # m is a nn.Module that contains a "norm" nn.LayerNorm submodule
+&gt;&gt;&gt; tp_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt;
+&gt;&gt;&gt; # By default, the input of the "norm" will be converted to DTensor that shards on the sequence dim
+&gt;&gt;&gt; # and the output of "norm" will return a sharded on sequence dimension :class:`DTensor`.
+&gt;&gt;&gt;
+&gt;&gt;&gt; sharded_mod = parallelize_module(m, tp_mesh, {"norm": SequenceParallel()}),
+&gt;&gt;&gt; ...
+</pre> </dd> </dl> <div class="admonition note"> <p class="admonition-title">Note</p> <p>SequenceParallel style assumes ones initialization if there are weights in the nn.Module (i.e. <code>nn.LayerNorm</code> or <code>RMSNorm</code>, and they by default have ones initialization). If you have custom inits for the weights on those modules, you need to broadcast the weights before/after parallelizing to ensure that they are replicated.</p> </div> </dd>
+</dl> <p>To simply configure the nn.Module’s inputs and outputs with DTensor layouts and perform necessary layout redistributions, without distribute the module parameters to DTensors, the following <code>ParallelStyle</code> s can be used in the <code>parallelize_plan</code> when calling <code>parallelize_module</code>:</p> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.PrepareModuleInput">
+<code>class torch.distributed.tensor.parallel.PrepareModuleInput(*, input_layouts=None, desired_input_layouts=None, input_kwarg_layouts=None, desired_input_kwarg_layouts=None, use_local_output=False)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/style.py#L427"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Configure the nn.Module’s inputs to convert the input tensors of the nn.Module to DTensors at runtime according to <code>input_layouts</code>, and perform layout redistribution according to the <code>desired_input_layouts</code>.</p> <dl class="field-list simple"> <dt class="field-odd">Keyword Arguments</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>input_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><em>Optional</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em><em>]</em>) – The DTensor layouts of input tensors for the nn.Module, this is used to convert the input tensors to DTensors. If some inputs are not torch.Tensor or no need to convert to DTensors, <code>None</code> need to be specified as a placeholder. default: None.</li> <li>
+<strong>desired_input_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><em>Optional</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em><em>]</em>) – The desired DTensor layout of input tensors for the nn.Module, this is used to ensure the inputs of the nn.Module have the desired DTensor layouts. This argument needs to have the same length with <code>input_layouts</code>. default: None.</li> <li>
+<strong>input_kwarg_layouts</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a><em>, </em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em>) – The DTensor layouts of input kwargs for the nn.Module, this is used to convert the input kwarg tensors to DTensors. default: None</li> <li>
+<strong>desired_input_kwarg_layouts</strong> – (Dict[str, Placement]): The desired DTensor layout of input kwargs for the nn.Module, this is used to ensure the inputs of the nn.Module have the desired DTensor layouts. default: None.</li> <li>
+<strong>use_local_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a><em>, </em><em>optional</em>) – Whether to use local <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> instead of <code>DTensor</code> for the module inputs, default: False.</li> </ul> </dd> <dt class="field-even">Returns</dt> <dd class="field-even">
+<p>A <code>ParallelStyle</code> object that prepares the sharding layouts of the nn.Module’s inputs.</p> </dd> </dl> <dl> <dt>Example::</dt>
+<dd>
+<pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import parallelize_module, PrepareModuleInput
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt; ...
+&gt;&gt;&gt; block = TransformerBlock(...)  # block is a nn.Module that contains an "attn" Attention submodule
+&gt;&gt;&gt; tp_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt;
+&gt;&gt;&gt; # According to the style specified below, the first input of attn will be annotated to Sharded DTensor
+&gt;&gt;&gt; # and then redistributed to Replicated DTensor.
+&gt;&gt;&gt; parallelize_module(
+&gt;&gt;&gt;     block, # this can be a submodule or module
+&gt;&gt;&gt;     tp_mesh,
+&gt;&gt;&gt;     parallelize_plan={
+&gt;&gt;&gt;         "attn": PrepareModuleInput(
+&gt;&gt;&gt;             input_layouts=(Shard(0), None, None, ...),
+&gt;&gt;&gt;             desired_input_layouts=(Replicate(), None, None, ...)
+&gt;&gt;&gt;         ),
+&gt;&gt;&gt;     }
+&gt;&gt;&gt; )
+</pre> </dd> </dl> </dd>
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.PrepareModuleOutput">
+<code>class torch.distributed.tensor.parallel.PrepareModuleOutput(*, output_layouts, desired_output_layouts, use_local_output=True)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/style.py#L596"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Configure the nn.Module’s outputs to convert the output tensors of the nn.Module to DTensors at runtime according to <code>output_layouts</code>, and perform layout redistribution according to the <code>desired_output_layouts</code>.</p> <dl class="field-list simple"> <dt class="field-odd">Keyword Arguments</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>output_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em>) – The DTensor layouts of output tensors for the nn.Module, this is used to convert the output tensors to DTensors if they are <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a>. If some outputs are not torch.Tensor or no need to convert to DTensors, <code>None</code> need to be specified as a placeholder.</li> <li>
+<strong>desired_output_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em>) – The desired DTensor layouts of output tensors for the nn.Module, this is used to ensure the outputs of the nn.Module have the desired DTensor layouts.</li> <li>
+<strong>use_local_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a><em>, </em><em>optional</em>) – Whether to use local <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> instead of <code>DTensor</code> for the module outputs, default: True.</li> </ul> </dd> <dt class="field-even">Returns</dt> <dd class="field-even">
+<p>A ParallelStyle object that prepares the sharding layouts of the nn.Module’s outputs.</p> </dd> </dl> <dl> <dt>Example::</dt>
+<dd>
+<pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import parallelize_module, PrepareModuleOutput
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt; ...
+&gt;&gt;&gt; block = TransformerBlock(...)  # block is a nn.Module that contains an "attn" Attention submodule
+&gt;&gt;&gt; tp_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt;
+&gt;&gt;&gt; # According to the style specified below, the output of the TransformerBlock will be converted to Replicated DTensor
+&gt;&gt;&gt; # and then redistributed to Sharded DTensor.
+&gt;&gt;&gt; parallelize_module(
+&gt;&gt;&gt;     block, # this can be a submodule or module
+&gt;&gt;&gt;     tp_mesh,
+&gt;&gt;&gt;     parallelize_plan = PrepareModuleOutput(
+&gt;&gt;&gt;         output_layouts=Replicate(),
+&gt;&gt;&gt;         desired_output_layouts=Shard(0)
+&gt;&gt;&gt;     )
+&gt;&gt;&gt; )
+</pre> </dd> </dl> </dd>
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.PrepareModuleInputOutput">
+<code>class torch.distributed.tensor.parallel.PrepareModuleInputOutput(*, input_layouts=None, desired_input_layouts=None, input_kwarg_layouts=None, desired_input_kwarg_layouts=None, use_local_input=False, output_layouts, desired_output_layouts, use_local_output=True)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/style.py#L704"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Configure the nn.Module’s inputs (and outputs) to convert the input tensors (and output tensors, respectively) of the nn.Module to DTensors at runtime according to <code>input_layouts</code> (and output_layouts, respectively), and perform layout redistribution according to the <code>desired_input_layouts</code> (and <code>desired_output_layouts</code>, respectively). This is a combination of <a class="reference internal" href="#torch.distributed.tensor.parallel.PrepareModuleInput" title="torch.distributed.tensor.parallel.PrepareModuleInput"><code>PrepareModuleInput</code></a> and <a class="reference internal" href="#torch.distributed.tensor.parallel.PrepareModuleOutput" title="torch.distributed.tensor.parallel.PrepareModuleOutput"><code>PrepareModuleOutput</code></a>.</p> <dl class="field-list simple"> <dt class="field-odd">Keyword Arguments</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>input_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><em>Optional</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em><em>]</em>) – The DTensor layouts of input tensors for the nn.Module, this is used to convert the input tensors to DTensors. If some inputs are not torch.Tensor or no need to convert to DTensors, <code>None</code> need to be specified as a placeholder. default: None.</li> <li>
+<strong>desired_input_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><em>Optional</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em><em>]</em>) – The desired DTensor layout of input tensors for the nn.Module, this is used to ensure the inputs of the nn.Module have the desired DTensor layouts. This argument needs to have the same length with <code>input_layouts</code>. default: None.</li> <li>
+<strong>input_kwarg_layouts</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a><em>, </em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em>) – The DTensor layouts of input kwargs for the nn.Module, this is used to convert the input kwarg tensors to DTensors. default: None</li> <li>
+<strong>desired_input_kwarg_layouts</strong> – (Dict[str, Placement]): The desired DTensor layout of input kwargs for the nn.Module, this is used to ensure the inputs of the nn.Module have the desired DTensor layouts. default: None.</li> <li>
+<strong>use_local_input</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a><em>, </em><em>optional</em>) – Whether to use local <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> instead of <code>DTensor</code> for the module inputs, default: False.</li> <li>
+<strong>output_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em>) – The DTensor layouts of output tensors for the nn.Module, this is used to convert the output tensors to DTensors if they are <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a>. If some outputs are not torch.Tensor or no need to convert to DTensors, <code>None</code> need to be specified as a placeholder.</li> <li>
+<strong>desired_output_layouts</strong> (<em>Union</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>, </em><em>Tuple</em><em>[</em><a class="reference internal" href="distributed.tensor#torch.distributed.tensor.placement_types.Placement" title="torch.distributed.tensor.placement_types.Placement">Placement</a><em>]</em><em>]</em>) – The desired DTensor layouts of output tensors for the nn.Module, this is used to ensure the outputs of the nn.Module have the desired DTensor layouts.</li> <li>
+<strong>use_local_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a><em>, </em><em>optional</em>) – Whether to use local <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> instead of <code>DTensor</code> for the module outputs, default: True.</li> </ul> </dd> <dt class="field-even">Returns</dt> <dd class="field-even">
+<p>A <code>ParallelStyle</code> object that prepares the sharding layouts of the nn.Module’s inputs and outputs.</p> </dd> </dl> <dl> <dt>Example::</dt>
+<dd>
+<pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import parallelize_module, PrepareModuleInputOutput
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt; ...
+&gt;&gt;&gt; block = TransformerBlock(...)  # block is a nn.Module that contains an "attn" Attention submodule
+&gt;&gt;&gt; tp_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt;
+&gt;&gt;&gt; # According to the style specified below, the first input of attn will be annotated as Sharded DTensor
+&gt;&gt;&gt; # and then redistributed to Replicated DTensor, and the output of the TransformerBlock will be annotated
+&gt;&gt;&gt; # as Replicated DTensor and then redistributed to Sharded DTensor.
+&gt;&gt;&gt; parallelize_module(
+&gt;&gt;&gt;     block, # this can be a submodule or module
+&gt;&gt;&gt;     tp_mesh,
+&gt;&gt;&gt;     parallelize_plan={
+&gt;&gt;&gt;         "attn": PrepareModuleInputOutput(
+&gt;&gt;&gt;             input_layouts=(Shard(0), None, None, ...),
+&gt;&gt;&gt;             desired_input_layouts=(Replicate(), None, None, ...),
+&gt;&gt;&gt;             output_layouts=Replicate(),
+&gt;&gt;&gt;             desired_output_layouts=Shard(0),
+&gt;&gt;&gt;         ),
+&gt;&gt;&gt;     }
+&gt;&gt;&gt; )
+</pre> </dd> </dl> </dd>
+</dl> <div class="admonition note"> <p class="admonition-title">Note</p> <p>when using the <code>Shard(dim)</code> as the input/output layouts for the above <code>ParallelStyle</code> s, we assume the input/output activation tensors are evenly sharded on the tensor dimension <code>dim</code> on the <code>DeviceMesh</code> that TP operates on. For instance, since <code>RowwiseParallel</code> accepts input that is sharded on the last dimension, it assumes the input tensor has already been evenly sharded on the last dimension. For the case of uneven sharded activation tensors, one could pass in DTensor directly to the partitioned modules, and use <code>use_local_output=False</code> to return DTensor after each <code>ParallelStyle</code>, where DTensor could track the uneven sharding information.</p> </div> <p>For models like Transformer, we recommend users to use <code>ColwiseParallel</code> and <code>RowwiseParallel</code> together in the parallelize_plan for achieve the desired sharding for the entire model (i.e. Attention and MLP).</p> <p>Parallelized cross-entropy loss computation (loss parallelism), is supported via the following context manager:</p> <dl class="py function"> <dt class="sig sig-object py" id="torch.distributed.tensor.parallel.loss_parallel">
+<code>torch.distributed.tensor.parallel.loss_parallel()</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/tensor/parallel/loss.py#L30"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>A context manager that enables loss parallelism, where efficient parallelized loss computation can be performed when the input is sharded on the class dimension. Currently only the cross-entropy loss is supported.</p> <p>Within this context manager, one can use <a class="reference internal" href="generated/torch.nn.functional.cross_entropy#torch.nn.functional.cross_entropy" title="torch.nn.functional.cross_entropy"><code>cross_entropy()</code></a> or <a class="reference internal" href="generated/torch.nn.crossentropyloss#torch.nn.CrossEntropyLoss" title="torch.nn.CrossEntropyLoss"><code>CrossEntropyLoss</code></a> as usual, with the following assumptions on the input parameters. The corresponding <code>backward()</code> call, if any, also needs to happen under this context manager.</p> <dl class="field-list simple"> <dt class="field-odd">Parameters</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>input</strong> (<code>DTensor</code>) – Input logits. Assumed to be sharded on the class dimension.</li> <li>
+<strong>target</strong> (Union[<a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a>, <code>DTensor</code>]) – Must be ground truth class indices (class probabilities currently not supported). Assumed to be replicated across the <code>DeviceMesh</code>.</li> <li>
+<strong>weight</strong> (Union[<a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a>, <code>DTensor</code>], optional) – If given, assumed to be replicated across the <code>DeviceMesh</code>.</li> <li>
+<strong>label_smoothing</strong> – Currently not supported.</li> </ul> </dd> <dt class="field-even">Returns</dt> <dd class="field-even">
+<p>A replicated <code>DTensor</code>.</p> </dd> </dl> <h4 class="rubric">Example</h4> <p>A sharded DTensor is manually created here to showcase the usage. In practice, it is usually the output of a TP module.</p> <pre data-language="python">&gt;&gt;&gt; from torch.distributed.tensor.parallel import loss_parallel
+&gt;&gt;&gt; from torch.distributed.device_mesh import init_device_mesh
+&gt;&gt;&gt; ...
+&gt;&gt;&gt; device_mesh = init_device_mesh("cuda", (8,))
+&gt;&gt;&gt; input = torch.randn(4, 16, device="cuda", requires_grad=True)
+&gt;&gt;&gt; dist_input = distribute_tensor(input, device_mesh, placements=[Shard(1)])
+&gt;&gt;&gt; target = torch.randint(16, (4,), device="cuda")
+&gt;&gt;&gt; with loss_parallel():
+&gt;&gt;&gt;     loss = F.cross_entropy(dist_input, target, reduction="mean")
+&gt;&gt;&gt;     loss.backward()
+&gt;&gt;&gt; ...
+</pre> </dd>
+</dl> <div class="admonition warning"> <p class="admonition-title">Warning</p> <pre data-language="none">The loss_parallel API is experimental and subject to change.
+</pre> </div>  </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2025, PyTorch Contributors<br>PyTorch has a BSD-style license, as found in the <a href="https://github.com/pytorch/pytorch/blob/main/LICENSE">LICENSE</a> file.<br>
+    <a href="https://docs.pytorch.org/docs/2.9/distributed.tensor.parallel.html" class="_attribution-link">https://docs.pytorch.org/docs/2.9/distributed.tensor.parallel.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

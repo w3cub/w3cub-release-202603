@@ -1,0 +1,644 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>torch.optim - PyTorch 2.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Created On&#58; Jun 13, 2025 | Last Updated On&#58; Aug 24, 2025 ">
+  <meta name="keywords" content="torch, optim, pytorch, pytorch~2.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pytorch~2.9/optim.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pytorch~2.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pytorch~2.9/" class="_nav-link" title="" style="margin-left:0;">PyTorch 2.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<div style="display:none;" itemscope itemtype="https://schema.org/BreadcrumbList"> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Reference API"> <meta itemprop="position" content="1"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"> <meta itemprop="name" content="torch.optim"> <meta itemprop="position" content="2"> </div> </div>  <article class="bd-article">  <h1 id="torch-optim">torch.optim</h1> <p class="date-info-last-verified" style="color: #6c6c6d; font-size: small;" id="module-torch.optim">Created On: Jun 13, 2025 | Last Updated On: Aug 24, 2025</p> <p><a class="reference internal" href="#module-torch.optim" title="torch.optim"><code>torch.optim</code></a> is a package implementing various optimization algorithms.</p> <p>Most commonly used methods are already supported, and the interface is general enough, so that more sophisticated ones can also be easily integrated in the future.</p>  <h2 id="how-to-use-an-optimizer">How to use an optimizer</h2> <p>To use <a class="reference internal" href="#module-torch.optim" title="torch.optim"><code>torch.optim</code></a> you have to construct an optimizer object that will hold the current state and will update the parameters based on the computed gradients.</p>  <h3 id="constructing-it">Constructing it</h3> <p>To construct an <a class="reference internal" href="#torch.optim.Optimizer" title="torch.optim.Optimizer"><code>Optimizer</code></a> you have to give it an iterable containing the parameters (all should be <code>Parameter</code> s) or named parameters (tuples of (str, <code>Parameter</code>)) to optimize. Then, you can specify optimizer-specific options such as the learning rate, weight decay, etc.</p> <p>Example:</p> <pre data-language="python">optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+optimizer = optim.Adam([var1, var2], lr=0.0001)
+</pre> <p>Named parameters example:</p> <pre data-language="python">optimizer = optim.SGD(model.named_parameters(), lr=0.01, momentum=0.9)
+optimizer = optim.Adam([('layer0', var1), ('layer1', var2)], lr=0.0001)
+</pre>   <h3 id="per-parameter-options">Per-parameter options</h3> <p><a class="reference internal" href="#torch.optim.Optimizer" title="torch.optim.Optimizer"><code>Optimizer</code></a> s also support specifying per-parameter options. To do this, instead of passing an iterable of <code>Variable</code> s, pass in an iterable of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code>dict</code></a> s. Each of them will define a separate parameter group, and should contain a <code>params</code> key, containing a list of parameters belonging to it. Other keys should match the keyword arguments accepted by the optimizers, and will be used as optimization options for this group.</p> <p>For example, this is very useful when one wants to specify per-layer learning rates:</p> <pre data-language="python">optim.SGD([
+    {'params': model.base.parameters(), 'lr': 1e-2},
+    {'params': model.classifier.parameters()}
+], lr=1e-3, momentum=0.9)
+
+optim.SGD([
+    {'params': model.base.named_parameters(), 'lr': 1e-2},
+    {'params': model.classifier.named_parameters()}
+], lr=1e-3, momentum=0.9)
+</pre> <p>This means that <code>model.base</code>’s parameters will use a learning rate of <code>1e-2</code>, whereas <code>model.classifier</code>’s parameters will stick to the default learning rate of <code>1e-3</code>. Finally a momentum of <code>0.9</code> will be used for all parameters.</p> <div class="admonition note"> <p class="admonition-title">Note</p> <p>You can still pass options as keyword arguments. They will be used as defaults, in the groups that didn’t override them. This is useful when you only want to vary a single option, while keeping all others consistent between parameter groups.</p> </div> <p>Also consider the following example related to the distinct penalization of parameters. Remember that <a class="reference internal" href="generated/torch.nn.module#torch.nn.Module.parameters" title="torch.nn.Module.parameters"><code>parameters()</code></a> returns an iterable that contains all learnable parameters, including biases and other parameters that may prefer distinct penalization. To address this, one can specify individual penalization weights for each parameter group:</p> <pre data-language="python">bias_params = [p for name, p in self.named_parameters() if 'bias' in name]
+others = [p for name, p in self.named_parameters() if 'bias' not in name]
+
+optim.SGD([
+    {'params': others},
+    {'params': bias_params, 'weight_decay': 0}
+], weight_decay=1e-2, lr=1e-2)
+</pre> <p>In this manner, bias terms are isolated from non-bias terms, and a <code>weight_decay</code> of <code>0</code> is set specifically for the bias terms, as to avoid any penalization for this group.</p>   <h3 id="taking-an-optimization-step">Taking an optimization step</h3> <p>All optimizers implement a <a class="reference internal" href="generated/torch.optim.optimizer.step#torch.optim.Optimizer.step" title="torch.optim.Optimizer.step"><code>step()</code></a> method, that updates the parameters. It can be used in two ways:</p>  <h4 id="optimizer-step"><code>optimizer.step()</code></h4> <p>This is a simplified version supported by most optimizers. The function can be called once the gradients are computed using e.g. <code>backward()</code>.</p> <p>Example:</p> <pre data-language="python">for input, target in dataset:
+    optimizer.zero_grad()
+    output = model(input)
+    loss = loss_fn(output, target)
+    loss.backward()
+    optimizer.step()
+</pre>   <h4 id="optimizer-step-closure"><code>optimizer.step(closure)</code></h4> <p>Some optimization algorithms such as Conjugate Gradient and LBFGS need to reevaluate the function multiple times, so you have to pass in a closure that allows them to recompute your model. The closure should clear the gradients, compute the loss, and return it.</p> <p>Example:</p> <pre data-language="python">for input, target in dataset:
+    def closure():
+        optimizer.zero_grad()
+        output = model(input)
+        loss = loss_fn(output, target)
+        loss.backward()
+        return loss
+    optimizer.step(closure)
+</pre>     <h2 id="optimizer-algorithms">Base class</h2> <dl class="py class" id="base-class"> <dt class="sig sig-object py" id="torch.optim.Optimizer">
+<code>class torch.optim.Optimizer(params, defaults)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/optim/optimizer.py#L339"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Base class for all optimizers.</p> <div class="admonition warning"> <p class="admonition-title">Warning</p> <p>Parameters need to be specified as collections that have a deterministic ordering that is consistent between runs. Examples of objects that don’t satisfy those properties are sets and iterators over values of dictionaries.</p> </div> <dl class="field-list simple"> <dt class="field-odd">Parameters</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>params</strong> (<em>iterable</em>) – an iterable of <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> s or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code>dict</code></a> s. Specifies what Tensors should be optimized.</li> <li>
+<strong>defaults</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)">Any</a><em>]</em>) – (dict): a dict containing default values of optimization options (used when a parameter group doesn’t specify them).</li> </ul> </dd> </dl> </dd>
+</dl> <div class="pst-scrollable-table-container">
+<table class="autosummary longtable table autosummary">   <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.add_param_group#torch.optim.Optimizer.add_param_group" title="torch.optim.Optimizer.add_param_group"><code>Optimizer.add_param_group</code></a></p></td> <td><p>Add a param group to the <a class="reference internal" href="#torch.optim.Optimizer" title="torch.optim.Optimizer"><code>Optimizer</code></a> s <code>param_groups</code>.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.load_state_dict#torch.optim.Optimizer.load_state_dict" title="torch.optim.Optimizer.load_state_dict"><code>Optimizer.load_state_dict</code></a></p></td> <td><p>Load the optimizer state.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.register_load_state_dict_pre_hook#torch.optim.Optimizer.register_load_state_dict_pre_hook" title="torch.optim.Optimizer.register_load_state_dict_pre_hook"><code>Optimizer.register_load_state_dict_pre_hook</code></a></p></td> <td><p>Register a load_state_dict pre-hook which will be called before <a class="reference internal" href="generated/torch.optim.optimizer.load_state_dict#torch.optim.Optimizer.load_state_dict" title="torch.optim.Optimizer.load_state_dict"><code>load_state_dict()</code></a> is called. It should have the following signature::.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.register_load_state_dict_post_hook#torch.optim.Optimizer.register_load_state_dict_post_hook" title="torch.optim.Optimizer.register_load_state_dict_post_hook"><code>Optimizer.register_load_state_dict_post_hook</code></a></p></td> <td><p>Register a load_state_dict post-hook which will be called after <a class="reference internal" href="generated/torch.optim.optimizer.load_state_dict#torch.optim.Optimizer.load_state_dict" title="torch.optim.Optimizer.load_state_dict"><code>load_state_dict()</code></a> is called. It should have the following signature::.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.state_dict#torch.optim.Optimizer.state_dict" title="torch.optim.Optimizer.state_dict"><code>Optimizer.state_dict</code></a></p></td> <td><p>Return the state of the optimizer as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code>dict</code></a>.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.register_state_dict_pre_hook#torch.optim.Optimizer.register_state_dict_pre_hook" title="torch.optim.Optimizer.register_state_dict_pre_hook"><code>Optimizer.register_state_dict_pre_hook</code></a></p></td> <td><p>Register a state dict pre-hook which will be called before <a class="reference internal" href="generated/torch.optim.optimizer.state_dict#torch.optim.Optimizer.state_dict" title="torch.optim.Optimizer.state_dict"><code>state_dict()</code></a> is called.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.register_state_dict_post_hook#torch.optim.Optimizer.register_state_dict_post_hook" title="torch.optim.Optimizer.register_state_dict_post_hook"><code>Optimizer.register_state_dict_post_hook</code></a></p></td> <td><p>Register a state dict post-hook which will be called after <a class="reference internal" href="generated/torch.optim.optimizer.state_dict#torch.optim.Optimizer.state_dict" title="torch.optim.Optimizer.state_dict"><code>state_dict()</code></a> is called.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.step#torch.optim.Optimizer.step" title="torch.optim.Optimizer.step"><code>Optimizer.step</code></a></p></td> <td><p>Perform a single optimization step to update parameter.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.register_step_pre_hook#torch.optim.Optimizer.register_step_pre_hook" title="torch.optim.Optimizer.register_step_pre_hook"><code>Optimizer.register_step_pre_hook</code></a></p></td> <td><p>Register an optimizer step pre hook which will be called before optimizer step.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.register_step_post_hook#torch.optim.Optimizer.register_step_post_hook" title="torch.optim.Optimizer.register_step_post_hook"><code>Optimizer.register_step_post_hook</code></a></p></td> <td><p>Register an optimizer step post hook which will be called after optimizer step.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.optimizer.zero_grad#torch.optim.Optimizer.zero_grad" title="torch.optim.Optimizer.zero_grad"><code>Optimizer.zero_grad</code></a></p></td> <td><p>Reset the gradients of all optimized <a class="reference internal" href="tensors#torch.Tensor" title="torch.Tensor"><code>torch.Tensor</code></a> s.</p></td> </tr>  </table> </div>   <h2 id="algorithms">Algorithms</h2> <div class="pst-scrollable-table-container">
+<table class="autosummary longtable table autosummary">   <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adadelta#torch.optim.Adadelta" title="torch.optim.Adadelta"><code>Adadelta</code></a>
+</td> <td><p>Implements Adadelta algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adafactor#torch.optim.Adafactor" title="torch.optim.Adafactor"><code>Adafactor</code></a>
+</td> <td><p>Implements Adafactor algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adagrad#torch.optim.Adagrad" title="torch.optim.Adagrad"><code>Adagrad</code></a>
+</td> <td><p>Implements Adagrad algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adam#torch.optim.Adam" title="torch.optim.Adam"><code>Adam</code></a>
+</td> <td><p>Implements Adam algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adamw#torch.optim.AdamW" title="torch.optim.AdamW"><code>AdamW</code></a>
+</td> <td><p>Implements AdamW algorithm, where weight decay does not accumulate in the momentum nor variance.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.sparseadam#torch.optim.SparseAdam" title="torch.optim.SparseAdam"><code>SparseAdam</code></a>
+</td> <td><p>SparseAdam implements a masked version of the Adam algorithm suitable for sparse gradients.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adamax#torch.optim.Adamax" title="torch.optim.Adamax"><code>Adamax</code></a>
+</td> <td><p>Implements Adamax algorithm (a variant of Adam based on infinity norm).</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.asgd#torch.optim.ASGD" title="torch.optim.ASGD"><code>ASGD</code></a>
+</td> <td><p>Implements Averaged Stochastic Gradient Descent.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.lbfgs#torch.optim.LBFGS" title="torch.optim.LBFGS"><code>LBFGS</code></a>
+</td> <td><p>Implements L-BFGS algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.muon#torch.optim.Muon" title="torch.optim.Muon"><code>Muon</code></a>
+</td> <td><p>Implements Muon algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.nadam#torch.optim.NAdam" title="torch.optim.NAdam"><code>NAdam</code></a>
+</td> <td><p>Implements NAdam algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.radam#torch.optim.RAdam" title="torch.optim.RAdam"><code>RAdam</code></a>
+</td> <td><p>Implements RAdam algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.rmsprop#torch.optim.RMSprop" title="torch.optim.RMSprop"><code>RMSprop</code></a>
+</td> <td><p>Implements RMSprop algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.rprop#torch.optim.Rprop" title="torch.optim.Rprop"><code>Rprop</code></a>
+</td> <td><p>Implements the resilient backpropagation algorithm.</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.sgd#torch.optim.SGD" title="torch.optim.SGD"><code>SGD</code></a>
+</td> <td><p>Implements stochastic gradient descent (optionally with momentum).</p></td> </tr>  </table> </div> <p>Many of our algorithms have various implementations optimized for performance, readability and/or generality, so we attempt to default to the generally fastest implementation for the current device if no particular implementation has been specified by the user.</p> <p>We have 3 major categories of implementations: for-loop, foreach (multi-tensor), and fused. The most straightforward implementations are for-loops over the parameters with big chunks of computation. For-looping is usually slower than our foreach implementations, which combine parameters into a multi-tensor and run the big chunks of computation all at once, thereby saving many sequential kernel calls. A few of our optimizers have even faster fused implementations, which fuse the big chunks of computation into one kernel. We can think of foreach implementations as fusing horizontally and fused implementations as fusing vertically on top of that.</p> <p>In general, the performance ordering of the 3 implementations is fused &gt; foreach &gt; for-loop. So when applicable, we default to foreach over for-loop. Applicable means the foreach implementation is available, the user has not specified any implementation-specific kwargs (e.g., fused, foreach, differentiable), and all tensors are native. Note that while fused should be even faster than foreach, the implementations are newer and we would like to give them more bake-in time before flipping the switch everywhere. We summarize the stability status for each implementation on the second table below, you are welcome to try them out though!</p> <p>Below is a table showing the available and default implementations of each algorithm:</p> <div class="pst-scrollable-table-container">
+<table class="colwidths-given table">  <thead> <tr>
+<th class="head"><p>Algorithm</p></th> <th class="head"><p>Default</p></th> <th class="head"><p>Has foreach?</p></th> <th class="head"><p>Has fused?</p></th> </tr> </thead>  <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adadelta#torch.optim.Adadelta" title="torch.optim.Adadelta"><code>Adadelta</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adafactor#torch.optim.Adafactor" title="torch.optim.Adafactor"><code>Adafactor</code></a>
+</td> <td><p>for-loop</p></td> <td><p>no</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adagrad#torch.optim.Adagrad" title="torch.optim.Adagrad"><code>Adagrad</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>yes (cpu only)</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adam#torch.optim.Adam" title="torch.optim.Adam"><code>Adam</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>yes</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adamw#torch.optim.AdamW" title="torch.optim.AdamW"><code>AdamW</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>yes</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.sparseadam#torch.optim.SparseAdam" title="torch.optim.SparseAdam"><code>SparseAdam</code></a>
+</td> <td><p>for-loop</p></td> <td><p>no</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adamax#torch.optim.Adamax" title="torch.optim.Adamax"><code>Adamax</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.asgd#torch.optim.ASGD" title="torch.optim.ASGD"><code>ASGD</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.lbfgs#torch.optim.LBFGS" title="torch.optim.LBFGS"><code>LBFGS</code></a>
+</td> <td><p>for-loop</p></td> <td><p>no</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.muon#torch.optim.Muon" title="torch.optim.Muon"><code>Muon</code></a>
+</td> <td><p>for-loop</p></td> <td><p>no</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.nadam#torch.optim.NAdam" title="torch.optim.NAdam"><code>NAdam</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.radam#torch.optim.RAdam" title="torch.optim.RAdam"><code>RAdam</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.rmsprop#torch.optim.RMSprop" title="torch.optim.RMSprop"><code>RMSprop</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.rprop#torch.optim.Rprop" title="torch.optim.Rprop"><code>Rprop</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>no</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.sgd#torch.optim.SGD" title="torch.optim.SGD"><code>SGD</code></a>
+</td> <td><p>foreach</p></td> <td><p>yes</p></td> <td><p>yes</p></td> </tr>  </table> </div> <p>Below table is showing the stability status for fused implementations:</p> <div class="pst-scrollable-table-container">
+<table class="colwidths-given table">  <thead> <tr>
+<th class="head"><p>Algorithm</p></th> <th class="head"><p>CPU</p></th> <th class="head"><p>CUDA</p></th> <th class="head"><p>MPS</p></th> </tr> </thead>  <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adadelta#torch.optim.Adadelta" title="torch.optim.Adadelta"><code>Adadelta</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adafactor#torch.optim.Adafactor" title="torch.optim.Adafactor"><code>Adafactor</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adagrad#torch.optim.Adagrad" title="torch.optim.Adagrad"><code>Adagrad</code></a>
+</td> <td><p>beta</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adam#torch.optim.Adam" title="torch.optim.Adam"><code>Adam</code></a>
+</td> <td><p>beta</p></td> <td><p>stable</p></td> <td><p>beta</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adamw#torch.optim.AdamW" title="torch.optim.AdamW"><code>AdamW</code></a>
+</td> <td><p>beta</p></td> <td><p>stable</p></td> <td><p>beta</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.sparseadam#torch.optim.SparseAdam" title="torch.optim.SparseAdam"><code>SparseAdam</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.adamax#torch.optim.Adamax" title="torch.optim.Adamax"><code>Adamax</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.asgd#torch.optim.ASGD" title="torch.optim.ASGD"><code>ASGD</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.lbfgs#torch.optim.LBFGS" title="torch.optim.LBFGS"><code>LBFGS</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.muon#torch.optim.Muon" title="torch.optim.Muon"><code>Muon</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.nadam#torch.optim.NAdam" title="torch.optim.NAdam"><code>NAdam</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.radam#torch.optim.RAdam" title="torch.optim.RAdam"><code>RAdam</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.rmsprop#torch.optim.RMSprop" title="torch.optim.RMSprop"><code>RMSprop</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.rprop#torch.optim.Rprop" title="torch.optim.Rprop"><code>Rprop</code></a>
+</td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> <td><p>unsupported</p></td> </tr> <tr>
+<td>
+
+
+<a class="reference internal" href="generated/torch.optim.sgd#torch.optim.SGD" title="torch.optim.SGD"><code>SGD</code></a>
+</td> <td><p>beta</p></td> <td><p>beta</p></td> <td><p>beta</p></td> </tr>  </table> </div>   <h2 id="how-to-adjust-learning-rate">How to adjust learning rate</h2> <p><a class="reference internal" href="generated/torch.optim.lr_scheduler.lrscheduler#torch.optim.lr_scheduler.LRScheduler" title="torch.optim.lr_scheduler.LRScheduler"><code>torch.optim.lr_scheduler.LRScheduler</code></a> provides several methods to adjust the learning rate based on the number of epochs. <a class="reference internal" href="generated/torch.optim.lr_scheduler.reducelronplateau#torch.optim.lr_scheduler.ReduceLROnPlateau" title="torch.optim.lr_scheduler.ReduceLROnPlateau"><code>torch.optim.lr_scheduler.ReduceLROnPlateau</code></a> allows dynamic learning rate reducing based on some validation measurements.</p> <p>Learning rate scheduling should be applied after optimizer’s update; e.g., you should write your code this way:</p> <p>Example:</p> <pre data-language="python">optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+scheduler = ExponentialLR(optimizer, gamma=0.9)
+
+for epoch in range(20):
+    for input, target in dataset:
+        optimizer.zero_grad()
+        output = model(input)
+        loss = loss_fn(output, target)
+        loss.backward()
+        optimizer.step()
+    scheduler.step()
+</pre> <p>Most learning rate schedulers can be called back-to-back (also referred to as chaining schedulers). The result is that each scheduler is applied one after the other on the learning rate obtained by the one preceding it.</p> <p>Example:</p> <pre data-language="python">optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+scheduler1 = ExponentialLR(optimizer, gamma=0.9)
+scheduler2 = MultiStepLR(optimizer, milestones=[30,80], gamma=0.1)
+
+for epoch in range(20):
+    for input, target in dataset:
+        optimizer.zero_grad()
+        output = model(input)
+        loss = loss_fn(output, target)
+        loss.backward()
+        optimizer.step()
+    scheduler1.step()
+    scheduler2.step()
+</pre> <p>In many places in the documentation, we will use the following template to refer to schedulers algorithms.</p> <pre data-language="python">&gt;&gt;&gt; scheduler = ...
+&gt;&gt;&gt; for epoch in range(100):
+&gt;&gt;&gt;     train(...)
+&gt;&gt;&gt;     validate(...)
+&gt;&gt;&gt;     scheduler.step()
+</pre> <div class="admonition warning"> <p class="admonition-title">Warning</p> <p>Prior to PyTorch 1.1.0, the learning rate scheduler was expected to be called before the optimizer’s update; 1.1.0 changed this behavior in a BC-breaking way. If you use the learning rate scheduler (calling <code>scheduler.step()</code>) before the optimizer’s update (calling <code>optimizer.step()</code>), this will skip the first value of the learning rate schedule. If you are unable to reproduce results after upgrading to PyTorch 1.1.0, please check if you are calling <code>scheduler.step()</code> at the wrong time.</p> </div> <div class="pst-scrollable-table-container">
+<table class="autosummary longtable table autosummary">   <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.lrscheduler#torch.optim.lr_scheduler.LRScheduler" title="torch.optim.lr_scheduler.LRScheduler"><code>lr_scheduler.LRScheduler</code></a></p></td> <td><p>Adjusts the learning rate during optimization.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.lambdalr#torch.optim.lr_scheduler.LambdaLR" title="torch.optim.lr_scheduler.LambdaLR"><code>lr_scheduler.LambdaLR</code></a></p></td> <td><p>Sets the initial learning rate.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.multiplicativelr#torch.optim.lr_scheduler.MultiplicativeLR" title="torch.optim.lr_scheduler.MultiplicativeLR"><code>lr_scheduler.MultiplicativeLR</code></a></p></td> <td><p>Multiply the learning rate of each parameter group by the factor given in the specified function.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.steplr#torch.optim.lr_scheduler.StepLR" title="torch.optim.lr_scheduler.StepLR"><code>lr_scheduler.StepLR</code></a></p></td> <td><p>Decays the learning rate of each parameter group by gamma every step_size epochs.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.multisteplr#torch.optim.lr_scheduler.MultiStepLR" title="torch.optim.lr_scheduler.MultiStepLR"><code>lr_scheduler.MultiStepLR</code></a></p></td> <td><p>Decays the learning rate of each parameter group by gamma once the number of epoch reaches one of the milestones.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.constantlr#torch.optim.lr_scheduler.ConstantLR" title="torch.optim.lr_scheduler.ConstantLR"><code>lr_scheduler.ConstantLR</code></a></p></td> <td><p>Multiply the learning rate of each parameter group by a small constant factor.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.linearlr#torch.optim.lr_scheduler.LinearLR" title="torch.optim.lr_scheduler.LinearLR"><code>lr_scheduler.LinearLR</code></a></p></td> <td><p>Decays the learning rate of each parameter group by linearly changing small multiplicative factor.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.exponentiallr#torch.optim.lr_scheduler.ExponentialLR" title="torch.optim.lr_scheduler.ExponentialLR"><code>lr_scheduler.ExponentialLR</code></a></p></td> <td><p>Decays the learning rate of each parameter group by gamma every epoch.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.polynomiallr#torch.optim.lr_scheduler.PolynomialLR" title="torch.optim.lr_scheduler.PolynomialLR"><code>lr_scheduler.PolynomialLR</code></a></p></td> <td><p>Decays the learning rate of each parameter group using a polynomial function in the given total_iters.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.cosineannealinglr#torch.optim.lr_scheduler.CosineAnnealingLR" title="torch.optim.lr_scheduler.CosineAnnealingLR"><code>lr_scheduler.CosineAnnealingLR</code></a></p></td> <td><p>Set the learning rate of each parameter group using a cosine annealing schedule.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.chainedscheduler#torch.optim.lr_scheduler.ChainedScheduler" title="torch.optim.lr_scheduler.ChainedScheduler"><code>lr_scheduler.ChainedScheduler</code></a></p></td> <td><p>Chains a list of learning rate schedulers.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.sequentiallr#torch.optim.lr_scheduler.SequentialLR" title="torch.optim.lr_scheduler.SequentialLR"><code>lr_scheduler.SequentialLR</code></a></p></td> <td><p>Contains a list of schedulers expected to be called sequentially during the optimization process.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.reducelronplateau#torch.optim.lr_scheduler.ReduceLROnPlateau" title="torch.optim.lr_scheduler.ReduceLROnPlateau"><code>lr_scheduler.ReduceLROnPlateau</code></a></p></td> <td><p>Reduce learning rate when a metric has stopped improving.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.cycliclr#torch.optim.lr_scheduler.CyclicLR" title="torch.optim.lr_scheduler.CyclicLR"><code>lr_scheduler.CyclicLR</code></a></p></td> <td><p>Sets the learning rate of each parameter group according to cyclical learning rate policy (CLR).</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.onecyclelr#torch.optim.lr_scheduler.OneCycleLR" title="torch.optim.lr_scheduler.OneCycleLR"><code>lr_scheduler.OneCycleLR</code></a></p></td> <td><p>Sets the learning rate of each parameter group according to the 1cycle learning rate policy.</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.lr_scheduler.cosineannealingwarmrestarts#torch.optim.lr_scheduler.CosineAnnealingWarmRestarts" title="torch.optim.lr_scheduler.CosineAnnealingWarmRestarts"><code>lr_scheduler.CosineAnnealingWarmRestarts</code></a></p></td> <td><p>Set the learning rate of each parameter group using a cosine annealing schedule.</p></td> </tr>  </table> </div>   <h2 id="how-to-utilize-named-parameters-to-load-optimizer-state-dict">How to utilize named parameters to load optimizer state dict</h2> <p>The function <a class="reference internal" href="generated/torch.optim.optimizer.load_state_dict#torch.optim.Optimizer.load_state_dict" title="torch.optim.Optimizer.load_state_dict"><code>load_state_dict()</code></a> stores the optional <code>param_names</code> content from the loaded state dict if present. However, the process of loading the optimizer state is not affected, as the order of the parameters matters to maintain compatibility (in case of different ordering). To utilize the loaded parameters names from the loaded state dict, a custom <code>register_load_state_dict_pre_hook</code> needs to be implemented according to the desired behavior.</p> <p>This can be useful, for instance, when the model architecture changes, but the weights and optimizer states need to remain unchanged. The following example demonstrates how to implement this customization.</p> <p>Example:</p> <pre data-language="python">class OneLayerModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc = nn.Linear(3, 4)
+
+    def forward(self, x):
+        return self.fc(x)
+
+model = OneLayerModel()
+optimizer = optim.SGD(model.named_parameters(), lr=0.01, momentum=0.9)
+# training..
+torch.save(optimizer.state_dict(), PATH)
+</pre> <p>Let’s say that <code>model</code> implements an expert (MoE), and we want to duplicate it and resume training for two experts, both initialized the same way as the <code>fc</code> layer. For the following <code>model2</code> we create two layers identical to <code>fc</code> and resume training by loading the model weights and optimizer states from <code>model</code> into both <code>fc1</code> and <code>fc2</code> of <code>model2</code> (and adjust them accordingly):</p> <pre data-language="python">class TwoLayerModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(3, 4)
+        self.fc2 = nn.Linear(3, 4)
+
+    def forward(self, x):
+        return (self.fc1(x) + self.fc2(x)) / 2
+
+model2 = TwoLayerModel()
+# adapt and load model weights..
+optimizer2 = optim.SGD(model2.named_parameters(), lr=0.01, momentum=0.9)
+</pre> <p>To load the state dict for <code>optimizer2</code> with the state dict of the previous optimizer such that both <code>fc1</code> and <code>fc2</code> will be initialized with a copy of <code>fc</code> optimizer states (to resume training for each layer from <code>fc</code>), we can use the following hook:</p> <pre data-language="python">def adapt_state_dict_ids(optimizer, state_dict):
+    adapted_state_dict = deepcopy(optimizer.state_dict())
+    # Copy setup parameters (lr, weight_decay, etc.), in case they differ in the loaded state dict.
+    for k, v in state_dict['param_groups'][0].items():
+        if k not in ['params', 'param_names']:
+            adapted_state_dict['param_groups'][0][k] = v
+
+    lookup_dict = {
+        'fc1.weight': 'fc.weight',
+        'fc1.bias': 'fc.bias',
+        'fc2.weight': 'fc.weight',
+        'fc2.bias': 'fc.bias'
+    }
+    clone_deepcopy = lambda d: {k: (v.clone() if isinstance(v, torch.Tensor) else deepcopy(v)) for k, v in d.items()}
+    for param_id, param_name in zip(
+            optimizer.state_dict()['param_groups'][0]['params'],
+            optimizer.state_dict()['param_groups'][0]['param_names']):
+        name_in_loaded = lookup_dict[param_name]
+        index_in_loaded_list = state_dict['param_groups'][0]['param_names'].index(name_in_loaded)
+        id_in_loaded = state_dict['param_groups'][0]['params'][index_in_loaded_list]
+        # Copy the state of the corresponding parameter
+        if id_in_loaded in state_dict['state']:
+            adapted_state_dict['state'][param_id] = clone_deepcopy(state_dict['state'][id_in_loaded])
+
+    return adapted_state_dict
+
+optimizer2.register_load_state_dict_pre_hook(adapt_state_dict_ids)
+optimizer2.load_state_dict(torch.load(PATH)) # The previous optimizer saved state_dict
+</pre> <p>This ensures that the adapted state_dict with the correct states for the layers of <code>model2</code> will be used during model loading. Note that this code is designed specifically for this example (e.g., assuming a single parameter group), and other cases might require different adaptations.</p> <p>The following example shows how to handle missing parameters in a loaded <code>state dict</code> when the model structure changes. The <code>Model_bypass</code> adds a new <code>bypass</code> layer, which is not present in the original <code>Model1</code>. To resume training, a custom <code>adapt_state_dict_missing_param</code> hook is used to adapt the optimizer’s <code>state_dict</code>, ensuring existing parameters are mapped correctly, while missing ones (like the bypass layer) remain unchanged (as initialized in this example). This approach enables smooth loading and resuming of the optimizer state despite model changes. The new bypass layer will be trained from scratch:</p> <pre data-language="python">class Model1(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc = nn.Linear(5, 5)
+
+    def forward(self, x):
+        return self.fc(x) + x
+
+
+model = Model1()
+optimizer = optim.SGD(model.named_parameters(), lr=0.01, momentum=0.9)
+# training..
+torch.save(optimizer.state_dict(), PATH)
+
+class Model_bypass(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc = nn.Linear(5, 5)
+        self.bypass = nn.Linear(5, 5, bias=False)
+        torch.nn.init.eye_(self.bypass.weight)
+
+    def forward(self, x):
+        return self.fc(x) + self.bypass(x)
+
+model2 = Model_bypass()
+optimizer2 = optim.SGD(model2.named_parameters(), lr=0.01, momentum=0.9)
+
+def adapt_state_dict_missing_param(optimizer, state_dict):
+    adapted_state_dict = deepcopy(optimizer.state_dict())
+    # Copy setup parameters (lr, weight_decay, etc.), in case they differ in the loaded state dict.
+    for k, v in state_dict['param_groups'][0].items():
+        if k not in ['params', 'param_names']:
+            adapted_state_dict['param_groups'][0][k] = v
+
+    lookup_dict = {
+        'fc.weight': 'fc.weight',
+        'fc.bias': 'fc.bias',
+        'bypass.weight': None,
+    }
+
+    clone_deepcopy = lambda d: {k: (v.clone() if isinstance(v, torch.Tensor) else deepcopy(v)) for k, v in d.items()}
+    for param_id, param_name in zip(
+            optimizer.state_dict()['param_groups'][0]['params'],
+            optimizer.state_dict()['param_groups'][0]['param_names']):
+        name_in_loaded = lookup_dict[param_name]
+        if name_in_loaded in state_dict['param_groups'][0]['param_names']:
+            index_in_loaded_list = state_dict['param_groups'][0]['param_names'].index(name_in_loaded)
+            id_in_loaded = state_dict['param_groups'][0]['params'][index_in_loaded_list]
+            # Copy the state of the corresponding parameter
+            if id_in_loaded in state_dict['state']:
+                adapted_state_dict['state'][param_id] = clone_deepcopy(state_dict['state'][id_in_loaded])
+
+    return adapted_state_dict
+
+optimizer2.register_load_state_dict_pre_hook(adapt_state_dict_ids)
+optimizer2.load_state_dict(torch.load(PATH)) # The previous optimizer saved state_dict
+</pre> <p>As a third example, instead of loading a state according to the order of parameters (the default approach), this hook can be used to load according to the parameters’ names:</p> <pre data-language="python">def names_matching(optimizer, state_dict):
+    assert len(state_dict['param_groups']) == len(optimizer.state_dict()['param_groups'])
+    adapted_state_dict = deepcopy(optimizer.state_dict())
+    for g_ind in range(len(state_dict['param_groups'])):
+        assert len(state_dict['param_groups'][g_ind]['params']) == len(
+            optimizer.state_dict()['param_groups'][g_ind]['params'])
+
+        for k, v in state_dict['param_groups'][g_ind].items():
+            if k not in ['params', 'param_names']:
+                adapted_state_dict['param_groups'][g_ind][k] = v
+
+        for param_id, param_name in zip(
+                optimizer.state_dict()['param_groups'][g_ind]['params'],
+                optimizer.state_dict()['param_groups'][g_ind]['param_names']):
+            index_in_loaded_list = state_dict['param_groups'][g_ind]['param_names'].index(param_name)
+            id_in_loaded = state_dict['param_groups'][g_ind]['params'][index_in_loaded_list]
+            # Copy the state of the corresponding parameter
+            if id_in_loaded in state_dict['state']:
+                adapted_state_dict['state'][param_id] = deepcopy(state_dict['state'][id_in_loaded])
+
+    return adapted_state_dict
+</pre>   <h2 id="weight-averaging-swa-and-ema">Weight Averaging (SWA and EMA)</h2> <p><a class="reference internal" href="generated/torch.optim.swa_utils.averagedmodel#torch.optim.swa_utils.AveragedModel" title="torch.optim.swa_utils.AveragedModel"><code>torch.optim.swa_utils.AveragedModel</code></a> implements Stochastic Weight Averaging (SWA) and Exponential Moving Average (EMA), <a class="reference internal" href="generated/torch.optim.swa_utils.swalr#torch.optim.swa_utils.SWALR" title="torch.optim.swa_utils.SWALR"><code>torch.optim.swa_utils.SWALR</code></a> implements the SWA learning rate scheduler and <a class="reference internal" href="#torch.optim.swa_utils.update_bn" title="torch.optim.swa_utils.update_bn"><code>torch.optim.swa_utils.update_bn()</code></a> is a utility function used to update SWA/EMA batch normalization statistics at the end of training.</p> <p>SWA has been proposed in <a class="reference external" href="https://arxiv.org/abs/1803.05407">Averaging Weights Leads to Wider Optima and Better Generalization</a>.</p> <p>EMA is a widely known technique to reduce the training time by reducing the number of weight updates needed. It is a variation of <a class="reference external" href="https://paperswithcode.com/method/polyak-averaging">Polyak averaging</a>, but using exponential weights instead of equal weights across iterations.</p>  <h3 id="constructing-averaged-models">Constructing averaged models</h3> <p>The <code>AveragedModel</code> class serves to compute the weights of the SWA or EMA model.</p> <p>You can create an SWA averaged model by running:</p> <pre data-language="python">&gt;&gt;&gt; averaged_model = AveragedModel(model)
+</pre> <p>EMA models are constructed by specifying the <code>multi_avg_fn</code> argument as follows:</p> <pre data-language="python">&gt;&gt;&gt; decay = 0.999
+&gt;&gt;&gt; averaged_model = AveragedModel(model, multi_avg_fn=get_ema_multi_avg_fn(decay))
+</pre> <p>Decay is a parameter between 0 and 1 that controls how fast the averaged parameters are decayed. If not provided to <a class="reference internal" href="#torch.optim.swa_utils.get_ema_multi_avg_fn" title="torch.optim.swa_utils.get_ema_multi_avg_fn"><code>torch.optim.swa_utils.get_ema_multi_avg_fn()</code></a>, the default is 0.999. Decay value should be close to 1.0, as smaller values can cause optimization convergence issues.</p> <p><a class="reference internal" href="#torch.optim.swa_utils.get_ema_multi_avg_fn" title="torch.optim.swa_utils.get_ema_multi_avg_fn"><code>torch.optim.swa_utils.get_ema_multi_avg_fn()</code></a> returns a function that applies the following EMA equation to the weights:</p> <div class="math"> <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mi>W</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mtext>EMA</mtext></msubsup><mo>=</mo><mi>α</mi><msubsup><mi>W</mi><mi>t</mi><mtext>EMA</mtext></msubsup><mo>+</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo><msubsup><mi>W</mi><mi>t</mi><mtext>model</mtext></msubsup></mrow><annotation encoding="application/x-tex">W^\textrm{EMA}_{t+1} = \alpha W^\textrm{EMA}_{t} + (1 - \alpha) W^\textrm{model}_t</annotation></semantics></math></span></span></span>
+</div>
+<p>where alpha is the EMA decay.</p> <p>Here the model <code>model</code> can be an arbitrary <a class="reference internal" href="generated/torch.nn.module#torch.nn.Module" title="torch.nn.Module"><code>torch.nn.Module</code></a> object. <code>averaged_model</code> will keep track of the running averages of the parameters of the <code>model</code>. To update these averages, you should use the <code>update_parameters()</code> function after the <code>optimizer.step()</code>:</p> <pre data-language="python">&gt;&gt;&gt; averaged_model.update_parameters(model)
+</pre> <p>For SWA and EMA, this call is usually done right after the optimizer <code>step()</code>. In the case of SWA, this is usually skipped for some numbers of steps at the beginning of the training.</p>   <h3 id="custom-averaging-strategies">Custom averaging strategies</h3> <p>By default, <a class="reference internal" href="generated/torch.optim.swa_utils.averagedmodel#torch.optim.swa_utils.AveragedModel" title="torch.optim.swa_utils.AveragedModel"><code>torch.optim.swa_utils.AveragedModel</code></a> computes a running equal average of the parameters that you provide, but you can also use custom averaging functions with the <code>avg_fn</code> or <code>multi_avg_fn</code> parameters:</p> <ul class="simple"> <li>
+<code>avg_fn</code> allows defining a function operating on each parameter tuple (averaged parameter, model parameter) and should return the new averaged parameter.</li> <li>
+<code>multi_avg_fn</code> allows defining more efficient operations acting on a tuple of parameter lists, (averaged parameter list, model parameter list), at the same time, for example using the <code>torch._foreach*</code> functions. This function must update the averaged parameters in-place.</li> </ul> <p>In the following example <code>ema_model</code> computes an exponential moving average using the <code>avg_fn</code> parameter:</p> <pre data-language="python">&gt;&gt;&gt; ema_avg = lambda averaged_model_parameter, model_parameter, num_averaged:\
+&gt;&gt;&gt;         0.9 * averaged_model_parameter + 0.1 * model_parameter
+&gt;&gt;&gt; ema_model = torch.optim.swa_utils.AveragedModel(model, avg_fn=ema_avg)
+</pre> <p>In the following example <code>ema_model</code> computes an exponential moving average using the more efficient <code>multi_avg_fn</code> parameter:</p> <pre data-language="python">&gt;&gt;&gt; ema_model = AveragedModel(model, multi_avg_fn=get_ema_multi_avg_fn(0.9))
+</pre>   <h3 id="swa-learning-rate-schedules">SWA learning rate schedules</h3> <p>Typically, in SWA the learning rate is set to a high constant value. <code>SWALR</code> is a learning rate scheduler that anneals the learning rate to a fixed value, and then keeps it constant. For example, the following code creates a scheduler that linearly anneals the learning rate from its initial value to 0.05 in 5 epochs within each parameter group:</p> <pre data-language="python">&gt;&gt;&gt; swa_scheduler = torch.optim.swa_utils.SWALR(optimizer, \
+&gt;&gt;&gt;         anneal_strategy="linear", anneal_epochs=5, swa_lr=0.05)
+</pre> <p>You can also use cosine annealing to a fixed value instead of linear annealing by setting <code>anneal_strategy="cos"</code>.</p>   <h3 id="taking-care-of-batch-normalization">Taking care of batch normalization</h3> <p><code>update_bn()</code> is a utility function that allows to compute the batchnorm statistics for the SWA model on a given dataloader <code>loader</code> at the end of training:</p> <pre data-language="python">&gt;&gt;&gt; torch.optim.swa_utils.update_bn(loader, swa_model)
+</pre> <p><code>update_bn()</code> applies the <code>swa_model</code> to every element in the dataloader and computes the activation statistics for each batch normalization layer in the model.</p> <div class="admonition warning"> <p class="admonition-title">Warning</p> <p><code>update_bn()</code> assumes that each batch in the dataloader <code>loader</code> is either a tensors or a list of tensors where the first element is the tensor that the network <code>swa_model</code> should be applied to. If your dataloader has a different structure, you can update the batch normalization statistics of the <code>swa_model</code> by doing a forward pass with the <code>swa_model</code> on each element of the dataset.</p> </div>   <h3 id="putting-it-all-together-swa">Putting it all together: SWA</h3> <p>In the example below, <code>swa_model</code> is the SWA model that accumulates the averages of the weights. We train the model for a total of 300 epochs and we switch to the SWA learning rate schedule and start to collect SWA averages of the parameters at epoch 160:</p> <pre data-language="python">&gt;&gt;&gt; loader, optimizer, model, loss_fn = ...
+&gt;&gt;&gt; swa_model = torch.optim.swa_utils.AveragedModel(model)
+&gt;&gt;&gt; scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=300)
+&gt;&gt;&gt; swa_start = 160
+&gt;&gt;&gt; swa_scheduler = SWALR(optimizer, swa_lr=0.05)
+&gt;&gt;&gt;
+&gt;&gt;&gt; for epoch in range(300):
+&gt;&gt;&gt;       for input, target in loader:
+&gt;&gt;&gt;           optimizer.zero_grad()
+&gt;&gt;&gt;           loss_fn(model(input), target).backward()
+&gt;&gt;&gt;           optimizer.step()
+&gt;&gt;&gt;       if epoch &gt; swa_start:
+&gt;&gt;&gt;           swa_model.update_parameters(model)
+&gt;&gt;&gt;           swa_scheduler.step()
+&gt;&gt;&gt;       else:
+&gt;&gt;&gt;           scheduler.step()
+&gt;&gt;&gt;
+&gt;&gt;&gt; # Update bn statistics for the swa_model at the end
+&gt;&gt;&gt; torch.optim.swa_utils.update_bn(loader, swa_model)
+&gt;&gt;&gt; # Use swa_model to make predictions on test data
+&gt;&gt;&gt; preds = swa_model(test_input)
+</pre>   <h3 id="putting-it-all-together-ema">Putting it all together: EMA</h3> <p>In the example below, <code>ema_model</code> is the EMA model that accumulates the exponentially-decayed averages of the weights with a decay rate of 0.999. We train the model for a total of 300 epochs and start to collect EMA averages immediately.</p> <pre data-language="python">&gt;&gt;&gt; loader, optimizer, model, loss_fn = ...
+&gt;&gt;&gt; ema_model = torch.optim.swa_utils.AveragedModel(model, \
+&gt;&gt;&gt;             multi_avg_fn=torch.optim.swa_utils.get_ema_multi_avg_fn(0.999))
+&gt;&gt;&gt;
+&gt;&gt;&gt; for epoch in range(300):
+&gt;&gt;&gt;       for input, target in loader:
+&gt;&gt;&gt;           optimizer.zero_grad()
+&gt;&gt;&gt;           loss_fn(model(input), target).backward()
+&gt;&gt;&gt;           optimizer.step()
+&gt;&gt;&gt;           ema_model.update_parameters(model)
+&gt;&gt;&gt;
+&gt;&gt;&gt; # Update bn statistics for the ema_model at the end
+&gt;&gt;&gt; torch.optim.swa_utils.update_bn(loader, ema_model)
+&gt;&gt;&gt; # Use ema_model to make predictions on test data
+&gt;&gt;&gt; preds = ema_model(test_input)
+</pre> <div class="pst-scrollable-table-container">
+<table class="autosummary longtable table autosummary">   <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.swa_utils.averagedmodel#torch.optim.swa_utils.AveragedModel" title="torch.optim.swa_utils.AveragedModel"><code>swa_utils.AveragedModel</code></a></p></td> <td><p>Implements averaged model for Stochastic Weight Averaging (SWA) and Exponential Moving Average (EMA).</p></td> </tr> <tr>
+<td><p><a class="reference internal" href="generated/torch.optim.swa_utils.swalr#torch.optim.swa_utils.SWALR" title="torch.optim.swa_utils.SWALR"><code>swa_utils.SWALR</code></a></p></td> <td><p>Anneals the learning rate in each parameter group to a fixed value.</p></td> </tr>  </table> </div> <dl class="py function"> <dt class="sig sig-object py" id="torch.optim.swa_utils.get_ema_multi_avg_fn">
+<code>torch.optim.swa_utils.get_ema_multi_avg_fn(decay=0.999)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/optim/swa_utils.py#L36"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Get the function applying exponential moving average (EMA) across multiple params.</p> </dd>
+</dl> <dl class="py function" id="module-torch.optim.swa_utils"> <dt class="sig sig-object py" id="torch.optim.swa_utils.update_bn">
+<code>torch.optim.swa_utils.update_bn(loader, model, device=None)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/optim/swa_utils.py#L315"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Update BatchNorm running_mean, running_var buffers in the model.</p> <p>It performs one pass over data in <code>loader</code> to estimate the activation statistics for BatchNorm layers in the model.</p> <dl class="field-list simple"> <dt class="field-odd">Parameters</dt> <dd class="field-odd">
+<ul class="simple"> <li>
+<strong>loader</strong> (<a class="reference internal" href="data#torch.utils.data.DataLoader" title="torch.utils.data.DataLoader">torch.utils.data.DataLoader</a>) – dataset loader to compute the activation statistics on. Each data batch should be either a tensor, or a list/tuple whose first element is a tensor containing data.</li> <li>
+<strong>model</strong> (<a class="reference internal" href="generated/torch.nn.module#torch.nn.Module" title="torch.nn.Module">torch.nn.Module</a>) – model for which we seek to update BatchNorm statistics.</li> <li>
+<strong>device</strong> (<a class="reference internal" href="tensor_attributes#torch.device" title="torch.device">torch.device</a><em>, </em><em>optional</em>) – If set, data will be transferred to <code>device</code> before being passed into <code>model</code>.</li> </ul> </dd> </dl> <h4 class="rubric">Example</h4> <pre data-language="python">&gt;&gt;&gt; loader, model = ...
+&gt;&gt;&gt; torch.optim.swa_utils.update_bn(loader, model)
+</pre> <div class="admonition note"> <p class="admonition-title">Note</p> <p>The <code>update_bn</code> utility assumes that each data batch in <code>loader</code> is either a tensor or a list or tuple of tensors; in the latter case it is assumed that <code>model.forward()</code> should be called on the first element of the list or tuple corresponding to the data batch.</p> </div> </dd>
+</dl>       </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2025, PyTorch Contributors<br>PyTorch has a BSD-style license, as found in the <a href="https://github.com/pytorch/pytorch/blob/main/LICENSE">LICENSE</a> file.<br>
+    <a href="https://docs.pytorch.org/docs/2.9/optim.html" class="_attribution-link">https://docs.pytorch.org/docs/2.9/optim.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

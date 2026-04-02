@@ -1,0 +1,148 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Tensor Views - PyTorch 2.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Created On&#58; Feb 28, 2020 | Last Updated On&#58; Feb 26, 2025 ">
+  <meta name="keywords" content="tensor, views, pytorch, pytorch~2.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pytorch~2.9/tensor_view.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pytorch~2.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pytorch~2.9/" class="_nav-link" title="" style="margin-left:0;">PyTorch 2.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<div style="display:none;" itemscope itemtype="https://schema.org/BreadcrumbList"> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Reference API"> <meta itemprop="position" content="1"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"> <meta itemprop="name" content="Tensor Views"> <meta itemprop="position" content="2"> </div> </div>  <article class="bd-article">  <h1 id="tensor-view-doc">Tensor Views</h1> <p class="date-info-last-verified" style="color: #6c6c6d; font-size: small;" id="tensor-views">Created On: Feb 28, 2020 | Last Updated On: Feb 26, 2025</p> <p>PyTorch allows a tensor to be a <code>View</code> of an existing tensor. View tensor shares the same underlying data with its base tensor. Supporting <code>View</code> avoids explicit data copy, thus allows us to do fast and memory efficient reshaping, slicing and element-wise operations.</p> <p>For example, to get a view of an existing tensor <code>t</code>, you can call <code>t.view(...)</code>.</p> <pre data-language="python">&gt;&gt;&gt; t = torch.rand(4, 4)
+&gt;&gt;&gt; b = t.view(2, 8)
+&gt;&gt;&gt; t.storage().data_ptr() == b.storage().data_ptr()  # `t` and `b` share the same underlying data.
+True
+# Modifying view tensor changes base tensor as well.
+&gt;&gt;&gt; b[0][0] = 3.14
+&gt;&gt;&gt; t[0][0]
+tensor(3.14)
+</pre> <p>Since views share underlying data with its base tensor, if you edit the data in the view, it will be reflected in the base tensor as well.</p> <p>Typically a PyTorch op returns a new tensor as output, e.g. <a class="reference internal" href="generated/torch.tensor.add#torch.Tensor.add" title="torch.Tensor.add"><code>add()</code></a>. But in case of view ops, outputs are views of input tensors to avoid unnecessary data copy. No data movement occurs when creating a view, view tensor just changes the way it interprets the same data. Taking a view of contiguous tensor could potentially produce a non-contiguous tensor. Users should pay additional attention as contiguity might have implicit performance impact. <a class="reference internal" href="generated/torch.tensor.transpose#torch.Tensor.transpose" title="torch.Tensor.transpose"><code>transpose()</code></a> is a common example.</p> <pre data-language="python">&gt;&gt;&gt; base = torch.tensor([[0, 1],[2, 3]])
+&gt;&gt;&gt; base.is_contiguous()
+True
+&gt;&gt;&gt; t = base.transpose(0, 1)  # `t` is a view of `base`. No data movement happened here.
+# View tensors might be non-contiguous.
+&gt;&gt;&gt; t.is_contiguous()
+False
+# To get a contiguous tensor, call `.contiguous()` to enforce
+# copying data when `t` is not contiguous.
+&gt;&gt;&gt; c = t.contiguous()
+</pre> <p>For reference, here’s a full list of view ops in PyTorch:</p> <ul class="simple"> <li>Basic slicing and indexing op, e.g. <code>tensor[0, 2:, 1:7:2]</code> returns a view of base <code>tensor</code>, see note below.</li> <li><a class="reference internal" href="generated/torch.tensor.adjoint#torch.Tensor.adjoint" title="torch.Tensor.adjoint"><code>adjoint()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.as_strided#torch.Tensor.as_strided" title="torch.Tensor.as_strided"><code>as_strided()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.detach#torch.Tensor.detach" title="torch.Tensor.detach"><code>detach()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.diagonal#torch.Tensor.diagonal" title="torch.Tensor.diagonal"><code>diagonal()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.expand#torch.Tensor.expand" title="torch.Tensor.expand"><code>expand()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.expand_as#torch.Tensor.expand_as" title="torch.Tensor.expand_as"><code>expand_as()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.movedim#torch.Tensor.movedim" title="torch.Tensor.movedim"><code>movedim()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.narrow#torch.Tensor.narrow" title="torch.Tensor.narrow"><code>narrow()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.permute#torch.Tensor.permute" title="torch.Tensor.permute"><code>permute()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.select#torch.Tensor.select" title="torch.Tensor.select"><code>select()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.squeeze#torch.Tensor.squeeze" title="torch.Tensor.squeeze"><code>squeeze()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.transpose#torch.Tensor.transpose" title="torch.Tensor.transpose"><code>transpose()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.t#torch.Tensor.t" title="torch.Tensor.t"><code>t()</code></a></li> <li><a class="reference internal" href="tensors#torch.Tensor.T" title="torch.Tensor.T"><code>T</code></a></li> <li><a class="reference internal" href="tensors#torch.Tensor.H" title="torch.Tensor.H"><code>H</code></a></li> <li><a class="reference internal" href="tensors#torch.Tensor.mT" title="torch.Tensor.mT"><code>mT</code></a></li> <li><a class="reference internal" href="tensors#torch.Tensor.mH" title="torch.Tensor.mH"><code>mH</code></a></li> <li>
+
+
+<a class="reference internal" href="generated/torch.tensor.real#torch.Tensor.real" title="torch.Tensor.real"><code>real</code></a>
+</li> <li>
+
+
+<a class="reference internal" href="generated/torch.tensor.imag#torch.Tensor.imag" title="torch.Tensor.imag"><code>imag</code></a>
+</li> <li><code>view_as_real()</code></li> <li><a class="reference internal" href="generated/torch.tensor.unflatten#torch.Tensor.unflatten" title="torch.Tensor.unflatten"><code>unflatten()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.unfold#torch.Tensor.unfold" title="torch.Tensor.unfold"><code>unfold()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.unsqueeze#torch.Tensor.unsqueeze" title="torch.Tensor.unsqueeze"><code>unsqueeze()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.view#torch.Tensor.view" title="torch.Tensor.view"><code>view()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.view_as#torch.Tensor.view_as" title="torch.Tensor.view_as"><code>view_as()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.unbind#torch.Tensor.unbind" title="torch.Tensor.unbind"><code>unbind()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.split#torch.Tensor.split" title="torch.Tensor.split"><code>split()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.hsplit#torch.Tensor.hsplit" title="torch.Tensor.hsplit"><code>hsplit()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.vsplit#torch.Tensor.vsplit" title="torch.Tensor.vsplit"><code>vsplit()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.tensor_split#torch.Tensor.tensor_split" title="torch.Tensor.tensor_split"><code>tensor_split()</code></a></li> <li><code>split_with_sizes()</code></li> <li><a class="reference internal" href="generated/torch.tensor.swapaxes#torch.Tensor.swapaxes" title="torch.Tensor.swapaxes"><code>swapaxes()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.swapdims#torch.Tensor.swapdims" title="torch.Tensor.swapdims"><code>swapdims()</code></a></li> <li><a class="reference internal" href="generated/torch.tensor.chunk#torch.Tensor.chunk" title="torch.Tensor.chunk"><code>chunk()</code></a></li> <li>
+<a class="reference internal" href="generated/torch.tensor.indices#torch.Tensor.indices" title="torch.Tensor.indices"><code>indices()</code></a> (sparse tensor only)</li> <li>
+<a class="reference internal" href="generated/torch.tensor.values#torch.Tensor.values" title="torch.Tensor.values"><code>values()</code></a> (sparse tensor only)</li> </ul> <div class="admonition note"> <p class="admonition-title">Note</p> <p>When accessing the contents of a tensor via indexing, PyTorch follows Numpy behaviors that basic indexing returns views, while advanced indexing returns a copy. Assignment via either basic or advanced indexing is in-place. See more examples in <a class="reference external" href="https://numpy.org/doc/stable/user/basics.indexing.html">Numpy indexing documentation</a>.</p> </div> <p>It’s also worth mentioning a few ops with special behaviors:</p> <ul class="simple"> <li>
+<a class="reference internal" href="generated/torch.tensor.reshape#torch.Tensor.reshape" title="torch.Tensor.reshape"><code>reshape()</code></a>, <a class="reference internal" href="generated/torch.tensor.reshape_as#torch.Tensor.reshape_as" title="torch.Tensor.reshape_as"><code>reshape_as()</code></a> and <a class="reference internal" href="generated/torch.tensor.flatten#torch.Tensor.flatten" title="torch.Tensor.flatten"><code>flatten()</code></a> can return either a view or new tensor, user code shouldn’t rely on whether it’s view or not.</li> <li>
+<a class="reference internal" href="generated/torch.tensor.contiguous#torch.Tensor.contiguous" title="torch.Tensor.contiguous"><code>contiguous()</code></a> returns <strong>itself</strong> if input tensor is already contiguous, otherwise it returns a new contiguous tensor by copying data.</li> </ul> <p>For a more detailed walk-through of PyTorch internal implementation, please refer to <a class="reference external" href="http://blog.ezyang.com/2019/05/pytorch-internals/">ezyang’s blogpost about PyTorch Internals</a>.</p>  </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2025, PyTorch Contributors<br>PyTorch has a BSD-style license, as found in the <a href="https://github.com/pytorch/pytorch/blob/main/LICENSE">LICENSE</a> file.<br>
+    <a href="https://docs.pytorch.org/docs/2.9/tensor_view.html" class="_attribution-link">https://docs.pytorch.org/docs/2.9/tensor_view.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

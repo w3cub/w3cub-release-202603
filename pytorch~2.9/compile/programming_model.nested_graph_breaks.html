@@ -1,0 +1,242 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Nested Graph Breaks - PyTorch 2.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Created On&#58; Jul 28, 2025 | Last Updated On&#58; Jul 28, 2025 ">
+  <meta name="keywords" content="nested, graph, breaks, pytorch, pytorch~2.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pytorch~2.9/compile/programming_model.nested_graph_breaks.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pytorch~2.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pytorch~2.9/" class="_nav-link" title="" style="margin-left:0;">PyTorch 2.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<div style="display:none;" itemscope itemtype="https://schema.org/BreadcrumbList"> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Reference API"> <meta itemprop="position" content="1"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="torch.compiler"> <meta itemprop="position" content="2"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="torch.compile Programming Model"> <meta itemprop="position" content="3"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Working with Graph Breaks"> <meta itemprop="position" content="4"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Working with &lt;code class=" docutils literal notranslate>fullgraph=False"&gt; <meta itemprop="position" content="5"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"> <meta itemprop="name" content="Nested Graph Breaks"> <meta itemprop="position" content="6"> </div> </div>  <article class="bd-article">  <h1 id="nested-graph-breaks">Nested Graph Breaks</h1> <p class="date-info-last-verified" style="color: #6c6c6d; font-size: small;">Created On: Jul 28, 2025 | Last Updated On: Jul 28, 2025</p> <p>Summary:</p> <ul class="simple"> <li>Graph breaks in nested functions can result in hard-to-understand compiler behavior, which we document below</li> <li>A nested graph break results in <span class="math"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal O(N)</annotation></semantics></math></span></span></span> duplicate graph break behavior</li> </ul> <p>Recall that when <code>torch.compile</code> is applied to a function, any nested function calls are also traced. A <strong>nested graph break</strong> refers to any graph break that happens in a nested function call.</p> <pre data-language="python">def inner(x):
+    ...
+    torch._dynamo.graph_break()  # nested graph break
+    ...
+
+@torch.compile
+def outer(x):
+    ...
+    y = inner(x)
+    ...
+</pre> <p>The resumption semantics around nested graph breaks can be confusing, so we describe the behavior here.</p> <p>Recall that in <code>fullgraph=False</code>, <a class="reference internal" href="programming_model.dynamo_core_concepts#programming-model-dynamo-core-concepts-graph-breaks"><span class="std std-ref">graph breaks are handled</span></a> by compiling the FX graph that has been determined so far, running the unsupported code in regular Python, then resuming tracing after the unsupported code with a new FX graph. Resuming a function is actually a fairly complicated technical feat, so resuming tracing is only supported on top-level functions.</p> <p>We can therefore resume tracing after a nested graph break with this restriction in the following way:</p> <p>First, consider the below example where <code>torch.compile</code> traces from <code>f</code> and traces all the way until the graph break in <code>inner1</code> is encountered.</p> <pre data-language="python">def inner1(x):
+    x = x + 1
+    torch._dynamo.graph_break()  # stop tracing due to graph break
+    return x + 2
+
+def inner2(x):
+    x = x + 4
+    x = inner1(x)
+    x = x + 8
+
+@torch.compile
+def f(x):
+    # start tracing from here
+    x = x + 16
+    x = inner2(x)
+    x = x + 32
+
+f(torch.randn(3))
+</pre> <p>Since we can only resume from top-level functions, we graph break on the <code>inner2</code> call in <code>f</code>.</p> <pre data-language="python"># The semantics of torch.compile(f)(x) is roughly this:
+def compiled_f_semantics(x):
+    y = x + 16
+    z = inner2(y)
+    return torch.compile(resume_f_semantics)(z)
+
+def resume_f_semantics(x):
+    return x + 32
+
+compiled_f_semantics(torch.randn(3))
+</pre> <p><code>inner2</code> is then automatically compiled as a top-level function. We trace all the way until the graph break in <code>inner1</code> is encountered again.</p> <pre data-language="python">def inner1(x):
+    x = x + 1
+    torch._dynamo.graph_break()  # stop tracing due to graph break
+    return x + 2
+
+# this torch.compile is automatically applied
+@torch.compile
+def inner2(x):
+    # start tracing from here
+    x = x + 4
+    x = inner1(x)
+    x = x + 8
+
+def compiled_f_semantics(x):
+    y = x + 16
+    z = inner2(y)
+    return torch.compile(resume_f_semantics)(z)
+
+def resume_f_semantics(x):
+    return x + 32
+
+compiled_f_semantics(torch.randn(3))
+</pre> <p>Then we graph break on the <code>inner1</code> call in <code>inner2</code>.</p> <pre data-language="python">def compiled_inner2_semantics(x):
+    y = x + 4
+    z = inner1(y)
+    return torch.compile(resume_inner2_semantics)(z)
+
+def resume_inner2_semantics(x):
+    return x + 8
+</pre> <p><code>inner1</code> is then automatically compiled as a top-level function. The graph break is from <code>inner1</code>, so we handle the graph break normally.</p> <pre data-language="python"># this torch.compile is automatically applied
+@torch.compile
+def inner1(x):
+    # start tracing from here
+    x = x + 1
+    torch._dynamo.graph_break()  # stop tracing due to graph break
+    return x + 2
+
+def compiled_f_semantics(x):
+    y = x + 16
+    z = compiled_inner2_semantics(y)
+    return torch.compile(resume_f_semantics)(z)
+
+def resume_f_semantics(x):
+    return x + 32
+
+def compiled_inner2_semantics(x):
+    y = x + 4
+    z = inner1(y)
+    return torch.compile(resume_inner2_semantics)(z)
+
+def resume_inner2_semantics(x):
+    return x + 8
+
+compiled_f_semantics(torch.randn(3))
+</pre> <p><code>inner1</code> is handled normally:</p> <pre data-language="python">def compiled_inner1_semantics(x):
+    y = x + 1
+    torch._dynamo.graph_break()
+    return torch.compile(resume_inner1_semantics)(y)
+
+def resume_inner1_semantics(x):
+    return x + 2
+</pre> <p>So the initial code is semantically equivalent to</p> <pre data-language="python">def compiled_f_semantics(x):
+    y = x + 16
+    z = compiled_inner2_semantics(y)
+    return torch.compile(resume_f_semantics)(z)
+
+def resume_f_semantics(x):
+    return x + 32
+
+def compiled_inner2_semantics(x):
+    y = x + 4
+    z = compiled_inner1_semantics(y)
+    return torch.compile(resume_inner2_semantics)(z)
+
+def resume_inner2_semantics(x):
+    return x + 8
+
+def compiled_inner1_semantics(x):
+    y = x + 1
+    torch._dynamo.graph_break()
+    return torch.compile(resume_inner1_semantics)(y)
+
+def resume_inner1_semantics(x):
+    return x + 2
+
+compiled_f_semantics(torch.randn(3))
+</pre> <p>Note in particular that we traced 3 top-level functions, and that we traced the same graph break 3 times. <strong>This explains why you may encounter duplicate graph breaks when using <code>torch.compile</code>.</strong></p> <p>In summary, nested graph breaks are handled by:</p> <ul class="simple"> <li>Tracing from the top-level function all the way to the nested graph break</li> <li>Graph breaking on the top-level function at the call to the second-level function</li> <li>Compiling the PyTorch ops tracked so far and running the compiled graph</li> <li>Calling the second-level function, which gets automatically compiled as a top-level function</li> <li>Resuming tracing after the second-level function call</li> </ul> <p>Note that the runtime of handling this graph break is <span class="math"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">O</mi><mo stretchy="false">(</mo><mi>N</mi><mi>K</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal O(NK)</annotation></semantics></math></span></span></span>, where <span class="math"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span></span></span> is the nesting depth, and <span class="math"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span></span></span> is the number of instructions from the top-level function to the graph break. We end up tracing <span class="math"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">O</mi><mo stretchy="false">(</mo><msup><mi>N</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal O(N^2)</annotation></semantics></math></span></span></span> frames, and we trace the same graph break <span class="math"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal O(N)</annotation></semantics></math></span></span></span> times.</p>  </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2025, PyTorch Contributors<br>PyTorch has a BSD-style license, as found in the <a href="https://github.com/pytorch/pytorch/blob/main/LICENSE">LICENSE</a> file.<br>
+    <a href="https://docs.pytorch.org/docs/2.9/compile/programming_model.nested_graph_breaks.html" class="_attribution-link">https://docs.pytorch.org/docs/2.9/compile/programming_model.nested_graph_breaks.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

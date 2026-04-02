@@ -1,0 +1,200 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Metrics - PyTorch 2.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Created On&#58; May 04, 2021 | Last Updated On&#58; May 04, 2021 ">
+  <meta name="keywords" content="metrics, pytorch, pytorch~2.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/pytorch~2.9/elastic/metrics.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/pytorch~2.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/pytorch~2.9/" class="_nav-link" title="" style="margin-left:0;">PyTorch 2.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<div style="display:none;" itemscope itemtype="https://schema.org/BreadcrumbList"> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Reference API"> <meta itemprop="position" content="1"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">  <meta itemprop="name" content="Torch Distributed Elastic"> <meta itemprop="position" content="2"> </div> <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"> <meta itemprop="name" content="Metrics"> <meta itemprop="position" content="3"> </div> </div>  <article class="bd-article">  <h1 id="metrics-api">Metrics</h1> <p class="date-info-last-verified" style="color: #6c6c6d; font-size: small;" id="module-torch.distributed.elastic.metrics">Created On: May 04, 2021 | Last Updated On: May 04, 2021</p> <p>Metrics API.</p> <p><strong>Overview</strong>:</p> <p>The metrics API in torchelastic is used to publish telemetry metrics. It is designed to be used by torchelastic’s internal modules to publish metrics for the end user with the goal of increasing visibility and helping with debugging. However you may use the same API in your jobs to publish metrics to the same metrics <code>sink</code>.</p> <p>A <code>metric</code> can be thought of as timeseries data and is uniquely identified by the string-valued tuple <code>(metric_group, metric_name)</code>.</p> <p>torchelastic makes no assumptions about what a <code>metric_group</code> is and what relationship it has with <code>metric_name</code>. It is totally up to the user to use these two fields to uniquely identify a metric.</p> <div class="admonition note"> <p class="admonition-title">Note</p> <p>The metric group <code>torchelastic</code> is reserved by torchelastic for platform level metrics that it produces. For instance torchelastic may output the latency (in milliseconds) of a re-rendezvous operation from the agent as <code>(torchelastic, agent.rendezvous.duration.ms)</code></p> </div> <p>A sensible way to use metric groups is to map them to a stage or module in your job. You may also encode certain high level properties the job such as the region or stage (dev vs prod).</p> <p><strong>Publish Metrics</strong>:</p> <p>Using torchelastic’s metrics API is similar to using python’s logging framework. You first have to configure a metrics handler before trying to add metric data.</p> <p>The example below measures the latency for the <code>calculate()</code> function.</p> <pre data-language="python">import time
+import torch.distributed.elastic.metrics as metrics
+
+# makes all metrics other than the one from "my_module" to go /dev/null
+metrics.configure(metrics.NullMetricsHandler())
+metrics.configure(metrics.ConsoleMetricsHandler(), "my_module")
+
+
+def my_method():
+    start = time.time()
+    calculate()
+    end = time.time()
+    metrics.put_metric("calculate_latency", int(end - start), "my_module")
+</pre> <p>You may also use the torch.distributed.elastic.metrics.prof` decorator to conveniently and succinctly profile functions</p> <pre data-language="python"># -- in module examples.foobar --
+
+import torch.distributed.elastic.metrics as metrics
+
+metrics.configure(metrics.ConsoleMetricsHandler(), "foobar")
+metrics.configure(metrics.ConsoleMetricsHandler(), "Bar")
+
+
+@metrics.prof
+def foo():
+    pass
+
+
+class Bar:
+    @metrics.prof
+    def baz():
+        pass
+</pre> <p><code>@metrics.prof</code> will publish the following metrics</p> <pre data-language="python">&lt;leaf_module or classname&gt;.success - 1 if the function finished successfully
+&lt;leaf_module or classname&gt;.failure - 1 if the function threw an exception
+&lt;leaf_module or classname&gt;.duration.ms - function duration in milliseconds
+</pre> <p><strong>Configuring Metrics Handler</strong>:</p> <p><code>torch.distributed.elastic.metrics.MetricHandler</code> is responsible for emitting the added metric values to a particular destination. Metric groups can be configured with different metric handlers.</p> <p>By default torchelastic emits all metrics to <code>/dev/null</code>. By adding the following configuration metrics, <code>torchelastic</code> and <code>my_app</code> metric groups will be printed out to console.</p> <pre data-language="python">import torch.distributed.elastic.metrics as metrics
+
+metrics.configure(metrics.ConsoleMetricHandler(), group="torchelastic")
+metrics.configure(metrics.ConsoleMetricHandler(), group="my_app")
+</pre> <p><strong>Writing a Custom Metric Handler</strong>:</p> <p>If you want your metrics to be emitted to a custom location, implement the <code>torch.distributed.elastic.metrics.MetricHandler</code> interface and configure your job to use your custom metric handler.</p> <p>Below is a toy example that prints the metrics to <code>stdout</code></p> <pre data-language="python">import torch.distributed.elastic.metrics as metrics
+
+
+class StdoutMetricHandler(metrics.MetricHandler):
+    def emit(self, metric_data):
+        ts = metric_data.timestamp
+        group = metric_data.group_name
+        name = metric_data.name
+        value = metric_data.value
+        print(f"[{ts}][{group}]: {name}={value}")
+
+
+metrics.configure(StdoutMetricHandler(), group="my_app")
+</pre> <p>Now all metrics in the group <code>my_app</code> will be printed to stdout as:</p> <pre data-language="python">[1574213883.4182858][my_app]: my_metric=&lt;value&gt;
+[1574213940.5237644][my_app]: my_metric=&lt;value&gt;
+</pre>  <h2 id="metric-handlers">Metric Handlers</h2> <p>Below are the metric handlers that come included with torchelastic.</p> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.elastic.metrics.api.MetricHandler">
+<code>class torch.distributed.elastic.metrics.api.MetricHandler</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/elastic/metrics/api.py#L46"><span class="viewcode-link">[source]</span></a>
+</dt> 
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.elastic.metrics.api.ConsoleMetricHandler">
+<code>class torch.distributed.elastic.metrics.api.ConsoleMetricHandler</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/elastic/metrics/api.py#L52"><span class="viewcode-link">[source]</span></a>
+</dt> 
+</dl> <dl class="py class"> <dt class="sig sig-object py" id="torch.distributed.elastic.metrics.api.NullMetricHandler">
+<code>class torch.distributed.elastic.metrics.api.NullMetricHandler</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/elastic/metrics/api.py#L59"><span class="viewcode-link">[source]</span></a>
+</dt> 
+</dl>   <h2 id="methods">Methods</h2> <dl class="py function"> <dt class="sig sig-object py" id="torch.distributed.elastic.metrics.configure">
+<code>torch.distributed.elastic.metrics.configure(handler, group=None)</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/elastic/metrics/api.py#L80"><span class="viewcode-link">[source]</span></a>
+</dt> 
+</dl> <dl class="py function"> <dt class="sig sig-object py" id="torch.distributed.elastic.metrics.prof">
+<code>torch.distributed.elastic.metrics.prof(fn=None, group='torchelastic')</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/elastic/metrics/api.py#L111"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>@profile decorator publishes duration.ms, count, success, failure metrics for the function that it decorates.</p> <p>The metric name defaults to the qualified name (<code>class_name.def_name</code>) of the function. If the function does not belong to a class, it uses the leaf module name instead.</p> <p>Usage</p> <pre data-language="python">@metrics.prof
+def x():
+    pass
+
+
+@metrics.prof(group="agent")
+def y():
+    pass
+</pre>  </dd>
+</dl> <dl class="py function"> <dt class="sig sig-object py" id="torch.distributed.elastic.metrics.put_metric">
+<code>torch.distributed.elastic.metrics.put_metric(metric_name, metric_value, metric_group='torchelastic')</code> <a class="reference external" href="https://github.com/pytorch/pytorch/blob/v2.9.1/torch/distributed/elastic/metrics/api.py#L191"><span class="viewcode-link">[source]</span></a>
+</dt> <dd>
+<p>Publish a metric data point.</p> <p>Usage</p> <pre data-language="python">put_metric("metric_name", 1)
+put_metric("metric_name", 1, "metric_group_name")
+</pre>  </dd>
+</dl>   </article><div class="_attribution">
+  <p class="_attribution-p">
+    © 2025, PyTorch Contributors<br>PyTorch has a BSD-style license, as found in the <a href="https://github.com/pytorch/pytorch/blob/main/LICENSE">LICENSE</a> file.<br>
+    <a href="https://docs.pytorch.org/docs/2.9/elastic/metrics.html" class="_attribution-link">https://docs.pytorch.org/docs/2.9/elastic/metrics.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
