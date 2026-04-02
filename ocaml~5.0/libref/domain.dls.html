@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>OCaml Library &#58; Domain.DLS - OCaml 5.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" Domain-local Storage ">
+  <meta name="keywords" content="module, domain, dls, ocaml, library, ocaml~5.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ocaml~5.0/libref/domain.dls.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ocaml~5.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ocaml~5.0/" class="_nav-link" title="" style="margin-left:0;">OCaml 5.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _ocaml">
+				
+				
+<h1>Module Domain.DLS</h1> <pre id="MODULEDLS" data-type="module DLS [Module Domain.DLS]" data-language="ocaml">module DLS: sig .. end</pre> <p>Domain-local Storage</p> <pre id="TYPEkey" data-type="type 'a key [Module Domain.DLS]" data-language="ocaml">type 'a key </pre> <div class="info "> <div class="info-desc"> <p>Type of a DLS key</p> </div> </div> <pre id="VALnew_key" data-type="val new_key [Module Domain.DLS]" data-language="ocaml">val new_key : ?split_from_parent:('a -&gt; 'a) -&gt; (unit -&gt; 'a) -&gt; 'a key</pre>
+<div class="info "> <div class="info-desc"> <p><code class="code">new_key f</code> returns a new key bound to initialiser <code class="code">f</code> for accessing , domain-local variables.</p> <p>If <code class="code">split_from_parent</code> is not provided, the value for a new domain will be computed on-demand by the new domain: the first <code class="code">get</code> call will call the initializer <code class="code">f</code> and store that value.</p> <p>If <code class="code">split_from_parent</code> is provided, spawning a domain will derive the child value (for this key) from the parent value. This computation happens in the parent domain and it always happens, regardless of whether the child domain will use it. If the splitting function is expensive or requires child-side computation, consider using <code class="code"><span class="keywordsign">'</span>a <span class="constructor">Lazy</span>.t key</code>:</p> <pre class="codepre" data-language="ocaml">        let init () = ...
+
+        let split_from_parent parent_value =
+          ... parent-side computation ...;
+          lazy (
+            ... child-side computation ...
+          )
+
+        let key = Domain.DLS.new_key ~split_from_parent init
+
+        let get () = Lazy.force (Domain.DLS.get key)
+        </pre> <p>In this case a part of the computation happens on the child domain; in particular, it can access <code class="code">parent_value</code> concurrently with the parent domain, which may require explicit synchronization to avoid data races.</p> </div> </div> <pre id="VALget" data-type="val get [Module Domain.DLS]" data-language="ocaml">val get : 'a key -&gt; 'a</pre>
+<div class="info "> <div class="info-desc"> <p><code class="code">get k</code> returns <code class="code">v</code> if a value <code class="code">v</code> is associated to the key <code class="code">k</code> on the calling domain's domain-local state. Sets <code class="code">k</code>'s value with its initialiser and returns it otherwise.</p> </div> </div> <pre id="VALset" data-type="val set [Module Domain.DLS]" data-language="ocaml">val set : 'a key -&gt; 'a -&gt; unit</pre>
+<div class="info "> <div class="info-desc"> <p><code class="code">set k v</code> updates the calling domain's domain-local state to associate the key <code class="code">k</code> with value <code class="code">v</code>. It overwrites any previous values associated to <code class="code">k</code>, which cannot be restored later.</p> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1995-2022 INRIA.<br>
+    <a href="https://v2.ocaml.org/releases/5.0/htmlman/libref/Domain.DLS.html" class="_attribution-link">https://v2.ocaml.org/releases/5.0/htmlman/libref/Domain.DLS.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

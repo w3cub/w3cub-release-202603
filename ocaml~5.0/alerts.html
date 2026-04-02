@@ -1,0 +1,168 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>12.21. Alerts - OCaml 5.0 - W3cubDocs</title>
+  
+  <meta name="description" content=" (Introduced in 4.08) ">
+  <meta name="keywords" content="alerts, ocaml, ocaml~5.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ocaml~5.0/alerts.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ocaml~5.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ocaml~5.0/" class="_nav-link" title="" style="margin-left:0;">OCaml 5.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _ocaml">
+				
+				
+<h2 class="section" id="s:alerts">
+<a class="section-anchor" href="#s:alerts" aria-hidden="true">﻿</a>12.21 Alerts</h2> <p>(Introduced in 4.08)</p>
+<p>Since OCaml 4.08, it is possible to mark components (such as value or type declarations) in signatures with “alerts” that will be reported when those components are referenced. This generalizes the notion of “deprecated” components which were previously reported as warning 3. Those alerts can be used for instance to report usage of unsafe features, or of features which are only available on some platforms, etc.</p>
+<p>Alert categories are identified by a symbolic identifier (a lowercase identifier, following the usual lexical rules) and an optional message. The identifier is used to control which alerts are enabled, and which ones are turned into fatal errors. The message is reported to the user when the alert is triggered (i.e. when the marked component is referenced).</p>
+<p>The <span class="machine"><span class="font-tt">ocaml.alert</span></span> or <span class="machine"><span class="font-tt">alert</span></span> attribute serves two purposes: (i) to mark component with an alert to be triggered when the component is referenced, and (ii) to control which alert names are enabled. In the first form, the attribute takes an identifier possibly followed by a message. Here is an example of a value declaration marked with an alert:</p>
+<pre data-language="ocaml">module U: sig
+  val fork: unit -&gt; bool
+    [@@alert unix "This function is only available under Unix."]
+end
+</pre>
+<p> Here <span class="machine"><span class="font-tt">unix</span></span> is the identifier for the alert. If this alert category is enabled, any reference to <span class="machine"><span class="font-tt">U.fork</span></span> will produce a message at compile time, which can be turned or not into a fatal error.</p>
+<p>And here is another example as a floating attribute on top of an “.mli” file (i.e. before any other non-attribute item) or on top of an “.ml” file without a corresponding interface file, so that any reference to that unit will trigger the alert:</p>
+<pre data-language="ocaml">[@@@alert unsafe "This module is unsafe!"]
+</pre>
+<p>Controlling which alerts are enabled and whether they are turned into fatal errors is done either through the compiler’s command-line option <span class="machine"><span class="font-tt">-alert &lt;spec&gt;</span></span> or locally in the code through the <span class="machine"><span class="font-tt">alert</span></span> or <span class="machine"><span class="font-tt">ocaml.alert</span></span> attribute taking a single string payload <span class="machine"><span class="font-tt">&lt;spec&gt;</span></span>. In both cases, the syntax for <span class="machine"><span class="font-tt">&lt;spec&gt;</span></span> is a concatenation of items of the form:</p>
+<ul class="itemize">
+<li class="li-itemize">
+<span class="machine"><span class="font-tt">+id</span></span> enables alert <span class="machine"><span class="font-tt">id</span></span>. </li>
+<li class="li-itemize">
+<span class="machine"><span class="font-tt">-id</span></span> disables alert <span class="machine"><span class="font-tt">id</span></span>. </li>
+<li class="li-itemize">
+<span class="machine"><span class="font-tt">++id</span></span> turns alert <span class="machine"><span class="font-tt">id</span></span> into a fatal error. </li>
+<li class="li-itemize">
+<span class="machine"><span class="font-tt">--id</span></span> turns alert <span class="machine"><span class="font-tt">id</span></span> into non-fatal mode. </li>
+<li class="li-itemize">
+<span class="machine"><span class="font-tt">@id</span></span> equivalent to <span class="machine"><span class="font-tt">++id+id</span></span> (enables <span class="machine"><span class="font-tt">id</span></span> and turns it into a fatal-error) </li>
+</ul>
+<p>As a special case, if <span class="machine"><span class="font-tt">id</span></span> is <span class="machine"><span class="font-tt">all</span></span>, it stands for all alerts.</p>
+<p>Here are some examples:</p>
+<pre data-language="ocaml">
+(* Disable all alerts, reenables just unix (as a soft alert) and window
+   (as a fatal-error), for the rest of the current structure *)
+
+[@@@alert "-all--all+unix@window"]
+ ...
+
+let x =
+  (* Locally disable the window alert *)
+  begin[@alert "-window"]
+      ...
+  end
+</pre>
+<p> Before OCaml 4.08, there was support for a single kind of deprecation alert. It is now known as the <span class="machine"><span class="font-tt">deprecated</span></span> alert, but legacy attributes to trigger it and the legacy ways to control it as warning 3 are still supported. For instance, passing <span class="machine"><span class="font-tt">-w +3</span></span> on the command-line is equivant to <span class="machine"><span class="font-tt">-alert +deprecated</span></span>, and:</p>
+<pre data-language="ocaml">val x: int
+  [@@@ocaml.deprecated "Please do something else"]
+</pre>
+<p> is equivalent to:</p>
+<pre data-language="ocaml">val x: int
+  [@@@ocaml.alert deprecated "Please do something else"]
+</pre>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1995-2022 INRIA.<br>
+    <a href="https://v2.ocaml.org/releases/5.0/htmlman/alerts.html" class="_attribution-link">https://v2.ocaml.org/releases/5.0/htmlman/alerts.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
