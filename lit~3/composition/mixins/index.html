@@ -1,0 +1,248 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mixins - Lit 3 - W3cubDocs</title>
+  
+  <meta name="description" content="Class mixins are a pattern for sharing code between classes using standard JavaScript. As opposed to &#34;has-a&#34; composition patterns like &hellip;">
+  <meta name="keywords" content="mixins, lit, lit~3">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/lit~3/composition/mixins/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/lit~3.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/lit~3/" class="_nav-link" title="" style="margin-left:0;">Lit 3</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _lit">
+				
+				
+<article><h1>Mixins</h1>
+<p>Class mixins are a pattern for sharing code between classes using standard JavaScript. As opposed to "has-a" composition patterns like <a href="../controllers/index">reactive controllers</a>, where a class can <em>own</em> a controller to add behavior, mixins implement "is-a" composition, where the mixin causes the class itself to <em>be</em> an instance of the behavior being shared.</p>
+<p>You can use mixins to customize a Lit component by adding API or overriding its lifecycle callbacks.</p>
+<div class="heading h2"><h2 id="mixin-basics">Mixin basics</h2></div>
+<p>Mixins can be thought of as "subclass factories" that override the class they are applied to and return a subclass, extended with the behavior in the mixin. Because mixins are implemented using standard JavaScript class expressions, they can use all of the idioms available to subclassing, such as adding new fields/methods, overriding existing superclass methods, and using <code>super</code>.</p>
+<div class="alert alert-info"><p>For ease of reading, the samples on this page elide some of the TypeScript types for mixin functions. See <a href="#mixins-in-typescript">Mixins in TypeScript</a> for details on proper typing of mixins in TypeScript.</p></div>
+<p>To define a mixin, write a function that takes a <code>superClass</code>, and returns a new class that extends it, adding fields and methods as needed:</p>
+<pre data-language="ts">const MyMixin = (superClass) =&gt; class extends superClass {
+  /* class fields &amp; methods to extend superClass with */
+};</pre>
+<p>To apply a mixin, simply pass a class to generate a subclass with the mixin applied. Most commonly, users will apply the mixin directly to a base class when defining a new class:</p>
+<pre data-language="ts">class MyElement extends MyMixin(LitElement) {
+  /* user code */
+}</pre>
+<p>Mixins can also be used to create concrete subclasses that users can then extend like a normal class, where the mixin is an implementation detail:</p>
+<pre data-language="ts">export const LitElementWithMixin = MyMixin(LitElement);</pre>
+<pre data-language="ts">import {LitElementWithMixin} from './lit-element-with-mixin.js';
+
+class MyElement extends LitElementWithMixin {
+  /* user code */
+}</pre>
+<p>Because class mixins are a standard JavaScript pattern and not Lit-specific, there is a good deal of information in the community on leveraging mixins for code reuse. For more reading on mixins, here are a few good references:</p>
+<ul>
+<li>
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/extends/#mix-ins">Class mixins</a> on MDN</li>
+<li>
+<a href="https://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/">Real Mixins with JavaScript Classes</a> by Justin Fagnani</li>
+<li>
+<a href="https://www.TypeScriptlang.org/docs/handbook/mixins.html">Mixins</a> in the TypeScript handbook.</li>
+<li>
+<a href="https://open-wc.org/docs/development/dedupe-mixin/">Dedupe mixin library</a> by open-wc, including a discussion of when mixin usage may lead to duplication, and how to use a deduping library to avoid it.</li>
+<li>
+<a href="https://component.kitchen/elix/mixins/">Mixin conventions</a> followed by Elix web component library. While not Lit-specific, contains thoughtful suggestions around applying conventions when defining mixins for web components.</li>
+</ul>
+<div class="heading h2"><h2 id="creating-mixins-for-litelement">Creating mixins for LitElement</h2></div>
+<p>Mixins applied to LitElement can implement or override any of the standard <a href="../../components/lifecycle/index#custom-element-lifecycle">custom element lifecycle</a> callbacks like the <code>constructor()</code> or <code>connectedCallback()</code>, as well as any of the <a href="../../components/lifecycle/index#reactive-update-cycle">reactive update lifecycle</a> callbacks like <code>render()</code> or <code>updated()</code>.</p>
+<p>For example, the following mixin would log when the element is created, connected, and updated:</p>
+<pre data-language="ts">const LoggingMixin = (superClass) =&gt; class extends superClass {
+  constructor() {
+    super();
+    console.log(`${this.localName} was created`);
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    console.log(`${this.localName} was connected`);
+  }
+  updated(changedProperties) {
+    super.updated?.(changedProperties);
+    console.log(`${this.localName} was updated`);
+  }
+}</pre>
+<p>Note that a mixin should always make a super call to the standard custom element lifecycle methods implemented by <code>LitElement</code>. When overriding a reactive update lifecycle callback, it is good practice to call the super method if it already exists on the superclass (as shown above with the optional-chaining call to <code>super.updated?.()</code>).</p>
+<p>Also note that mixins can choose to do work either before or after the base implementation of the standard lifecycle callbacks via its choice of when to make the super call.</p>
+<p>Mixins can also add <a href="../../components/properties/index">reactive properties</a>, <a href="../../components/styles/index">styles</a>, and API to the subclassed element.</p>
+<p>The mixin in the example below adds a <code>highlight</code> reactive property to the element and a <code>renderHighlight()</code> method that the user can call to wrap some content. The wrapped content is styled yellow when the <code>highlight</code> property/attribute is set.</p>
+
+<p>Note in the example above, the user of the mixin is expected to call the <code>renderHighlight()</code> method from their <code>render()</code> method, as well as take care to add the <code>static styles</code> defined by the mixin to the subclass styles. The nature of this contract between mixin and user is up to the mixin definition and should be documented by the mixin author.</p>
+<div class="heading h2"><h2 id="mixins-in-typescript">Mixins in TypeScript</h2></div>
+<p>When writing <code>LitElement</code> mixins in TypeScript, there are a few details to be aware of.</p>
+<div class="heading h3"><h3 id="typing-the-superclass">Typing the superclass</h3></div>
+<p>You should constrain the <code>superClass</code> argument to the type of class you expect users to extend, if any. This can be accomplished using a generic <code>Constructor</code> helper type as shown below:</p>
+<pre data-language="ts">import {LitElement} from 'lit';
+
+type Constructor&lt;T = {}&gt; = new (...args: any[]) =&gt; T;
+
+export const MyMixin = &lt;T extends Constructor&lt;LitElement&gt;&gt;(superClass: T) =&gt; {
+  class MyMixinClass extends superClass {
+    /* ... */
+  };
+  return MyMixinClass as /* see "typing the subclass" below */;
+}</pre>
+<p>The above example ensures that the class being passed to the mixin extends from <code>LitElement</code>, so that your mixin can rely on callbacks and other API provided by Lit.</p>
+<div class="heading h3"><h3 id="typing-the-subclass">Typing the subclass</h3></div>
+<p>Although TypeScript has basic support for inferring the return type for the subclass generated using the mixin pattern, it has a severe limitation in that the inferred class must not contain members with <code>private</code> or <code>protected</code> access modifiers.</p>
+<div class="alert alert-info"><p>Because <code>LitElement</code> itself does have private and protected members, by default TypeScript will error with <em>"Property '...' of exported class expression may not be private or protected."</em> when returning a class that extends <code>LitElement</code>.</p></div>
+<p>There are two workarounds that both involve casting the return type from the mixin function to avoid the error above.</p>
+<div class="heading h4"><h4 id="when-a-mixin-does-not-add-new-publicprotected-api">When a mixin does not add new public/protected API</h4></div>
+<p>If your mixin only overrides <code>LitElement</code> methods or properties and does not add any new API of its own, you can simply cast the generated class to the super class type <code>T</code> that was passed in:</p>
+<pre data-language="ts">export const MyMixin = &lt;T extends Constructor&lt;LitElement&gt;&gt;(superClass: T) =&gt; {
+  class MyMixinClass extends superClass {
+    connectedCallback() {
+      super.connectedCallback();
+      this.doSomethingPrivate();
+    }
+    private doSomethingPrivate() {
+      /* does not need to be part of the interface */
+    }
+  };
+  // Cast return type to the superClass type passed in
+  return MyMixinClass as T;
+}</pre>
+<div class="heading h4"><h4 id="when-a-mixin-adds-new-publicprotected-api">When a mixin adds new public/protected API</h4></div>
+<p>If your mixin does add new protected or public API that you need users to be able to use on their class, you need to define the interface for the mixin separately from the implementation, and cast the return type as the intersection of your mixin interface and the super class type:</p>
+<pre data-language="ts">// Define the interface for the mixin
+export declare class MyMixinInterface {
+  highlight: boolean;
+  protected renderHighlight(): unknown;
+}
+
+export const MyMixin = &lt;T extends Constructor&lt;LitElement&gt;&gt;(superClass: T) =&gt; {
+  class MyMixinClass extends superClass {
+    @property() highlight = false;
+    protected renderHighlight() {
+      /* ... */
+    }
+  };
+  // Cast return type to your mixin's interface intersected with the superClass type
+  return MyMixinClass as Constructor&lt;MyMixinInterface&gt; &amp; T;
+}</pre>
+<div class="heading h3"><h3 id="applying-decorators-in-mixins">Applying decorators in mixins</h3></div>
+<p>Due to limitations of TypeScript's type system, decorators (such as <code>@property()</code>) must be applied to a class declaration statement and not a class expression.</p>
+<p>In practice this means mixins in TypeScript need to declare a class and then return it, rather than return a class expression directly from the arrow function.</p>
+<p>Supported:</p>
+<pre data-language="ts">export const MyMixin = &lt;T extends LitElementConstructor&gt;(superClass: T) =&gt; {
+  // ✅ Defining a class in a function body, and then returning it
+  class MyMixinClass extends superClass {
+    @property()
+    mode = 'on';
+    /* ... */
+  };
+  return MyMixinClass;
+}</pre>
+<p>Not supported:</p>
+<pre data-language="ts">export const MyMixin = &lt;T extends LitElementConstructor&gt;(superClass: T) =&gt;
+  // ❌ Returning class expression directly using arrow-function shorthand
+  class extends superClass {
+    @property()
+    mode = 'on';
+    /* ... */
+  }</pre>
+<p id="edit-page-link"><a href="https://github.com/lit/lit.dev/edit/main/packages/lit-dev-content/./site/docs/v3/composition/mixins.md">Edit this page<lazy-svg loading="visible" svg-aria-hidden href="/images/icons/edit-square.svg#icon"></lazy-svg></a></p></article><div class="_attribution">
+  <p class="_attribution-p">
+    © Google LLC<br>Licensed under the Creative Commons Attribution 3.0 Unported License.<br>
+    <a href="https://lit.dev/docs/composition/mixins/" class="_attribution-link">https://lit.dev/docs/composition/mixins/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
