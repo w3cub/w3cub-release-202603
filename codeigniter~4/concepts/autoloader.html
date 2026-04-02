@@ -1,0 +1,127 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Autoloading Files - CodeIgniter 4 - W3cubDocs</title>
+  
+  <meta name="description" content="Every application consists of a large number of classes in many different locations. The framework provides classes for core functionality. Your &hellip;">
+  <meta name="keywords" content="autoloading, files, codeigniter, codeigniter~4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/codeigniter~4/concepts/autoloader.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/codeigniter~4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/codeigniter~4/" class="_nav-link" title="" style="margin-left:0;">CodeIgniter 4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1 id="autoloading-files">Autoloading Files</h1> <p>Every application consists of a large number of classes in many different locations. The framework provides classes for core functionality. Your application will have a number of libraries, models, and other entities to make it work. You might have third-party classes that your project is using. Keeping track of where every single file is, and hard-coding that location into your files in a series of <code>requires()</code> is a massive headache and very error-prone. That’s where autoloaders come in.</p> <p>CodeIgniter provides a very flexible autoloader that can be used with very little configuration. It can locate individual non-namespaced classes, namespaced classes that adhere to <a class="reference external" href="https://www.php-fig.org/psr/psr-4/">PSR4</a> autoloading directory structures, and will even attempt to locate classes in common directories (like Controllers, Models, etc).</p> <p>For performance improvement, the core CodeIgniter components have been added to the classmap.</p> <p>The autoloader works great by itself, but can also work with other autoloaders, like <a class="reference external" href="https://getcomposer.org">Composer</a>, or even your own custom autoloaders, if needed. Because they’re all registered through <a class="reference external" href="https://www.php.net/manual/en/function.spl-autoload-register.php">spl_autoload_register</a>, they work in sequence and don’t get in each other’s way.</p> <p>The autoloader is always active, being registered with <code>spl_autoload_register()</code> at the beginning of the framework’s execution.</p>  <h2 id="configuration">Configuration</h2> <p>Initial configuration is done in <strong>/app/Config/Autoload.php</strong>. This file contains two primary arrays: one for the classmap, and one for PSR4-compatible namespaces.</p>   <h2 id="namespaces">Namespaces</h2> <p>The recommended method for organizing your classes is to create one or more namespaces for your application’s files. This is most important for any business-logic related classes, entity classes, etc. The <code>psr4</code> array in the configuration file allows you to map the namespace to the directory those classes can be found in:</p> <pre data-language="php">$psr4 = [
+    'App'         =&gt; APPPATH,
+    'CodeIgniter' =&gt; SYSTEMPATH,
+];
+</pre> <p>The key of each row is the namespace itself. This does not need a trailing slash. If you use double-quotes to define the array, be sure to escape the backward slash. That means that it would be <code>My\\App</code>, not <code>My\App</code>. The value is the location to the directory the classes can be found in. They should have a trailing slash.</p> <p>By default, the application folder is namespace to the <code>App</code> namespace. While you are not forced to namespace the controllers, libraries, or models in the application directory, if you do, they will be found under the <code>App</code> namespace. You may change this namespace by editing the <strong>/app/Config/Constants.php</strong> file and setting the new namespace value under the <code>APP_NAMESPACE</code> setting:</p> <pre data-language="php">define('APP_NAMESPACE', 'App');
+</pre> <p>You will need to modify any existing files that are referencing the current namespace.</p> <div class="admonition important"> <p class="first admonition-title">Important</p> <p class="last">Config files are namespaced in the <code>Config</code> namespace, not in <code>App\Config</code> as you might expect. This allows the core system files to always be able to locate them, even when the application namespace has changed.</p> </div>   <h2 id="classmap">Classmap</h2> <p>The classmap is used extensively by CodeIgniter to eke the last ounces of performance out of the system by not hitting the file-system with extra <code>is_file()</code> calls. You can use the classmap to link to third-party libraries that are not namespaced:</p> <pre data-language="php">$classmap = [
+    'Markdown' =&gt; APPPATH . 'third_party/markdown.php'
+];
+</pre> <p>The key of each row is the name of the class that you want to locate. The value is the path to locate it at.</p>   <h2 id="composer-support">Composer Support</h2> <p>Composer support is automatically initialized by default. By default, it looks for Composer’s autoload file at <code>ROOTPATH . 'vendor/autoload.php'</code>. If you need to change the location of that file for any reason, you can modify the value defined in <code>Config\Constants.php</code>.</p> <div class="admonition note"> <p class="first admonition-title">Note</p> <p class="last">If the same namespace is defined in both CodeIgniter and Composer, CodeIgniter’s autoloader will be the first one to get a chance to locate the file.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014–2020 British Columbia Institute of Technology<br>Licensed under the MIT License.<br>
+    <a href="https://codeigniter.com/user_guide/concepts/autoloader.html" class="_attribution-link">https://codeigniter.com/user_guide/concepts/autoloader.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
