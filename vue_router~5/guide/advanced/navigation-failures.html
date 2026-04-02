@@ -1,0 +1,206 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Waiting for the Result of a Navigation - Vue Router 5 - W3cubDocs</title>
+  
+  <meta name="description" content="When using router-link, Vue Router calls router.push to trigger a navigation. While the expected behavior for most links is to navigate a user to a &hellip;">
+  <meta name="keywords" content="waiting, for, result, navigation, vue, router, vue_router~5">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vue_router~5/guide/advanced/navigation-failures.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vue_router~5.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vue_router~5/" class="_nav-link" title="" style="margin-left:0;">Vue Router 5</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="Waiting-for-the-result-of-a-Navigation" tabindex="-1">Waiting for the result of a Navigation </h1>
+<div class="vueschool"><a href="https://vueschool.io/lessons/vue-router-4-detecting-navigation-failures?friend=vuerouter" target="_blank" rel="sponsored noopener" title="Learn how to detect navigation failures" class="no-icon">Watch a free video lesson on Vue School</a></div>
+<p>When using <code>router-link</code>, Vue Router calls <code>router.push</code> to trigger a navigation. While the expected behavior for most links is to navigate a user to a new page, there are a few situations where users will remain on the same page:</p>
+<ul>
+<li>Users are already on the page that they are trying to navigate to.</li>
+<li>A <a href="navigation-guards">navigation guard</a> aborts the navigation by doing <code>return false</code>.</li>
+<li>A new navigation guard takes place while the previous one not finished.</li>
+<li>A <a href="navigation-guards">navigation guard</a> redirects somewhere else by returning a new location (e.g. <code>return '/login'</code>).</li>
+<li>A <a href="navigation-guards">navigation guard</a> throws an <code>Error</code>.</li>
+</ul>
+<p>If we want to do something after a navigation is finished, we need a way to wait after calling <code>router.push</code>. Imagine we have a mobile menu that allows us to go to different pages and we only want to hide the menu once we have navigated to the new page, we might want to do something like this:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.push('/my-profile')
+this.isMenuOpen = false</pre>
+</div>
+<p>But this will close the menu right away because <strong>navigations are asynchronous</strong>, we need to <code>await</code> the promise returned by <code>router.push</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">await router.push('/my-profile')
+this.isMenuOpen = false</pre>
+</div>
+<p>Now the menu will close once the navigation is finished but it will also close if the navigation was prevented. We need a way to detect if we actually changed the page we are on or not.</p>
+<h2 id="Detecting-Navigation-Failures" tabindex="-1">Detecting Navigation Failures </h2>
+<p>If a navigation is prevented, resulting in the user staying on the same page, the resolved value of the <code>Promise</code> returned by <code>router.push</code> will be a <em>Navigation Failure</em>. Otherwise, it will be a <em>falsy</em> value (usually <code>undefined</code>). This allows us to differentiate the case where we navigated away from where we are or not:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const navigationResult = await router.push('/my-profile')
+
+if (navigationResult) {
+  // navigation prevented
+} else {
+  // navigation succeeded (this includes the case of a redirection)
+  this.isMenuOpen = false
+}</pre>
+</div>
+<p><em>Navigation Failures</em> are <code>Error</code> instances with a few extra properties that gives us enough information to know what navigation was prevented and why. To check the nature of a navigation result, use the <code>isNavigationFailure</code> function:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">import { NavigationFailureType, isNavigationFailure } from 'vue-router'
+
+// trying to leave the editing page of an article without saving
+const failure = await router.push('/articles/2')
+
+if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
+  // show a small notification to the user
+  showToast('You have unsaved changes, discard and leave anyway?')
+}</pre>
+</div>
+<blockquote class="tip custom-block">
+<strong class="custom-block-title">TIP</strong><p>If you omit the second parameter: <code>isNavigationFailure(failure)</code>, it will only check if <code>failure</code> is a <em>Navigation Failure</em>.</p>
+</blockquote>
+<h2 id="Global-navigation-failures" tabindex="-1">Global navigation failures </h2>
+<p>You can detect global navigation failures globally by using the <a href="navigation-guards#Global-After-Hooks"><code>router.afterEach()</code> navigation guard</a>:</p>
+<div class="language-ts vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.afterEach((to, from, failure) =&gt; {
+  if (failure) {
+    sendToAnalytics(to, from, failure)
+  }
+})</pre>
+</div>
+<h2 id="Differentiating-Navigation-Failures" tabindex="-1">Differentiating Navigation Failures </h2>
+<p>As we said at the beginning, there are different situations aborting a navigation, all of them resulting in different <em>Navigation Failures</em>. They can be differentiated using the <code>isNavigationFailure</code> and <code>NavigationFailureType</code>. There are three different types:</p>
+<ul>
+<li>
+<code>aborted</code>: <code>false</code> was returned inside of a navigation guard to the navigation.</li>
+<li>
+<code>cancelled</code>: A new navigation took place before the current navigation could finish. e.g. <code>router.push</code> was called while waiting inside of a navigation guard.</li>
+<li>
+<code>duplicated</code>: The navigation was prevented because we are already at the target location.</li>
+</ul>
+<h2 id="Navigation-Failures-s-properties" tabindex="-1">
+<em>Navigation Failures</em>'s properties </h2>
+<p>All navigation failures expose <code>to</code> and <code>from</code> properties to reflect the current location as well as the target location for the navigation that failed:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// trying to access the admin page
+router.push('/admin').then(failure =&gt; {
+  if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
+    failure.to.path // '/admin'
+    failure.from.path // '/'
+  }
+})</pre>
+</div>
+<p>In all cases, <code>to</code> and <code>from</code> are normalized route locations.</p>
+<h2 id="Detecting-Redirections" tabindex="-1">Detecting Redirections </h2>
+<p>When returning a new location inside of a Navigation Guard, we are triggering a new navigation that overrides the ongoing one. Differently from other return values, a redirection doesn't prevent a navigation, <strong>it creates a new one</strong>. It is therefore checked differently, by reading the <code>redirectedFrom</code> property in a Route Location:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">await router.push('/my-profile')
+if (router.currentRoute.value.redirectedFrom) {
+  // redirectedFrom is resolved route location like to and from in navigation guards
+}</pre>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014-present Evan You, Eduardo San Martin Morote<br>Licensed under the MIT License.<br>
+    <a href="https://router.vuejs.org/guide/advanced/navigation-failures" class="_attribution-link">https://router.vuejs.org/guide/advanced/navigation-failures</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

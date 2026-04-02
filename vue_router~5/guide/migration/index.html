@@ -1,0 +1,493 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Migrating From Vue 2 - Vue Router 5 - W3cubDocs</title>
+  
+  <meta name="description" content="Most of Vue Router API has remained unchanged during its rewrite from v3 (for Vue 2) to v4 (for Vue 3) but there are still a few breaking changes &hellip;">
+  <meta name="keywords" content="migrating, from, vue, router, vue_router~5">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vue_router~5/guide/migration/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vue_router~5.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vue_router~5/" class="_nav-link" title="" style="margin-left:0;">Vue Router 5</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="Migrating-from-Vue-2" tabindex="-1">Migrating from Vue 2 </h1>
+<p>Most of Vue Router API has remained unchanged during its rewrite from v3 (for Vue 2) to v4 (for Vue 3) but there are still a few breaking changes that you might encounter while migrating your application. This guide is here to help you understand why these changes happened and how to adapt your application to make it work with Vue Router 4.</p>
+<h2 id="Breaking-Changes" tabindex="-1">Breaking Changes </h2>
+<p>Changes are ordered by their usage. It is therefore recommended to follow this list in order.</p>
+<h3 id="new-Router-becomes-createRouter" tabindex="-1">new Router becomes createRouter </h3>
+<p>Vue Router is no longer a class but a set of functions. Instead of writing <code>new Router()</code>, you now have to call <code>createRouter</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// previously was
+// import Router from 'vue-router'
+import { createRouter } from 'vue-router'
+
+const router = createRouter({
+  // ...
+})</pre>
+</div>
+<h3 id="New-history-option-to-replace-mode" tabindex="-1">New <code>history</code> option to replace <code>mode</code> </h3>
+<p>The <code>mode: 'history'</code> option has been replaced with a more flexible one named <code>history</code>. Depending on which mode you were using, you will have to replace it with the appropriate function:</p>
+<ul>
+<li>
+<code>"history"</code>: <code>createWebHistory()</code>
+</li>
+<li>
+<code>"hash"</code>: <code>createWebHashHistory()</code>
+</li>
+<li>
+<code>"abstract"</code>: <code>createMemoryHistory()</code>
+</li>
+</ul>
+<p>Here is a full snippet:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">import { createRouter, createWebHistory } from 'vue-router'
+// there is also createWebHashHistory and createMemoryHistory
+
+createRouter({
+  history: createWebHistory(),
+  routes: [],
+})</pre>
+</div>
+<p>On SSR, you need to manually pass the appropriate history:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// router.js
+let history = isServer ? createMemoryHistory() : createWebHistory()
+let router = createRouter({ routes, history })
+// somewhere in your server-entry.js
+router.push(req.url) // request url
+router.isReady().then(() =&gt; {
+  // resolve the request
+})</pre>
+</div>
+<p><strong>Reason</strong>: enable tree shaking of non used histories as well as implementing custom histories for advanced use cases like native solutions.</p>
+<h3 id="Moved-the-base-option" tabindex="-1">Moved the <code>base</code> option </h3>
+<p>The <code>base</code> option is now passed as the first argument to <code>createWebHistory</code> (and other histories):</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">import { createRouter, createWebHistory } from 'vue-router'
+createRouter({
+  history: createWebHistory('/base-directory/'),
+  routes: [],
+})</pre>
+</div>
+<h3 id="Removal-of-the-fallback-option" tabindex="-1">Removal of the <code>fallback</code> option </h3>
+<p>The <code>fallback</code> option is no longer supported when creating the router:</p>
+<div class="language-diff vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">-new VueRouter({
++createRouter({
+-  fallback: false,
+// other options...
+})</pre>
+</div>
+<p><strong>Reason</strong>: All browsers supported by Vue support the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API" target="_blank" rel="noreferrer">HTML5 History API</a>, allowing us to avoid hacks around modifying <code>location.hash</code> and directly use <code>history.pushState()</code>.</p>
+<h3 id="Removed-star-or-catch-all-routes" tabindex="-1">Removed <code>*</code> (star or catch all) routes </h3>
+<p>Catch all routes (<code>*</code>, <code>/*</code>) must now be defined using a parameter with a custom regex:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // pathMatch is the name of the param, e.g., going to /not/found yields
+  // { params: { pathMatch: ['not', 'found'] }}
+  // this is thanks to the last *, meaning repeated params and it is necessary if you
+  // plan on directly navigating to the not-found route using its name
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
+  // if you omit the last `*`, the `/` character in params will be encoded when resolving or pushing
+  { path: '/:pathMatch(.*)', name: 'bad-not-found', component: NotFound },
+]
+// bad example if using named routes:
+router.resolve({
+  name: 'bad-not-found',
+  params: { pathMatch: 'not/found' },
+}).href // '/not%2Ffound'
+// good example:
+router.resolve({
+  name: 'not-found',
+  params: { pathMatch: ['not', 'found'] },
+}).href // '/not/found'</pre>
+</div>
+<blockquote class="tip custom-block">
+<strong class="custom-block-title">TIP</strong><p>You don't need to add the <code>*</code> for repeated params if you don't plan to directly push to the not found route using its name. If you call <code>router.push('/not/found/url')</code>, it will provide the right <code>pathMatch</code> param.</p>
+</blockquote>
+<p><strong>Reason</strong>: Vue Router doesn't use <code>path-to-regexp</code> anymore, instead it implements its own parsing system that allows route ranking and enables dynamic routing. Since we usually add one single catch-all route per project, there is no big benefit in supporting a special syntax for <code>*</code>. The encoding of params is encoding across routes, without exception to make things easier to predict.</p>
+<h3 id="The-currentRoute-property-is-now-a-ref-" tabindex="-1">The <code>currentRoute</code> property is now a <code>ref()</code> </h3>
+<p>Previously the properties of the <a href="https://v3.router.vuejs.org/api/#router-currentroute" target="_blank" rel="noreferrer"><code>currentRoute</code></a> object on a router instance could be accessed directly.</p>
+<p>With the introduction of vue-router v4, the underlying type of the <code>currentRoute</code> object on the router instance has changed to <code>Ref&lt;RouteLocationNormalizedLoaded&gt;</code>, which comes from the newer <a href="https://vuejs.org/guide/essentials/reactivity-fundamentals.html" target="_blank" rel="noreferrer">reactivity fundamentals</a> introduced in Vue 3.</p>
+<p>While this doesn't change anything if you're reading the route with <code>useRoute()</code> or <code>this.$route</code>, if you're accessing it directly on the router instance, you will need to access the actual route object via <code>currentRoute.value</code>:</p>
+<div class="language-ts vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light has-diff vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const { page } = router.currentRoute.query
+const { page } = router.currentRoute.value.query</pre>
+</div>
+<h3 id="Replaced-onReady-with-isReady" tabindex="-1">Replaced <code>onReady</code> with <code>isReady</code> </h3>
+<p>The existing <code>router.onReady()</code> function has been replaced with <code>router.isReady()</code> which doesn't take any argument and returns a Promise:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// replace
+router.onReady(onSuccess, onError)
+// with
+router.isReady().then(onSuccess).catch(onError)
+// or use await:
+try {
+  await router.isReady()
+  // onSuccess
+} catch (err) {
+  // onError
+}</pre>
+</div>
+<h3 id="scrollBehavior-changes" tabindex="-1">
+<code>scrollBehavior</code> changes </h3>
+<p>The object returned in <code>scrollBehavior</code> is now similar to <a href="https://developer.mozilla.org/en-US/docs/Web/API/ScrollToOptions" target="_blank" rel="noreferrer"><code>ScrollToOptions</code></a>: <code>x</code> is renamed to <code>left</code> and <code>y</code> is renamed to <code>top</code>. See <a href="https://github.com/vuejs/rfcs/blob/master/active-rfcs/0035-router-scroll-position.md" target="_blank" rel="noreferrer">RFC</a>.</p>
+<p><strong>Reason</strong>: making the object similar to <code>ScrollToOptions</code> to make it feel more familiar with native JS APIs and potentially enable future new options.</p>
+<h3 id="-router-view-keep-alive-and-transition-" tabindex="-1">
+<code>&lt;router-view&gt;</code>, <code>&lt;keep-alive&gt;</code>, and <code>&lt;transition&gt;</code> </h3>
+<p><code>transition</code> and <code>keep-alive</code> must now be used <strong>inside</strong> of <code>RouterView</code> via the <code>v-slot</code> API:</p>
+<div class="language-template vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">&lt;router-view v-slot="{ Component }"&gt;
+  &lt;transition&gt;
+    &lt;keep-alive&gt;
+      &lt;component :is="Component" /&gt;
+    &lt;/keep-alive&gt;
+  &lt;/transition&gt;
+&lt;/router-view&gt;</pre>
+</div>
+<p><strong>Reason</strong>: This was a necessary change. See the <a href="https://github.com/vuejs/rfcs/blob/master/active-rfcs/0034-router-view-keep-alive-transitions.md" target="_blank" rel="noreferrer">related RFC</a>.</p>
+<h3 id="Removal-of-append-prop-in-router-link-" tabindex="-1">Removal of <code>append</code> prop in <code>&lt;router-link&gt;</code> </h3>
+<p>The <code>append</code> prop has been removed from <code>&lt;router-link&gt;</code>. You can manually concatenate the value to an existing <code>path</code> instead:</p>
+<div class="language-template vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">replace
+&lt;router-link to="child-route" append&gt;to relative child&lt;/router-link&gt;
+with
+&lt;router-link :to="append($route.path, 'child-route')"&gt;
+  to relative child
+&lt;/router-link&gt;</pre>
+</div>
+<p>You must define a global <code>append</code> function on your <em>App</em> instance:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">app.config.globalProperties.append = (path, pathToAppend) =&gt;
+  path + (path.endsWith('/') ? '' : '/') + pathToAppend</pre>
+</div>
+<p><strong>Reason</strong>: <code>append</code> wasn't used very often, is easy to replicate in user land.</p>
+<h3 id="Removal-of-event-and-tag-props-in-router-link-" tabindex="-1">Removal of <code>event</code> and <code>tag</code> props in <code>&lt;router-link&gt;</code> </h3>
+<p>Both <code>event</code>, and <code>tag</code> props have been removed from <code>&lt;router-link&gt;</code>. You can use the <a href="../advanced/composition-api#uselink"><code>v-slot</code> API</a> to fully customize <code>&lt;router-link&gt;</code>:</p>
+<div class="language-template vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">replace
+&lt;router-link to="/about" tag="span" event="dblclick"&gt;About Us&lt;/router-link&gt;
+with
+&lt;router-link to="/about" custom v-slot="{ navigate }"&gt;
+  &lt;span @click="navigate" @keypress.enter="navigate" role="link"&gt;About Us&lt;/span&gt;
+&lt;/router-link&gt;</pre>
+</div>
+<p><strong>Reason</strong>: These props were often used together to use something different from an <code>&lt;a&gt;</code> tag but were introduced before the <code>v-slot</code> API and are not used enough to justify adding to the bundle size for everybody.</p>
+<h3 id="Removal-of-the-exact-prop-in-router-link-" tabindex="-1">Removal of the <code>exact</code> prop in <code>&lt;router-link&gt;</code> </h3>
+<p>The <code>exact</code> prop has been removed because the caveat it was fixing is no longer present so you should be able to safely remove it. There are however two things you should be aware of:</p>
+<ul>
+<li>Routes are now active based on the route records they represent instead of the generated route location objects and their <code>path</code>, <code>query</code>, and <code>hash</code> properties</li>
+<li>Only the <code>path</code> section is matched, <code>query</code>, and <code>hash</code> aren't taken into account anymore</li>
+</ul>
+<p>If you wish to customize this behavior, e.g. take into account the <code>hash</code> section, you should use the <a href="../advanced/composition-api#useLink"><code>v-slot</code> API</a> to extend <code>&lt;router-link&gt;</code>.</p>
+<p><strong>Reason</strong>: See the <a href="https://github.com/vuejs/rfcs/blob/master/active-rfcs/0028-router-active-link.md#summary" target="_blank" rel="noreferrer">RFC about active matching</a> changes for more details.</p>
+<h3 id="Navigation-guards-in-mixins-are-ignored" tabindex="-1">Navigation guards in mixins are ignored </h3>
+<p>At the moment navigation guards in mixins are not supported. You can track its support at <a href="https://github.com/vuejs/router/issues/454" target="_blank" rel="noreferrer">vue-router#454</a>.</p>
+<h3 id="Removal-of-router-match-and-changes-to-router-resolve" tabindex="-1">Removal of <code>router.match</code> and changes to <code>router.resolve</code> </h3>
+<p>Both <code>router.match</code>, and <code>router.resolve</code> have been merged together into <code>router.resolve</code> with a slightly different signature. <a href="../../api/interfaces/router#resolve">Refer to the API</a> for more details.</p>
+<p><strong>Reason</strong>: Uniting multiple methods that were used for the same purpose.</p>
+<h3 id="Removal-of-router-getMatchedComponents-" tabindex="-1">Removal of <code>router.getMatchedComponents()</code> </h3>
+<p>The method <code>router.getMatchedComponents</code> is now removed as matched components can be retrieved from <code>router.currentRoute.value.matched</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.currentRoute.value.matched.flatMap(record =&gt;
+  Object.values(record.components)
+)</pre>
+</div>
+<p><strong>Reason</strong>: This method was only used during SSR and is a one liner that can be done by the user.</p>
+<h3 id="Redirect-records-cannot-use-special-paths" tabindex="-1">Redirect records cannot use special paths </h3>
+<p>Previously, a non documented feature allowed to set a redirect record to a special path like <code>/events/:id</code> and it would reuse an existing param <code>id</code>. This is no longer possible and there are two options:</p>
+<ul>
+<li>Using the name of the route without the param: <code>redirect: { name: 'events' }</code>. Note this won't work if the param <code>:id</code> is optional</li>
+<li>Using a function to recreate the new location based on the target: <code>redirect: to =&gt; ({ name: 'events', params: to.params })</code>
+</li>
+</ul>
+<p><strong>Reason</strong>: This syntax was rarely used and <em>another way of doing things</em> that wasn't shorter enough compared to the versions above while introducing some complexity and making the router heavier.</p>
+<h3 id="All-navigations-are-now-always-asynchronous" tabindex="-1">
+<strong>All</strong> navigations are now always asynchronous </h3>
+<p>All navigations, including the first one, are now asynchronous, meaning that, if you use a <code>transition</code>, you may need to wait for the router to be <em>ready</em> before mounting the app:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">app.use(router)
+// Note: on Server Side, you need to manually push the initial location
+router.isReady().then(() =&gt; app.mount('#app'))</pre>
+</div>
+<p>Otherwise there will be an initial transition as if you provided the <code>appear</code> prop to <code>transition</code> because the router displays its initial location (nothing) and then displays the first location.</p>
+<p>Note that <strong>if you have navigation guards upon the initial navigation</strong>, you might not want to block the app render until they are resolved unless you are doing Server Side Rendering. In this scenario, not waiting the router to be ready to mount the app would yield the same result as in Vue 2.</p>
+<h3 id="Removal-of-router-app" tabindex="-1">Removal of <code>router.app</code> </h3>
+<p><code>router.app</code> used to represent the last root component (Vue instance) that injected the router. Vue Router can now be safely used by multiple Vue applications at the same time. You can still add it when using the router:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">app.use(router)
+router.app = app</pre>
+</div>
+<p>You can also extend the TypeScript definition of the <code>Router</code> interface to add the <code>app</code> property.</p>
+<p><strong>Reason</strong>: Vue 3 applications do not exist in Vue 2 and now we properly support multiple applications using the same Router instance, so having an <code>app</code> property would have been misleading because it would have been the application instead of the root instance.</p>
+<h3 id="Passing-content-to-route-components-slot-" tabindex="-1">Passing content to route components' <code>&lt;slot&gt;</code> </h3>
+<p>Before you could directly pass a template to be rendered by a route components' <code>&lt;slot&gt;</code> by nesting it under a <code>&lt;router-view&gt;</code> component:</p>
+<div class="language-template vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">&lt;router-view&gt;
+  &lt;p&gt;In Vue Router 3, I render inside the route component&lt;/p&gt;
+&lt;/router-view&gt;</pre>
+</div>
+<p>Because of the introduction of the <code>v-slot</code> api for <code>&lt;router-view&gt;</code>, you must pass it to the <code>&lt;component&gt;</code> using the <code>v-slot</code> API:</p>
+<div class="language-template vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">&lt;router-view v-slot="{ Component }"&gt;
+  &lt;component :is="Component"&gt;
+    &lt;p&gt;In Vue Router 3, I render inside the route component&lt;/p&gt;
+  &lt;/component&gt;
+&lt;/router-view&gt;</pre>
+</div>
+<h3 id="Removal-of-parent-from-route-locations" tabindex="-1">Removal of <code>parent</code> from route locations </h3>
+<p>The <code>parent</code> property has been removed from normalized route locations (<code>this.$route</code> and object returned by <code>router.resolve</code>). You can still access it via the <code>matched</code> array:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const parent = this.$route.matched[this.$route.matched.length - 2]</pre>
+</div>
+<p><strong>Reason</strong>: Having <code>parent</code> and <code>children</code> creates unnecessary circular references while the properties could be retrieved already through <code>matched</code>.</p>
+<h3 id="Removal-of-pathToRegexpOptions" tabindex="-1">Removal of <code>pathToRegexpOptions</code> </h3>
+<p>The <code>pathToRegexpOptions</code> and <code>caseSensitive</code> properties of route records have been replaced with <code>sensitive</code> and <code>strict</code> options for <code>createRouter()</code>. They can now also be directly passed when creating the router with <code>createRouter()</code>. Any other option specific to <code>path-to-regexp</code> has been removed as <code>path-to-regexp</code> is no longer used to parse paths.</p>
+<h3 id="Removal-of-unnamed-parameters" tabindex="-1">Removal of unnamed parameters </h3>
+<p>Due to the removal of <code>path-to-regexp</code>, unnamed parameters are no longer supported:</p>
+<ul>
+<li>
+<code>/foo(/foo)?/suffix</code> becomes <code>/foo/:_(foo)?/suffix</code>
+</li>
+<li>
+<code>/foo(foo)?</code> becomes <code>/foo:_(foo)?</code>
+</li>
+<li>
+<code>/foo/(.*)</code> becomes <code>/foo/:_(.*)</code>
+</li>
+</ul>
+<blockquote class="tip custom-block">
+<strong class="custom-block-title">TIP</strong><p>Note you can use any name instead of <code>_</code> for the param. The point is to provide one.</p>
+</blockquote>
+<h3 id="Usage-of-history-state" tabindex="-1">Usage of <code>history.state</code> </h3>
+<p>Vue Router saves information on the <code>history.state</code>. If you have any code manually calling <code>history.pushState()</code>, you should likely avoid it or refactor it with a regular <code>router.push()</code> and a <code>history.replaceState()</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// replace
+history.pushState(myState, '', url)
+// with
+await router.push(url)
+history.replaceState({ ...history.state, ...myState }, '')</pre>
+</div>
+<p>Similarly, if you were calling <code>history.replaceState()</code> without preserving the current state, you will need to pass the current <code>history.state</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// replace
+history.replaceState({}, '', url)
+// with
+history.replaceState(history.state, '', url)</pre>
+</div>
+<p><strong>Reason</strong>: We use the history state to save information about the navigation like the scroll position, previous location, etc.</p>
+<h3 id="routes-option-is-required-in-options" tabindex="-1">
+<code>routes</code> option is required in <code>options</code> </h3>
+<p>The property <code>routes</code> is now required in <code>options</code>.</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">createRouter({ routes: [] })</pre>
+</div>
+<p><strong>Reason</strong>: The router is designed to be created with routes even though you can add them later on. You need at least one route in most scenarios and this is written once per app in general.</p>
+<h3 id="Non-existent-named-routes" tabindex="-1">Non existent named routes </h3>
+<p>Pushing or resolving a non existent named route throws an error:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// Oops, we made a typo in name
+router.push({ name: 'homee' }) // throws
+router.resolve({ name: 'homee' }) // throws</pre>
+</div>
+<p><strong>Reason</strong>: Previously, the router would navigate to <code>/</code> but display nothing (instead of the home page). Throwing an error makes more sense because we cannot produce a valid URL to navigate to.</p>
+<h3 id="Missing-required-params-on-named-routes" tabindex="-1">Missing required <code>params</code> on named routes </h3>
+<p>Pushing or resolving a named route without its required params will throw an error:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// given the following route:
+const routes = [{ path: '/users/:id', name: 'user', component: UserDetails }]
+
+// Missing the `id` param will fail
+router.push({ name: 'user' })
+router.resolve({ name: 'user' })</pre>
+</div>
+<p><strong>Reason</strong>: Same as above.</p>
+<h3 id="Named-children-routes-with-an-empty-path-no-longer-appends-a-slash" tabindex="-1">Named children routes with an empty <code>path</code> no longer appends a slash </h3>
+<p>Given any nested named route with an empty <code>path</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  {
+    path: '/dashboard',
+    name: 'dashboard-parent',
+    component: DashboardParent,
+    children: [
+      { path: '', name: 'dashboard', component: DashboardDefault },
+      {
+        path: 'settings',
+        name: 'dashboard-settings',
+        component: DashboardSettings,
+      },
+    ],
+  },
+]</pre>
+</div>
+<p>Navigating or resolving to the named route <code>dashboard</code> will now produce a URL <strong>without a trailing slash</strong>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.resolve({ name: 'dashboard' }).href // '/dashboard'</pre>
+</div>
+<p>This has an important side effect about children <code>redirect</code> records like these:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  {
+    path: '/parent',
+    component: Parent,
+    children: [
+      // this would now redirect to `/home` instead of `/parent/home`
+      { path: '', redirect: 'home' },
+      { path: 'home', component: Home },
+    ],
+  },
+]</pre>
+</div>
+<p>Note this will work if <code>path</code> was <code>/parent/</code> as the relative location <code>home</code> to <code>/parent/</code> is indeed <code>/parent/home</code> but the relative location of <code>home</code> to <code>/parent</code> is <code>/home</code>.</p>
+<p><strong>Reason</strong>: This is to make trailing slash behavior consistent: by default all routes allow a trailing slash. It can be disabled by using the <code>strict</code> option and manually appending (or not) a slash to the routes.</p>
+<h3 id="-route-properties-Encoding" tabindex="-1">
+<code>$route</code> properties Encoding </h3>
+<p>Decoded values in <code>params</code>, <code>query</code>, and <code>hash</code> are now consistent no matter where the navigation is initiated (older browsers will still produce unencoded <code>path</code> and <code>fullPath</code>). The initial navigation should yield the same results as in-app navigations.</p>
+<p>Given any <a href="../../api/index#RouteLocationNormalized">normalized route location</a>:</p>
+<ul>
+<li>Values in <code>path</code>, <code>fullPath</code> are not decoded anymore. They will appear as provided by the browser (most browsers provide them encoded). e.g. directly writing on the address bar <code>https://example.com/hello world</code> will yield the encoded version: <code>https://example.com/hello%20world</code> and both <code>path</code> and <code>fullPath</code> will be <code>/hello%20world</code>.</li>
+<li>
+<code>hash</code> is now decoded, that way it can be copied over: <code>router.push({ hash: $route.hash })</code> and be used directly in <a href="../../api/interfaces/routeroptions#scrollBehavior">scrollBehavior</a>'s <code>el</code> option.</li>
+<li>When using <code>push</code>, <code>resolve</code>, and <code>replace</code> and providing a <code>string</code> location or a <code>path</code> property in an object, <strong>it must be encoded</strong> (like in the previous version). On the other hand, <code>params</code>, <code>query</code> and <code>hash</code> must be provided in its unencoded version.</li>
+<li>The slash character (<code>/</code>) is now properly decoded inside <code>params</code> while still producing an encoded version on the URL: <code>%2F</code>.</li>
+</ul>
+<p><strong>Reason</strong>: This allows to easily copy existing properties of a location when calling <code>router.push()</code> and <code>router.resolve()</code>, and make the resulting route location consistent across browsers. <code>router.push()</code> is now idempotent, meaning that calling <code>router.push(route.fullPath)</code>, <code>router.push({ hash: route.hash })</code>, <code>router.push({ query: route.query })</code>, and <code>router.push({ params: route.params })</code> will not create extra encoding.</p>
+<h3 id="-router-push-and-router-replace-onComplete-and-onAbort-callbacks" tabindex="-1">
+<code>$router.push()</code> and <code>$router.replace()</code> - <code>onComplete</code> and <code>onAbort</code> callbacks </h3>
+<p>Previously, <code>$router.push()</code> and <code>$router.replace()</code> accepted two callbacks, <code>onComplete</code> and <code>onAbort</code>, as second and third arguments. They were called after a navigation based on the result. With the introduction of a Promise based API, these callbacks are redundant and have been removed. See <a href="../advanced/navigation-failures">Navigation Failures</a> for more information on how to detect successful and failed navigations.</p>
+<p><strong>Reason</strong>: Reduce library size by adapting to established JS standards (Promises).</p>
+<h3 id="TypeScript-changes" tabindex="-1">TypeScript changes </h3>
+<p>To make typings more consistent and expressive, some types have been renamed:</p>
+<table tabindex="0">
+<thead><tr>
+<th><code>vue-router@3</code></th>
+<th><code>vue-router@4</code></th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RouteConfig</td>
+<td>RouteRecordRaw</td>
+</tr>
+<tr>
+<td>Location</td>
+<td>RouteLocation</td>
+</tr>
+<tr>
+<td>Route</td>
+<td>RouteLocationNormalized</td>
+</tr>
+</tbody>
+</table>
+<h2 id="New-Features" tabindex="-1">New Features </h2>
+<p>Some of new features to keep an eye on in Vue Router 4 include:</p>
+<ul>
+<li><a href="../advanced/dynamic-routing">Dynamic Routing</a></li>
+<li><a href="../advanced/composition-api">Composition API</a></li>
+</ul>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014-present Evan You, Eduardo San Martin Morote<br>Licensed under the MIT License.<br>
+    <a href="https://router.vuejs.org/guide/migration/" class="_attribution-link">https://router.vuejs.org/guide/migration/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

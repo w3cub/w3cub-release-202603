@@ -1,0 +1,368 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Navigation Guards - Vue Router 5 - W3cubDocs</title>
+  
+  <meta name="description" content="As the name suggests, the navigation guards provided by Vue router are primarily used to guard navigations either by redirecting it or canceling it &hellip;">
+  <meta name="keywords" content="navigation, guards, vue, router, vue_router~5">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vue_router~5/guide/advanced/navigation-guards.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vue_router~5.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vue_router~5/" class="_nav-link" title="" style="margin-left:0;">Vue Router 5</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="Navigation-Guards" tabindex="-1">Navigation Guards </h1>
+<div class="vueschool"><a href="https://vueschool.io/lessons/route-guards?friend=vuerouter" target="_blank" rel="sponsored noopener" title="Learn how to add navigation guards" class="no-icon">Watch a free video lesson on Vue School</a></div>
+<p>As the name suggests, the navigation guards provided by Vue router are primarily used to guard navigations either by redirecting it or canceling it. There are a number of ways to hook into the route navigation process: globally, per-route, or in-component.</p>
+<h2 id="Global-Before-Guards" tabindex="-1">Global Before Guards </h2>
+<p>You can register global before guards using <code>router.beforeEach</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const router = createRouter({ ... })
+
+router.beforeEach((to, from) =&gt; {
+  // ...
+  // explicitly return false to cancel the navigation
+  return false
+})</pre>
+</div>
+<p>Global before guards are called in creation order, whenever a navigation is triggered. Guards may be resolved asynchronously, and the navigation is considered <strong>pending</strong> before all hooks have been resolved.</p>
+<p>Every guard function receives two arguments:</p>
+<ul>
+<li>
+<strong><code>to</code></strong>: the target route location <a href="../../api/index#RouteLocationNormalized">in a normalized format</a> being navigated to.</li>
+<li>
+<strong><code>from</code></strong>: the current route location <a href="../../api/index#RouteLocationNormalized">in a normalized format</a> being navigated away from.</li>
+</ul>
+<p>And can optionally return any of the following values:</p>
+<ul>
+<li><p><code>false</code>: cancel the current navigation. If the browser URL was changed (either manually by the user or via back button), it will be reset to that of the <code>from</code> route.</p></li>
+<li>
+<p>A <a href="../../api/index#RouteLocationRaw">Route Location</a>: Redirect to a different location by passing a route location as if you were calling <code>router.push()</code>, which allows you to pass options like <code>replace: true</code> or <code>name: 'home'</code>. The current navigation is dropped and a new one is created with the same <code>from</code>.</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.beforeEach(async (to, from) =&gt; {
+  if (
+    // make sure the user is authenticated
+    !isAuthenticated &amp;&amp;
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'Login'
+  ) {
+    // redirect the user to the login page
+    return { name: 'Login' }
+  }
+})</pre>
+</div>
+</li>
+</ul>
+<p>It's also possible to throw an <code>Error</code> if an unexpected situation was met. This will also cancel the navigation and call any callback registered via <a href="../../api/interfaces/router#onError"><code>router.onError()</code></a>.</p>
+<p>If nothing, <code>undefined</code> or <code>true</code> is returned, <strong>the navigation is validated</strong>, and the next navigation guard is called.</p>
+<p>All of the things above <strong>work the same way with <code>async</code> functions</strong> and Promises:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.beforeEach(async (to, from) =&gt; {
+  // canUserAccess() returns `true` or `false`
+  const canAccess = await canUserAccess(to)
+  if (!canAccess) return '/login'
+})</pre>
+</div>
+<h3 id="Optional-third-argument-next" tabindex="-1">Optional third argument <code>next</code> </h3>
+<p>In previous versions of Vue Router, it was also possible to use a <em>third argument</em> <code>next</code>, this was a common source of mistakes and went through an <a href="https://github.com/vuejs/rfcs/blob/master/active-rfcs/0037-router-return-guards.md#motivation" target="_blank" rel="noreferrer">RFC</a> to remove it. However, it is still supported, meaning you can pass a third argument to any navigation guard. In that case, <strong>you must call <code>next</code> exactly once</strong> in any given pass through a navigation guard. It can appear more than once, but only if the logical paths have no overlap, otherwise the hook will never be resolved or produce errors. Here is <strong>a bad example</strong> of redirecting the user to <code>/login</code> if they are not authenticated:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// BAD
+router.beforeEach((to, from, next) =&gt; {
+  if (to.name !== 'Login' &amp;&amp; !isAuthenticated) next({ name: 'Login' })
+  // if the user is not authenticated, `next` is called twice
+  next()
+})</pre>
+</div>
+<p>Here is the correct version:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// GOOD
+router.beforeEach((to, from, next) =&gt; {
+  if (to.name !== 'Login' &amp;&amp; !isAuthenticated) next({ name: 'Login' })
+  else next()
+})</pre>
+</div>
+<h2 id="Global-Resolve-Guards" tabindex="-1">Global Resolve Guards </h2>
+<p>You can register a global guard with <code>router.beforeResolve</code>. This is similar to <code>router.beforeEach</code> because it triggers on <strong>every navigation</strong>, but resolve guards are called right before the navigation is confirmed, <strong>after all in-component guards and async route components are resolved</strong>. Here is an example that ensures the user has given access to the Camera for routes that <a href="meta">have defined a custom meta</a> property <code>requiresCamera</code>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.beforeResolve(async to =&gt; {
+  if (to.meta.requiresCamera) {
+    try {
+      await askForCameraPermission()
+    } catch (error) {
+      if (error instanceof NotAllowedError) {
+        // ... handle the error and then cancel the navigation
+        return false
+      } else {
+        // unexpected error, cancel the navigation and pass the error to the global handler
+        throw error
+      }
+    }
+  }
+})</pre>
+</div>
+<p><code>router.beforeResolve</code> is the ideal spot to fetch data or do any other operation that you want to avoid doing if the user cannot enter a page.</p>
+<h2 id="Global-After-Hooks" tabindex="-1">Global After Hooks </h2>
+<p>You can also register global after hooks, however unlike guards, these hooks do not get a <code>next</code> function and cannot affect the navigation:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.afterEach((to, from) =&gt; {
+  sendToAnalytics(to.fullPath)
+})</pre>
+</div>
+<p>They are useful for analytics, changing the title of the page, accessibility features like announcing the page and many other things.</p>
+<p>They also reflect <a href="navigation-failures">navigation failures</a> as the third argument:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">router.afterEach((to, from, failure) =&gt; {
+  if (!failure) sendToAnalytics(to.fullPath)
+})</pre>
+</div>
+<p>Learn more about navigation failures on <a href="navigation-failures">its guide</a>.</p>
+<h2 id="Global-injections-within-guards" tabindex="-1">Global injections within guards </h2>
+<p>Since Vue 3.3, it is possible to use <code>inject()</code> within navigation guards. This is useful for injecting global properties like the <a href="https://pinia.vuejs.org" target="_blank" rel="noreferrer">pinia stores</a>. Anything that is provided with <code>app.provide()</code> is also accessible within <code>router.beforeEach()</code>, <code>router.beforeResolve()</code>, <code>router.afterEach()</code>:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="main.ts">main.ts</span></div>
+<div class="language-ts vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const app = createApp(App)
+app.provide('global', 'hello injections')
+
+// router.ts or main.ts
+router.beforeEach((to, from) =&gt; {
+  const global = inject('global') // 'hello injections'
+  // a pinia store
+  const userStore = useAuthStore()
+  // ...
+})</pre>
+</div>
+</div>
+<h2 id="Per-Route-Guard" tabindex="-1">Per-Route Guard </h2>
+<p>You can define <code>beforeEnter</code> guards directly on a route's configuration object:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  {
+    path: '/users/:id',
+    component: UserDetails,
+    beforeEnter: (to, from) =&gt; {
+      // reject the navigation
+      return false
+    },
+  },
+]</pre>
+</div>
+<p><code>beforeEnter</code> guards <strong>only trigger when entering the route</strong>, they don't trigger when the <code>params</code>, <code>query</code> or <code>hash</code> change e.g. going from <code>/users/2</code> to <code>/users/3</code> or going from <code>/users/2#info</code> to <code>/users/2#projects</code>. They are only triggered when navigating <strong>from a different</strong> route.</p>
+<p>You can also pass an array of functions to <code>beforeEnter</code>, this is useful when reusing guards for different routes:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">function removeQueryParams(to) {
+  if (Object.keys(to.query).length)
+    return { path: to.path, query: {}, hash: to.hash }
+}
+
+function removeHash(to) {
+  if (to.hash) return { path: to.path, query: to.query, hash: '' }
+}
+
+const routes = [
+  {
+    path: '/users/:id',
+    component: UserDetails,
+    beforeEnter: [removeQueryParams, removeHash],
+  },
+  {
+    path: '/about',
+    component: UserDetails,
+    beforeEnter: [removeQueryParams],
+  },
+]</pre>
+</div>
+<p>When working with <a href="../essentials/nested-routes">nested routes</a>, both parent and child routes can use <code>beforeEnter</code>. When placed on a parent route, it won't be triggered when moving between children with that same parent. For example:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  {
+    path: '/user',
+    beforeEnter() {
+      // ...
+    },
+    children: [
+      { path: 'list', component: UserList },
+      { path: 'details', component: UserDetails },
+    ],
+  },
+]</pre>
+</div>
+<p>The <code>beforeEnter</code> in the example above won't be called when moving between <code>/user/list</code> and <code>/user/details</code>, as they share the same parent. If we put the <code>beforeEnter</code> guard directly on the <code>details</code> route instead, that would be called when moving between those two routes.</p>
+<blockquote class="tip custom-block">
+<strong class="custom-block-title">TIP</strong><p>It is possible to achieve similar behavior to per-route guards by using <a href="meta">route meta fields</a> and global navigation guards.</p>
+</blockquote>
+<h2 id="In-Component-Guards" tabindex="-1">In-Component Guards </h2>
+<p>Finally, you can directly define route navigation guards inside route components (the ones passed to the router configuration)</p>
+<h3 id="Using-the-Options-API" tabindex="-1">Using the Options API </h3>
+<p>You can add the following options to route components:</p>
+<ul>
+<li><code>beforeRouteEnter</code></li>
+<li><code>beforeRouteUpdate</code></li>
+<li><code>beforeRouteLeave</code></li>
+</ul>
+<div class="language-vue vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">&lt;script&gt;
+export default {
+  beforeRouteEnter(to, from) {
+    // called before the route that renders this component is confirmed.
+    // does NOT have access to `this` component instance,
+    // because it has not been created yet when this guard is called!
+  },
+  beforeRouteUpdate(to, from) {
+    // called when the route that renders this component has changed, but this component is reused in the new route.
+    // For example, given a route with params `/users/:id`, when we navigate between `/users/1` and `/users/2`,
+    // the same `UserDetails` component instance will be reused, and this hook will be called when that happens.
+    // Because the component is mounted while this happens, the navigation guard has access to `this` component instance.
+  },
+  beforeRouteLeave(to, from) {
+    // called when the route that renders this component is about to be navigated away from.
+    // As with `beforeRouteUpdate`, it has access to `this` component instance.
+  },
+}
+&lt;/script&gt;</pre>
+</div>
+<p>The <code>beforeRouteEnter</code> guard does <strong>NOT</strong> have access to <code>this</code>, because the guard is called before the navigation is confirmed, thus the new entering component has not even been created yet.</p>
+<p>However, you can access the instance by passing a callback to <code>next</code>. The callback will be called when the navigation is confirmed, and the component instance will be passed to the callback as the argument:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">beforeRouteEnter (to, from, next) {
+  next(vm =&gt; {
+    // access to component public instance via `vm`
+  })
+}</pre>
+</div>
+<p>Note that <code>beforeRouteEnter</code> is the only guard that supports passing a callback to <code>next</code>. For <code>beforeRouteUpdate</code> and <code>beforeRouteLeave</code>, <code>this</code> is already available, so passing a callback is unnecessary and therefore <em>not supported</em>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">beforeRouteUpdate (to, from) {
+  // just use `this`
+  this.name = to.params.name
+}</pre>
+</div>
+<p>The <strong>leave guard</strong> is usually used to prevent the user from accidentally leaving the route with unsaved edits. The navigation can be canceled by returning <code>false</code>.</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">beforeRouteLeave (to, from) {
+  const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+  if (!answer) return false
+}</pre>
+</div>
+<h3 id="Using-the-Composition-API" tabindex="-1">Using the Composition API </h3>
+<p>If you are writing your component using the Composition API, you can add update and leave guards through <code>onBeforeRouteUpdate</code> and <code>onBeforeRouteLeave</code> respectively. Please refer to the <a href="composition-api#navigation-guards">Composition API section</a> for more details.</p>
+<h2 id="The-Full-Navigation-Resolution-Flow" tabindex="-1">The Full Navigation Resolution Flow </h2>
+<ol>
+<li>Navigation triggered.</li>
+<li>Call <code>beforeRouteLeave</code> guards in deactivated components.</li>
+<li>Call global <code>beforeEach</code> guards.</li>
+<li>Call <code>beforeRouteUpdate</code> guards in reused components.</li>
+<li>Call <code>beforeEnter</code> in route configs.</li>
+<li>Resolve async route components.</li>
+<li>Call <code>beforeRouteEnter</code> in activated components.</li>
+<li>Call global <code>beforeResolve</code> guards.</li>
+<li>Navigation is confirmed.</li>
+<li>Call global <code>afterEach</code> hooks.</li>
+<li>DOM updates triggered.</li>
+<li>Call callbacks passed to <code>next</code> in <code>beforeRouteEnter</code> guards with instantiated instances.</li>
+</ol>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014-present Evan You, Eduardo San Martin Morote<br>Licensed under the MIT License.<br>
+    <a href="https://router.vuejs.org/guide/advanced/navigation-guards" class="_attribution-link">https://router.vuejs.org/guide/advanced/navigation-guards</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

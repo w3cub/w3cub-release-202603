@@ -1,0 +1,240 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Routes&#39; Matching Syntax - Vue Router 5 - W3cubDocs</title>
+  
+  <meta name="description" content="Most applications will use static routes like &#47;about and dynamic routes like &#47;users&#47;&#58;userId like we just saw in Dynamic Route &hellip;">
+  <meta name="keywords" content="routes&#39;, matching, syntax, vue, router, vue_router~5">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vue_router~5/guide/essentials/route-matching-syntax.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vue_router~5.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vue_router~5/" class="_nav-link" title="" style="margin-left:0;">Vue Router 5</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="Routes-Matching-Syntax" tabindex="-1">Routes' Matching Syntax </h1>
+<div class="vueschool"><a href="https://vueschool.io/lessons/vue-router-4-advanced-routes-matching-syntax?friend=vuerouter" target="_blank" rel="sponsored noopener" title="Learn how to use advanced route routes' matching syntax" class="no-icon">Watch a free video lesson on Vue School</a></div>
+<p>Most applications will use static routes like <code>/about</code> and dynamic routes like <code>/users/:userId</code> like we just saw in <a href="dynamic-matching">Dynamic Route Matching</a>, but Vue Router has much more to offer!</p>
+<blockquote class="tip custom-block">
+<strong class="custom-block-title">TIP</strong><p>For the sake of simplicity, all route records <strong>are omitting the <code>component</code> property</strong> to focus on the <code>path</code> value.</p>
+</blockquote>
+<h2 id="Custom-regex-in-params" tabindex="-1">Custom regex in params </h2>
+<p>When defining a param like <code>:userId</code>, we internally use the following regex <code>([^/]+)</code> (at least one character that isn't a slash <code>/</code>) to extract params from URLs. This works well unless you need to differentiate two routes based on the param content. Imagine two routes <code>/:orderId</code> and <code>/:productName</code>, both would match the exact same URLs, so we need a way to differentiate them. The easiest way would be to add a static section to the path that differentiates them:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // matches /o/3549
+  { path: '/o/:orderId' },
+  // matches /p/books
+  { path: '/p/:productName' },
+]</pre>
+</div>
+<p>But in some scenarios, we don't want to add that static section <code>/o</code> or <code>/p</code>. However, <code>orderId</code> is always a number while <code>productName</code> can be anything so we can specify a custom regex for a param in parentheses:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // /:orderId -&gt; matches only numbers
+  { path: '/:orderId(\\d+)' },
+  // /:productName -&gt; matches anything else
+  { path: '/:productName' },
+]</pre>
+</div>
+<p>Now, going to <code>/25</code> will match <code>/:orderId</code> while going to anything else will match <code>/:productName</code>. The order of the <code>routes</code> array doesn't even matter!</p>
+<blockquote class="tip custom-block">
+<strong class="custom-block-title">TIP</strong><p>Make sure to <strong>escape backslashes (<code>\</code>)</strong> like we did with <code>\d</code> (becomes <code>\\d</code>) to actually pass the backslash character in a string in JavaScript.</p>
+</blockquote>
+<p>Since the closing parentheses <code>)</code> is used to mark the end of a custom regex, you must escape it inside of the regexp (e.g. nested groups):</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // note the escaped closing parentheses of the group within the regexp
+  { path: '/:custom(something-(nested|other\\))' },
+]</pre>
+</div>
+<h2 id="Repeatable-params" tabindex="-1">Repeatable params </h2>
+<p>If you need to match routes with multiple sections like <code>/first/second/third</code>, you should mark a param as repeatable with <code>*</code> (0 or more) and <code>+</code> (1 or more):</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // /:chapters -&gt; matches /one, /one/two, /one/two/three, etc
+  { path: '/:chapters+' },
+  // /:chapters -&gt; matches /, /one, /one/two, /one/two/three, etc
+  { path: '/:chapters*' },
+]</pre>
+</div>
+<p>This will give you an array of params instead of a string and will also require you to pass an array when using named routes:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// given { path: '/:chapters*', name: 'chapters' },
+router.resolve({ name: 'chapters', params: { chapters: [] } }).href
+// produces /
+router.resolve({ name: 'chapters', params: { chapters: ['a', 'b'] } }).href
+// produces /a/b
+
+// given { path: '/:chapters+', name: 'chapters' },
+router.resolve({ name: 'chapters', params: { chapters: [] } }).href
+// throws an Error because `chapters` is empty</pre>
+</div>
+<p>These can also be combined with a custom regex by adding them <strong>after the closing parentheses</strong>:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // only match numbers
+  // matches /1, /1/2, etc
+  { path: '/:chapters(\\d+)+' },
+  // matches /, /1, /1/2, etc
+  { path: '/:chapters(\\d+)*' },
+]</pre>
+</div>
+<h2 id="Sensitive-and-strict-route-options" tabindex="-1">Sensitive and strict route options </h2>
+<p>By default, all routes are case-insensitive and match routes with or without a trailing slash. e.g. a route <code>/users</code> matches <code>/users</code>, <code>/users/</code>, and even <code>/Users/</code>. This behavior can be configured with the <code>strict</code> and <code>sensitive</code> options, they can be set both at a router and route level:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    // will match /users/posva but not:
+    // - /users/posva/ because of strict: true
+    // - /Users/posva because of sensitive: true
+    { path: '/users/:id', sensitive: true },
+    // will match /users, /Users, and /users/42 but not /users/ or /users/42/
+    { path: '/users/:id?' },
+  ],
+  strict: true, // applies to all routes
+})</pre>
+</div>
+<h2 id="Optional-parameters" tabindex="-1">Optional parameters </h2>
+<p>You can also mark a parameter as optional by using the <code>?</code> modifier (0 or 1):</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // will match /users and /users/posva
+  { path: '/users/:userId?' },
+  // will match /users and /users/42
+  { path: '/users/:userId(\\d+)?' },
+]</pre>
+</div>
+<p>Note that <code>*</code> technically also marks a parameter as optional but <code>?</code> parameters cannot be repeated.</p>
+<p>If the route segment contains more than <strong>just an optional parameter</strong>, it won't match a path <strong>without the trailing slash</strong>. For example:</p>
+<ul>
+<li>
+<code>/users/:uid?-:name?</code> won't match <code>/users</code>, only <code>/users/-</code> or even <code>/users/-/</code>
+</li>
+<li>
+<code>/users/:uid(\\d+)?:name?</code> won't match <code>/users</code>, only <code>/users/</code>, <code>/users/2</code>, <code>/users/2/</code>, etc</li>
+</ul>
+<p>You can play around with the matching syntax <a href="https://paths.esm.dev/?p=AAMsIPQg4AoKzidgQFoEXAmw-IEBBRYYOE0SkABTASiz1qgBpgQA1QTsFjAb3h2onsmlAmGIFsCXjXh4AIA.&amp;t=/users/2/#" target="_blank" rel="noreferrer">in the playground</a></p>
+<h2 id="Debugging" tabindex="-1">Debugging </h2>
+<p>If you need to dig how your routes are transformed into a regex to understand why a route isn't being matched or, to report a bug, you can use the <a href="https://paths.esm.dev/?p=AAMeJSyAwR4UbFDAFxAcAGAIJXMAAA..#" target="_blank" rel="noreferrer">path ranker tool</a>. It supports sharing your routes through the URL.</p>
+<h2 id="Avoiding-slow-regex" tabindex="-1">Avoiding slow regex </h2>
+<p>When using custom regex, make sure to avoid using slow regex patterns. For example, using <code>.*</code> will match any character and can lead to <strong>serious performance issues</strong> if it's combined with a repeatable modifier <code>*</code> or <code>+</code> and anything after it:</p>
+<div class="language-ts vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // This creates a very slow regex because of the greedy `.*` followed by `*` and a static string
+  { path: '/:pathMatch(.*)*/something-at-the-end' },
+]</pre>
+</div>
+<p>In practice, use these <em>match everything</em> params only <strong>in the very end of the URL</strong>. If you need them in the middle of the path, <strong>do not make them repeatable</strong>:</p>
+<div class="language-ts vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const routes = [
+  // This is fine because the `.*` is at the end
+  { path: '/:pathMatch(.*)/something-at-the-end' },
+]</pre>
+</div>
+<p>This matches the same routes but without an array of params and it's much faster.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014-present Evan You, Eduardo San Martin Morote<br>Licensed under the MIT License.<br>
+    <a href="https://router.vuejs.org/guide/essentials/route-matching-syntax" class="_attribution-link">https://router.vuejs.org/guide/essentials/route-matching-syntax</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

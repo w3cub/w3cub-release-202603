@@ -1,0 +1,185 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Lazy Loading Routes - Vue Router 5 - W3cubDocs</title>
+  
+  <meta name="description" content="When building apps with a bundler, the JavaScript bundle can become quite large, and thus affect the page load time. It would be more efficient if &hellip;">
+  <meta name="keywords" content="lazy, loading, routes, vue, router, vue_router~5">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vue_router~5/guide/advanced/lazy-loading.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vue_router~5.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vue_router~5/" class="_nav-link" title="" style="margin-left:0;">Vue Router 5</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1 id="Lazy-Loading-Routes" tabindex="-1">Lazy Loading Routes </h1>
+<div class="vueschool"><a href="https://vueschool.io/lessons/lazy-loading-routes-vue-cli-only?friend=vuerouter" target="_blank" rel="sponsored noopener" title="Learn about lazy loading routes" class="no-icon">Watch a free video lesson on Vue School</a></div>
+<p>When building apps with a bundler, the JavaScript bundle can become quite large, and thus affect the page load time. It would be more efficient if we can split each route's components into separate chunks, and only load them when the route is visited.</p>
+<p>Vue Router supports <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import" target="_blank" rel="noreferrer">dynamic imports</a> out of the box, meaning you can replace static imports with dynamic ones:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">// replace
+// import UserDetails from './views/UserDetails'
+// with
+const UserDetails = () =&gt; import('./views/UserDetails.vue')
+
+const router = createRouter({
+  // ...
+  routes: [
+    { path: '/users/:id', component: UserDetails }
+    // or use it directly in the route definition
+    { path: '/users/:id', component: () =&gt; import('./views/UserDetails.vue') },
+  ],
+})</pre>
+</div>
+<p>The <code>component</code> (and <code>components</code>) option accepts a function that returns a Promise of a component and Vue Router <strong>will only fetch it when entering the page for the first time</strong>, then use the cached version. Which means you can also have more complex functions as long as they return a Promise:</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const UserDetails = () =&gt;
+  Promise.resolve({
+    /* component definition */
+  })</pre>
+</div>
+<p>In general, it's a good idea <strong>to always use dynamic imports</strong> for all your routes.</p>
+<blockquote class="tip custom-block">
+<strong class="custom-block-title">Note</strong><p>Do <strong>not</strong> use <a href="https://vuejs.org/guide/components/async.html" target="_blank" rel="noreferrer">Async components</a> for routes. Async components can still be used inside route components but route component themselves are just dynamic imports.</p>
+</blockquote>
+<p>When using a bundler like webpack, this will automatically benefit from <a href="https://webpack.js.org/guides/code-splitting/" target="_blank" rel="noreferrer">code splitting</a></p>
+<p>When using Babel, you will need to add the <a href="https://babeljs.io/docs/plugins/syntax-dynamic-import/" target="_blank" rel="noreferrer">syntax-dynamic-import</a> plugin so that Babel can properly parse the syntax.</p>
+<h2 id="Grouping-Components-in-the-Same-Chunk" tabindex="-1">Grouping Components in the Same Chunk </h2>
+<h3 id="With-webpack" tabindex="-1">With webpack </h3>
+<p>Sometimes we may want to group all the components nested under the same route into the same async chunk. To achieve that we need to use <a href="https://webpack.js.org/guides/code-splitting/#dynamic-imports" target="_blank" rel="noreferrer">named chunks</a> by providing a chunk name using a special comment syntax (requires webpack &gt; 2.4):</p>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">const UserDetails = () =&gt;
+  import(/* webpackChunkName: "group-user" */ './UserDetails.vue')
+const UserDashboard = () =&gt;
+  import(/* webpackChunkName: "group-user" */ './UserDashboard.vue')
+const UserProfileEdit = () =&gt;
+  import(/* webpackChunkName: "group-user" */ './UserProfileEdit.vue')</pre>
+</div>
+<p>webpack will group any async module with the same chunk name into the same async chunk.</p>
+<h3 id="With-Vite" tabindex="-1">With Vite </h3>
+<p>In Vite you can define the chunks under the <a href="https://vite.dev/config/build-options.html#build-rollupoptions" target="_blank" rel="noreferrer"><code>rollupOptions</code></a>:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="vite.config.js">vite.config.js</span></div>
+<div class="language-js vp-adaptive-theme">
+<pre class="shiki shiki-themes one-dark-pro github-light vp-code" style="--shiki-dark:#abb2bf;--shiki-light:#24292e;--shiki-dark-bg:#282c34;--shiki-light-bg:#fff;" tabindex="0" data-language="js">export default defineConfig({
+  build: {
+    rollupOptions: {
+      // https://rollupjs.org/guide/en/#outputmanualchunks
+      output: {
+        manualChunks: {
+          'group-user': [
+            './src/UserDetails',
+            './src/UserDashboard',
+            './src/UserProfileEdit',
+          ],
+        },
+      },
+    },
+  },
+})</pre>
+</div>
+</div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2014-present Evan You, Eduardo San Martin Morote<br>Licensed under the MIT License.<br>
+    <a href="https://router.vuejs.org/guide/advanced/lazy-loading" class="_attribution-link">https://router.vuejs.org/guide/advanced/lazy-loading</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
