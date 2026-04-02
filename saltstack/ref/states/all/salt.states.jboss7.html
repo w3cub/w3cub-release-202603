@@ -1,0 +1,202 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>states.jboss7 - SaltStack - W3cubDocs</title>
+  
+  <meta name="description" content=" Manage JBoss 7 Application Server via CLI interface ">
+  <meta name="keywords" content="salt, states, jboss, saltstack">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/saltstack/ref/states/all/salt.states.jboss7.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/saltstack.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/saltstack/" class="_nav-link" title="" style="margin-left:0;">SaltStack</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>salt.states.jboss7</h1> <p>Manage JBoss 7 Application Server via CLI interface</p> <div class="versionadded"> <p><span class="versionmodified added">New in version 2015.5.0.</span></p> </div> <p>This state uses the jboss-cli.sh script from a JBoss or Wildfly installation and parses its output to determine the execution result.</p> <p>In order to run each state, a jboss_config dictionary with the following properties must be passed:</p> <pre class="highlight-yaml notranslate" data-language="yaml">jboss:
+   cli_path: '/opt/jboss/jboss-7.0/bin/jboss-cli.sh'
+   controller: 10.11.12.13:9999
+   cli_user: 'jbossadm'
+   cli_password: 'jbossadm'</pre> <p>If the controller doesn't require a password, then the cli_user and cli_password parameters are optional.</p> <p>Since same dictionary with configuration will be used in all the states, it may be more convenient to move JBoss configuration and other properties to the pillar.</p> <p>Example of application deployment from local filesystem:</p> <pre class="highlight-yaml notranslate" data-language="yaml">application_deployed:
+  jboss7.deployed:
+    - salt_source:
+        target_file: '/tmp/webapp.war'
+    - jboss_config: {{ pillar['jboss'] }}</pre> <p>For the sake of brevity, examples for each state assume that jboss_config is contained in the pillar.</p> <dl class="py function"> <h3 id="salt.states.jboss7.bindings_exist"> salt.states.jboss7.bindings_exist(name, jboss_config, bindings, profile=None)</h3> <dd>
+<p>Ensures that given JNDI binding are present on the server. If a binding doesn't exist on the server it will be created. If it already exists its value will be changed.</p> <dl class="simple"> <dt>jboss_config:</dt>
+<dd>
+<p>Dict with connection properties (see state description)</p> </dd> <dt>bindings:</dt>
+<dd>
+<p>Dict with bindings to set.</p> </dd> <dt>profile:</dt>
+<dd>
+<p>The profile name (domain mode only)</p> </dd> </dl> <p>Example:</p> <pre class="highlight-yaml notranslate" data-language="yaml">jndi_entries_created:
+  jboss7.bindings_exist:
+   - bindings:
+      'java:global/sampleapp/environment': 'DEV'
+      'java:global/sampleapp/configurationFile': '/var/opt/sampleapp/config.properties'
+   - jboss_config: {{ pillar['jboss'] }}</pre> </dd>
+</dl> <dl class="py function"> <h3 id="salt.states.jboss7.datasource_exists"> salt.states.jboss7.datasource_exists(name, jboss_config, datasource_properties, recreate=False, profile=None)</h3> <dd>
+<p>Ensures that a datasource with given properties exist on the jboss instance. If datasource doesn't exist, it is created, otherwise only the properties that are different will be updated.</p> <dl class="simple"> <dt>name</dt>
+<dd>
+<p>Datasource property name</p> </dd> <dt>jboss_config</dt>
+<dd>
+<p>Dict with connection properties (see state description)</p> </dd> <dt>datasource_properties</dt>
+<dd>
+<p>Dict with datasource properties</p> </dd> <dt>recreate<span class="classifier">False</span>
+</dt>
+<dd>
+<p>If set to True and datasource exists it will be removed and created again. However, if there are deployments that depend on the datasource, it will not me possible to remove it.</p> </dd> <dt>profile<span class="classifier">None</span>
+</dt>
+<dd>
+<p>The profile name for this datasource (domain mode only)</p> </dd> </dl> <p>Example:</p> <pre class="highlight-yaml notranslate" data-language="yaml">sampleDS:
+  jboss7.datasource_exists:
+   - recreate: False
+   - datasource_properties:
+       driver-name: mysql
+       connection-url: 'jdbc:mysql://localhost:3306/sampleDatabase'
+       jndi-name: 'java:jboss/datasources/sampleDS'
+       user-name: sampleuser
+       password: secret
+       min-pool-size: 3
+       use-java-context: True
+   - jboss_config: {{ pillar['jboss'] }}
+   - profile: full-ha</pre> </dd>
+</dl> <dl class="py function"> <h3 id="salt.states.jboss7.deployed"> salt.states.jboss7.deployed(name, jboss_config, salt_source=None)</h3> <dd>
+<p>Ensures that the given application is deployed on server.</p> <dl class="simple"> <dt>jboss_config:</dt>
+<dd>
+<p>Dict with connection properties (see state description)</p> </dd> <dt>salt_source:</dt>
+<dd>
+<dl class="simple"> <dt>How to find the artifact to be deployed.</dt>
+<dd>
+<dl class="simple"> <dt>target_file:</dt>
+<dd>
+<p>Where to look in the minion's file system for the artifact to be deployed (e.g. '/tmp/application-web-0.39.war'). When source is specified, also specifies where to save the retrieved file.</p> </dd> <dt>source:</dt>
+<dd>
+<p>(optional) File on salt master (e.g. salt://application-web-0.39.war). If absent, no files will be retrieved and the artifact in target_file will be used for the deployment.</p> </dd> <dt>undeploy:</dt>
+<dd>
+<p>(optional) Regular expression to match against existing deployments. When present, if there is a deployment that matches the regular expression, it will be undeployed before the new artifact is deployed.</p> </dd> <dt>undeploy_force:</dt>
+<dd>
+<p>(optional) If True, the artifact will be undeployed although it has not changed.</p> </dd> </dl> </dd> </dl> </dd> </dl> <p>Examples:</p> <p>Deployment of a file from minion's local file system:</p> <pre class="highlight-yaml notranslate" data-language="yaml">application_deployed:
+  jboss7.deployed:
+    - salt_source:
+        target_file: '/tmp/webapp.war'
+    - jboss_config: {{ pillar['jboss'] }}</pre> <p>It is assumed that /tmp/webapp.war was made available by some other means. No applications will be undeployed; if an existing deployment that shares that name exists, then it will be replaced with the updated version.</p> <p>Deployment of a file from the Salt master's file system:</p> <pre class="highlight-yaml notranslate" data-language="yaml">application_deployed:
+  jboss7.deployed:
+   - salt_source:
+        source: salt://application-web-0.39.war
+        target_file: '/tmp/application-web-0.39.war'
+        undeploy: 'application-web-.*'
+   - jboss_config: {{ pillar['jboss'] }}</pre> <p>Here, application-web-0.39.war file is downloaded from Salt file system to /tmp/application-web-0.39.war file on minion. Existing deployments are checked if any of them matches 'application-web-.*' regular expression, and if so then it is undeployed before deploying the application. This is useful to automate deployment of new application versions.</p> <p>If the source parameter of salt_source is specified, it can use any protocol that the file states use. This includes not only downloading from the master but also HTTP, HTTPS, FTP, Amazon S3, and OpenStack Swift.</p> </dd>
+</dl> <dl class="py function"> <h3 id="salt.states.jboss7.reloaded"> salt.states.jboss7.reloaded(name, jboss_config, timeout=60, interval=5)</h3> <dd>
+<p>Reloads configuration of jboss server.</p> <dl class="simple"> <dt>jboss_config:</dt>
+<dd>
+<p>Dict with connection properties (see state description)</p> </dd> <dt>timeout:</dt>
+<dd>
+<p>Time to wait until jboss is back in running state. Default timeout is 60s.</p> </dd> <dt>interval:</dt>
+<dd>
+<p>Interval between state checks. Default interval is 5s. Decreasing the interval may slightly decrease waiting time but be aware that every status check is a call to jboss-cli which is a java process. If interval is smaller than process cleanup time it may easily lead to excessive resource consumption.</p> </dd> </dl> <p>This step performs the following operations:</p> <ul class="simple"> <li><p>Ensures that server is in running or reload-required state (by reading server-state attribute)</p></li> <li><p>Reloads configuration</p></li> <li><p>Waits for server to reload and be in running state</p></li> </ul> <p>Example:</p> <pre class="highlight-yaml notranslate" data-language="yaml">configuration_reloaded:
+   jboss7.reloaded:
+    - jboss_config: {{ pillar['jboss'] }}</pre> </dd>
+</dl>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2021 SaltStack.<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://docs.saltproject.io/en/latest/ref/states/all/salt.states.jboss7.html" class="_attribution-link">https://docs.saltproject.io/en/latest/ref/states/all/salt.states.jboss7.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

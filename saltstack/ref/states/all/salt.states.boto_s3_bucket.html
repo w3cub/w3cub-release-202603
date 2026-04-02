@@ -1,0 +1,271 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>states.boto_s3_bucket - SaltStack - W3cubDocs</title>
+  
+  <meta name="description" content=" New in version 2016.3.0. ">
+  <meta name="keywords" content="salt, states, boto, s, bucket, saltstack">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/saltstack/ref/states/all/salt.states.boto_s3_bucket.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/saltstack.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/saltstack/" class="_nav-link" title="" style="margin-left:0;">SaltStack</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>salt.states.boto_s3_bucket</h1> <div class="section" id="manage-s3-buckets"> <h2>Manage S3 Buckets</h2> <div class="versionadded"> <p><span class="versionmodified added">New in version 2016.3.0.</span></p> </div> <p>Create and destroy S3 buckets. Be aware that this interacts with Amazon's services, and so may incur charges.</p> <dl class="field-list simple"> <dt class="field-odd">depends</dt> <dd class="field-odd">
+<ul class="simple"> <li><p>boto</p></li> <li><p>boto3</p></li> </ul> </dd> </dl> <p>The dependencies listed above can be installed via package or pip.</p> <p>This module accepts explicit vpc credentials but can also utilize IAM roles assigned to the instance through Instance Profiles. Dynamic credentials are then automatically obtained from AWS API and no further configuration is necessary. More information available <a class="reference external" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html">here</a>.</p> <p>If IAM roles are not used you need to specify them either in a pillar file or in the minion's config file:</p> <pre class="highlight-yaml notranslate" data-language="yaml">vpc.keyid: GKTADJGHEIQSXMKKRBJ08H
+vpc.key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs</pre> <p>It's also possible to specify <code class="docutils literal notranslate"><span class="pre">key</span></code>, <code class="docutils literal notranslate"><span class="pre">keyid</span></code> and <code class="docutils literal notranslate"><span class="pre">region</span></code> via a profile, either passed in as a dict, or as a string to pull from pillars or minion config:</p> <pre class="highlight-yaml notranslate" data-language="yaml">myprofile:
+    keyid: GKTADJGHEIQSXMKKRBJ08H
+    key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs
+    region: us-east-1</pre> <pre class="highlight-text notranslate" data-language="text">Ensure bucket exists:
+    boto_s3_bucket.present:
+        - Bucket: mybucket
+        - LocationConstraint: EU
+        - ACL:
+          - GrantRead: "uri=http://acs.amazonaws.com/groups/global/AllUsers"
+        - CORSRules:
+          - AllowedHeaders: []
+            AllowedMethods: ["GET"]
+            AllowedOrigins: ["*"]
+            ExposeHeaders: []
+            MaxAgeSeconds: 123
+        - LifecycleConfiguration:
+          - Expiration:
+              Days: 123
+            ID: "idstring"
+            Prefix: "prefixstring"
+            Status: "enabled",
+            ID: "lc1"
+            Transitions:
+              - Days: 123
+                StorageClass: "GLACIER"
+            NoncurrentVersionTransitions:
+              - NoncurrentDays: 123
+                StorageClass: "GLACIER"
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 123
+        - Logging:
+            TargetBucket: log_bucket
+            TargetPrefix: prefix
+            TargetGrants:
+              - Grantee:
+                  DisplayName: "string"
+                  EmailAddress: "string"
+                  ID: "string"
+                  Type: "AmazonCustomerByEmail"
+                  URI: "string"
+                Permission: "READ"
+        - NotificationConfiguration:
+            LambdaFunctionConfiguration:
+              - Id: "string"
+                LambdaFunctionArn: "string"
+                Events:
+                  - "s3:ObjectCreated:*"
+                Filter:
+                  Key:
+                    FilterRules:
+                      - Name: "prefix"
+                        Value: "string"
+        - Policy:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "String"
+                Effect: "Allow"
+                Principal:
+                  AWS: "arn:aws:iam::133434421342:root"
+                Action: "s3:PutObject"
+                Resource: "arn:aws:s3:::my-bucket/*"
+        - Replication:
+            Role: myrole
+            Rules:
+              - ID: "string"
+                Prefix: "string"
+                Status: "Enabled"
+                Destination:
+                  Bucket: "arn:aws:s3:::my-bucket"
+        - RequestPayment:
+            Payer: Requester
+        - Tagging:
+            tag_name: tag_value
+            tag_name_2: tag_value
+        - Versioning:
+            Status: "Enabled"
+        - Website:
+            ErrorDocument:
+              Key: "error.html"
+            IndexDocument:
+              Suffix: "index.html"
+            RedirectAllRequestsTo:
+              Hostname: "string"
+              Protocol: "http"
+            RoutingRules:
+              - Condition:
+                  HttpErrorCodeReturnedEquals: "string"
+                  KeyPrefixEquals: "string"
+                Redirect:
+                  HostName: "string"
+                  HttpRedirectCode: "string"
+                  Protocol: "http"
+                  ReplaceKeyPrefixWith: "string"
+                  ReplaceKeyWith: "string"
+        - region: us-east-1
+        - keyid: GKTADJGHEIQSXMKKRBJ08H
+        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs</pre> <dl class="py function"> <h3 id="salt.states.boto_s3_bucket.absent"> salt.states.boto_s3_bucket.absent(name, Bucket, Force=False, region=None, key=None, keyid=None, profile=None)</h3> <dd>
+<p>Ensure bucket with passed properties is absent.</p> <dl class="simple"> <dt>name</dt>
+<dd>
+<p>The name of the state definition.</p> </dd> <dt>Bucket</dt>
+<dd>
+<p>Name of the bucket.</p> </dd> <dt>Force</dt>
+<dd>
+<p>Empty the bucket first if necessary - Boolean.</p> </dd> <dt>region</dt>
+<dd>
+<p>Region to connect to.</p> </dd> <dt>key</dt>
+<dd>
+<p>Secret key to be used.</p> </dd> <dt>keyid</dt>
+<dd>
+<p>Access key to be used.</p> </dd> <dt>profile</dt>
+<dd>
+<p>A dict with region, key and keyid, or a pillar key (string) that contains a dict with region, key and keyid.</p> </dd> </dl> </dd>
+</dl> <dl class="py function"> <h3 id="salt.states.boto_s3_bucket.present"> salt.states.boto_s3_bucket.present(name, Bucket, LocationConstraint=None, ACL=None, CORSRules=None, LifecycleConfiguration=None, Logging=None, NotificationConfiguration=None, Policy=None, Replication=None, RequestPayment=None, Tagging=None, Versioning=None, Website=None, region=None, key=None, keyid=None, profile=None)</h3> <dd>
+<p>Ensure bucket exists.</p> <dl class="simple"> <dt>name</dt>
+<dd>
+<p>The name of the state definition</p> </dd> <dt>Bucket</dt>
+<dd>
+<p>Name of the bucket.</p> </dd> <dt>LocationConstraint</dt>
+<dd>
+<p>'EU'|'eu-west-1'|'us-west-1'|'us-west-2'|'ap-southeast-1'|'ap-southeast-2'|'ap-northeast-1'|'sa-east-1'|'cn-north-1'|'eu-central-1'</p> </dd> <dt>ACL</dt>
+<dd>
+<p>The permissions on a bucket using access control lists (ACL).</p> </dd> <dt>CORSRules</dt>
+<dd>
+<p>The cors configuration for a bucket.</p> </dd> <dt>LifecycleConfiguration</dt>
+<dd>
+<p>Lifecycle configuration for your bucket</p> </dd> <dt>Logging</dt>
+<dd>
+<p>The logging parameters for a bucket and to specify permissions for who can view and modify the logging parameters.</p> </dd> <dt>NotificationConfiguration</dt>
+<dd>
+<p>notifications of specified events for a bucket</p> </dd> <dt>Policy</dt>
+<dd>
+<p>Policy on the bucket</p> </dd> <dt>Replication</dt>
+<dd>
+<p>Replication rules. You can add as many as 1,000 rules. Total replication configuration size can be up to 2 MB</p> </dd> <dt>RequestPayment</dt>
+<dd>
+<p>The request payment configuration for a bucket. By default, the bucket owner pays for downloads from the bucket. This configuration parameter enables the bucket owner (only) to specify that the person requesting the download will be charged for the download</p> </dd> <dt>Tagging</dt>
+<dd>
+<p>A dictionary of tags that should be set on the bucket</p> </dd> <dt>Versioning</dt>
+<dd>
+<p>The versioning state of the bucket</p> </dd> <dt>Website</dt>
+<dd>
+<p>The website configuration of the bucket</p> </dd> <dt>region</dt>
+<dd>
+<p>Region to connect to.</p> </dd> <dt>key</dt>
+<dd>
+<p>Secret key to be used.</p> </dd> <dt>keyid</dt>
+<dd>
+<p>Access key to be used.</p> </dd> <dt>profile</dt>
+<dd>
+<p>A dict with region, key and keyid, or a pillar key (string) that contains a dict with region, key and keyid.</p> </dd> </dl> </dd>
+</dl> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2021 SaltStack.<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://docs.saltproject.io/en/latest/ref/states/all/salt.states.boto_s3_bucket.html" class="_attribution-link">https://docs.saltproject.io/en/latest/ref/states/all/salt.states.boto_s3_bucket.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

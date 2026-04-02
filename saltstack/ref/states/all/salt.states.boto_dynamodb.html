@@ -1,0 +1,266 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>states.boto_dynamodb - SaltStack - W3cubDocs</title>
+  
+  <meta name="description" content=" New in version 2015.5.0. ">
+  <meta name="keywords" content="salt, states, boto, dynamodb, saltstack">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/saltstack/ref/states/all/salt.states.boto_dynamodb.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/saltstack.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/saltstack/" class="_nav-link" title="" style="margin-left:0;">SaltStack</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _simple">
+				
+				
+<h1>salt.states.boto_dynamodb</h1> <div class="section" id="manage-dynamodb-tables"> <h2>Manage DynamoDB Tables</h2> <div class="versionadded"> <p><span class="versionmodified added">New in version 2015.5.0.</span></p> </div> <p>Create and destroy DynamoDB tables. Be aware that this interacts with Amazon's services, and so may incur charges.</p> <p>This module uses <code class="docutils literal notranslate"><span class="pre">boto</span></code>, which can be installed via package, or pip.</p> <p>This module accepts explicit DynamoDB credentials but can also utilize IAM roles assigned to the instance through Instance Profiles. Dynamic credentials are then automatically obtained from AWS API and no further configuration is necessary. More information available <a class="reference external" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html">here</a>.</p> <p>If IAM roles are not used you need to specify them either in a pillar file or in the minion's config file:</p> <pre class="highlight-yaml notranslate" data-language="yaml">keyid: GKTADJGHEIQSXMKKRBJ08H
+key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs
+region: us-east-1</pre> <p>It's also possible to specify <code class="docutils literal notranslate"><span class="pre">key</span></code>, <code class="docutils literal notranslate"><span class="pre">keyid</span></code> and <code class="docutils literal notranslate"><span class="pre">region</span></code> via a profile, either passed in as a dict, or as a string to pull from pillars or minion config:</p> <pre class="highlight-yaml notranslate" data-language="yaml">myprofile:
+    keyid: GKTADJGHEIQSXMKKRBJ08H
+    key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs
+        region: us-east-1</pre> <pre class="highlight-yaml notranslate" data-language="yaml">Ensure DynamoDB table does not exist:
+  boto_dynamodb.absent:
+    - table_name: new_table
+    - keyid: GKTADJGHEIQSXMKKRBJ08H
+    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs
+    - region: us-east-1
+
+Ensure DynamoDB table exists:
+  boto_dynamodb.present:
+    - table_name: new_table
+    - read_capacity_units: 1
+    - write_capacity_units: 2
+    - hash_key: primary_id
+    - hash_key_data_type: N
+    - range_key: start_timestamp
+    - range_key_data_type: N
+    - keyid: GKTADJGHEIQSXMKKRBJ08H
+    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs
+    - region: us-east-1
+    - local_indexes:
+        - index:
+            - name: "primary_id_end_timestamp_index"
+            - hash_key: primary_id
+            - hash_key_data_type: N
+            - range_key: end_timestamp
+            - range_key_data_type: N
+    - global_indexes:
+        - index:
+            - name: "name_end_timestamp_index"
+            - hash_key: name
+            - hash_key_data_type: S
+            - range_key: end_timestamp
+            - range_key_data_type: N
+            - read_capacity_units: 3
+            - write_capacity_units: 4</pre> <p>It's possible to specify cloudwatch alarms that will be setup along with the DynamoDB table. Note the alarm name will be defined by the name attribute provided, plus the DynamoDB resource name.</p> <pre class="highlight-yaml notranslate" data-language="yaml">Ensure DynamoDB table exists:
+  boto_dynamodb.present:
+    - name: new_table
+    - read_capacity_units: 1
+    - write_capacity_units: 2
+    - hash_key: primary_id
+    - hash_key_data_type: N
+    - range_key: start_timestamp
+    - range_key_data_type: N
+    - alarms:
+         ConsumedWriteCapacityUnits:
+            name: 'DynamoDB ConsumedWriteCapacityUnits **MANAGED BY SALT**'
+            attributes:
+              metric: ConsumedWriteCapacityUnits
+              namespace: AWS/DynamoDB
+              statistic: Sum
+              comparison: '&gt;='
+              # threshold_percent is used to calculate the actual threshold
+              # based on the provisioned capacity for the table.
+              threshold_percent: 0.75
+              period: 300
+              evaluation_periods: 2
+              unit: Count
+              description: 'DynamoDB ConsumedWriteCapacityUnits'
+              alarm_actions: [ 'arn:aws:sns:us-east-1:1234:my-alarm' ]
+              insufficient_data_actions: []
+              ok_actions: [ 'arn:aws:sns:us-east-1:1234:my-alarm' ]
+    - keyid: GKTADJGHEIQSXMKKRBJ08H
+    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs
+    - region: us-east-1</pre> <p>You can also use alarms from pillars, and override values from the pillar alarms by setting overrides on the resource. Note that 'boto_dynamodb_alarms' will be used as a default value for all resources, if defined and can be used to ensure alarms are always set for a resource.</p> <p>Setting the alarms in a pillar:</p> <pre class="highlight-yaml notranslate" data-language="yaml">boto_dynamodb_alarms:
+  ConsumedWriteCapacityUnits:
+    name: 'DynamoDB ConsumedWriteCapacityUnits **MANAGED BY SALT**'
+    attributes:
+      metric: ConsumedWriteCapacityUnits
+      namespace: AWS/DynamoDB
+      statistic: Sum
+      comparison: '&gt;='
+      # threshold_percent is used to calculate the actual threshold
+      # based on the provisioned capacity for the table.
+      threshold_percent: 0.75
+      period: 300
+      evaluation_periods: 2
+      unit: Count
+      description: 'DynamoDB ConsumedWriteCapacityUnits'
+      alarm_actions: [ 'arn:aws:sns:us-east-1:1234:my-alarm' ]
+      insufficient_data_actions: []
+      ok_actions: [ 'arn:aws:sns:us-east-1:1234:my-alarm' ]
+
+Ensure DynamoDB table exists:
+  boto_dynamodb.present:
+    - name: new_table
+    - read_capacity_units: 1
+    - write_capacity_units: 2
+    - hash_key: primary_id
+    - hash_key_data_type: N
+    - range_key: start_timestamp
+    - range_key_data_type: N
+    - alarms:
+         ConsumedWriteCapacityUnits:
+            attributes:
+              threshold_percent: 0.90
+              period: 900</pre> <dl class="py exception"> <dt id="salt.states.boto_dynamodb.GsiNotUpdatableError"> <em class="property">exception </em><code class="sig-prename descclassname">salt.states.boto_dynamodb.</code><code class="sig-name descname">GsiNotUpdatableError</code>
+</dt> <dd>
+<p>Raised when a global secondary index cannot be updated.</p> </dd>
+</dl> <dl class="py function"> <h3 id="salt.states.boto_dynamodb.absent"> salt.states.boto_dynamodb.absent(name, region=None, key=None, keyid=None, profile=None)</h3> <dd>
+<p>Ensure the DynamoDB table does not exist.</p> <dl class="simple"> <dt>name</dt>
+<dd>
+<p>Name of the DynamoDB table.</p> </dd> <dt>region</dt>
+<dd>
+<p>Region to connect to.</p> </dd> <dt>key</dt>
+<dd>
+<p>Secret key to be used.</p> </dd> <dt>keyid</dt>
+<dd>
+<p>Access key to be used.</p> </dd> <dt>profile</dt>
+<dd>
+<p>A dict with region, key and keyid, or a pillar key (string) that contains a dict with region, key and keyid.</p> </dd> </dl> </dd>
+</dl> <dl class="py function"> <h3 id="salt.states.boto_dynamodb.present"> salt.states.boto_dynamodb.present(name=None, table_name=None, region=None, key=None, keyid=None, profile=None, read_capacity_units=None, write_capacity_units=None, alarms=None, alarms_from_pillar='boto_dynamodb_alarms', hash_key=None, hash_key_data_type=None, range_key=None, range_key_data_type=None, local_indexes=None, global_indexes=None, backup_configs_from_pillars='boto_dynamodb_backup_configs')</h3> <dd>
+<p>Ensure the DynamoDB table exists. Table throughput can be updated after table creation.</p> <p>Global secondary indexes (GSIs) are managed with some exceptions:</p> <ul class="simple"> <li><p>If a GSI deletion is detected, a failure will occur (deletes should be done manually in the AWS console).</p></li> <li><p>If multiple GSIs are added in a single Salt call, a failure will occur (boto supports one creation at a time). Note that this only applies after table creation; multiple GSIs can be created during table creation.</p></li> <li><p>Updates to existing GSIs are limited to read/write capacity only (DynamoDB limitation).</p></li> </ul> <dl class="simple"> <dt>name</dt>
+<dd>
+<p>Name of the DynamoDB table</p> </dd> <dt>table_name</dt>
+<dd>
+<p>Name of the DynamoDB table (deprecated)</p> </dd> <dt>region</dt>
+<dd>
+<p>Region to connect to.</p> </dd> <dt>key</dt>
+<dd>
+<p>Secret key to be used.</p> </dd> <dt>keyid</dt>
+<dd>
+<p>Access key to be used.</p> </dd> <dt>profile</dt>
+<dd>
+<p>A dict with region, key and keyid, or a pillar key (string) that contains a dict with region, key and keyid.</p> </dd> <dt>read_capacity_units</dt>
+<dd>
+<p>The read throughput for this table</p> </dd> <dt>write_capacity_units</dt>
+<dd>
+<p>The write throughput for this table</p> </dd> <dt>hash_key</dt>
+<dd>
+<p>The name of the attribute that will be used as the hash key for this table</p> </dd> <dt>hash_key_data_type</dt>
+<dd>
+<p>The DynamoDB datatype of the hash key</p> </dd> <dt>range_key</dt>
+<dd>
+<p>The name of the attribute that will be used as the range key for this table</p> </dd> <dt>range_key_data_type</dt>
+<dd>
+<p>The DynamoDB datatype of the range key</p> </dd> <dt>local_indexes</dt>
+<dd>
+<p>The local indexes you would like to create</p> </dd> <dt>global_indexes</dt>
+<dd>
+<p>The global indexes you would like to create</p> </dd> <dt>backup_configs_from_pillars</dt>
+<dd>
+<p>Pillars to use to configure DataPipeline backups</p> </dd> </dl> </dd>
+</dl> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2021 SaltStack.<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://docs.saltproject.io/en/latest/ref/states/all/salt.states.boto_dynamodb.html" class="_attribution-link">https://docs.saltproject.io/en/latest/ref/states/all/salt.states.boto_dynamodb.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
