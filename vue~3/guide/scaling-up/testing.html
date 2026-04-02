@@ -1,0 +1,454 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Testing (Scaling Up) - Vue 3 - W3cubDocs</title>
+  
+  <meta name="description" content="Automated tests help you and your team build complex Vue applications quickly and confidently by preventing regressions and encouraging you to break &hellip;">
+  <meta name="keywords" content="testing, scaling, up, vue, vue~3">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vue~3/guide/scaling-up/testing.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vue~3.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vue~3/" class="_nav-link" title="" style="margin-left:0;">Vue 3</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _vue">
+				
+				
+<h1 id="testing" tabindex="-1">Testing </h1>
+<h2 id="why-test" tabindex="-1">Why Test? </h2>
+<p>Automated tests help you and your team build complex Vue applications quickly and confidently by preventing regressions and encouraging you to break apart your application into testable functions, modules, classes, and components. As with any application, your new Vue app can break in many ways, and it's important that you can catch these issues and fix them before releasing.</p>
+<p>In this guide, we'll cover basic terminology and provide our recommendations on which tools to choose for your Vue 3 application.</p>
+<p>There is one Vue-specific section covering composables. See <a href="#testing-composables">Testing Composables</a> below for more details.</p>
+<h2 id="when-to-test" tabindex="-1">When to Test </h2>
+<p>Start testing early! We recommend you begin writing tests as soon as you can. The longer you wait to add tests to your application, the more dependencies your application will have, and the harder it will be to start.</p>
+<h2 id="testing-types" tabindex="-1">Testing Types </h2>
+<p>When designing your Vue application's testing strategy, you should leverage the following testing types:</p>
+<ul>
+<li>
+<strong>Unit</strong>: Checks that inputs to a given function, class, or composable are producing the expected output or side effects.</li>
+<li>
+<strong>Component</strong>: Checks that your component mounts, renders, can be interacted with, and behaves as expected. These tests import more code than unit tests, are more complex, and require more time to execute.</li>
+<li>
+<strong>End-to-end</strong>: Checks features that span multiple pages and makes real network requests against your production-built Vue application. These tests often involve standing up a database or other backend.</li>
+</ul>
+<p>Each testing type plays a role in your application's testing strategy, and each will protect you against different types of issues.</p>
+<h2 id="overview" tabindex="-1">Overview </h2>
+<p>We will briefly discuss what each of these are, how they can be implemented for Vue applications, and provide some general recommendations.</p>
+<h2 id="unit-testing" tabindex="-1">Unit Testing </h2>
+<p>Unit tests are written to verify that small, isolated units of code are working as expected. A unit test usually covers a single function, class, composable, or module. Unit tests focus on logical correctness and only concern themselves with a small portion of the application's overall functionality. They may mock large parts of your application's environment (e.g. initial state, complex classes, 3rd party modules, and network requests).</p>
+<p>In general, unit tests will catch issues with a function's business logic and logical correctness.</p>
+<p>Take for example this <code>increment</code> function:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="helpers.js">helpers.js</span></div>
+<pre data-language="js">export function increment(current, max = 10) {
+  if (current &lt; max) {
+    return current + 1
+  }
+  return current
+}</pre>
+</div>
+<p>Because it's very self-contained, it'll be easy to invoke the increment function and assert that it returns what it's supposed to, so we'll write a Unit Test.</p>
+<p>If any of these assertions fail, it's clear that the issue is contained within the <code>increment</code> function.</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="helpers.spec.js">helpers.spec.js</span></div>
+<pre data-language="js">import { increment } from './helpers'
+
+describe('increment', () =&gt; {
+  test('increments the current number by 1', () =&gt; {
+    expect(increment(0, 10)).toBe(1)
+  })
+
+  test('does not increment the current number over the max', () =&gt; {
+    expect(increment(10, 10)).toBe(10)
+  })
+
+  test('has a default max of 10', () =&gt; {
+    expect(increment(10)).toBe(10)
+  })
+})</pre>
+</div>
+<p>As mentioned previously, unit testing is typically applied to self-contained business logic, components, classes, modules, or functions that do not involve UI rendering, network requests, or other environmental concerns.</p>
+<p>These are typically plain JavaScript / TypeScript modules unrelated to Vue. In general, writing unit tests for business logic in Vue applications does not differ significantly from applications using other frameworks.</p>
+<p>There are two instances where you DO unit test Vue-specific features:</p>
+<ol>
+<li>Composables</li>
+<li>Components</li>
+</ol>
+<h3 id="composables" tabindex="-1">Composables </h3>
+<p>One category of functions specific to Vue applications is <a href="../reusability/composables">Composables</a>, which may require special handling during tests. See <a href="#testing-composables">Testing Composables</a> below for more details.</p>
+<h3 id="unit-testing-components" tabindex="-1">Unit Testing Components </h3>
+<p>A component can be tested in two ways:</p>
+<ol>
+<li>
+<p>Whitebox: Unit Testing</p>
+<p>Tests that are "Whitebox tests" are aware of the implementation details and dependencies of a component. They are focused on <strong>isolating</strong> the component under test. These tests will usually involve mocking some, if not all of your component's children, as well as setting up plugin state and dependencies (e.g. Pinia).</p>
+</li>
+<li>
+<p>Blackbox: Component Testing</p>
+<p>Tests that are "Blackbox tests" are unaware of the implementation details of a component. These tests mock as little as possible to test the integration of your component and the entire system. They usually render all child components and are considered more of an "integration test". See the <a href="#component-testing">Component Testing recommendations</a> below.</p>
+</li>
+</ol>
+<h3 id="recommendation" tabindex="-1">Recommendation </h3>
+<ul><li>
+<p><a href="https://vitest.dev/" target="_blank" rel="noreferrer">Vitest</a></p>
+<p>Since the official setup created by <code>create-vue</code> is based on <a href="https://vite.dev/" target="_blank" rel="noreferrer">Vite</a>, we recommend using a unit testing framework that can leverage the same configuration and transform pipeline directly from Vite. <a href="https://vitest.dev/" target="_blank" rel="noreferrer">Vitest</a> is a unit testing framework designed specifically for this purpose, created and maintained by Vue / Vite team members. It integrates with Vite-based projects with minimal effort, and is blazing fast.</p>
+</li></ul>
+<h3 id="other-options" tabindex="-1">Other Options </h3>
+<ul><li>
+<a href="https://jestjs.io/" target="_blank" rel="noreferrer">Jest</a> is a popular unit testing framework. However, we only recommend Jest if you have an existing Jest test suite that needs to be migrated over to a Vite-based project, as Vitest offers a more seamless integration and better performance.</li></ul>
+<h2 id="component-testing" tabindex="-1">Component Testing </h2>
+<p>In Vue applications, components are the main building blocks of the UI. Components are therefore the natural unit of isolation when it comes to validating your application's behavior. From a granularity perspective, component testing sits somewhere above unit testing and can be considered a form of integration testing. Much of your Vue Application should be covered by a component test and we recommend that each Vue component has its own spec file.</p>
+<p>Component tests should catch issues relating to your component's props, events, slots that it provides, styles, classes, lifecycle hooks, and more.</p>
+<p>Component tests should not mock child components, but instead test the interactions between your component and its children by interacting with the components as a user would. For example, a component test should click on an element like a user would instead of programmatically interacting with the component.</p>
+<p>Component tests should focus on the component's public interfaces rather than internal implementation details. For most components, the public interface is limited to: events emitted, props, and slots. When testing, remember to <strong>test what a component does, not how it does it</strong>.</p>
+<p><strong>DO</strong></p>
+<ul>
+<li><p>For <strong>Visual</strong> logic: assert correct render output based on inputted props and slots.</p></li>
+<li>
+<p>For <strong>Behavioral</strong> logic: assert correct render updates or emitted events in response to user input events.</p>
+<p>In the below example, we demonstrate a Stepper component that has a DOM element labeled "increment" and can be clicked. We pass a prop called <code>max</code> that prevents the Stepper from being incremented past <code>2</code>, so if we click the button 3 times, the UI should still say <code>2</code>.</p>
+<p>We know nothing about the implementation of Stepper, only that the "input" is the <code>max</code> prop and the "output" is the state of the DOM as the user will see it.</p>
+</li>
+</ul>
+<div class="vp-code-group">
+<div class="tabs">
+<input type="radio" name="group-185" id="tab-186" checked><label data-title="Vue Test Utils" for="tab-186">Vue Test Utils</label><input type="radio" name="group-185" id="tab-187"><label data-title="Cypress" for="tab-187">Cypress</label><input type="radio" name="group-185" id="tab-188"><label data-title="Testing Library" for="tab-188">Testing Library</label>
+</div>
+<div class="blocks">
+<pre data-language="js">const valueSelector = '[data-testid=stepper-value]'
+const buttonSelector = '[data-testid=increment]'
+
+const wrapper = mount(Stepper, {
+  props: {
+    max: 1
+  }
+})
+
+expect(wrapper.find(valueSelector).text()).toContain('0')
+
+await wrapper.find(buttonSelector).trigger('click')
+
+expect(wrapper.find(valueSelector).text()).toContain('1')</pre>
+<pre data-language="js">const valueSelector = '[data-testid=stepper-value]'
+const buttonSelector = '[data-testid=increment]'
+
+mount(Stepper, {
+  props: {
+    max: 1
+  }
+})
+
+cy.get(valueSelector)
+  .should('be.visible')
+  .and('contain.text', '0')
+  .get(buttonSelector)
+  .click()
+  .get(valueSelector)
+  .should('contain.text', '1')</pre>
+<pre data-language="js">const { getByText } = render(Stepper, {
+  props: {
+    max: 1
+  }
+})
+
+getByText('0') // Implicit assertion that "0" is within the component
+
+const button = getByRole('button', { name: /increment/i })
+
+// Dispatch a click event to our increment button.
+await fireEvent.click(button)
+
+getByText('1')
+
+await fireEvent.click(button)</pre>
+</div>
+</div>
+<p><strong>DON'T</strong></p>
+<ul><li>
+<p>Don't assert the private state of a component instance or test the private methods of a component. Testing implementation details makes the tests brittle, as they are more likely to break and require updates when the implementation changes.</p>
+<p>The component's ultimate job is rendering the correct DOM output, so tests focusing on the DOM output provide the same level of correctness assurance (if not more) while being more robust and resilient to change.</p>
+<p>Don't rely exclusively on snapshot tests. Asserting HTML strings does not describe correctness. Write tests with intentionality.</p>
+<p>If a method needs to be tested thoroughly, consider extracting it into a standalone utility function and write a dedicated unit test for it. If it cannot be extracted cleanly, it may be tested as a part of a component, integration, or end-to-end test that covers it.</p>
+</li></ul>
+<h3 id="recommendation-1" tabindex="-1">Recommendation </h3>
+<ul>
+<li><p><a href="https://vitest.dev/" target="_blank" rel="noreferrer">Vitest</a> for components or composables that render headlessly (e.g. the <a href="https://vueuse.org/core/useFavicon/#usefavicon" target="_blank" rel="noreferrer"><code>useFavicon</code></a> function in VueUse). Components and DOM can be tested using <a href="https://github.com/vuejs/test-utils" target="_blank" rel="noreferrer"><code>@vue/test-utils</code></a>.</p></li>
+<li><p><a href="https://on.cypress.io/component" target="_blank" rel="noreferrer">Cypress Component Testing</a> for components whose expected behavior depends on properly rendering styles or triggering native DOM events. It can be used with Testing Library via <a href="https://testing-library.com/docs/cypress-testing-library/intro" target="_blank" rel="noreferrer">@testing-library/cypress</a>.</p></li>
+</ul>
+<p>The main differences between Vitest and browser-based runners are speed and execution context. In short, browser-based runners, like Cypress, can catch issues that node-based runners, like Vitest, cannot (e.g. style issues, real native DOM events, cookies, local storage, and network failures), but browser-based runners are <em>orders of magnitude slower than Vitest</em> because they do open a browser, compile your stylesheets, and more. Cypress is a browser-based runner that supports component testing. Please read <a href="https://vitest.dev/guide/comparisons.html#cypress" target="_blank" rel="noreferrer">Vitest's comparison page</a> for the latest information comparing Vitest and Cypress.</p>
+<h3 id="mounting-libraries" tabindex="-1">Mounting Libraries </h3>
+<p>Component testing often involves mounting the component being tested in isolation, triggering simulated user input events, and asserting on the rendered DOM output. There are dedicated utility libraries that make these tasks simpler.</p>
+<ul>
+<li><p><a href="https://github.com/vuejs/test-utils" target="_blank" rel="noreferrer"><code>@vue/test-utils</code></a> is the official low-level component testing library that was written to provide users access to Vue specific APIs. It's also the lower-level library <code>@testing-library/vue</code> is built on top of.</p></li>
+<li><p><a href="https://github.com/testing-library/vue-testing-library" target="_blank" rel="noreferrer"><code>@testing-library/vue</code></a> is a Vue testing library focused on testing components without relying on implementation details. Its guiding principle is that the more tests resemble the way software is used, the more confidence they can provide.</p></li>
+</ul>
+<p>We recommend using <code>@vue/test-utils</code> for testing components in applications. <code>@testing-library/vue</code> has issues with testing asynchronous component with Suspense, so it should be used with caution.</p>
+<h3 id="other-options-1" tabindex="-1">Other Options </h3>
+<ul>
+<li><p><a href="https://nightwatchjs.org/" target="_blank" rel="noreferrer">Nightwatch</a> is an E2E test runner with Vue Component Testing support. (<a href="https://github.com/nightwatchjs-community/todo-vue" target="_blank" rel="noreferrer">Example Project</a>)</p></li>
+<li><p><a href="https://webdriver.io/docs/component-testing/vue" target="_blank" rel="noreferrer">WebdriverIO</a> for cross-browser component testing that relies on native user interaction based on standardized automation. It can also be used with Testing Library.</p></li>
+</ul>
+<h2 id="e2e-testing" tabindex="-1">E2E Testing </h2>
+<p>While unit tests provide developers with some degree of confidence, unit and component tests are limited in their abilities to provide holistic coverage of an application when deployed to production. As a result, end-to-end (E2E) tests provide coverage on what is arguably the most important aspect of an application: what happens when users actually use your applications.</p>
+<p>End-to-end tests focus on multi-page application behavior that makes network requests against your production-built Vue application. They often involve standing up a database or other backend and may even be run against a live staging environment.</p>
+<p>End-to-end tests will often catch issues with your router, state management library, top-level components (e.g. an App or Layout), public assets, or any request handling. As stated above, they catch critical issues that may be impossible to catch with unit tests or component tests.</p>
+<p>End-to-end tests do not import any of your Vue application's code but instead rely completely on testing your application by navigating through entire pages in a real browser.</p>
+<p>End-to-end tests validate many of the layers in your application. They can either target your locally built application or even a live Staging environment. Testing against your Staging environment not only includes your frontend code and static server but all associated backend services and infrastructure.</p>
+<blockquote><p>The more your tests resemble how your software is used, the more confidence they can give you. - <a href="https://x.com/kentcdodds/status/977018512689455106" target="_blank" rel="noreferrer">Kent C. Dodds</a> - Author of the Testing Library</p></blockquote>
+<p>By testing how user actions impact your application, E2E tests are often the key to higher confidence in whether an application is functioning properly or not.</p>
+<h3 id="choosing-an-e2e-testing-solution" tabindex="-1">Choosing an E2E Testing Solution </h3>
+<p>While end-to-end (E2E) testing on the web has gained a negative reputation for unreliable (flaky) tests and slowing down development processes, modern E2E tools have made strides forward to create more reliable, interactive, and useful tests. When choosing an E2E testing framework, the following sections provide some guidance on things to keep in mind when choosing a testing framework for your application.</p>
+<h4 id="cross-browser-testing" tabindex="-1">Cross-browser testing </h4>
+<p>One of the primary benefits that end-to-end (E2E) testing is known for is its ability to test your application across multiple browsers. While it may seem desirable to have 100% cross-browser coverage, it is important to note that cross browser testing has diminishing returns on a team's resources due to the additional time and machine power required to run them consistently. As a result, it is important to be mindful of this trade-off when choosing the amount of cross-browser testing your application needs.</p>
+<h4 id="faster-feedback-loops" tabindex="-1">Faster feedback loops </h4>
+<p>One of the primary problems with end-to-end (E2E) tests and development is that running the entire suite takes a long time. Typically, this is only done in continuous integration and deployment (CI/CD) pipelines. Modern E2E testing frameworks have helped to solve this by adding features like parallelization, which allows for CI/CD pipelines to often run magnitudes faster than before. In addition, when developing locally, the ability to selectively run a single test for the page you are working on while also providing hot reloading of tests can help boost a developer's workflow and productivity.</p>
+<h4 id="first-class-debugging-experience" tabindex="-1">First-class debugging experience </h4>
+<p>While developers have traditionally relied on scanning logs in a terminal window to help determine what went wrong in a test, modern end-to-end (E2E) test frameworks allow developers to leverage tools they are already familiar with, e.g. browser developer tools.</p>
+<h4 id="visibility-in-headless-mode" tabindex="-1">Visibility in headless mode </h4>
+<p>When end-to-end (E2E) tests are run in continuous integration/deployment pipelines, they are often run in headless browsers (i.e., no visible browser is opened for the user to watch). A critical feature of modern E2E testing frameworks is the ability to see snapshots and/or videos of the application during testing, providing some insight into why errors are happening. Historically, it was tedious to maintain these integrations.</p>
+<h3 id="recommendation-2" tabindex="-1">Recommendation </h3>
+<ul>
+<li><p><a href="https://playwright.dev/" target="_blank" rel="noreferrer">Playwright</a> is a great E2E testing solution that supports Chromium, WebKit, and Firefox. Test on Windows, Linux, and macOS, locally or on CI, headless or headed with native mobile emulation of Google Chrome for Android and Mobile Safari. It has an informative UI, excellent debuggability, built-in assertions, parallelization, traces and is designed to eliminate flaky tests. Support for <a href="https://playwright.dev/docs/test-components" target="_blank" rel="noreferrer">Component Testing</a> is available, but marked experimental. Playwright is open source and maintained by Microsoft.</p></li>
+<li><p><a href="https://www.cypress.io/" target="_blank" rel="noreferrer">Cypress</a> has an informative graphical interface, excellent debuggability, built-in assertions, stubs, flake-resistance, and snapshots. As mentioned above, it provides stable support for <a href="https://docs.cypress.io/guides/component-testing/introduction" target="_blank" rel="noreferrer">Component Testing</a>. Cypress supports Chromium-based browsers, Firefox, and Electron. WebKit support is available, but marked experimental. Cypress is MIT-licensed, but some features like parallelization require a subscription to Cypress Cloud.</p></li>
+</ul>
+<div class="lambdatest"><a href="https://lambdatest.com" target="_blank"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTQ3cHgiIGhlaWdodD0iMjZweCIgdmlld0JveD0iMCAwIDE0NyAyNiIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICAgIDwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNTEuMyAoNTc1NDQpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPkxPR088L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iRmluYWwiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJNb250c2VycmF0LS1Ib21lcGFnZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYzLjAwMDAwMCwgLTU0LjAwMDAwMCkiIGZpbGw9IiMwMDAwMDAiPgogICAgICAgICAgICA8ZyBpZD0iTE9HTyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjMuMDAwMDAwLCA1NC4wMDAwMDApIj4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik03Ljk3MjUzNjkyLDIwLjg4MDM5NDQgTDcuOTcyNTM2OTIsMjMuMTU0OTU3NyBDNy45NzI1MzY5MiwyMy42MzY4MDE1IDcuNDQ2Mjc4NjIsMjMuOTMzODkyNiA3LjAyNzI2OTEyLDIzLjY4MDkzMjYgTDUuOTY5NDA0MTMsMjMuMDAxNjAyOCBMNS43MTYzNDU4NiwyMi44NTg4MTc4IEM1LjY5ODI3OTA0LDIyLjg0ODU2MjEgNC4yMzU1Njg2NywyMi4wMDI3MzQ2IDEuMDU3MjYzMiwyMC4xNjQ2NjU2IEwwLjgwNDgyMjk0OSwyMC4wMTk4NjI3IEMwLjU1NTkzMzQ2NCwxOS44NzYxNjczIDAuMzUxNzUzMDExLDE5LjY3MDU4NTcgMC4yMTA2NDkzMjUsMTkuNDIyNDQ5MiBDMC4wNzExMDIzMDQsMTkuMTc2MTg2OSAtMC4wMDE1MTgxNDc0NSwxOC44OTY3NDg5IDAuMDAxMjEyMjQ2OTgsMTguNjE5MDk1IEwwLDEyLjk1NDUyMDkgTDAsNy4yODA4NTU3MSBDMCw2Ljk3OTY2NTA0IDAuMDg1MDQ0ODg5OCw2LjY4NTU3NzI4IDAuMjQzMzc0MTEsNi40MzI3ODk1MiBDMC4zOTk5OTE1MTgsNi4xNzkxNzEzNCAwLjYyNjc3Nzg3LDUuOTcwNzY4MzEgMC44NjI0OTI2NzcsNS44NTY4MTI5MyBMNS40NTc5NzcyNSwzLjIwMDQ5MTI3IEw1LjcwODkwMzY1LDMuMDUzNTc3MTQgQzUuNzkyMzc2NDIsMy4wMDU3NDA3MiA1Ljc5MjM3NjQyLDMuMDA1NzQwNzIgNS45NjIxMDY3NiwyLjkwOTA0MDkyIEwxMC4zNjM3MjE4LDAuMzY3Mzg4MTAyIEwxMC42MjA1MDgzLDAuMjE1MjM3NzUyIEMxMC44ODg0NDAzLDAuMDYwODY3MDY0MiAxMS4xOTE1MTcyLC0wLjAxMjU2MTI0MDQgMTEuNDk4NzQ4MywwLjAwMTc1NTczNTczIEMxMS43OTcwNjI5LDAuMDE2MjM4Mzc2OCAxMi4wOTExNTk1LDAuMTE0MDM1NzkyIDEyLjI5NzMyNDMsMC4yNjA4MDc5OTQgTDE2Ljg3NzUxNDIsMi45MDgwOTAxNSBMMTcuMTMxMjk3NCwzLjA1MTMxMTcgQzE3LjE0OTY1MjEsMy4wNjE5NDU1MiAxOC42NzcyNDA0LDMuOTQ1MzM4NzEgMjEuNzg3MjE2NSw1Ljc0Mzc4MjY2IEwyMi4wNDExMjgxLDUuODg5MDUwMTMgQzIyLjI4OTkyMjUsNi4wMzMwNzI2NyAyMi40OTM1OTcsNi4yMzgzODQ1NCAyMi42MzQ2MzUxLDYuNDg2NTA0NDIgQzIyLjc3Mzg1NDIsNi43MzIwOTQzNyAyMi44NDY0NjE3LDcuMDExNDk3OTMgMjIuODQ0MTIyMSw3LjI4OTk3NzE1IEwyMi44NDUwOTE5LDEyLjQ0ODEwODggQzIyLjg0NTE2MTYsMTIuOTI0ODIxOSAyMi4zMjg5NzI5LDEzLjIyMjY5MTUgMjEuOTE2MjY3NSwxMi45ODQwOTIgTDE5Ljk0MDA4NTYsMTEuODQxNTkxOCBDMTkuNzQ4NzQyMiwxMS43MzA5Njk1IDE5LjYzMDg5OCwxMS41MjY3MTg2IDE5LjYzMDg5OCwxMS4zMDU2OTkyIEwxOS42MzA4OTgsOC4yMDY0MTM5IEwxNS42MDczMDU3LDUuODc5MzQ5NzQgQzE1LjU3MjUzNjYsNS44NjIxMTQzMiAxNS40OTQxNzU3LDUuODE3MzkzMjUgMTUuMjc2NTY3NCw1LjY5MTI4NjAyIEwxMS40MjIzNTY5LDMuNDYwMTQxMzggTDcuNDEyMzcyMzIsNS43NzY1MzA2MyBDNy4zNzM5MzI4NSw1LjgwMTgyOTgyIDcuMzczOTMyODUsNS44MDE4Mjk4MiA3LjM1MDkyMjgsNS44MTY0NDk3NSBDNy4zNDE2NDY2Niw1LjgyMjE2MjczIDcuMjQ3MDMzMiw1Ljg3NzIzMTkyIDcuMDY3MDgyNCw1Ljk4MTY1NzMxIEwzLjIxNDQzNjMsOC4yMDY2NDQ2NCBMMy4yMTQ0MzYzLDE3LjcwMjM2ODQgTDcuMjM5OTQzNTcsMjAuMDMwMjgxMiBDNy4yNjU2ODc5OCwyMC4wNDMxNjgxIDcuMzIxMDU2MDMsMjAuMDc0ODU2NyA3LjU3NzcyNDMsMjAuMjIzMDQ0NCBMNy42NjA2Njc3LDIwLjI5NjY4NjYgTDcuNzI5MzkyNDksMjAuMzg4NTU2OSBDNy44ODE3NDMxOSwyMC41MDQ5NDkyIDcuOTcyNTM2OTIsMjAuNjg2NDQ0MyA3Ljk3MjUzNjkyLDIwLjg4MDM5NDQgWiBNMTkuNjMwODk4LDE1LjAzNDIzODEgQzE5LjYzMDg5OCwxNC41NTc5OTYxIDIwLjE0NjIxMjIsMTQuMjYwMTQzMyAyMC41NTg4ODI2LDE0LjQ5Nzg2MDggTDIyLjUzNTA2NDUsMTUuNjM2MjM0NyBDMjIuNzI2ODgxMSwxNS43NDY3MzAxIDIyLjg0NTA5MTksMTUuOTUxMjQ2MiAyMi44NDUwOTE5LDE2LjE3MjYxMiBMMjIuODQ1MDkxOSwxOC4wNTczIEMyMi44NDUwOTE5LDE4LjIxODc5NzMgMjIuNzgxOTc2NCwxOC4zNzM4OTk5IDIyLjY2ODkyNDYsMTguNDg5ODA2NyBMMjEuNzM3MzA3NSwxOS40Mzk2ODM5IEMyMS4zODc5MjUsMTkuODg2MzE4OSAyMC44NzQ5NzkyLDIwLjA2NDAyOTIgMjAuNDE3Mjg4OSwxOS44MDAzNjEzIEwxMy4wNzQwNzc3LDE1LjU0MjkzMzggTDEzLjA3MjIzOTIsMjMuNTc1OTc0NiBDMTMuMDk4MDQ1MSwyMy44NzczODg1IDEyLjk3MzU4NzQsMjQuMTcyMjc0NiAxMi43MzY5ODQyLDI0LjM2Mjk0NjggQzEyLjUwNTM4ODcsMjQuNTUwMTk1NyAxMi41MDUzODg3LDI0LjU1MDE5NTcgMTEuMzgyNzUwNywyNS40NTcxMjA1IEMxMS4yMTQ1MDQ0LDI1LjYxMzAyNDEgMTAuOTk0MTkxLDI1LjcgMTAuNzYzNjk3NCwyNS43IEMxMC4yNjEyNTA4LDI1LjcgOS44NTM5OTgwMSwyNS4yOTI0Mzk4IDkuODUzOTk4MDIsMjQuNzg5OTAyOSBMOS44NTUxNzI0OCwxMy42ODE1NzM1IEw4LjYxNzcxODc2LDEyLjk2NjI1MDYgTDcuOTkyMTEyODUsMTMuMzI1OTk5OSBDNy45NjIyODI5OSwxMy4zNDY5MDQ3IDcuOTcyODU4MDMsMTMuMzQwNzYwNiA3LjM0MTM4ODU0LDEzLjcwNTMxNjcgQzYuODk2MzI5NzQsMTMuOTY1Njk1MSA2LjMzNTkzMDYzLDEzLjgyNzkzMyA2LjA3OTkyMDgyLDEzLjM4NjM1MTggQzYuMDE5MDczMzIsMTMuMjgxMjE2OCA2LjAxOTA3MzMyLDEzLjI4MTIxNjggNS43MzEyODkyNywxMi43ODM5MjMxIEw1LjM4NTc1NjI0LDEyLjE4Nzk1NiBDNS4xMjY4OTM4OCwxMS43NDEzMjE3IDUuMjY1MDk2NDgsMTEuMTgxOTM1OSA1LjcwNjk0MjkyLDEwLjkyNjQwNjUgQzUuODE0OTkxNDksMTAuODY0MzM4NiA1LjgxNDk5MTQ5LDEwLjg2NDMzODYgNi4zMTQ2MDk1LDEwLjU3NzQ4MzQgTDcuODIxNDE1OTgsOS43MTAwNTc3NyBMOC4wOTMwNjkyNyw5LjU1NjY3MjEgQzguMzgyNTMyNDEsOS4zNTA2ODM0MiA4Ljc2NjIwMjYzLDkuMzMxOTEzMjMgOS4wNzcwNzkxNiw5LjUxMTM2Mjc5IEw5LjQyMDIzMzY5LDkuNzExMzAzNjQgTDE5LjYzMDg5OCwxNS42MTI0ODMyIEwxOS42MzA4OTgsMTUuMDM0MjM4MSBaIiBpZD0iRmlsbHMiIGZpbGwtcnVsZT0ibm9uemVybyI+PC9wYXRoPgogICAgICAgICAgICAgICAgPGcgaWQ9IkxPR08tTmV3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyOS4wMDAwMDAsIDYuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTAuNDM0NjEwMjM5LDEyLjExNzMyNjcgQzAuMzE4ODEzNTcyLDEyLjExNzMyNjcgMC4yMTc0MjkzNjUsMTIuMDc0MDA5OSAwLjEzMDQ1NzYxOSwxMS45ODc2MjM4IEMwLjA0MzczNDM2MzcsMTEuOTAwOTkwMSAwLDExLjggMCwxMS42ODQ2NTM1IEwwLDAuNDMyNjczMjY3IEMwLDAuMzA1OTQwNTk0IDAuMDQzNzM0MzYzNywwLjIwMTk4MDE5OCAwLjEzMDQ1NzYxOSwwLjEyMTI4NzEyOSBDMC4yMTc0MjkzNjUsMC4wNDAzNDY1MzQ3IDAuMzE4ODEzNTcyLDAgMC40MzQ2MTAyMzksMCBMMi44Njc1ODI3MSwwIEMyLjk5NTA1ODQ0LDAgMy4wOTkxNzYwNCwwLjA0MDM0NjUzNDcgMy4xODA0MzI1LDAuMTIxMjg3MTI5IEMzLjI2MTQ0MDQ3LDAuMjAxOTgwMTk4IDMuMzAxOTQ0NDYsMC4zMDU5NDA1OTQgMy4zMDE5NDQ0NiwwLjQzMjY3MzI2NyBMMy4zMDE5NDQ0Niw5LjM5OTc1MjQ4IEw4LjUxNTUyNzg5LDkuMzk5NzUyNDggQzguNjQyNzU1MTMsOS4zOTk3NTI0OCA4Ljc1MDEwMzEyLDkuNDQyODIxNzggOC44MzY4MjYzNyw5LjUyOTQ1NTQ1IEM4LjkyMzc5ODEyLDkuNjE2MDg5MTEgOC45NjcyODM5OSw5LjcyMjc3MjI4IDguOTY3MjgzOTksOS44NDk3NTI0OCBMOC45NjcyODM5OSwxMS42ODQ2NTM1IEM4Ljk2NzI4Mzk5LDExLjgxMTYzMzcgOC45MjM3OTgxMiwxMS45MTU1OTQxIDguODM2ODI2MzcsMTEuOTk2Mjg3MSBDOC43NTAxMDMxMiwxMi4wNzY5ODAyIDguNjQyNzU1MTMsMTIuMTE3MzI2NyA4LjUxNTUyNzg5LDEyLjExNzMyNjcgTDAuNDM0NjEwMjM5LDEyLjExNzMyNjcgWiBNOS43NDkyODQyMywxMi4xMTczMjY3IEM5LjY1NjU5NzIsMTIuMTE3MzI2NyA5LjU3MjM1ODg1LDEyLjA3OTk1MDUgOS40OTczMTQ2NiwxMi4wMDQ3MDMgQzkuNDIxNzczNDgsMTEuOTI5NzAzIDkuMzg0MjUxMzksMTEuODQ2MDM5NiA5LjM4NDI1MTM5LDExLjc1MzcxMjkgQzkuMzg0MjUxMzksMTEuNjg0NjUzNSA5LjM5MDIxNTE3LDExLjYzMjY3MzMgOS40MDE2NDU3NCwxMS41OTgwMTk4IEwxMy40NTA4MDE3LDAuNTAxOTgwMTk4IEMxMy41NjY1OTg0LDAuMTY3MzI2NzMzIDEzLjc5ODE5MTcsMCAxNC4xNDU4MzAyLDAgTDE2Ljg1Njg2MzgsMCBDMTcuMjA0MjUzOCwwIDE3LjQzNjA5NTYsMC4xNjczMjY3MzMgMTcuNTUxODkyMywwLjUwMTk4MDE5OCBMMjEuNjAxMDQ4MywxMS41OTgwMTk4IEMyMS42MTI3Mjc0LDExLjYzMjY3MzMgMjEuNjE4NDQyNiwxMS42ODQ2NTM1IDIxLjYxODQ0MjYsMTEuNzUzNzEyOSBDMjEuNjE4NDQyNiwxMS44NDYwMzk2IDIxLjU4MDY3MjEsMTEuOTI5NzAzIDIxLjUwNTM3OTQsMTIuMDA0NzAzIEMyMS40MzAwODY3LDEyLjA3OTk1MDUgMjEuMzQ2MDk2OCwxMi4xMTczMjY3IDIxLjI1MzQwOTgsMTIuMTE3MzI2NyBMMTguOTk0MTMyMywxMi4xMTczMjY3IEMxOC43MTYzMTk3LDEyLjExNzMyNjcgMTguNTE5MjY2NiwxMS45OTAzNDY1IDE4LjQwMzQ2OTksMTEuNzM2Mzg2MSBMMTcuNzc3NzcwMywxMC4wNTc0MjU3IEwxMy4yMjQ5MjM3LDEwLjA1NzQyNTcgTDEyLjU5OTIyNDEsMTEuNzM2Mzg2MSBDMTIuNDgzNDI3NCwxMS45OTAzNDY1IDEyLjI4NjM3NDMsMTIuMTE3MzI2NyAxMi4wMDgzMTMyLDEyLjExNzMyNjcgTDkuNzQ5Mjg0MjMsMTIuMTE3MzI2NyBaIE0xMy45NTQ3NDA5LDcuNDYwODkxMDkgTDE3LjA0Nzk1MzIsNy40NjA4OTEwOSBMMTUuNTAxMzQ3LDMuMDQ2NTM0NjUgTDEzLjk1NDc0MDksNy40NjA4OTEwOSBaIE0yMy4zOTA5MjY4LDEyLjExNzMyNjcgQzIzLjI2MzQ1MTEsMTIuMTE3MzI2NyAyMy4xNTYzNTE2LDEyLjA3Njk4MDIgMjMuMDY5Mzc5OSwxMS45OTYyODcxIEMyMi45ODI2NTY2LDExLjkxNTU5NDEgMjIuOTM5MTcwNywxMS44MTE2MzM3IDIyLjkzOTE3MDcsMTEuNjg0NjUzNSBMMjIuOTM5MTcwNywwLjQ1IEMyMi45MzkxNzA3LDAuMzIzMjY3MzI3IDIyLjk4MjY1NjYsMC4yMTYzMzY2MzQgMjMuMDY5Mzc5OSwwLjEyOTk1MDQ5NSBDMjMuMTU2MzUxNiwwLjA0MzMxNjgzMTcgMjMuMjYzNDUxMSwwIDIzLjM5MDkyNjgsMCBMMjUuMzU0NzQ4OSwwIEMyNS42NDQyNDA1LDAgMjUuODUyOTcyNywwLjEyNjk4MDE5OCAyNS45ODAyLDAuMzgwNjkzMDY5IEwyOC45NjkyOTQ2LDUuNzEyMzc2MjQgTDMxLjk3NTc4MzYsMC4zODA2OTMwNjkgQzMyLjEwMzAxMDksMC4xMjY5ODAxOTggMzIuMzExNzQzMSwwIDMyLjYwMTIzNDcsMCBMMzQuNTY1MDU2NywwIEMzNC42OTI1MzI1LDAgMzQuNzk5NjMyLDAuMDQzMzE2ODMxNyAzNC44ODY2MDM3LDAuMTI5OTUwNDk1IEMzNC45NzMzMjcsMC4yMTYzMzY2MzQgMzUuMDE2ODEyOCwwLjMyMzI2NzMyNyAzNS4wMTY4MTI4LDAuNDUgTDM1LjAxNjgxMjgsMTEuNjg0NjUzNSBDMzUuMDE2ODEyOCwxMS44MTE2MzM3IDM0Ljk3MzMyNywxMS45MTU1OTQxIDM0Ljg4NjYwMzcsMTEuOTk2Mjg3MSBDMzQuNzk5NjMyLDEyLjA3Njk4MDIgMzQuNjkyNTMyNSwxMi4xMTczMjY3IDM0LjU2NTA1NjcsMTIuMTE3MzI2NyBMMzIuMzU3OTYyMywxMi4xMTczMjY3IEMzMi4yNDIxNjU3LDEyLjExNzMyNjcgMzIuMTQwNzgxNSwxMi4wNzQwMDk5IDMyLjA1MzgwOTcsMTEuOTg3NjIzOCBDMzEuOTY3MDg2NSwxMS45MDA5OTAxIDMxLjkyMzYwMDYsMTEuOCAzMS45MjM2MDA2LDExLjY4NDY1MzUgTDMxLjkyMzYwMDYsNS4zODM0MTU4NCBMMzAuMDQ2NzUwMyw4LjgxMTEzODYxIEMyOS44OTYxNjQ5LDkuMDc2NDg1MTUgMjkuNjkzMzk2NSw5LjIwOTE1ODQyIDI5LjQzODQ0NTEsOS4yMDkxNTg0MiBMMjguNTAwMTQ0Miw5LjIwOTE1ODQyIEMyOC4yNjgzMDIzLDkuMjA5MTU4NDIgMjguMDY1NTMzOSw5LjA3NjQ4NTE1IDI3Ljg5MTgzODksOC44MTExMzg2MSBMMjYuMDMyMzgzLDUuMzgzNDE1ODQgTDI2LjAzMjM4MywxMS42ODQ2NTM1IEMyNi4wMzIzODMsMTEuODExNjMzNyAyNS45ODg4OTcxLDExLjkxNTU5NDEgMjUuOTAyMTczOSwxMS45OTYyODcxIEMyNS44MTUyMDIxLDEyLjA3Njk4MDIgMjUuNzA4MTAyNiwxMi4xMTczMjY3IDI1LjU4MDYyNjksMTIuMTE3MzI2NyBMMjMuMzkwOTI2OCwxMi4xMTczMjY3IFogTTM3LjgxNDU2OTcsMTIuMTE3MzI2NyBDMzcuNjk4NzczLDEyLjExNzMyNjcgMzcuNTk3Mzg4OCwxMi4wNzQwMDk5IDM3LjUxMDY2NTUsMTEuOTg3NjIzOCBDMzcuNDIzNjkzOCwxMS45MDA5OTAxIDM3LjM4MDIwNzksMTEuOCAzNy4zODAyMDc5LDExLjY4NDY1MzUgTDM3LjM4MDIwNzksMC40NSBDMzcuMzgwMjA3OSwwLjMyMzI2NzMyNyAzNy40MjA3MTE5LDAuMjE2MzM2NjM0IDM3LjUwMTcxOTksMC4xMjk5NTA0OTUgQzM3LjU4Mjk3NjMsMC4wNDMzMTY4MzE3IDM3LjY4NzM0MjQsMCAzNy44MTQ1Njk3LDAgTDQzLjE4NDQ1MzgsMCBDNDQuNjU1NzY3MiwwIDQ1Ljc1MDYxNzIsMC4zIDQ2LjQ2OTAwMzksMC45MDAyNDc1MjUgQzQ3LjE4NzE0MiwxLjUwMDI0NzUyIDQ3LjU0NjQ1OTYsMi4zNTQyMDc5MiA0Ny41NDY0NTk2LDMuNDYyMTI4NzEgQzQ3LjU0NjQ1OTYsNC4wMTYwODkxMSA0Ny4zOTg2MDc2LDQuNDk1MDQ5NSA0Ny4xMDM0MDA2LDQuODk4NzYyMzggQzQ2LjgwNzk0NTIsNS4zMDI3MjI3NyA0Ni40ODA0MzQ0LDUuNTk3MDI5NyA0Ni4xMjEzNjU0LDUuNzgxNjgzMTcgQzQ2LjU5NjQ3OTYsNS45ODkzNTY0NCA0Ni45OTYwNTI2LDYuMzMyNjczMjcgNDcuMzIwNTgxNSw2LjgxMTYzMzY2IEM0Ny42NDQ4NjE5LDcuMjkwNTk0MDYgNDcuODA3MTI2Myw3LjgzMDE5ODAyIDQ3LjgwNzEyNjMsOC40MzAxOTgwMiBDNDcuODA3MTI2Myw5LjU5NTU0NDU1IDQ3LjQyMTcxNzIsMTAuNTAxNzMyNyA0Ni42NTEzOTYsMTEuMTQ4MDE5OCBDNDUuODgxMDc0OSwxMS43OTQwNTk0IDQ0Ljc3NzUyNzcsMTIuMTE3MzI2NyA0My4zNDA3NTQ0LDEyLjExNzMyNjcgTDM3LjgxNDU2OTcsMTIuMTE3MzI2NyBaIE00Mi44MTk0MjA5LDQuNzk1MDQ5NSBDNDMuMjQ4MDY3NCw0Ljc5NTA0OTUgNDMuNTc4MzExNSw0LjY3OTcwMjk3IDQzLjgxMDE1MzMsNC40NDg3NjIzOCBDNDQuMDQxNzQ2Nyw0LjIxNzgyMTc4IDQ0LjE1Nzc5MTgsMy45MTgwNjkzMSA0NC4xNTc3OTE4LDMuNTQ4NzYyMzggQzQ0LjE1Nzc5MTgsMy4xOTA4NDE1OCA0NC4wNDQ3Mjg2LDIuODk5NTA0OTUgNDMuODE4ODUwNSwyLjY3NDUwNDk1IEM0My41OTI5NzI1LDIuNDQ5MjU3NDMgNDMuMjU5NzQ2NCwyLjMzNjg4MTE5IDQyLjgxOTQyMDksMi4zMzY4ODExOSBMNDAuNjQ3MzYzNywyLjMzNjg4MTE5IEw0MC42NDczNjM3LDQuNzk1MDQ5NSBMNDIuODE5NDIwOSw0Ljc5NTA0OTUgWiBNNDIuOTc1OTcwMSw5Ljc4MDQ0NTU0IEM0My40Mjc3MjYyLDkuNzgwNDQ1NTQgNDMuNzc4MzQ2NSw5LjY1MDQ5NTA1IDQ0LjAyNzMzNDIsOS4zOTA4NDE1OCBDNDQuMjc2MzIxOSw5LjEzMTQzNTY0IDQ0LjQwMTA2NDIsOC44MTExMzg2MSA0NC40MDEwNjQyLDguNDMwMTk4MDIgQzQ0LjQwMTA2NDIsOC4wMzc4NzEyOSA0NC4yNzM1ODg1LDcuNzExODgxMTkgNDQuMDE4NjM3LDcuNDUxOTgwMiBDNDMuNzYzNjg1Niw3LjE5MjU3NDI2IDQzLjQxNjI5NTYsNy4wNjI2MjM3NiA0Mi45NzU5NzAxLDcuMDYyNjIzNzYgTDQwLjY0NzM2MzcsNy4wNjI2MjM3NiBMNDAuNjQ3MzYzNyw5Ljc4MDQ0NTU0IEw0Mi45NzU5NzAxLDkuNzgwNDQ1NTQgWiBNNTAuMTAwOTQ0LDEyLjExNzMyNjcgQzQ5Ljk4NDg5ODgsMTIuMTE3MzI2NyA0OS44ODM3NjMxLDEyLjA3NDAwOTkgNDkuNzk2NzkxNCwxMS45ODc2MjM4IEM0OS43MDk4MTk2LDExLjkwMDk5MDEgNDkuNjY2MzMzNywxMS44IDQ5LjY2NjMzMzcsMTEuNjg0NjUzNSBMNDkuNjY2MzMzNywwLjQ1IEM0OS42NjYzMzM3LDAuMzIzMjY3MzI3IDQ5LjcwNzA4NjIsMC4yMTYzMzY2MzQgNDkuNzg4MDk0MiwwLjEyOTk1MDQ5NSBDNDkuODY5MTAyMSwwLjA0MzMxNjgzMTcgNDkuOTczNDY4MiwwIDUwLjEwMDk0NCwwIEw1NC42NzE0MzM1LDAgQzU2LjM4NjAxOTMsMCA1Ny43MTgxNzgsMC40MDY2ODMxNjggNTguNjY4NDA2NCwxLjIyMDU0NDU1IEM1OS42MTgxMzc5LDIuMDMzOTEwODkgNjAuMTE2NjEwMiwzLjIwMjQ3NTI1IDYwLjE2MjU4MSw0LjcyNTc0MjU3IEM2MC4xNzQyNjAxLDUuMDYwMzk2MDQgNjAuMTgwMjIzOSw1LjUwNDcwMjk3IDYwLjE4MDIyMzksNi4wNTg2NjMzNyBDNjAuMTgwMjIzOSw2LjYxMjYyMzc2IDYwLjE3NDI2MDEsNy4wNTA5OTAxIDYwLjE2MjU4MSw3LjM3NDI1NzQzIEM2MC4wNDY3ODQ0LDEwLjUzNjEzODYgNTguMjQ1MjI2OCwxMi4xMTczMjY3IDU0Ljc1ODE1NjcsMTIuMTE3MzI2NyBMNTAuMTAwOTQ0LDEyLjExNzMyNjcgWiBNNTQuNjcxNDMzNSw5LjUyMDc5MjA4IEM1NS40MDEwMDIyLDkuNTIwNzkyMDggNTUuOTM5NzMsOS4zNDc3NzIyOCA1Ni4yODc2MTcsOS4wMDE0ODUxNSBDNTYuNjM1MDA3LDguNjU1NDQ1NTQgNTYuODIwMzgxMSw4LjEwMTIzNzYyIDU2Ljg0MzQ5MDcsNy4zMzk2MDM5NiBDNTYuODY2ODQ4OCw3LjAwNDk1MDUgNTYuODc4Mjc5NCw2LjU3MjI3NzIzIDU2Ljg3ODI3OTQsNi4wNDEzMzY2MyBDNTYuODc4Mjc5NCw1LjUxMDM5NjA0IDU2Ljg2Njg0ODgsNS4wODM0MTU4NCA1Ni44NDM0OTA3LDQuNzYwMzk2MDQgQzU2LjgyMDM4MTEsNC4wMjE3ODIxOCA1Ni42MjAzNDYxLDMuNDc2NDg1MTUgNTYuMjQ0MTMxMSwzLjEyNDUwNDk1IEM1NS44Njc0MTkyLDIuNzcyNTI0NzUgNTUuMzE0NTI3NCwyLjU5NjUzNDY1IDU0LjU4NDQ2MTcsMi41OTY1MzQ2NSBMNTIuOTMzNDg5NSwyLjU5NjUzNDY1IEw1Mi45MzM0ODk1LDkuNTIwNzkyMDggTDU0LjY3MTQzMzUsOS41MjA3OTIwOCBaIE02MS40ODM1NTc2LDEyLjExNzMyNjcgQzYxLjM5MDg3MDYsMTIuMTE3MzI2NyA2MS4zMDY4ODA3LDEyLjA3OTk1MDUgNjEuMjMxNTg4LDEyLjAwNDcwMyBDNjEuMTU2MDQ2OCwxMS45Mjk3MDMgNjEuMTE4NTI0OCwxMS44NDYwMzk2IDYxLjExODUyNDgsMTEuNzUzNzEyOSBDNjEuMTE4NTI0OCwxMS42ODQ2NTM1IDYxLjEyNDI0LDExLjYzMjY3MzMgNjEuMTM1OTE5MSwxMS41OTgwMTk4IEw2NS4xODQ4MjY2LDAuNTAxOTgwMTk4IEM2NS4zMDA4NzE4LDAuMTY3MzI2NzMzIDY1LjUzMjcxMzYsMCA2NS44ODAxMDM2LDAgTDY4LjU5MTEzNzIsMCBDNjguOTM4Nzc1NywwIDY5LjE3MDM2OSwwLjE2NzMyNjczMyA2OS4yODYxNjU3LDAuNTAxOTgwMTk4IEw3My4zMzUzMjE3LDExLjU5ODAxOTggQzczLjM0NzAwMDcsMTEuNjMyNjczMyA3My4zNTI0Njc1LDExLjY4NDY1MzUgNzMuMzUyNDY3NSwxMS43NTM3MTI5IEM3My4zNTI0Njc1LDExLjg0NjAzOTYgNzMuMzE0OTQ1NCwxMS45Mjk3MDMgNzMuMjM5NjUyNywxMi4wMDQ3MDMgQzczLjE2NDYwODUsMTIuMDc5OTUwNSA3My4wODA2MTg3LDEyLjExNzMyNjcgNzIuOTg3NjgzMiwxMi4xMTczMjY3IEw3MC43Mjg2NTQyLDEyLjExNzMyNjcgQzcwLjQ1MDU5MzEsMTIuMTE3MzI2NyA3MC4yNTM1NCwxMS45OTAzNDY1IDcwLjEzNzc0MzMsMTEuNzM2Mzg2MSBMNjkuNTEyMDQzNywxMC4wNTc0MjU3IEw2NC45NTg5NDg2LDEwLjA1NzQyNTcgTDY0LjMzMzI0OSwxMS43MzYzODYxIEM2NC4yMTc3MDA4LDExLjk5MDM0NjUgNjQuMDIwODk2MiwxMi4xMTczMjY3IDYzLjc0MjgzNTEsMTIuMTE3MzI2NyBMNjEuNDgzNTU3NiwxMi4xMTczMjY3IFogTTY1LjY4OTAxNDIsNy40NjA4OTEwOSBMNjguNzgyMjI2NSw3LjQ2MDg5MTA5IEw2Ny4yMzU2MjA0LDMuMDQ2NTM0NjUgTDY1LjY4OTAxNDIsNy40NjA4OTEwOSBaIiBpZD0iTGFtYmRhIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTc2Ljk2MjE4NDMsMTIuMjkwMzQ2NSBDNzYuODM0NzA4NSwxMi4yOTAzNDY1IDc2LjcyNzg1NzUsMTIuMjUgNzYuNjQwNjM3MywxMi4xNjkzMDY5IEM3Ni41NTM2NjU1LDEyLjA4ODYxMzkgNzYuNTEwNDI4MiwxMS45ODQ2NTM1IDc2LjUxMDQyODIsMTEuODU3NjczMyBMNzYuNTEwNDI4MiwyLjk5NDU1NDQ2IEw3My40NTIwMDQ2LDIuOTk0NTU0NDYgQzczLjMyNDUyODksMi45OTQ1NTQ0NiA3My4yMTc0Mjk0LDIuOTU0MjA3OTIgNzMuMTMwNDU3NiwyLjg3MzUxNDg1IEM3My4wNDM0ODU5LDIuNzkyNTc0MjYgNzMsMi42ODg4NjEzOSA3MywyLjU2MTg4MTE5IEw3MywwLjYyMzAxOTgwMiBDNzMsMC40OTYyODcxMjkgNzMuMDQzNDg1OSwwLjM4OTM1NjQzNiA3My4xMzA0NTc2LDAuMzAyOTcwMjk3IEM3My4yMTc0Mjk0LDAuMjE2MzM2NjM0IDczLjMyNDUyODksMC4xNzMwMTk4MDIgNzMuNDUyMDA0NiwwLjE3MzAxOTgwMiBMODIuODg4MTkwNSwwLjE3MzAxOTgwMiBDODMuMDE1NDE3OCwwLjE3MzAxOTgwMiA4My4xMjI3NjU4LDAuMjE2MzM2NjM0IDgzLjIwOTczNzUsMC4zMDI5NzAyOTcgQzgzLjI5NjQ2MDgsMC4zODkzNTY0MzYgODMuMzM5OTQ2NiwwLjQ5NjI4NzEyOSA4My4zMzk5NDY2LDAuNjIzMDE5ODAyIEw4My4zMzk5NDY2LDIuNTYxODgxMTkgQzgzLjMzOTk0NjYsMi42ODg4NjEzOSA4My4yOTY0NjA4LDIuNzkyNTc0MjYgODMuMjA5NzM3NSwyLjg3MzUxNDg1IEM4My4xMjI3NjU4LDIuOTU0MjA3OTIgODMuMDE1NDE3OCwyLjk5NDU1NDQ2IDgyLjg4ODE5MDUsMi45OTQ1NTQ0NiBMNzkuODI5NTE4NSwyLjk5NDU1NDQ2IEw3OS44Mjk1MTg1LDExLjg1NzY3MzMgQzc5LjgyOTUxODUsMTEuOTg0NjUzNSA3OS43ODYwMzI2LDEyLjA4ODYxMzkgNzkuNjk5MzA5MywxMi4xNjkzMDY5IEM3OS42MTIzMzc2LDEyLjI1IDc5LjUwNTIzODEsMTIuMjkwMzQ2NSA3OS4zNzgwMTA5LDEyLjI5MDM0NjUgTDc2Ljk2MjE4NDMsMTIuMjkwMzQ2NSBaIE04NS4zMDM1MjAyLDEyLjI5MDM0NjUgQzg1LjE4Nzk3MiwxMi4yOTAzNDY1IDg1LjA4NjMzOTMsMTIuMjQ3MDI5NyA4NC45OTk2MTYsMTIuMTYwNjQzNiBDODQuOTEyNjQ0MywxMi4wNzQwMDk5IDg0Ljg2OTE1ODQsMTEuOTczMDE5OCA4NC44NjkxNTg0LDExLjg1NzY3MzMgTDg0Ljg2OTE1ODQsMC42MjMwMTk4MDIgQzg0Ljg2OTE1ODQsMC40OTYyODcxMjkgODQuOTA5NjYyNCwwLjM4OTM1NjQzNiA4NC45OTA5MTg5LDAuMzAyOTcwMjk3IEM4NS4wNzIxNzUzLDAuMjE2MzM2NjM0IDg1LjE3NjI5MjksMC4xNzMwMTk4MDIgODUuMzAzNTIwMiwwLjE3MzAxOTgwMiBMOTMuNTA1OTQ5OCwwLjE3MzAxOTgwMiBDOTMuNjMzNDI1NSwwLjE3MzAxOTgwMiA5My43NDA1MjUsMC4yMTYzMzY2MzQgOTMuODI3NDk2NywwLjMwMjk3MDI5NyBDOTMuOTE0NDY4NSwwLjM4OTM1NjQzNiA5My45NTc5NTQ0LDAuNDk2Mjg3MTI5IDkzLjk1Nzk1NDQsMC42MjMwMTk4MDIgTDkzLjk1Nzk1NDQsMi4zMzY4ODExOSBDOTMuOTU3OTU0NCwyLjQ2Mzg2MTM5IDkzLjkxNDQ2ODUsMi41Njc1NzQyNiA5My44Mjc0OTY3LDIuNjQ4MjY3MzMgQzkzLjc0MDUyNSwyLjcyOTIwNzkyIDkzLjYzMzQyNTUsMi43Njk1NTQ0NiA5My41MDU5NDk4LDIuNzY5NTU0NDYgTDg4LjAxNDgwMjIsMi43Njk1NTQ0NiBMODguMDE0ODAyMiw0Ljk2ODA2OTMxIEw5My4xMjM3NzExLDQuOTY4MDY5MzEgQzkzLjI1MTI0NjgsNC45NjgwNjkzMSA5My4zNTgwOTc4LDUuMDExMzg2MTQgOTMuNDQ1MzE4LDUuMDk3NzcyMjggQzkzLjUzMjI4OTgsNS4xODQ0MDU5NCA5My41NzU1MjcyLDUuMjkxMDg5MTEgOTMuNTc1NTI3Miw1LjQxODA2OTMxIEw5My41NzU1MjcyLDYuOTkzMzE2ODMgQzkzLjU3NTUyNzIsNy4xMjAyOTcwMyA5My41MzIyODk4LDcuMjI2OTgwMiA5My40NDUzMTgsNy4zMTM2MTM4NiBDOTMuMzU4MDk3OCw3LjQgOTMuMjUxMjQ2OCw3LjQ0MzU2NDM2IDkzLjEyMzc3MTEsNy40NDM1NjQzNiBMODguMDE0ODAyMiw3LjQ0MzU2NDM2IEw4OC4wMTQ4MDIyLDkuNjkzODExODggTDkzLjY0NTEwNDYsOS42OTM4MTE4OCBDOTMuNzcyMzMxOCw5LjY5MzgxMTg4IDkzLjg3OTY3OTgsOS43MzcxMjg3MSA5My45NjY2NTE1LDkuODIzNTE0ODUgQzk0LjA1MzM3NDgsOS45MTAxNDg1MSA5NC4wOTY4NjA3LDEwLjAxNjgzMTcgOTQuMDk2ODYwNywxMC4xNDM4MTE5IEw5NC4wOTY4NjA3LDExLjg1NzY3MzMgQzk0LjA5Njg2MDcsMTEuOTg0NjUzNSA5NC4wNTMzNzQ4LDEyLjA4ODYxMzkgOTMuOTY2NjUxNSwxMi4xNjkzMDY5IEM5My44Nzk2Nzk4LDEyLjI1IDkzLjc3MjMzMTgsMTIuMjkwMzQ2NSA5My42NDUxMDQ2LDEyLjI5MDM0NjUgTDg1LjMwMzUyMDIsMTIuMjkwMzQ2NSBaIE0xMDAuNjMwOTI0LDEyLjQ2MzM2NjMgQzk5LjUwNzQ5NzIsMTIuNDYzMzY2MyA5OC41NTE1NTM1LDEyLjMwMTk4MDIgOTcuNzYzNTg5NSwxMS45Nzg3MTI5IEM5Ni45NzU4NzM5LDExLjY1NTY5MzEgOTYuMzc5MjQ3OCwxMS4yMjg3MTI5IDk1Ljk3MzcxMDksMTAuNjk3NTI0OCBDOTUuNTY4MTc0MSwxMC4xNjcwNzkyIDk1LjM1Mzk3NTEsOS41ODk4NTE0OSA5NS4zMzA4NjU1LDguOTY2NTg0MTYgQzk1LjMzMDg2NTUsOC44NjI4NzEyOSA5NS4zNjgzODc2LDguNzc2MjM3NjIgOTUuNDQzNjgwMyw4LjcwNjkzMDY5IEM5NS41MTg5NzMsOC42Mzc4NzEyOSA5NS42MDg2NzgxLDguNjAzMjE3ODIgOTUuNzEzMDQ0Miw4LjYwMzIxNzgyIEw5OC4wMjQyNTYyLDguNjAzMjE3ODIgQzk4LjE2MzE2MjUsOC42MDMyMTc4MiA5OC4yNzYyMjU4LDguNjI2MjM3NjIgOTguMzYzMTk3NSw4LjY3MjUyNDc1IEM5OC40NTAxNjkzLDguNzE4NTY0MzYgOTguNTQ1NTg5Nyw4Ljc5OTI1NzQzIDk4LjY0OTk1NTgsOC45MTQ2MDM5NiBDOTguODAwNTQxMiw5LjE5MTU4NDE2IDk5LjAzNTExNjQsOS40MTk1NTQ0NiA5OS4zNTM2ODE1LDkuNTk4NTE0ODUgQzk5LjY3MjQ5NSw5Ljc3NzQ3NTI1IDEwMC4wOTc5MTEsOS44NjY4MzE2OCAxMDAuNjMwOTI0LDkuODY2ODMxNjggQzEwMS4yNTY4NzIsOS44NjY4MzE2OCAxMDEuNzM3NDUzLDkuNzcxNTM0NjUgMTAyLjA3MzQxMiw5LjU4MTQzNTY0IEMxMDIuNDA5MzcyLDkuMzkwODQxNTggMTAyLjU3NzM1MSw5LjEyODQ2NTM1IDEwMi41NzczNTEsOC43OTM1NjQzNiBDMTAyLjU3NzM1MSw4LjU1MTQ4NTE1IDEwMi40OTAzOCw4LjM1MjIyNzcyIDEwMi4zMTY2ODUsOC4xOTY1MzQ2NSBDMTAyLjE0Mjk5LDguMDQwNTk0MDYgMTAxLjg2NDkyOSw3LjkwMTk4MDIgMTAxLjQ4Mjc1LDcuNzgwOTQwNTkgQzEwMS4xMDAzMjMsNy42NTk5MDA5OSAxMDAuNTQ5OTE2LDcuNTI0MjU3NDMgOTkuODMxNTI5MSw3LjM3NDI1NzQzIEM5OC40MzAwNDE1LDcuMDk3Mjc3MjMgOTcuMzgxNDEwOCw2LjY3NTk5MDEgOTYuNjg2MTMzOCw2LjExMDM5NjA0IEM5NS45OTExMDUzLDUuNTQ1MDQ5NSA5NS42NDM3MTUzLDQuNzM3MTI4NzEgOTUuNjQzNzE1MywzLjY4NzEyODcxIEM5NS42NDM3MTUzLDIuOTcxNTM0NjUgOTUuODQzMjUzMywyLjMzMzkxMDg5IDk2LjI0MzA3NDksMS43NzQyNTc0MyBDOTYuNjQyNjQ3OSwxLjIxNDM1NjQ0IDk3LjIxMDQ0OTIsMC43Nzg5NjAzOTYgOTcuOTQ1OTgxNiwwLjQ2NzMyNjczMyBDOTguNjgxNzYyNiwwLjE1NTY5MzA2OSA5OS41MzYzMjIxLDAgMTAwLjUwOTQxMiwwIEMxMDEuNTI4NzIxLDAgMTAyLjQxMjM1NCwwLjE3NTk5MDA5OSAxMDMuMTU5NTY1LDAuNTI3NzIyNzcyIEMxMDMuOTA2Nzc3LDAuODc5OTUwNDk1IDEwNC40ODAyOTMsMS4zMTgzMTY4MyAxMDQuODgwMTE1LDEuODQzMzE2ODMgQzEwNS4yNzk2ODgsMi4zNjg1NjQzNiAxMDUuNDkxMTUzLDIuODg0OTAwOTkgMTA1LjUxNDI2MywzLjM5MjgyMTc4IEMxMDUuNTE0MjYzLDMuNDk2NTM0NjUgMTA1LjQ3OTQ3NCwzLjU4NjEzODYxIDEwNS40MDk4OTcsMy42NjExMzg2MSBDMTA1LjM0MDMxOSwzLjczNjEzODYxIDEwNS4yNTM1OTYsMy43NzM1MTQ4NSAxMDUuMTQ5NDc5LDMuNzczNTE0ODUgTDEwMi43MTY1MDYsMy43NzM1MTQ4NSBDMTAyLjQ2MTU1NSwzLjc3MzUxNDg1IDEwMi4yNjQ1MDIsMy42Njk4MDE5OCAxMDIuMTI1NTk1LDMuNDYxODgxMTkgQzEwMi4wNTU3NjksMy4yMTk1NTQ0NiAxMDEuODc2NjA4LDMuMDE0ODUxNDkgMTAxLjU4Njg2NywyLjg0NzUyNDc1IEMxMDEuMjk3Mzc2LDIuNjgwMTk4MDIgMTAwLjkzODA1OCwyLjU5NjUzNDY1IDEwMC41MDk0MTIsMi41OTY1MzQ2NSBDMTAwLjAyMjg2NywyLjU5NjUzNDY1IDk5LjY0NjE1NSwyLjY4MzE2ODMyIDk5LjM3OTc3MywyLjg1NjE4ODEyIEM5OS4xMTMzOTEsMy4wMjkyMDc5MiA5OC45Nzk5NTE1LDMuMjgzMTY4MzIgOTguOTc5OTUxNSwzLjYxNzgyMTc4IEM5OC45Nzk5NTE1LDMuOTUyNDc1MjUgOTkuMTU0MTQzNCw0LjIxNTA5OTAxIDk5LjUwMTUzMzQsNC40MDU0NDU1NCBDOTkuODQ5MTcxOSw0LjU5NjAzOTYgMTAwLjQ5Nzk4MSw0Ljc4OTEwODkxIDEwMS40NDc3MTMsNC45ODUzOTYwNCBDMTAyLjUzNjg0Nyw1LjE4MTQzNTY0IDEwMy40MDI4MzcsNS40MjY3MzI2NyAxMDQuMDQ1NjgzLDUuNzIxMDM5NiBDMTA0LjY4ODc3Nyw2LjAxNTA5OTAxIDEwNS4xNjM2NDMsNi4zOTYyODcxMyAxMDUuNDcwNzc3LDYuODYzMzY2MzQgQzEwNS43Nzc5MTIsNy4zMzA5NDA1OSAxMDUuOTMxMjMsNy45MjI1MjQ3NSAxMDUuOTMxMjMsOC42Mzc4NzEyOSBDMTA1LjkzMTIzLDkuNDIyNTI0NzUgMTA1LjcwNTM1MiwxMC4xMDM0NjUzIDEwNS4yNTM1OTYsMTAuNjgwNDQ1NSBDMTA0LjgwMTg0LDExLjI1NzQyNTcgMTA0LjE3NjE0MSwxMS42OTg3NjI0IDEwMy4zNzY3NDYsMTIuMDA0NzAzIEMxMDIuNTc3MzUxLDEyLjMxMDY0MzYgMTAxLjY2MTkxMiwxMi40NjMzNjYzIDEwMC42MzA5MjQsMTIuNDYzMzY2MyBaIE0xMTAuNzI3NTk4LDEyLjI5MDM0NjUgQzExMC42MDAxMjIsMTIuMjkwMzQ2NSAxMTAuNDkyNzc0LDEyLjI1IDExMC40MDYwNTEsMTIuMTY5MzA2OSBDMTEwLjMxOTA3OSwxMi4wODg2MTM5IDExMC4yNzU1OTMsMTEuOTg0NjUzNSAxMTAuMjc1NTkzLDExLjg1NzY3MzMgTDExMC4yNzU1OTMsMi45OTQ1NTQ0NiBMMTA3LjIxNzQxOCwyLjk5NDU1NDQ2IEMxMDcuMDg5Njk0LDIuOTk0NTU0NDYgMTA2Ljk4Mjg0MywyLjk1NDIwNzkyIDEwNi44OTU4NzEsMi44NzM1MTQ4NSBDMTA2LjgwODksMi43OTI1NzQyNiAxMDYuNzY1NjYyLDIuNjg4ODYxMzkgMTA2Ljc2NTY2MiwyLjU2MTg4MTE5IEwxMDYuNzY1NjYyLDAuNjIzMDE5ODAyIEMxMDYuNzY1NjYyLDAuNDk2Mjg3MTI5IDEwNi44MDg5LDAuMzg5MzU2NDM2IDEwNi44OTU4NzEsMC4zMDI5NzAyOTcgQzEwNi45ODI4NDMsMC4yMTYzMzY2MzQgMTA3LjA4OTY5NCwwLjE3MzAxOTgwMiAxMDcuMjE3NDE4LDAuMTczMDE5ODAyIEwxMTYuNjUzMzU2LDAuMTczMDE5ODAyIEMxMTYuNzgwODMxLDAuMTczMDE5ODAyIDExNi44ODgxNzksMC4yMTYzMzY2MzQgMTE2Ljk3NDkwMywwLjMwMjk3MDI5NyBDMTE3LjA2MTg3NCwwLjM4OTM1NjQzNiAxMTcuMTA1MzYsMC40OTYyODcxMjkgMTE3LjEwNTM2LDAuNjIzMDE5ODAyIEwxMTcuMTA1MzYsMi41NjE4ODExOSBDMTE3LjEwNTM2LDIuNjg4ODYxMzkgMTE3LjA2MTg3NCwyLjc5MjU3NDI2IDExNi45NzQ5MDMsMi44NzM1MTQ4NSBDMTE2Ljg4ODE3OSwyLjk1NDIwNzkyIDExNi43ODA4MzEsMi45OTQ1NTQ0NiAxMTYuNjUzMzU2LDIuOTk0NTU0NDYgTDExMy41OTQ5MzIsMi45OTQ1NTQ0NiBMMTEzLjU5NDkzMiwxMS44NTc2NzMzIEMxMTMuNTk0OTMyLDExLjk4NDY1MzUgMTEzLjU1MTQ0NiwxMi4wODg2MTM5IDExMy40NjQ0NzUsMTIuMTY5MzA2OSBDMTEzLjM3Nzc1MSwxMi4yNSAxMTMuMjcwNjUyLDEyLjI5MDM0NjUgMTEzLjE0MzQyNSwxMi4yOTAzNDY1IEwxMTAuNzI3NTk4LDEyLjI5MDM0NjUgWiIgaWQ9IlRlc3QiPjwvcGF0aD4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+Cg=="><div>
+<div class="testing-partner">Testing Sponsor</div>
+<div>Lambdatest is a cloud platform for running E2E, accessibility, and visual regression tests across all major browsers and real devices, with AI assisted test generation!</div>
+</div></a></div>
+<h3 id="other-options-2" tabindex="-1">Other Options </h3>
+<ul>
+<li><p><a href="https://nightwatchjs.org/" target="_blank" rel="noreferrer">Nightwatch</a> is an E2E testing solution based on <a href="https://www.npmjs.com/package/selenium-webdriver" target="_blank" rel="noreferrer">Selenium WebDriver</a>. This gives it the widest browser support range, including native mobile testing. Selenium-based solutions will be slower than Playwright or Cypress.</p></li>
+<li><p><a href="https://webdriver.io/" target="_blank" rel="noreferrer">WebdriverIO</a> is a test automation framework for web and mobile testing based on the WebDriver protocol.</p></li>
+</ul>
+<h2 id="recipes" tabindex="-1">Recipes </h2>
+<h3 id="adding-vitest-to-a-project" tabindex="-1">Adding Vitest to a Project </h3>
+<p>In a Vite-based Vue project, run:</p>
+<pre data-language="sh">&gt; npm install -D vitest happy-dom @testing-library/vue</pre>
+<p>Next, update the Vite configuration to add the <code>test</code> option block:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="vite.config.js">vite.config.js</span></div>
+<pre data-language="js">import { defineConfig } from 'vite'
+
+export default defineConfig({
+  // ...
+  test: {
+    // enable jest-like global test APIs
+    globals: true,
+    // simulate DOM with happy-dom
+    // (requires installing happy-dom as a peer dependency)
+    environment: 'happy-dom'
+  }
+})</pre>
+</div>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>If you use TypeScript, add <code>vitest/globals</code> to the <code>types</code> field in your <code>tsconfig.json</code>.</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="tsconfig.json">tsconfig.json</span></div>
+<pre data-language="json">{
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
+}</pre>
+</div>
+</div>
+<p>Then, create a file ending in <code>*.test.js</code> in your project. You can place all test files in a test directory in the project root or in test directories next to your source files. Vitest will automatically search for them using the naming convention.</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="MyComponent.test.js">MyComponent.test.js</span></div>
+<pre data-language="js">import { render } from '@testing-library/vue'
+import MyComponent from './MyComponent.vue'
+
+test('it should work', () =&gt; {
+  const { getByText } = render(MyComponent, {
+    props: {
+      /* ... */
+    }
+  })
+
+  // assert output
+  getByText('...')
+})</pre>
+</div>
+<p>Finally, update <code>package.json</code> to add the test script and run it:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="package.json">package.json</span></div>
+<pre data-language="json">{
+  // ...
+  "scripts": {
+    "test": "vitest"
+  }
+}</pre>
+</div>
+<pre data-language="sh">&gt; npm test</pre>
+<h3 id="testing-composables" tabindex="-1">Testing Composables </h3>
+<blockquote><p>This section assumes you have read the <a href="../reusability/composables">Composables</a> section.</p></blockquote>
+<p>When it comes to testing composables, we can divide them into two categories: composables that do not rely on a host component instance, and composables that do.</p>
+<p>A composable depends on a host component instance when it uses the following APIs:</p>
+<ul>
+<li>Lifecycle hooks</li>
+<li>Provide / Inject</li>
+</ul>
+<p>If a composable only uses Reactivity APIs, then it can be tested by directly invoking it and asserting its returned state/methods:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="counter.js">counter.js</span></div>
+<pre data-language="js">import { ref } from 'vue'
+
+export function useCounter() {
+  const count = ref(0)
+  const increment = () =&gt; count.value++
+
+  return {
+    count,
+    increment
+  }
+}</pre>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="counter.test.js">counter.test.js</span></div>
+<pre data-language="js">import { useCounter } from './counter.js'
+
+test('useCounter', () =&gt; {
+  const { count, increment } = useCounter()
+  expect(count.value).toBe(0)
+
+  increment()
+  expect(count.value).toBe(1)
+})</pre>
+</div>
+<p>A composable that relies on lifecycle hooks or Provide / Inject needs to be wrapped in a host component to be tested. We can create a helper like the following:</p>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="test-utils.js">test-utils.js</span></div>
+<pre data-language="js">import { createApp } from 'vue'
+
+export function withSetup(composable) {
+  let result
+  const app = createApp({
+    setup() {
+      result = composable()
+      // suppress missing template warning
+      return () =&gt; {}
+    }
+  })
+  app.mount(document.createElement('div'))
+  // return the result and the app instance
+  // for testing provide/unmount
+  return [result, app]
+}</pre>
+</div>
+<div class="vp-code-block-title">
+<div class="vp-code-block-title-bar"><span class="vp-code-block-title-text" data-title="foo.test.js">foo.test.js</span></div>
+<pre data-language="js">import { withSetup } from './test-utils'
+import { useFoo } from './foo'
+
+test('useFoo', () =&gt; {
+  const [result, app] = withSetup(() =&gt; useFoo(123))
+  // mock provide for testing injections
+  app.provide(...)
+  // run assertions
+  expect(result.foo.value).toBe(1)
+  // trigger onUnmounted hook if needed
+  app.unmount()
+})</pre>
+</div>
+<p>For more complex composables, it could also be easier to test it by writing tests against the wrapper component using <a href="#component-testing">Component Testing</a> techniques.</p>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018-present, Yuxi (Evan) You and Vue contributors<br>Licensed under the MIT License.<br>
+    <a href="https://vuejs.org/guide/scaling-up/testing" class="_attribution-link">https://vuejs.org/guide/scaling-up/testing</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

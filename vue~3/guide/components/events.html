@@ -1,0 +1,275 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Component Events (Components In-Depth) - Vue 3 - W3cubDocs</title>
+  
+  <meta name="description" content=" This page assumes you&#39;ve already read the Components Basics. Read that first if you are new to components. ">
+  <meta name="keywords" content="component, events, components, in-depth, vue, vue~3">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/vue~3/guide/components/events.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/vue~3.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/vue~3/" class="_nav-link" title="" style="margin-left:0;">Vue 3</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _vue">
+				
+				
+<h1 id="component-events" tabindex="-1">Component Events </h1>
+<blockquote><p>This page assumes you've already read the <a href="../essentials/component-basics">Components Basics</a>. Read that first if you are new to components.</p></blockquote>
+
+<h2 id="emitting-and-listening-to-events" tabindex="-1">Emitting and Listening to Events </h2>
+<p>A component can emit custom events directly in template expressions (e.g. in a <code>v-on</code> handler) using the built-in <code>$emit</code> method:</p>
+<pre data-language="template">&lt;!-- MyComponent --&gt;
+&lt;button @click="$emit('someEvent')"&gt;Click Me&lt;/button&gt;</pre>
+<div class="options-api">
+<p>The <code>$emit()</code> method is also available on the component instance as <code>this.$emit()</code>:</p>
+<pre data-language="js">export default {
+  methods: {
+    submit() {
+      this.$emit('someEvent')
+    }
+  }
+}</pre>
+</div>
+<p>The parent can then listen to it using <code>v-on</code>:</p>
+<pre data-language="template">&lt;MyComponent @some-event="callback" /&gt;</pre>
+<p>The <code>.once</code> modifier is also supported on component event listeners:</p>
+<pre data-language="template">&lt;MyComponent @some-event.once="callback" /&gt;</pre>
+<p>Like components and props, event names provide an automatic case transformation. Notice we emitted a camelCase event, but can listen for it using a kebab-cased listener in the parent. As with <a href="props#prop-name-casing">props casing</a>, we recommend using kebab-cased event listeners in templates.</p>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>Unlike native DOM events, component emitted events do <strong>not</strong> bubble. You can only listen to the events emitted by a direct child component. If there is a need to communicate between sibling or deeply nested components, use an external event bus or a <a href="../scaling-up/state-management">global state management solution</a>.</p>
+</div>
+<h2 id="event-arguments" tabindex="-1">Event Arguments </h2>
+<p>It's sometimes useful to emit a specific value with an event. For example, we may want the <code>&lt;BlogPost&gt;</code> component to be in charge of how much to enlarge the text by. In those cases, we can pass extra arguments to <code>$emit</code> to provide this value:</p>
+<pre data-language="template">&lt;button @click="$emit('increaseBy', 1)"&gt;
+  Increase by 1
+&lt;/button&gt;</pre>
+<p>Then, when we listen to the event in the parent, we can use an inline arrow function as the listener, which allows us to access the event argument:</p>
+<pre data-language="template">&lt;MyButton @increase-by="(n) =&gt; count += n" /&gt;</pre>
+<p>Or, if the event handler is a method:</p>
+<pre data-language="template">&lt;MyButton @increase-by="increaseCount" /&gt;</pre>
+<p>Then the value will be passed as the first parameter of that method:</p>
+<div class="options-api"><pre data-language="js">methods: {
+  increaseCount(n) {
+    this.count += n
+  }
+}</pre></div>
+<div class="composition-api"><pre data-language="js">function increaseCount(n) {
+  count.value += n
+}</pre></div>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>All extra arguments passed to <code>$emit()</code> after the event name will be forwarded to the listener. For example, with <code>$emit('foo', 1, 2, 3)</code> the listener function will receive three arguments.</p>
+</div>
+<h2 id="declaring-emitted-events" tabindex="-1">Declaring Emitted Events </h2>
+<p>A component can explicitly declare the events it will emit using the <span class="composition-api"><a href="../../api/sfc-script-setup#defineprops-defineemits"><code>defineEmits()</code></a> macro</span><span class="options-api"><a href="../../api/options-state#emits"><code>emits</code></a> option</span>:</p>
+<div class="composition-api">
+<pre data-language="javascript">&lt;script setup&gt;
+defineEmits(['inFocus', 'submit'])
+&lt;/script&gt;</pre>
+<p>The <code>$emit</code> method that we used in the <code>&lt;template&gt;</code> isn't accessible within the <code>&lt;script setup&gt;</code> section of a component, but <code>defineEmits()</code> returns an equivalent function that we can use instead:</p>
+<pre data-language="javascript">&lt;script setup&gt;
+const emit = defineEmits(['inFocus', 'submit'])
+
+function buttonClick() {
+  emit('submit')
+}
+&lt;/script&gt;</pre>
+<p>The <code>defineEmits()</code> macro <strong>cannot</strong> be used inside a function, it must be placed directly within <code>&lt;script setup&gt;</code>, as in the example above.</p>
+<p>If you're using an explicit <code>setup</code> function instead of <code>&lt;script setup&gt;</code>, events should be declared using the <a href="../../api/options-state#emits"><code>emits</code></a> option, and the <code>emit</code> function is exposed on the <code>setup()</code> context:</p>
+<pre data-language="js">export default {
+  emits: ['inFocus', 'submit'],
+  setup(props, ctx) {
+    ctx.emit('submit')
+  }
+}</pre>
+<p>As with other properties of the <code>setup()</code> context, <code>emit</code> can safely be destructured:</p>
+<pre data-language="js">export default {
+  emits: ['inFocus', 'submit'],
+  setup(props, { emit }) {
+    emit('submit')
+  }
+}</pre>
+</div>
+<div class="options-api"><pre data-language="js">export default {
+  emits: ['inFocus', 'submit']
+}</pre></div>
+<p>The <code>emits</code> option and <code>defineEmits()</code> macro also support an object syntax. If using TypeScript you can type arguments, which allows us to perform runtime validation of the payload of the emitted events:</p>
+<div class="composition-api">
+<pre data-language="javascript">&lt;script setup lang="ts"&gt;
+const emit = defineEmits({
+  submit(payload: { email: string, password: string }) {
+    // return `true` or `false` to indicate
+    // validation pass / fail
+  }
+})
+&lt;/script&gt;</pre>
+<p>If you are using TypeScript with <code>&lt;script setup&gt;</code>, it's also possible to declare emitted events using pure type annotations:</p>
+<pre data-language="javascript">&lt;script setup lang="ts"&gt;
+const emit = defineEmits&lt;{
+  (e: 'change', id: number): void
+  (e: 'update', value: string): void
+}&gt;()
+&lt;/script&gt;</pre>
+<p>More details: <a href="../typescript/composition-api#typing-component-emits">Typing Component Emits</a> </p>
+</div>
+<div class="options-api">
+<pre data-language="js">export default {
+  emits: {
+    submit(payload: { email: string, password: string }) {
+      // return `true` or `false` to indicate
+      // validation pass / fail
+    }
+  }
+}</pre>
+<p>See also: <a href="../typescript/options-api#typing-component-emits">Typing Component Emits</a> </p>
+</div>
+<p>Although optional, it is recommended to define all emitted events in order to better document how a component should work. It also allows Vue to exclude known listeners from <a href="attrs#v-on-listener-inheritance">fallthrough attributes</a>, avoiding edge cases caused by DOM events manually dispatched by 3rd party code.</p>
+<div class="tip custom-block">
+<strong class="custom-block-title custom-block-title-default">TIP</strong><p>If a native event (e.g., <code>click</code>) is defined in the <code>emits</code> option, the listener will now only listen to component-emitted <code>click</code> events and no longer respond to native <code>click</code> events.</p>
+</div>
+<h2 id="events-validation" tabindex="-1">Events Validation </h2>
+<p>Similar to prop type validation, an emitted event can be validated if it is defined with the object syntax instead of the array syntax.</p>
+<p>To add validation, the event is assigned a function that receives the arguments passed to the <span class="options-api"><code>this.$emit</code></span><span class="composition-api"><code>emit</code></span> call and returns a boolean to indicate whether the event is valid or not.</p>
+<div class="composition-api"><pre data-language="javascript">&lt;script setup&gt;
+const emit = defineEmits({
+  // No validation
+  click: null,
+
+  // Validate submit event
+  submit: ({ email, password }) =&gt; {
+    if (email &amp;&amp; password) {
+      return true
+    } else {
+      console.warn('Invalid submit event payload!')
+      return false
+    }
+  }
+})
+
+function submitForm(email, password) {
+  emit('submit', { email, password })
+}
+&lt;/script&gt;</pre></div>
+<div class="options-api"><pre data-language="js">export default {
+  emits: {
+    // No validation
+    click: null,
+
+    // Validate submit event
+    submit: ({ email, password }) =&gt; {
+      if (email &amp;&amp; password) {
+        return true
+      } else {
+        console.warn('Invalid submit event payload!')
+        return false
+      }
+    }
+  },
+  methods: {
+    submitForm(email, password) {
+      this.$emit('submit', { email, password })
+    }
+  }
+}</pre></div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2018-present, Yuxi (Evan) You and Vue contributors<br>Licensed under the MIT License.<br>
+    <a href="https://vuejs.org/guide/components/events" class="_attribution-link">https://vuejs.org/guide/components/events</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
