@@ -1,0 +1,196 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Enabling Fabric on iOS - React Native - W3cubDocs</title>
+  
+  <meta name="description" content="This documentation is still experimental and details are subject to changes as we iterate. Feel free to share your feedback on the discussion inside &hellip;">
+  <meta name="keywords" content="enabling, fabric, on, ios, react, native, react_native">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/react_native/new-architecture-app-renderer-ios.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/react_native.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/react_native/" class="_nav-link" title="" style="margin-left:0;">React Native</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _react_native">
+				
+				
+<h1>Enabling Fabric on iOS</h1>
+caution<p>This documentation is still <strong>experimental</strong> and details are subject to changes as we iterate. Feel free to share your feedback on the <a href="https://github.com/reactwg/react-native-new-architecture/discussions/8" rel="noopener noreferrer">discussion inside the working group</a> for this page.</p>
+<p>Moreover, it contains several <strong>manual steps</strong>. Please note that this won't be representative of the final developer experience once the New Architecture is stable. We're working on tools, templates and libraries to help you get started fast on the New Architecture, without having to go through the whole setup.</p>
+<p>This section will go over how to enable the new renderer in your app. Make sure your application meets all the <a href="new-architecture-app-intro">prerequisites</a>.</p>
+<h2 id="1-enable-fabric-in-podfile">1. Enable Fabric in Podfile</h2>
+<p>Add changes to your Podfile. You can see some examples in <a href="https://github.com/facebook/react-native/blob/main/packages/rn-tester/Podfile" rel="noopener noreferrer">RNTester</a> and <a href="https://github.com/facebook/fbt/blob/rn-demo-app/ios/Podfile" rel="noopener noreferrer">rn-demo-app</a>.</p>Podfile<pre tabindex="0" data-language="jsx"># Add the following line at the top of Podfile.
+# Codegen produces files/classes that share names, and it will show the warning.
+# deterministic_uuids option surpresses the warning.
+install! 'cocoapods', :deterministic_uuids =&gt; false
+target 'Some App' do
+  pods()
+end
+def pods()
+  # Get config
+  config = use_native_modules!
+  # Use env variables to turn it on/off.
+  fabric_enabled = ENV['USE_FABRIC']
+  use_react_native!(
+    ...
+    # Modify here if your app root path isn't the same as this one.
+    :app_path =&gt; "#{Dir.pwd}/..",
+    # Pass the flag to enable fabric to use_react_native!.
+    :fabric_enabled =&gt; fabric_enabled
+  )
+end</pre>
+
+<h2 id="2-update-your-root-view">2. Update your root view</h2>
+<p>The way to render your app with Fabric depends on your setup. Here is an example of how you can enable Fabric in your app with the <code>RN_FABRIC_ENABLED</code> compiler flag to enable/disable. Refer <a href="https://github.com/facebook/react-native/blob/main/packages/rn-tester/RNTester/AppDelegate.mm" rel="noopener noreferrer">RN-Tester’s AppDelegate</a> as an example.</p>AppDelegate.mm<pre tabindex="0" data-language="jsx">#ifdef RN_FABRIC_ENABLED
+#import &lt;React/RCTFabricSurfaceHostingProxyRootView.h&gt;
+#import &lt;React/RCTSurfacePresenter.h&gt;
+#import &lt;React/RCTSurfacePresenterBridgeAdapter.h&gt;
+#import &lt;react/config/ReactNativeConfig.h&gt;
+#endif
+
+@interface AppDelegate () &lt;RCTCxxBridgeDelegate,
+                           RCTTurboModuleManagerDelegate&gt; {
+#ifdef RN_FABRIC_ENABLED
+  RCTSurfacePresenterBridgeAdapter *_bridgeAdapter;
+  std::shared_ptr&lt;const facebook::react::ReactNativeConfig&gt; _reactNativeConfig;
+  facebook::react::ContextContainer::Shared _contextContainer;
+#endif
+
+  // Find a line that define rootView and replace/edit with the following lines.
+
+#ifdef RN_FABRIC_ENABLED
+  _contextContainer = std::make_shared&lt;facebook::react::ContextContainer const&gt;();
+  _reactNativeConfig = std::make_shared&lt;facebook::react::EmptyReactNativeConfig const&gt;();
+
+  _contextContainer-&gt;insert("ReactNativeConfig", _reactNativeConfig);
+
+  _bridgeAdapter = [[RCTSurfacePresenterBridgeAdapter alloc]
+        initWithBridge:bridge
+      contextContainer:_contextContainer];
+
+  bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
+
+  UIView *rootView =
+      [[RCTFabricSurfaceHostingProxyRootView alloc] initWithBridge:bridge
+                                                        moduleName:&lt;#moduleName#&gt;
+                                                 initialProperties:@{}];
+#else
+  // Current implementation to define rootview.
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+                                                   moduleName:&lt;#moduleName#&gt;
+                                            initialProperties:@{}];
+#endif</pre>
+
+<h2 id="3-run-pod-install">3. Run pod install</h2>
+<pre tabindex="0" data-language="jsx">// Run pod install with the flags
+USE_FABRIC=1 RCT_NEW_ARCH_ENABLED=1 pod install</pre>
+
+<details class="details_IpIu alert alert--info details_jERq" data-collapsed="true"><summary>Note for Mac M1 users</summary><div class="collapsibleContent_Fd2D">
+<p>Mac M1 architecture is not directly compatible with Cocoapods. If you encounter issues when installing pods, you can solve it by running:</p>
+<ul>
+<li><code>sudo arch -x86_64 gem install ffi</code></li>
+<li><code>arch -x86_64 pod install</code></li>
+</ul>
+<p>These commands install the <code>ffi</code> package, to load dynamically-linked libraries and let you run the <code>pod install</code> properly, and runs <code>pod install</code> with the proper architecture.</p>
+</div></details><div class="_attribution">
+  <p class="_attribution-p">
+    © 2022 Facebook Inc.<br>Licensed under the Creative Commons Attribution 4.0 International Public License.<br>
+    <a href="https://reactnative.dev/docs/new-architecture-app-renderer-ios" class="_attribution-link">https://reactnative.dev/docs/new-architecture-app-renderer-ios</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
