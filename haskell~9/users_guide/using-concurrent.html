@@ -1,0 +1,142 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>5.4. Using Concurrent Haskell - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content="GHC supports Concurrent Haskell by default, without requiring a special option or libraries compiled in a certain way. To get access to the support &hellip;">
+  <meta name="keywords" content="using, concurrent, haskell, smp, parallelism, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/using-concurrent.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="using-concurrent">5.4. Using Concurrent Haskell</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="using-concurrent-haskell">  <p id="index-0">GHC supports Concurrent Haskell by default, without requiring a special option or libraries compiled in a certain way. To get access to the support libraries for Concurrent Haskell, just import <a class="reference external" href="../libraries/base-4.21.0.0-8e62/control-concurrent">Control.Concurrent</a>. More information on Concurrent Haskell is provided in the documentation for that module.</p> <p>Optionally, the program may be linked with the <a class="reference internal" href="phases#ghc-flag--single-threaded"><code>-threaded</code></a> option (see <a class="reference internal" href="phases#options-linker"><span class="std std-ref">Options affecting linking</span></a>. This provides two benefits:</p> <ul class="simple"> <li>It enables the <a class="reference internal" href="#rts-flag-N-x"><code>-N ⟨x⟩</code></a> to be used, which allows threads to run in parallel on a multi-processor or multi-core machine. See <a class="reference internal" href="#using-smp"><span class="std std-ref">Using SMP parallelism</span></a>.</li> <li>If a thread makes a foreign call (and the call is not marked <code>unsafe</code>), then other Haskell threads in the program will continue to run while the foreign call is in progress. Additionally, <code>foreign export</code>ed Haskell functions may be called from multiple OS threads simultaneously. See <a class="reference internal" href="exts/ffi#ffi-threads"><span class="std std-ref">Multi-threading and the FFI</span></a>.</li> </ul> <p>The following RTS option(s) affect the behaviour of Concurrent Haskell programs:</p> <dl class="std rts-flag" id="index-1"> <dt class="sig sig-object std" id="rts-flag-C-s">
+<code>-C ⟨s⟩</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Default<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>20 milliseconds</p> </dd> </dl> <p>Sets the context switch interval to ⟨s⟩ seconds. A context switch will occur at the next heap block allocation after the timer expires (a heap block allocation occurs every 4k of allocation). With <code>-C0</code> or <code>-C</code>, context switches will occur as often as possible (at every heap block allocation).</p> </dd>
+</dl> </section> <section id="using-smp-parallelism"> <h1 id="using-smp">5.5. Using SMP parallelism</h1> <p id="index-2">GHC supports running Haskell programs in parallel on an SMP (symmetric multiprocessor).</p> <p>There’s a fine distinction between <em>concurrency</em> and <em>parallelism</em>: parallelism is all about making your program run <em>faster</em> by making use of multiple processors simultaneously. Concurrency, on the other hand, is a means of abstraction: it is a convenient way to structure a program that must respond to multiple asynchronous events.</p> <p>However, the two terms are certainly related. By making use of multiple CPUs it is possible to run concurrent threads in parallel, and this is exactly what GHC’s SMP parallelism support does. But it is also possible to obtain performance improvements with parallelism on programs that do not use concurrency. This section describes how to use GHC to compile and run parallel programs, in <a class="reference internal" href="exts/parallel#lang-parallel"><span class="std std-ref">Parallel and Concurrent</span></a> we describe the language features that affect parallelism.</p> <section id="compile-time-options-for-smp-parallelism"> <h2 id="parallel-compile-options">
+<span class="section-number">5.5.1. </span>Compile-time options for SMP parallelism</h2> <p>In order to make use of multiple CPUs, your program must be linked with the <a class="reference internal" href="phases#ghc-flag--single-threaded"><code>-threaded</code></a> option (see <a class="reference internal" href="phases#options-linker"><span class="std std-ref">Options affecting linking</span></a>). Additionally, the following compiler options affect parallelism:</p> <dl class="std ghc-flag"> <dt class="sig sig-object std"> <span class="sig-name descname">-feager-blackholing</span>
+</dt> <dd>
+<p>Blackholing is the act of marking a thunk (lazy computation) as being under evaluation. It is useful for three reasons: firstly it lets us detect certain kinds of infinite loop (the <code>NonTermination</code> exception), secondly it avoids certain kinds of space leak, and thirdly it avoids repeating a computation in a parallel program, because we can tell when a computation is already in progress.</p> <p>The option <a class="reference internal" href="using-optimisation#ghc-flag-feager-blackholing"><code>-feager-blackholing</code></a> causes each thunk to be blackholed as soon as evaluation begins. The default is “lazy blackholing”, whereby thunks are only marked as being under evaluation when a thread is paused for some reason. Lazy blackholing is typically more efficient (by 1-2% or so), because most thunks don’t need to be blackholed. However, eager blackholing can avoid more repeated computation in a parallel program, and this often turns out to be important for parallelism.</p> <p>We recommend compiling any code that is intended to be run in parallel with the <a class="reference internal" href="using-optimisation#ghc-flag-feager-blackholing"><code>-feager-blackholing</code></a> flag.</p> </dd>
+</dl> </section> <section id="rts-options-for-smp-parallelism"> <h2 id="parallel-options">
+<span class="section-number">5.5.2. </span>RTS options for SMP parallelism</h2> <p>There are two ways to run a program on multiple processors: call <a class="reference external" href="../libraries/base-4.21.0.0-8e62/control-concurrent#v:setNumCapabilities">Control.Concurrent.setNumCapabilities</a> from your program, or use the RTS <a class="reference internal" href="#rts-flag-N-x"><code>-N ⟨x⟩</code></a> options.</p> <dl class="std rts-flag"> <dt class="sig sig-object std" id="rts-flag-N-x">
+<code>-N ⟨x⟩</code> </dt> <dt class="sig sig-object std" id="rts-flag-N">
+<code>-N</code> </dt> <dt class="sig sig-object std" id="rts-flag-maxN-x">
+<code>-maxN ⟨x⟩</code> </dt> <dd>
+<p>Use ⟨x⟩ simultaneous threads when running the program.</p> <p>The runtime manages a set of virtual processors, which we call <em>capabilities</em>, the number of which is determined by the <code>-N</code> option. Each capability can run one Haskell thread at a time, so the number of capabilities is equal to the number of Haskell threads that can run physically in parallel. A capability is animated by one or more OS threads; the runtime manages a pool of OS threads for each capability, so that if a Haskell thread makes a foreign call (see <a class="reference internal" href="exts/ffi#ffi-threads"><span class="std std-ref">Multi-threading and the FFI</span></a>) another OS thread can take over that capability.</p> <p>Normally ⟨x⟩ should be chosen to match the number of CPU cores on the machine <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. For example, on a dual-core machine we would probably use <code>+RTS -N2 -RTS</code>.</p> <p>Omitting ⟨x⟩, i.e. <code>+RTS -N -RTS</code>, lets the runtime choose the value of ⟨x⟩ itself based on how many processors are in your machine.</p> <p>Omitting <code>-N⟨x⟩</code> entirely means <code>-N1</code>.</p> <p>With <code>-maxN⟨x⟩</code>, i.e. <code>+RTS -maxN3 -RTS</code>, the runtime will choose at most (x), also limited by the number of processors on the system. Omitting (x) is an error, if you need a default use option <code>-N</code>.</p> <p>Be careful when using all the processors in your machine: if some of your processors are in use by other programs, this can actually harm performance rather than improve it. Asking GHC to create more capabilities than you have physical threads is almost always a bad idea.</p> <p>Setting <code>-N</code> also has the effect of enabling the parallel garbage collector (see <a class="reference internal" href="runtime_control#rts-options-gc"><span class="std std-ref">RTS options to control the garbage collector</span></a>).</p> <p>The current value of the <code>-N</code> option is available to the Haskell program via <code>Control.Concurrent.getNumCapabilities</code>, and it may be changed while the program is running by calling <code>Control.Concurrent.setNumCapabilities</code>.</p> </dd>
+</dl> <p>The following options affect the way the runtime schedules threads on CPUs:</p> <dl class="std rts-flag"> <dt class="sig sig-object std" id="rts-flag-qa">
+<code>-qa</code> </dt> <dd>
+<p>Use the OS’s affinity facilities to try to pin OS threads to CPU cores.</p> <p>When this option is enabled, the OS threads for a capability <span class="math notranslate nohighlight">\(i\)</span> are bound to the CPU core <span class="math notranslate nohighlight">\(i\)</span> using the API provided by the OS for setting thread affinity. e.g. on Linux GHC uses <code>sched_setaffinity()</code>.</p> <p>Depending on your workload and the other activity on the machine, this may or may not result in a performance improvement. We recommend trying it out and measuring the difference.</p> </dd>
+</dl> <dl class="std rts-flag"> <dt class="sig sig-object std" id="rts-flag-qm">
+<code>-qm</code> </dt> <dd>
+<p>Disable automatic migration for load balancing. Normally the runtime will automatically try to schedule threads across the available CPUs to make use of idle CPUs; this option disables that behaviour. Note that migration only applies to threads; sparks created by <code>par</code> are load-balanced separately by work-stealing.</p> <p>This option is probably only of use for concurrent programs that explicitly schedule threads onto CPUs with <a class="reference external" href="../libraries/base-4.21.0.0-8e62/control-concurrent#v:forkOn">Control.Concurrent.forkOn</a>.</p> </dd>
+</dl> </section> <section id="hints-for-using-smp-parallelism"> <h2>
+<span class="section-number">5.5.3. </span>Hints for using SMP parallelism</h2> <p>Add the <a class="reference internal" href="runtime_control#rts-flag-s-file"><code>-s [⟨file⟩]</code></a> RTS option when running the program to see timing stats, which will help to tell you whether your program got faster by using more CPUs or not. If the user time is greater than the elapsed time, then the program used more than one CPU. You should also run the program without <a class="reference internal" href="#rts-flag-N-x"><code>-N ⟨x⟩</code></a> for comparison.</p> <p>The output of <code>+RTS -s</code> tells you how many “sparks” were created and executed during the run of the program (see <a class="reference internal" href="runtime_control#rts-options-gc"><span class="std std-ref">RTS options to control the garbage collector</span></a>), which will give you an idea how well your <code>par</code> annotations are working.</p> <p>GHC’s parallelism support has improved in 6.12.1 as a result of much experimentation and tuning in the runtime system. We’d still be interested to hear how well it works for you, and we’re also interested in collecting parallel programs to add to our benchmarking suite.</p> <aside class="footnote-list brackets"> <aside class="footnote brackets" id="id2" role="note"> <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span> <p>Whether hyperthreading cores should be counted or not is an open question; please feel free to experiment and let us know what results you find.</p> </aside> </aside> </section> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/using-concurrent.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/using-concurrent.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

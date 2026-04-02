@@ -1,0 +1,184 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>6.4.23. Deferring Type Errors to Runtime - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Since GHC 7.6.1. ">
+  <meta name="keywords" content="deferring, type, errors, runtime, haskell, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/exts/defer_type_errors.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="defer-type-errors">6.4.23. Deferring type errors to runtime</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="deferring-type-errors-to-runtime">  <p>Since GHC 7.6.1.</p> <p>While developing, sometimes it is desirable to allow compilation to succeed even if there are type errors in the code. Consider the following case:</p> <pre data-language="haskell">module Main where
+
+a :: Int
+a = 'a'
+
+main = print "b"
+</pre> <p>Even though <code>a</code> is ill-typed, it is not used in the end, so if all that we’re interested in is <code>main</code> it can be useful to be able to ignore the problems in <code>a</code>.</p> <p>For more motivation and details please refer to the <a class="reference external" href="https://gitlab.haskell.org/ghc/ghc/wikis/defer-errors-to-runtime">Wiki</a> page or the <a class="reference external" href="https://dreixel.net/research/pdf/epdtecp.pdf">original paper</a>.</p> <section id="enabling-deferring-of-type-errors"> <h2>
+<span class="section-number">6.4.23.1. </span>Enabling deferring of type errors</h2> <p>The flag <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a> controls whether type errors are deferred to runtime. Type errors will still be emitted as warnings, but will not prevent compilation. You can use <a class="reference internal" href="../using-warnings#ghc-flag--Wdeferred-type-errors"><code>-Wno-deferred-type-errors</code></a> to suppress these warnings.</p> <p>This flag implies the <a class="reference internal" href="#ghc-flag-fdefer-typed-holes"><code>-fdefer-typed-holes</code></a> and <a class="reference internal" href="#ghc-flag-fdefer-out-of-scope-variables"><code>-fdefer-out-of-scope-variables</code></a> flags, which enables this behaviour for <a class="reference internal" href="typed_holes#typed-holes"><span class="std std-ref">Typed Holes</span></a> and variables. Should you so wish, it is possible to enable <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a> without enabling <a class="reference internal" href="#ghc-flag-fdefer-typed-holes"><code>-fdefer-typed-holes</code></a> or <a class="reference internal" href="#ghc-flag-fdefer-out-of-scope-variables"><code>-fdefer-out-of-scope-variables</code></a>, by explicitly specifying <a class="reference internal" href="#ghc-flag-fdefer-typed-holes"><code>-fno-defer-typed-holes</code></a> or <a class="reference internal" href="#ghc-flag-fdefer-out-of-scope-variables"><code>-fno-defer-out-of-scope-variables</code></a> on the command-line after the <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a> flag.</p> <dl class="std ghc-flag"> <dt class="sig sig-object std" id="ghc-flag-fdefer-type-errors">
+<code>-fdefer-type-errors</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Since<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>7.6</p> </dd> <dt class="field-even">Implies<span class="colon">:</span>
+</dt> <dd class="field-even">
+<p><a class="reference internal" href="#ghc-flag-fdefer-typed-holes"><code>-fdefer-typed-holes</code></a>, <a class="reference internal" href="#ghc-flag-fdefer-out-of-scope-variables"><code>-fdefer-out-of-scope-variables</code></a></p> </dd> </dl> <p>Defer as many type errors as possible until runtime. At compile time you get a warning (instead of an error). At runtime, if you use a value that depends on a type error, you get a runtime error; but you can run any type-correct parts of your code just fine. See also <a class="reference internal" href="../using-warnings#ghc-flag-Wdeferred-type-errors"><code>-Wdeferred-type-errors</code></a>.</p> </dd>
+</dl> <dl class="std ghc-flag"> <dt class="sig sig-object std" id="ghc-flag-fdefer-typed-holes">
+<code>-fdefer-typed-holes</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Since<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>7.10</p> </dd> </dl> <p>Defer typed holes errors (errors about names with a leading underscore (e.g., “_”, “_foo”, “_bar”)) until runtime. This will turn the errors produced by <a class="reference internal" href="typed_holes#typed-holes"><span class="std std-ref">typed holes</span></a> into warnings. Using a value that depends on a typed hole produces a runtime error, the same as <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a> (which implies this option). See <a class="reference internal" href="typed_holes#typed-holes"><span class="std std-ref">Typed Holes</span></a>.</p> <p>Implied by <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a>. See also <a class="reference internal" href="../using-warnings#ghc-flag-Wtyped-holes"><code>-Wtyped-holes</code></a>.</p> </dd>
+</dl> <dl class="std ghc-flag"> <dt class="sig sig-object std" id="ghc-flag-fdefer-out-of-scope-variables">
+<code>-fdefer-out-of-scope-variables</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Since<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>8.0</p> </dd> </dl> <p>Defer variable out-of-scope errors (errors about names without a leading underscore) until runtime. This will turn variable-out-of-scope errors into warnings. Using a value that depends on an out-of-scope variable produces a runtime error, the same as <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a> (which implies this option). See <a class="reference internal" href="typed_holes#typed-holes"><span class="std std-ref">Typed Holes</span></a>.</p> <p>Implied by <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a>. See also <a class="reference internal" href="../using-warnings#ghc-flag-Wdeferred-out-of-scope-variables"><code>-Wdeferred-out-of-scope-variables</code></a>.</p> </dd>
+</dl> <p>At runtime, whenever a term containing a type error would need to be evaluated, the error is converted into a runtime exception of type <code>TypeError</code>. Note that type errors are deferred as much as possible during runtime, but invalid coercions are never performed, even when they would ultimately result in a value of the correct type. For example, given the following code:</p> <pre data-language="haskell">x :: Int
+x = 0
+
+y :: Char
+y = x
+
+z :: Int
+z = y
+</pre> <p>evaluating <code>z</code> will result in a runtime <code>TypeError</code>.</p> </section> <section id="deferred-type-errors-in-ghci"> <h2>
+<span class="section-number">6.4.23.2. </span>Deferred type errors in GHCi</h2> <p>The flag <a class="reference internal" href="#ghc-flag-fdefer-type-errors"><code>-fdefer-type-errors</code></a> works in GHCi as well, with one exception: for “naked” expressions typed at the prompt, type errors don’t get delayed, so for example:</p> <pre data-language="haskell">Prelude&gt; fst (True, 1 == 'a')
+
+&lt;interactive&gt;:2:12:
+    No instance for (Num Char) arising from the literal `1'
+    Possible fix: add an instance declaration for (Num Char)
+    In the first argument of `(==)', namely `1'
+    In the expression: 1 == 'a'
+    In the first argument of `fst', namely `(True, 1 == 'a')'
+</pre> <p>Otherwise, in the common case of a simple type error such as typing <code>reverse True</code> at the prompt, you would get a warning and then an immediately-following type error when the expression is evaluated.</p> <p>This exception doesn’t apply to statements, as the following example demonstrates:</p> <pre data-language="none">Prelude&gt; let x = (True, 1 == 'a')
+
+&lt;interactive&gt;:3:16: Warning:
+    No instance for (Num Char) arising from the literal `1'
+    Possible fix: add an instance declaration for (Num Char)
+    In the first argument of `(==)', namely `1'
+    In the expression: 1 == 'a'
+    In the expression: (True, 1 == 'a')
+Prelude&gt; fst x
+True
+</pre> </section> <section id="limitations-of-deferred-type-errors"> <h2>
+<span class="section-number">6.4.23.3. </span>Limitations of deferred type errors</h2> <p>The errors that can be deferred are:</p> <ul class="simple"> <li>Out of scope term variables</li> <li>Equality constraints; e.g. <code>ord True</code> gives rise to an insoluble equality constraint <code>Char ~ Bool</code>, which can be deferred.</li> <li>Type-class and implicit-parameter constraints</li> </ul> <p>All other type errors are reported immediately, and cannot be deferred; for example, an ill-kinded type signature, an instance declaration that is non-terminating or ill-formed, a type-family instance that does not obey the declared injectivity constraints, etc etc.</p> <p>In a few cases, some constraints cannot be deferred. Specifically:</p> <ul> <li>
+<p>Kind errors in a type or kind signature, partial type signatures, or pattern signature. e.g.</p> <pre data-language="haskell">f :: Int Bool -&gt; Char
+</pre> <p>This type signature contains a kind error which cannot be deferred.</p> </li> <li>Type equalities under a forall (c.f. <a class="reference external" href="https://gitlab.haskell.org/ghc/ghc/issues/14605">#14605</a>).</li> <li>
+<p>Kind errors in a visible type application. e.g.</p> <pre data-language="haskell">reverse @Maybe xs
+</pre> </li> <li>
+<p>Kind errors in a <code>default</code> declaration. e.g.</p> <pre data-language="haskell">default( Double, Int Int )
+</pre> </li> <li>
+<p>Errors involving linear types (c.f. <a class="reference external" href="https://gitlab.haskell.org/ghc/ghc/issues/20083">#20083</a>). e.g.</p> <pre data-language="haskell">f :: a %1 -&gt; a
+f _  = ()
+</pre> </li> <li>
+<p>Illegal representation polymorphism, e.g.</p> <pre data-language="haskell">f :: forall rep (a :: TYPE rep). a -&gt; a
+f a = a
+</pre> </li> </ul> </section> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/defer_type_errors.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/defer_type_errors.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

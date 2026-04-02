@@ -1,0 +1,229 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>6.2.5. Qualified Do-notation - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content=" 9.0.1 ">
+  <meta name="keywords" content="qualified, do-notation, haskell, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/exts/qualified_do.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="id1">6.2.5. Qualified do-notation</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="qualified-do-notation">  <dl class="std extension" id="index-0"> <dt class="sig sig-object std" id="extension-QualifiedDo">
+<code>QualifiedDo</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Since<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>9.0.1</p> </dd> </dl> <p>Allow the use of qualified <code>do</code> notation.</p> </dd>
+</dl> <p><code>QualifiedDo</code> enables qualifying a <code>do</code> block with a module name, to control which operations to use for the monadic combinators that the <code>do</code> notation desugars to. When <code>-XQualifiedDo</code> is enabled, you can <em>qualify</em> the <code>do</code> notation by writing <code>modid.do</code>, where <code>modid</code> is a module name in scope:</p> <pre data-language="haskell">{-# LANGUAGE QualifiedDo #-}
+import qualified Some.Module.Monad as M
+
+action :: M.SomeType a
+action = M.do x &lt;- u
+              res
+              M.return x
+</pre> <p>The additional module name (here <code>M</code>) is called the qualifier of the do-expression.</p> <p>The unqualified <code>do</code> syntax is convenient for writing monadic code, but it only works for data types that provide an instance of the <code>Monad</code> type class. There are other types which are “monad-like” but can’t provide an instance of <code>Monad</code> (e.g. indexed monads, graded monads or relative monads), yet they could still use the <code>do</code> syntax if it weren’t hardwired to the methods of the <code>Monad</code> type class. <code>-XQualifiedDo</code> comes to make the do syntax customizable in this respect. It allows you to mix and match <code>do</code> blocks of different types with suitable operations to use on each case:</p> <pre data-language="haskell">{-# LANGUAGE QualifiedDo #-}
+import qualified Control.Monad.Linear as L
+
+import MAC (label, box, runMAC)
+import qualified MAC as MAC
+
+f :: IO ()
+f = do
+  x &lt;- runMAC $           -- (Prelude.&gt;&gt;=)
+                          --   (runMAC $
+    MAC.do                --
+      d &lt;- label "y"      --     label "y" MAC.&gt;&gt;= \d -&gt;
+      box $               --
+                          --       (box $
+        L.do              --
+          r &lt;- L.f d      --         L.f d L.&gt;&gt;= \r -&gt;
+          L.g r           --         L.g r L.&gt;&gt;
+          L.return r      --         L.return r
+                          --       ) MAC.&gt;&gt;
+      MAC.return d        --       (MAC.return d)
+                          --   )
+  print x                 --   (\x -&gt; print x)
+</pre> <p>The semantics of <code>do</code> notation statements with <code>-XQualifiedDo</code> is as follows:</p> <ul> <li>
+<p>The <code>x &lt;- u</code> statement uses <code>(M.&gt;&gt;=)</code></p> <pre data-language="haskell">M.do { x &lt;- u; stmts }  =  u M.&gt;&gt;= \x -&gt; M.do { stmts }
+</pre> </li> <li>
+<p>The <code>u</code> statement uses <code>(M.&gt;&gt;)</code></p> <pre data-language="haskell">M.do { u; stmts }  =  u M.&gt;&gt; M.do { stmts }
+</pre> </li> <li>
+<p>The a <code>pat &lt;- u</code> statement uses <code>M.fail</code> for the failing case, if such a case is needed</p> <pre data-language="haskell">M.do { pat &lt;- u; stmts }  =  u M.&gt;&gt;= \case
+  { pat -&gt; M.do { stmts }
+  ; _ -&gt; M.fail "…"
+  }
+</pre> <p>If the pattern cannot fail, then we don’t need to use <code>M.fail</code>.</p> <pre data-language="haskell">M.do { pat &lt;- u; stmts }  =  u M.&gt;&gt;= \case pat -&gt; M.do { stmts }
+</pre> </li> <li>
+<p>The desugaring of <code>-XApplicativeDo</code> uses <code>M.fmap</code>, <code>(M.&lt;*&gt;)</code>, and <code>M.join</code> (after the applicative-do grouping has been performed)</p> <pre data-language="haskell">M.do { (x1 &lt;- u1 | … | xn &lt;- un); M.return e }  =
+  (\x1 … xn -&gt; e) `M.fmap` u1 M.&lt;*&gt; … M.&lt;*&gt; un
+
+M.do { (x1 &lt;- u1 | … | xn &lt;- un); stmts }  =
+  M.join ((\x1 … xn -&gt; M.do { stmts }) `M.fmap` u1 M.&lt;*&gt; … M.&lt;*&gt; un)
+</pre> </li> </ul>  <p>Note that <code>M.join</code> is only needed if the final expression is not identifiably a <code>return</code>. With <code>-XQualifiedDo</code> enabled, <code>-XApplicativeDo</code> looks only for the qualified <code>return</code>/<code>pure</code> in a qualified do-block.</p>  <ul> <li>
+<p>With <code>-XRecursiveDo</code>, <code>rec</code> and <code>mdo</code> blocks use <code>M.mfix</code> and <code>M.return</code>:</p> <pre data-language="haskell">M.do { rec { x1 &lt;- u1; … ; xn &lt;- un }; stmts }  =
+  M.do
+  { (x1, …, xn) &lt;- M.mfix (\~(x1, …, xn) -&gt; M.do { x1 &lt;- u1; …; xn &lt;- un; M.return (x1, …, xn)})
+  ; stmts
+  }
+</pre> </li> </ul> <p>If a name <code>M.op</code> is required by the desugaring process (and only if it’s required!) but the name is not in scope, it is reported as an error.</p> <p>The types of the operations picked for desugaring must produce an expression which is accepted by the typechecker. But other than that, there are no specific requirements on the types.</p> <p>If no qualifier is specified with <code>-XQualifiedDo</code> enabled, it defaults to the operations defined in the Prelude, or, if <code>-XRebindableSyntax</code> is enabled, to whatever operations are in scope.</p> <p>Note that the operations to be qualified must be in scope for QualifiedDo to work. I.e. <code>import MAC (label)</code> in the example above would result in an error, since <code>MAC.&gt;&gt;=</code> and <code>MAC.&gt;&gt;</code> would not be in scope.</p> <section id="examples"> <h2>
+<span class="section-number">6.2.5.1. </span>Examples</h2> <p><code>-XQualifiedDo</code> does not affect <code>return</code> in the monadic <code>do</code> notation.</p> <pre data-language="haskell">import qualified Some.Monad.M as M
+
+boolM :: (a -&gt; M.M Bool) -&gt; b -&gt; b -&gt; a -&gt; M.M b
+boolM p a b x = M.do
+    px &lt;- p x     -- M.&gt;&gt;=
+    if px then
+      return b    -- Prelude.return
+    else
+      M.return a  -- M.return
+</pre> <p><code>-XQualifiedDo</code> does not affect explicit <code>(&gt;&gt;=)</code> in the monadic <code>do</code> notation.</p> <pre data-language="haskell">import qualified Some.Monad.M as M
+import Data.Bool (bool)
+
+boolMM :: (a -&gt; M.M Bool) -&gt; M b -&gt; M b -&gt; a -&gt; M.M b
+boolMM p ma mb x = M.do
+    p x &gt;&gt;= bool ma mb   -- Prelude.&gt;&gt;=
+</pre> <p>Nested <code>do</code> blocks do not affect each other’s meanings.</p> <pre data-language="haskell">import qualified Some.Monad.M as M
+
+f :: M.M SomeType
+f = M.do
+    x &lt;- f1                 -- M.&gt;&gt;=
+    f2 (do y &lt;- g1          -- Prelude.&gt;&gt;=
+           g2 x y)
+  where
+    f1 = ...
+    f2 m = ...
+    g1 = ...
+    g2 x y = ...
+</pre> <p>The type of <code>(&gt;&gt;=)</code> can also be modified, as seen here for a graded monad:</p> <pre data-language="haskell">{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE TypeFamilies #-}
+module Control.Monad.Graded (GradedMonad(..)) where
+
+import Data.Kind (Constraint)
+
+class GradedMonad (m :: k -&gt; * -&gt; *) where
+  type Unit m :: k
+  type Plus m (i :: k) (j :: k) :: k
+  type Inv  m (i :: k) (j :: k) :: Constraint
+  (&gt;&gt;=) :: Inv m i j =&gt; m i a -&gt; (a -&gt; m j b) -&gt; m (Plus m i j) b
+  return :: a -&gt; m (Unit m) a
+
+-----------------
+
+module M where
+
+import Control.Monad.Graded as Graded
+
+g :: GradedMonad m =&gt; a -&gt; m SomeTypeIndex b
+g a = Graded.do
+  b &lt;- someGradedFunction a Graded.&gt;&gt;= someOtherGradedFunction
+  c &lt;- anotherGradedFunction b
+  Graded.return c
+</pre> </section> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/qualified_do.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/qualified_do.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>6.6.6. Deriving Any Other Class - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content=" 7.10.1 ">
+  <meta name="keywords" content="deriving, any, other, class, haskell, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/exts/derive_any_class.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="derive-any-class">6.6.6. Deriving any other class</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="deriving-any-other-class">  <dl class="std extension"> <dt class="sig sig-object std" id="extension-DeriveAnyClass">
+<code>DeriveAnyClass</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Since<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>7.10.1</p> </dd> </dl> <p>Allow use of any typeclass in <code>deriving</code> clauses.</p> </dd>
+</dl> <p>With <a class="reference internal" href="#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a> you can derive any other class. The compiler will simply generate an instance declaration with no explicitly-defined methods. This is mostly useful in classes whose <a class="reference external" href="#minimal-pragma">minimal set</a> is empty, and especially when writing <a class="reference external" href="#generic-programming">generic functions</a>.</p> <p>As an example, consider a simple pretty-printer class <code>SPretty</code>, which outputs pretty strings:</p> <pre data-language="haskell">{-# LANGUAGE DefaultSignatures, DeriveAnyClass #-}
+
+class SPretty a where
+  sPpr :: a -&gt; String
+  default sPpr :: Show a =&gt; a -&gt; String
+  sPpr = show
+</pre> <p>If a user does not provide a manual implementation for <code>sPpr</code>, then it will default to <code>show</code>. Now we can leverage the <a class="reference internal" href="#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a> extension to easily implement a <code>SPretty</code> instance for a new data type:</p> <pre data-language="haskell">data Foo = Foo deriving (Show, SPretty)
+</pre> <p>The above code is equivalent to:</p> <pre data-language="haskell">data Foo = Foo deriving Show
+instance SPretty Foo
+</pre> <p>That is, an <code>SPretty Foo</code> instance will be created with empty implementations for all methods. Since we are using <a class="reference internal" href="default_signatures#extension-DefaultSignatures"><code>DefaultSignatures</code></a> in this example, a default implementation of <code>sPpr</code> is filled in automatically.</p> <p>Note the following details</p> <ul> <li>In case you try to derive some class on a newtype, and <a class="reference internal" href="newtype_deriving#extension-GeneralizedNewtypeDeriving"><code>GeneralizedNewtypeDeriving</code></a> is also on, <a class="reference internal" href="#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a> takes precedence.</li> <li>
+<p>The instance context is determined by the type signatures of the derived class’s methods. For instance, if the class is:</p> <pre data-language="haskell">class Foo a where
+  bar :: a -&gt; String
+  default bar :: Show a =&gt; a -&gt; String
+  bar = show
+
+  baz :: a -&gt; a -&gt; Bool
+  default baz :: Ord a =&gt; a -&gt; a -&gt; Bool
+  baz x y = compare x y == EQ
+</pre> <p>And you attempt to derive it using <a class="reference internal" href="#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a>:</p> <pre data-language="haskell">instance Eq   a =&gt; Eq   (Option a) where ...
+instance Ord  a =&gt; Ord  (Option a) where ...
+instance Show a =&gt; Show (Option a) where ...
+
+data Option a = None | Some a deriving Foo
+</pre> <p>Then the derived <code>Foo</code> instance will be:</p> <pre data-language="haskell">instance (Show a, Ord a) =&gt; Foo (Option a)
+</pre> <p>Since the default type signatures for <code>bar</code> and <code>baz</code> require <code>Show a</code> and <code>Ord a</code> constraints, respectively.</p> <p>Constraints on the non-default type signatures can play a role in inferring the instance context as well. For example, if you have this class:</p> <pre data-language="haskell">class HigherEq f where
+  (==#) :: f a -&gt; f a -&gt; Bool
+  default (==#) :: Eq (f a) =&gt; f a -&gt; f a -&gt; Bool
+  x ==# y = (x == y)
+</pre> <p>And you tried to derive an instance for it:</p> <pre data-language="haskell">instance Eq a =&gt; Eq (Option a) where ...
+data Option a = None | Some a deriving HigherEq
+</pre> <p>Then it will fail with an error to the effect of:</p> <pre data-language="haskell">No instance for (Eq a)
+    arising from the 'deriving' clause of a data type declaration
+</pre> <p>That is because we require an <code>Eq (Option a)</code> instance from the default type signature for <code>(==#)</code>, which in turn requires an <code>Eq a</code> instance, which we don’t have in scope. But if you tweak the definition of <code>HigherEq</code> slightly:</p> <pre data-language="haskell">class HigherEq f where
+  (==#) :: Eq a =&gt; f a -&gt; f a -&gt; Bool
+  default (==#) :: Eq (f a) =&gt; f a -&gt; f a -&gt; Bool
+  x ==# y = (x == y)
+</pre> <p>Then it becomes possible to derive a <code>HigherEq Option</code> instance. Note that the only difference is that now the non-default type signature for <code>(==#)</code> brings in an <code>Eq a</code> constraint. Constraints from non-default type signatures never appear in the derived instance context itself, but they can be used to discharge obligations that are demanded by the default type signatures. In the example above, the default type signature demanded an <code>Eq a</code> instance, and the non-default signature was able to satisfy that request, so the derived instance is simply:</p> <pre data-language="haskell">instance HigherEq Option
+</pre> </li> <li>
+<p><a class="reference internal" href="#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a> can be used with partially applied classes, such as</p> <pre data-language="haskell">data T a = MKT a deriving( D Int )
+</pre> <p>which generates</p> <pre data-language="haskell">instance D Int a =&gt; D Int (T a) where {}
+</pre> </li> <li>
+<p><a class="reference internal" href="#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a> can be used to fill in default instances for associated type families:</p> <pre data-language="haskell">{-# LANGUAGE DeriveAnyClass, TypeFamilies #-}
+
+class Sizable a where
+  type Size a
+  type Size a = Int
+
+data Bar = Bar deriving Sizable
+
+doubleBarSize :: Size Bar -&gt; Size Bar
+doubleBarSize s = 2*s
+</pre> <p>The <code>deriving( Sizable )</code> is equivalent to saying</p> <pre data-language="haskell">instance Sizeable Bar where {}
+</pre> <p>and then the normal rules for filling in associated types from the default will apply, making <code>Size Bar</code> equal to <code>Int</code>.</p> </li> </ul> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/derive_any_class.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/derive_any_class.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

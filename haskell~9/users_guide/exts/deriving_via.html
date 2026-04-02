@@ -1,0 +1,188 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>6.6.8. Deriving via - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content=" DerivingStrategies ">
+  <meta name="keywords" content="deriving, haskell, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/exts/deriving_via.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="id1">6.6.8. Deriving via</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="deriving-via">  <dl class="std extension"> <dt class="sig sig-object std" id="extension-DerivingVia">
+<code>DerivingVia</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Implies<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p><a class="reference internal" href="deriving_strategies#extension-DerivingStrategies"><code>DerivingStrategies</code></a></p> </dd> <dt class="field-even">Since<span class="colon">:</span>
+</dt> <dd class="field-even">
+<p>8.6.1</p> </dd> </dl> </dd>
+</dl> <p>This allows <code>deriving</code> a class instance for a type by specifying another type that is already an instance of that class. This only makes sense if the methods have identical runtime representations, in the sense that coerce (see The <code>Coercible</code> constraint) can convert the existing implementation into the desired implementation. The generated code will be rejected with a type error otherwise.</p> <p><a class="reference internal" href="#extension-DerivingVia"><code>DerivingVia</code></a> is indicated by the use of the <code>via</code> deriving strategy. <code>via</code> requires specifying another type (the <code>via</code> type) to <code>coerce</code> through. For example, this code:</p> <pre data-language="haskell">{-# LANGUAGE DerivingVia #-}
+
+import Numeric
+
+newtype Hex a = Hex a
+
+instance (Integral a, Show a) =&gt; Show (Hex a) where
+  show (Hex a) = "0x" ++ showHex a ""
+
+newtype Unicode = U Int
+  deriving Show
+    via (Hex Int)
+
+-- &gt;&gt;&gt; euroSign
+-- 0x20ac
+euroSign :: Unicode
+euroSign = U 0x20ac
+</pre> <p>Generates the following instance</p> <pre data-language="haskell">instance Show Unicode where
+  show :: Unicode -&gt; String
+  show = Data.Coerce.coerce
+    @(Hex Int -&gt; String)
+    @(Unicode -&gt; String)
+    show
+</pre> <p>This extension generalizes <a class="reference internal" href="newtype_deriving#extension-GeneralizedNewtypeDeriving"><code>GeneralizedNewtypeDeriving</code></a>. To derive <code>Num Unicode</code> with GND (<code>deriving newtype Num</code>) it must reuse the <code>Num Int</code> instance. With <code>DerivingVia</code>, we can explicitly specify the representation type <code>Int</code>:</p> <pre data-language="haskell">newtype Unicode = U Int
+  deriving Num
+    via Int
+
+  deriving Show
+    via (Hex Int)
+
+euroSign :: Unicode
+euroSign = 0x20ac
+</pre> <p>Code duplication is common in instance declarations. A familiar pattern is lifting operations over an <code>Applicative</code> functor. Instead of having catch-all instances for <code>f a</code> which overlap with all other such instances, like so:</p> <pre data-language="haskell">instance (Applicative f, Semigroup a) =&gt; Semigroup (f a) ..
+instance (Applicative f, Monoid    a) =&gt; Monoid    (f a) ..
+</pre> <p>We can instead create a newtype <code>App</code> (where <code>App f a</code> and <code>f a</code> are represented the same in memory) and use <a class="reference internal" href="#extension-DerivingVia"><code>DerivingVia</code></a> to explicitly enable uses of this pattern:</p> <pre data-language="haskell">{-# LANGUAGE DerivingVia, DeriveFunctor, GeneralizedNewtypeDeriving #-}
+
+import Control.Applicative
+
+newtype App f a = App (f a) deriving newtype (Functor, Applicative)
+
+instance (Applicative f, Semigroup a) =&gt; Semigroup (App f a) where
+  (&lt;&gt;) = liftA2 (&lt;&gt;)
+
+instance (Applicative f, Monoid a) =&gt; Monoid (App f a) where
+  mempty = pure mempty
+
+data Pair a = MkPair a a
+  deriving stock
+    Functor
+
+  deriving (Semigroup, Monoid)
+    via (App Pair a)
+
+instance Applicative Pair where
+  pure a = MkPair a a
+
+  MkPair f g &lt;*&gt; MkPair a b = MkPair (f a) (g b)
+</pre> <p>Note that the <code>via</code> type does not have to be a <code>newtype</code>. The only restriction is that it is coercible with the original data type. This means there can be arbitrary nesting of newtypes, as in the following example:</p> <pre data-language="haskell">newtype Kleisli m a b = Kleisli (a -&gt; m b)
+  deriving (Semigroup, Monoid)
+    via (a -&gt; App m b)
+</pre> <p>Here we make use of the <code>Monoid ((-&gt;) a)</code> instance.</p> <p>When used in combination with <a class="reference internal" href="standalone_deriving#extension-StandaloneDeriving"><code>StandaloneDeriving</code></a> we swap the order for the instance we base our derivation on and the instance we define e.g.:</p> <pre data-language="haskell">deriving via (a -&gt; App m b) instance Monoid (Kleisli m a b)
+</pre> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/deriving_via.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/deriving_via.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

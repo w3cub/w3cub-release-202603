@@ -1,0 +1,255 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>6.19.3. Generic Programming - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content="There are a few ways to do datatype-generic programming using the GHC.Generics framework. One is making use of the Generically and Generically1 &hellip;">
+  <meta name="keywords" content="generic, programming, haskell, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/exts/generics.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="id1">6.19.3. Generic programming</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="generic-programming">  <p>There are a few ways to do datatype-generic programming using the <a class="reference external" href="../../libraries/base-4.21.0.0-8e62/ghc-generics">GHC.Generics</a> framework. One is making use of the <code>Generically</code> and <code>Generically1</code> wrappers from <code>GHC.Generics</code>, instances can be derived via them using <a class="reference internal" href="deriving_via#extension-DerivingVia"><code>DerivingVia</code></a>:</p> <pre data-language="haskell">{-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE DerivingVia        #-}
+
+import GHC.Generics
+
+data V4 a = V4 a a a a
+  deriving
+  stock (Generic, Generic1)
+
+  deriving (Semigroup, Monoid)
+  via Generically (V4 a)
+
+  deriving (Functor, Applicative)
+  via Generically1 V4
+</pre> <p>The older approach uses <a class="reference internal" href="#extension-DeriveGeneric"><code>DeriveGeneric</code></a>, <a class="reference internal" href="default_signatures#extension-DefaultSignatures"><code>DefaultSignatures</code></a>, and <a class="reference internal" href="derive_any_class#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a>. It derives instances by providing a distinguished generic implementation as part of the type class declaration. This section gives a very brief overview of how to do it.</p> <p>Generic programming support in GHC allows defining classes with methods that do not need a user specification when instantiating: the method body is automatically derived by GHC. This is similar to what happens for standard classes such as <code>Read</code> and <code>Show</code>, for instance, but now for user-defined classes.</p> <div class="admonition note" id="generic-classes"> <p class="admonition-title">Note</p> <p>GHC used to have an implementation of generic classes as defined in the paper “Derivable type classes”, Ralf Hinze and Simon Peyton Jones, Haskell Workshop, Montreal Sept 2000, pp. 94-105. These have been removed and replaced by the more general support for generic programming.</p> </div> <section id="deriving-representations"> <h2>
+<span class="section-number">6.19.3.1. </span>Deriving representations</h2> <p>The first thing we need is generic representations. The <code>GHC.Generics</code> module defines a couple of primitive types that are used to represent Haskell datatypes:</p> <pre data-language="haskell">-- | Unit: used for constructors without arguments
+data U1 p = U1
+
+-- | Constants, additional parameters and recursion of kind Type
+newtype K1 i c p = K1 { unK1 :: c }
+
+-- | Meta-information (constructor names, etc.)
+newtype M1 i c f p = M1 { unM1 :: f p }
+
+-- | Sums: encode choice between constructors
+infixr 5 :+:
+data (:+:) f g p = L1 (f p) | R1 (g p)
+
+-- | Products: encode multiple arguments to constructors
+infixr 6 :*:
+data (:*:) f g p = f p :*: g p
+</pre> <p>The <code>Generic</code> and <code>Generic1</code> classes mediate between user-defined datatypes and their internal representation as a sum-of-products:</p> <pre data-language="haskell">class Generic a where
+  -- Encode the representation of a user datatype
+  type Rep a :: Type -&gt; Type
+  -- Convert from the datatype to its representation
+  from  :: a -&gt; (Rep a) x
+  -- Convert from the representation to the datatype
+  to    :: (Rep a) x -&gt; a
+
+class Generic1 (f :: k -&gt; Type) where
+  type Rep1 f :: k -&gt; Type
+
+  from1  :: f a -&gt; Rep1 f a
+  to1    :: Rep1 f a -&gt; f a
+</pre> <p><code>Generic1</code> is used for functions that can only be defined over type containers, such as <code>map</code>. Note that <code>Generic1</code> ranges over types of kind <code>Type -&gt; Type</code> by default, but if the <a class="reference internal" href="poly_kinds#extension-PolyKinds"><code>PolyKinds</code></a> extension is enabled, then it can range of types of kind <code>k -&gt; Type</code>, for any kind <code>k</code>.</p> <dl class="std extension"> <dt class="sig sig-object std" id="extension-DeriveGeneric">
+<code>DeriveGeneric</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Since<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>7.2.1</p> </dd> <dt class="field-even">Status<span class="colon">:</span>
+</dt> <dd class="field-even">
+<p>Included in <a class="reference internal" href="control#extension-GHC2024"><code>GHC2024</code></a>, <a class="reference internal" href="control#extension-GHC2021"><code>GHC2021</code></a></p> </dd> </dl> <p>Allow automatic deriving of instances for the <code>Generic</code> typeclass.</p> </dd>
+</dl> <p>Instances of these classes can be derived by GHC with the <a class="reference internal" href="#extension-DeriveGeneric"><code>DeriveGeneric</code></a> extension, and are necessary to be able to define generic instances automatically.</p> <p>For example, a user-defined datatype of trees</p> <pre data-language="haskell">data UserTree a = Node a (UserTree a) (UserTree a) | Leaf
+</pre> <p>in a <code>Main</code> module in a package named <code>foo</code> will get the following representation:</p> <pre data-language="haskell">instance Generic (UserTree a) where
+  -- Representation type
+  type Rep (UserTree a) =
+    M1 D ('MetaData "UserTree" "Main" "package-name" 'False) (
+          M1 C ('MetaCons "Node" 'PrefixI 'False) (
+                M1 S ('MetaSel 'Nothing
+                               'NoSourceUnpackedness
+                               'NoSourceStrictness
+                               'DecidedLazy)
+                     (K1 R a)
+            :*: M1 S ('MetaSel 'Nothing
+                               'NoSourceUnpackedness
+                               'NoSourceStrictness
+                               'DecidedLazy)
+                     (K1 R (UserTree a))
+            :*: M1 S ('MetaSel 'Nothing
+                               'NoSourceUnpackedness
+                               'NoSourceStrictness
+                               'DecidedLazy)
+                     (K1 R (UserTree a)))
+      :+: M1 C ('MetaCons "Leaf" 'PrefixI 'False) U1)
+
+  -- Conversion functions
+  from (Node x l r) = M1 (L1 (M1 (M1 (K1 x) :*: M1 (K1 l) :*: M1 (K1 r))))
+  from Leaf         = M1 (R1 (M1 U1))
+  to (M1 (L1 (M1 (M1 (K1 x) :*: M1 (K1 l) :*: M1 (K1 r))))) = Node x l r
+  to (M1 (R1 (M1 U1)))                                      = Leaf
+</pre> <p>This representation is generated automatically if a <code>deriving Generic</code> clause is attached to the datatype. <a class="reference external" href="#stand-alone-deriving">Standalone deriving</a> can also be used.</p> </section> <section id="writing-generic-functions"> <h2>
+<span class="section-number">6.19.3.2. </span>Writing generic functions</h2> <p>A generic function is defined by creating a class and giving instances for each of the representation types of <code>GHC.Generics</code>. As an example we show generic serialization:</p> <pre data-language="haskell">data Bin = O | I
+
+class GSerialize f where
+  gput :: f a -&gt; [Bin]
+
+instance GSerialize U1 where
+  gput U1 = []
+
+instance (GSerialize a, GSerialize b) =&gt; GSerialize (a :*: b) where
+  gput (x :*: y) = gput x ++ gput y
+
+instance (GSerialize a, GSerialize b) =&gt; GSerialize (a :+: b) where
+  gput (L1 x) = O : gput x
+  gput (R1 x) = I : gput x
+
+instance (GSerialize a) =&gt; GSerialize (M1 i c a) where
+  gput (M1 x) = gput x
+
+instance (Serialize a) =&gt; GSerialize (K1 i a) where
+  gput (K1 x) = put x
+</pre> <p>A caveat: this encoding strategy may not be reliable across different versions of GHC. When deriving a <code>Generic</code> instance is free to choose any nesting of <code>:+:</code> and <code>:*:</code> it chooses, so if GHC chooses <code>(a :+: b) :+: c</code>, then the encoding for <code>a</code> would be <code>[O, O]</code>, <code>b</code> would be <code>[O, I]</code>, and <code>c</code> would be <code>[I]</code>. However, if GHC chooses <code>a :+: (b :+: c)</code>, then the encoding for <code>a</code> would be <code>[O]</code>, <code>b</code> would be <code>[I, O]</code>, and <code>c</code> would be <code>[I, I]</code>. (In practice, the current implementation tries to produce a more-or-less balanced nesting of <code>:+:</code> and <code>:*:</code> so that the traversal of the structure of the datatype from the root to a particular component can be performed in logarithmic rather than linear time.)</p> <p>Typically this <code>GSerialize</code> class will not be exported, as it only makes sense to have instances for the representation types.</p> </section> <section id="unlifted-representation-types"> <h2>
+<span class="section-number">6.19.3.3. </span>Unlifted representation types</h2> <p>The data family <code>URec</code> is provided to enable generic programming over datatypes with certain unlifted arguments. There are six instances corresponding to common unlifted types:</p> <pre data-language="haskell">data family URec a p
+
+data instance URec (Ptr ()) p = UAddr   { uAddr#   :: Addr#   }
+data instance URec Char     p = UChar   { uChar#   :: Char#   }
+data instance URec Double   p = UDouble { uDouble# :: Double# }
+data instance URec Int      p = UInt    { uInt#    :: Int#    }
+data instance URec Float    p = UFloat  { uFloat#  :: Float#  }
+data instance URec Word     p = UWord   { uWord#   :: Word#   }
+</pre> <p>Six type synonyms are provided for convenience:</p> <pre data-language="haskell">type UAddr   = URec (Ptr ())
+type UChar   = URec Char
+type UDouble = URec Double
+type UFloat  = URec Float
+type UInt    = URec Int
+type UWord   = URec Word
+</pre> <p>As an example, this data declaration:</p> <pre data-language="haskell">data IntHash = IntHash Int#
+  deriving Generic
+</pre> <p>results in the following <code>Generic</code> instance:</p> <pre data-language="haskell">instance 'Generic' IntHash where
+  type 'Rep' IntHash =
+    'D1' ('MetaData "IntHash" "Main" "package-name" 'False)
+      ('C1' ('MetaCons "IntHash" 'PrefixI 'False)
+        ('S1' ('MetaSel 'Nothing
+                        'NoSourceUnpackedness
+                        'NoSourceStrictness
+                        'DecidedLazy)
+              'UInt'))
+</pre> <p>A user could provide, for example, a <code>GSerialize UInt</code> instance so that a <code>Serialize IntHash</code> instance could be easily defined in terms of <code>GSerialize</code>.</p> </section> <section id="generic-defaults"> <h2>
+<span class="section-number">6.19.3.4. </span>Generic defaults</h2> <p>The only thing left to do now is to define a “front-end” class, which is exposed to the user:</p> <pre data-language="haskell">class Serialize a where
+  put :: a -&gt; [Bin]
+
+  default put :: (Generic a, GSerialize (Rep a)) =&gt; a -&gt; [Bin]
+  put = gput . from
+</pre> <p>Here we use a <a class="reference external" href="#class-default-signatures">default signature</a> to specify that the user does not have to provide an implementation for <code>put</code>, as long as there is a <code>Generic</code> instance for the type to instantiate. For the <code>UserTree</code> type, for instance, the user can just write:</p> <pre data-language="haskell">instance (Serialize a) =&gt; Serialize (UserTree a)
+</pre> <p>The default method for <code>put</code> is then used, corresponding to the generic implementation of serialization. If you are using <a class="reference internal" href="derive_any_class#extension-DeriveAnyClass"><code>DeriveAnyClass</code></a>, the same instance is generated by simply attaching a <code>deriving Serialize</code> clause to the <code>UserTree</code> datatype declaration. For more examples of generic functions please refer to the <a class="reference external" href="https://hackage.haskell.org/package/generic-deriving">generic-deriving</a> package on Hackage.</p> </section> <section id="more-information"> <h2>
+<span class="section-number">6.19.3.5. </span>More information</h2> <p>For more details please refer to the <a class="reference external" href="https://www.haskell.org/haskellwiki/GHC.Generics">Haskell Wiki page</a> or the original paper <a class="reference internal" href="#generics2010" id="id2"><span>[Generics2010]</span></a>.</p> <div role="list" class="citation-list"> <div class="citation" id="generics2010" role="doc-biblioentry"> <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Generics2010</a><span class="fn-bracket">]</span></span> <p>Jose Pedro Magalhaes, Atze Dijkstra, Johan Jeuring, and Andres Loeh. <a class="reference external" href="https://dreixel.net/research/pdf/gdmh.pdf">A generic deriving mechanism for Haskell</a>. Proceedings of the third ACM Haskell symposium on Haskell (Haskell’2010), pp. 37-48, ACM, 2010.</p> </div> </div> </section> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/generics.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/generics.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>6.7.2. View Patterns - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content=" 6.10.1 ">
+  <meta name="keywords" content="view, patterns, haskell, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/exts/view_patterns.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="id1">6.7.2. View patterns</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="view-patterns">  <dl class="std extension"> <dt class="sig sig-object std" id="extension-ViewPatterns">
+<code>ViewPatterns</code> </dt> <dd>
+<dl class="field-list simple"> <dt class="field-odd">Since<span class="colon">:</span>
+</dt> <dd class="field-odd">
+<p>6.10.1</p> </dd> </dl> <p>Allow use of view pattern syntax.</p> </dd>
+</dl> <p>View patterns are enabled by the language extension <a class="reference internal" href="#extension-ViewPatterns"><code>ViewPatterns</code></a>. More information and examples of view patterns can be found on the <a class="reference external" href="https://gitlab.haskell.org/ghc/ghc/wikis/view-patterns">Wiki page</a>.</p> <p>View patterns are somewhat like pattern guards that can be nested inside of other patterns. They are a convenient way of pattern-matching against values of abstract types. For example, in a programming language implementation, we might represent the syntax of the types of the language as follows:</p> <pre data-language="haskell">type Typ
+
+data TypView = Unit
+             | Arrow Typ Typ
+
+view :: Typ -&gt; TypView
+
+-- additional operations for constructing Typ's ...
+</pre> <p>The representation of Typ is held abstract, permitting implementations to use a fancy representation (e.g., hash-consing to manage sharing). Without view patterns, using this signature is a little inconvenient:</p> <pre data-language="haskell">size :: Typ -&gt; Integer
+size t = case view t of
+  Unit -&gt; 1
+  Arrow t1 t2 -&gt; size t1 + size t2
+</pre> <p>It is necessary to iterate the case, rather than using an equational function definition. And the situation is even worse when the matching against <code>t</code> is buried deep inside another pattern.</p> <p>View patterns permit calling the view function inside the pattern and matching against the result:</p> <pre data-language="haskell">size (view -&gt; Unit) = 1
+size (view -&gt; Arrow t1 t2) = size t1 + size t2
+</pre> <p>That is, we add a new form of pattern, written ⟨expression⟩ <code>-&gt;</code> ⟨pattern⟩ that means “apply the expression to whatever we’re trying to match against, and then match the result of that application against the pattern”. The expression can be any Haskell expression of function type, and view patterns can be used wherever patterns are used.</p> <p>The semantics of a pattern <code>(</code> ⟨exp⟩ <code>-&gt;</code> ⟨pat⟩ <code>)</code> are as follows:</p> <ul> <li>
+<p>Scoping: The variables bound by the view pattern are the variables bound by ⟨pat⟩.</p> <p>Any variables in ⟨exp⟩ are bound occurrences, but variables bound “to the left” in a pattern are in scope. This feature permits, for example, one argument to a function to be used in the view of another argument. For example, the function <code>clunky</code> from <a class="reference internal" href="pattern_guards#pattern-guards"><span class="std std-ref">Pattern guards</span></a> can be written using view patterns as follows:</p> <pre data-language="haskell">clunky env (lookup env -&gt; Just val1) (lookup env -&gt; Just val2) = val1 + val2
+...other equations for clunky...
+</pre> <p>More precisely, the scoping rules are:</p> <ul> <li>
+<p>In a single pattern, variables bound by patterns to the left of a view pattern expression are in scope. For example:</p> <pre data-language="haskell">example :: Maybe ((String -&gt; Integer,Integer), String) -&gt; Bool
+example (Just ((f,_), f -&gt; 4)) = True
+</pre> <p>Additionally, in function definitions, variables bound by matching earlier curried arguments may be used in view pattern expressions in later arguments:</p> <pre data-language="haskell">example :: (String -&gt; Integer) -&gt; String -&gt; Bool
+example f (f -&gt; 4) = True
+</pre> <p>That is, the scoping is the same as it would be if the curried arguments were collected into a tuple.</p> </li> <li>
+<p>In mutually recursive bindings, such as <code>let</code>, <code>where</code>, or the top level, view patterns in one declaration may not mention variables bound by other declarations. That is, each declaration must be self-contained. For example, the following program is not allowed:</p> <pre data-language="haskell">let {(x -&gt; y) = e1 ;
+     (y -&gt; x) = e2 } in x
+</pre> </li> </ul> <p>(For some amplification on this design choice see <a class="reference external" href="https://gitlab.haskell.org/ghc/ghc/issues/4061">#4061</a>.</p> </li> <li>Typing: If ⟨exp⟩ has type ⟨T1⟩ <code>-&gt;</code> ⟨T2⟩ and ⟨pat⟩ matches a ⟨T2⟩, then the whole view pattern matches a ⟨T1⟩.</li> <li>
+<p>Matching: To the equations in Section 3.17.3 of the <a class="reference external" href="https://www.haskell.org/onlinereport/">Haskell 98 Report</a>, add the following:</p> <pre data-language="haskell">case v of { (e -&gt; p) -&gt; e1 ; _ -&gt; e2 }
+ =
+case (e v) of { p -&gt; e1 ; _ -&gt; e2 }
+</pre> <p>That is, to match a variable ⟨v⟩ against a pattern <code>(</code> ⟨exp⟩ <code>-&gt;</code> ⟨pat⟩ <code>)</code>, evaluate <code>(</code> ⟨exp⟩ ⟨v⟩ <code>)</code> and match the result against ⟨pat⟩.</p> </li> <li>
+<p>Efficiency: When the same view function is applied in multiple branches of a function definition or a case expression (e.g., in <code>size</code> above), GHC makes an attempt to collect these applications into a single nested case expression, so that the view function is only applied once. Pattern compilation in GHC follows the matrix algorithm described in Chapter 4 of <a class="reference external" href="https://www.microsoft.com/en-us/research/wp-content/uploads/1987/01/slpj-book-1987-small.pdf">The Implementation of Functional Programming Languages</a>. When the top rows of the first column of a matrix are all view patterns with the “same” expression, these patterns are transformed into a single nested case. This includes, for example, adjacent view patterns that line up in a tuple, as in</p> <pre data-language="haskell">f ((view -&gt; A, p1), p2) = e1
+f ((view -&gt; B, p3), p4) = e2
+</pre> <p>The current notion of when two view pattern expressions are “the same” is very restricted: it is not even full syntactic equality. However, it does include variables, literals, applications, and tuples; e.g., two instances of <code>view ("hi", "there")</code> will be collected. However, the current implementation does not compare up to alpha-equivalence, so two instances of <code>(x, view x -&gt; y)</code> will not be coalesced.</p> </li> </ul> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/view_patterns.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/view_patterns.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

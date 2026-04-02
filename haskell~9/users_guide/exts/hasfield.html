@@ -1,0 +1,169 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>6.5.9. Record Field Selector Polymorphism - Haskell 9 - W3cubDocs</title>
+  
+  <meta name="description" content=" The module GHC.Records defines the following&#58; ">
+  <meta name="keywords" content="record, field, selector, polymorphism, haskell, haskell~9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/haskell~9/users_guide/exts/hasfield.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/haskell~9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/haskell~9/" class="_nav-link" title="" style="margin-left:0;">Haskell 9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _haskell">
+				
+				
+<h1 id="id1">6.5.9. Record field selector polymorphism</h1>
+<div class="_sphinx"> <div itemprop="articleBody"> <section id="record-field-selector-polymorphism">  <p>The module <a class="reference external" href="../../libraries/base-4.21.0.0-8e62/ghc-records">GHC.Records</a> defines the following:</p> <pre data-language="haskell">class HasField (x :: k) r a | x r -&gt; a where
+  getField :: r -&gt; a
+</pre> <p>A <code>HasField x r a</code> constraint represents the fact that <code>x</code> is a field of type <code>a</code> belonging to a record type <code>r</code>. The <code>getField</code> method gives the record selector function.</p> <p>This allows definitions that are polymorphic over record types with a specified field. For example, the following works with any record type that has a field <code>name :: String</code>:</p> <pre data-language="haskell">foo :: HasField "name" r String =&gt; r -&gt; String
+foo r = reverse (getField @"name" r)
+</pre> <p><code>HasField</code> is a magic built-in typeclass (similar to <code>Coercible</code>, for example). It is given special treatment by the constraint solver (see <a class="reference internal" href="#solving-hasfield-constraints"><span class="std std-ref">Solving HasField constraints</span></a>). Users may define their own instances of <code>HasField</code> also (see <a class="reference internal" href="#virtual-record-fields"><span class="std std-ref">Virtual record fields</span></a>).</p> <section id="solving-hasfield-constraints"> <h2 id="id2">
+<span class="section-number">6.5.9.1. </span>Solving HasField constraints</h2> <p>If the constraint solver encounters a constraint <code>HasField x r a</code> where <code>r</code> is a concrete datatype with a field <code>x</code> in scope, it will automatically solve the constraint using the field selector as the dictionary, unifying <code>a</code> with the type of the field if necessary. This happens irrespective of which extensions are enabled.</p> <p>For example, if the following datatype is in scope</p> <pre data-language="haskell">data Person = Person { name :: String }
+</pre> <p>the end result is rather like having an instance</p> <pre data-language="haskell">instance HasField "name" Person String where
+  getField = name
+</pre> <p>except that this instance is not actually generated anywhere, rather the constraint is solved directly by the constraint solver.</p> <p>A field must be in scope for the corresponding <code>HasField</code> constraint to be solved. This retains the existing representation hiding mechanism, whereby a module may choose not to export a field, preventing client modules from accessing or updating it directly.</p> <p>Solving <code>HasField</code> constraints depends on the field selector functions that are generated for each datatype definition:</p> <ul> <li>
+<p>If a record field does not have a selector function because its type would allow an existential variable to escape, the corresponding <code>HasField</code> constraint will not be solved. For example,</p> <pre data-language="haskell">{-# LANGUAGE ExistentialQuantification #-}
+data Exists t = forall x . MkExists { unExists :: t x }
+</pre> <p>does not give rise to a selector <code>unExists :: Exists t -&gt; t x</code> and we will not solve <code>HasField "unExists" (Exists t) a</code> automatically.</p> </li> <li>
+<p>If a record field has a polymorphic type (and hence the selector function is higher-rank), the corresponding <code>HasField</code> constraint will not be solved, because doing so would violate the functional dependency on <code>HasField</code> and/or require impredicativity. For example,</p> <pre data-language="haskell">{-# LANGUAGE RankNTypes #-}
+data Higher = MkHigher { unHigher :: forall t . t -&gt; t }
+</pre> <p>gives rise to a selector <code>unHigher :: Higher -&gt; (forall t . t -&gt; t)</code> but does not lead to solution of the constraint <code>HasField "unHigher" Higher a</code>.</p> </li> <li>
+<p>A record GADT may have a restricted type for a selector function, which may lead to additional unification when solving <code>HasField</code> constraints. For example,</p> <pre data-language="haskell">{-# LANGUAGE GADTs #-}
+data Gadt t where
+  MkGadt :: { unGadt :: Maybe v } -&gt; Gadt [v]
+</pre> <p>gives rise to a selector <code>unGadt :: Gadt [v] -&gt; Maybe v</code>, so the solver will reduce the constraint <code>HasField "unGadt" (Gadt t) b</code> by unifying <code>t ~ [v]</code> and <code>b ~ Maybe v</code> for some fresh metavariable <code>v</code>, rather as if we had an instance</p> <pre data-language="haskell">instance (t ~ [v], b ~ Maybe v) =&gt; HasField "unGadt" (Gadt t) b
+</pre> </li> <li>
+<p>If a record type has an old-fashioned datatype context, the <code>HasField</code> constraint will be reduced to solving the constraints from the context. For example,</p> <pre data-language="haskell">{-# LANGUAGE DatatypeContexts #-}
+data Eq a =&gt; Silly a = MkSilly { unSilly :: a }
+</pre> <p>gives rise to a selector <code>unSilly :: Eq a =&gt; Silly a -&gt; a</code>, so the solver will reduce the constraint <code>HasField "unSilly" (Silly a) b</code> to <code>Eq a</code> (and unify <code>a</code> with <code>b</code>), rather as if we had an instance</p> <pre data-language="haskell">instance (Eq a, a ~ b) =&gt; HasField "unSilly" (Silly a) b
+</pre> </li> </ul> <p>See <a class="reference internal" href="overloaded_record_dot#overloaded-record-dot"><span class="std std-ref">Overloaded record dot</span></a> for an application of solving <code>HasField</code> constraints to implementing “record dot syntax”.</p> </section> <section id="virtual-record-fields"> <h2 id="id3">
+<span class="section-number">6.5.9.2. </span>Virtual record fields</h2> <p>Users may define their own instances of <code>HasField</code>, provided they do not conflict with the built-in constraint solving behaviour. This allows “virtual” record fields to be defined for datatypes that do not otherwise have them.</p> <p>For example, this instance would make the <code>name</code> field of <code>Person</code> accessible using <code>#fullname</code> as well:</p> <pre data-language="haskell">instance HasField "fullname" Person String where
+  getField = name
+</pre> <p>More substantially, an anonymous records library could provide <code>HasField</code> instances for its anonymous records, and thus be compatible with the polymorphic record selectors introduced by this proposal. For example, something like this makes it possible to use <code>getField</code> to access <code>Record</code> values with the appropriate string in the type-level list of fields:</p> <pre data-language="haskell">data Record (xs :: [(k, Type)]) where
+  Nil  :: Record '[]
+  Cons :: Proxy x -&gt; a -&gt; Record xs -&gt; Record ('(x, a) ': xs)
+
+instance {-# OVERLAPPING #-} HasField x (Record ('(x, a) ': xs)) a where
+  getField (Cons _ v _) = v
+instance HasField x (Record xs) a =&gt; HasField x (Record ('(y, b) ': xs)) a where
+  getField (Cons _ _ r) = getField @x r
+
+r :: Record '[ '("name", String) ]
+r = Cons Proxy "R" Nil
+
+x = getField @"name" r
+</pre> <p>Since representations such as this can support field labels with kinds other than <code>Symbol</code>, the <code>HasField</code> class is poly-kinded (even though the built-in constraint solving works only at kind <code>Symbol</code>). In particular, this allows users to declare scoped field labels such as in the following example:</p> <pre data-language="haskell">data PersonFields = Name
+
+s :: Record '[ '(Name, String) ]
+s = Cons Proxy "S" Nil
+
+y = getField @Name s
+</pre> <p>In order to avoid conflicting with the built-in constraint solving, the following user-defined <code>HasField</code> instances are prohibited (in addition to the usual rules, such as the prohibition on type families appearing in instance heads):</p> <ul class="simple"> <li>
+<code>HasField _ r _</code> where <code>r</code> is a variable;</li> <li>
+<code>HasField _ (T ...) _</code> if <code>T</code> is a data family (because it might have fields introduced later, using data instance declarations);</li> <li>
+<code>HasField x (T ...) _</code> if <code>x</code> is a variable and <code>T</code> has any fields at all (but this instance is permitted if <code>T</code> has no fields);</li> <li>
+<code>HasField "foo" (T ...) _</code> if <code>T</code> has a field <code>foo</code> (but this instance is permitted if it does not).</li> </ul> <p>If a field has a higher-rank or existential type, the corresponding <code>HasField</code> constraint will not be solved automatically (as described above), but in the interests of simplicity we do not permit users to define their own instances either. If a field is not in scope, the corresponding instance is still prohibited, to avoid conflicts in downstream modules.</p> </section> </section> </div> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2002–2007 The University Court of the University of Glasgow. All rights reserved.<br>Licensed under the Glasgow Haskell Compiler License.<br>
+    <a href="https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/hasfield.html" class="_attribution-link">https://downloads.haskell.org/~ghc/9.12.1/docs/users_guide/exts/hasfield.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
