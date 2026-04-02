@@ -1,0 +1,215 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Application Dispatching - Flask 3.0 - W3cubDocs</title>
+  
+  <meta name="description" content="Application dispatching is the process of combining multiple Flask applications on the WSGI level. You can combine not only Flask applications but &hellip;">
+  <meta name="keywords" content="application, dispatching, flask, flask~3.0">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/flask~3.0/patterns/appdispatch/">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/flask~3.0.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/flask~3.0/" class="_nav-link" title="" style="margin-left:0;">Flask 3.0</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<h1>Application Dispatching</h1> <p>Application dispatching is the process of combining multiple Flask applications on the WSGI level. You can combine not only Flask applications but any WSGI application. This would allow you to run a Django and a Flask application in the same interpreter side by side if you want. The usefulness of this depends on how the applications work internally.</p> <p>The fundamental difference from <a class="reference internal" href="../packages/index"><span class="doc">Large Applications as Packages</span></a> is that in this case you are running the same or different Flask applications that are entirely isolated from each other. They run different configurations and are dispatched on the WSGI level.</p> <section id="working-with-this-document"> <h2>Working with this Document</h2> <p>Each of the techniques and examples below results in an <code>application</code> object that can be run with any WSGI server. For development, use the <code>flask run</code> command to start a development server. For production, see <a class="reference internal" href="../../deploying/index"><span class="doc">Deploying to Production</span></a>.</p> <pre data-language="python">from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
+</pre> </section> <section id="combining-applications"> <h2>Combining Applications</h2> <p>If you have entirely separated applications and you want them to work next to each other in the same Python interpreter process you can take advantage of the <code>werkzeug.wsgi.DispatcherMiddleware</code>. The idea here is that each Flask application is a valid WSGI application and they are combined by the dispatcher middleware into a larger one that is dispatched based on prefix.</p> <p>For example you could have your main application run on <code>/</code> and your backend interface on <code>/backend</code>.</p> <pre data-language="python">from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from frontend_app import application as frontend
+from backend_app import application as backend
+
+application = DispatcherMiddleware(frontend, {
+    '/backend': backend
+})
+</pre> </section> <section id="dispatch-by-subdomain"> <h2>Dispatch by Subdomain</h2> <p>Sometimes you might want to use multiple instances of the same application with different configurations. Assuming the application is created inside a function and you can call that function to instantiate it, that is really easy to implement. In order to develop your application to support creating new instances in functions have a look at the <a class="reference internal" href="../appfactories/index"><span class="doc">Application Factories</span></a> pattern.</p> <p>A very common example would be creating applications per subdomain. For instance you configure your webserver to dispatch all requests for all subdomains to your application and you then use the subdomain information to create user-specific instances. Once you have your server set up to listen on all subdomains you can use a very simple WSGI application to do the dynamic application creation.</p> <p>The perfect level for abstraction in that regard is the WSGI layer. You write your own WSGI application that looks at the request that comes and delegates it to your Flask application. If that application does not exist yet, it is dynamically created and remembered.</p> <pre data-language="python">from threading import Lock
+
+class SubdomainDispatcher:
+
+    def __init__(self, domain, create_app):
+        self.domain = domain
+        self.create_app = create_app
+        self.lock = Lock()
+        self.instances = {}
+
+    def get_application(self, host):
+        host = host.split(':')[0]
+        assert host.endswith(self.domain), 'Configuration error'
+        subdomain = host[:-len(self.domain)].rstrip('.')
+        with self.lock:
+            app = self.instances.get(subdomain)
+            if app is None:
+                app = self.create_app(subdomain)
+                self.instances[subdomain] = app
+            return app
+
+    def __call__(self, environ, start_response):
+        app = self.get_application(environ['HTTP_HOST'])
+        return app(environ, start_response)
+</pre> <p>This dispatcher can then be used like this:</p> <pre data-language="python">from myapplication import create_app, get_user_for_subdomain
+from werkzeug.exceptions import NotFound
+
+def make_app(subdomain):
+    user = get_user_for_subdomain(subdomain)
+    if user is None:
+        # if there is no user for that subdomain we still have
+        # to return a WSGI application that handles that request.
+        # We can then just return the NotFound() exception as
+        # application which will render a default 404 page.
+        # You might also redirect the user to the main page then
+        return NotFound()
+
+    # otherwise create the application for the specific user
+    return create_app(user)
+
+application = SubdomainDispatcher('example.com', make_app)
+</pre> </section> <section id="dispatch-by-path"> <h2>Dispatch by Path</h2> <p>Dispatching by a path on the URL is very similar. Instead of looking at the <code>Host</code> header to figure out the subdomain one simply looks at the request path up to the first slash.</p> <pre data-language="python">from threading import Lock
+from wsgiref.util import shift_path_info
+
+class PathDispatcher:
+
+    def __init__(self, default_app, create_app):
+        self.default_app = default_app
+        self.create_app = create_app
+        self.lock = Lock()
+        self.instances = {}
+
+    def get_application(self, prefix):
+        with self.lock:
+            app = self.instances.get(prefix)
+            if app is None:
+                app = self.create_app(prefix)
+                if app is not None:
+                    self.instances[prefix] = app
+            return app
+
+    def __call__(self, environ, start_response):
+        app = self.get_application(_peek_path_info(environ))
+        if app is not None:
+            shift_path_info(environ)
+        else:
+            app = self.default_app
+        return app(environ, start_response)
+
+def _peek_path_info(environ):
+    segments = environ.get("PATH_INFO", "").lstrip("/").split("/", 1)
+    if segments:
+        return segments[0]
+
+    return None
+</pre> <p>The big difference between this and the subdomain one is that this one falls back to another application if the creator function returns <code>None</code>.</p> <pre data-language="python">from myapplication import create_app, default_app, get_user_for_prefix
+
+def make_app(prefix):
+    user = get_user_for_prefix(prefix)
+    if user is not None:
+        return create_app(user)
+
+application = PathDispatcher(default_app, make_app)
+</pre> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2010 Pallets<br>Licensed under the BSD 3-clause License.<br>
+    <a href="https://flask.palletsprojects.com/en/3.0.x/patterns/appdispatch/" class="_attribution-link">https://flask.palletsprojects.com/en/3.0.x/patterns/appdispatch/</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
