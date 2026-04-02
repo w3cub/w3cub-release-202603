@@ -1,0 +1,127 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>OCaml Library &#58; Ephemeron - OCaml - W3cubDocs</title>
+  
+  <meta name="description" content=" Ephemerons and weak hash tables. ">
+  <meta name="keywords" content="module, ephemeron, ocaml, library">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/ocaml/api/ephemeron.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/ocaml.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/ocaml/" class="_nav-link" title="" style="margin-left:0;">OCaml</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _ocaml">
+				
+				
+<h1>Module Ephemeron</h1> <pre id="MODULEEphemeron" data-type="module Ephemeron [Module Ephemeron]" data-language="ocaml">module Ephemeron: sig .. end</pre>
+<div class="info module top"> <div class="info-desc"> <p>Ephemerons and weak hash tables.</p> <p>Ephemerons and weak hash tables are useful when one wants to cache or memorize the computation of a function, as long as the arguments and the function are used, without creating memory leaks by continuously keeping old computation results that are not useful anymore because one argument or the function is freed. An implementation using <a href="hashtbl#TYPEt"><code class="code"><span class="constructor">Hashtbl</span>.t</code></a> is not suitable because all associations would keep the arguments and the result in memory.</p> <p>Ephemerons can also be used for "adding" a field to an arbitrary boxed OCaml value: you can attach some information to a value created by an external library without memory leaks.</p> <p>Ephemerons hold some keys and one or no data. They are all boxed OCaml values. The keys of an ephemeron have the same behavior as weak pointers according to the garbage collector. In fact OCaml weak pointers are implemented as ephemerons without data.</p> <p>The keys and data of an ephemeron are said to be full if they point to a value, or empty if the value has never been set, has been unset, or was erased by the GC. In the function that accesses the keys or data these two states are represented by the <code class="code">option</code> type.</p> <p>The data is considered by the garbage collector alive if all the full keys are alive and if the ephemeron is alive. When one of the keys is not considered alive anymore by the GC, the data is emptied from the ephemeron. The data could be alive for another reason and in that case the GC will not free it, but the ephemeron will not hold the data anymore.</p> <p>The ephemerons complicate the notion of liveness of values, because it is not anymore an equivalence with the reachability from root value by usual pointers (not weak and not ephemerons). With ephemerons the notion of liveness is constructed by the least fixpoint of: A value is alive if:</p> <ul> <li>it is a root value</li> <li>it is reachable from alive value by usual pointers</li> <li>it is the data of an alive ephemeron with all its full keys alive</li> </ul> <p>Notes:</p> <ul> <li>All the types defined in this module cannot be marshaled using <a href="stdlib#VALoutput_value"><code class="code">output_value</code></a> or the functions of the <a href="marshal"><code class="code"><span class="constructor">Marshal</span></code></a> module.</li> </ul> <p>Ephemerons are defined in a language agnostic way in this paper: B. Hayes, Ephemerons: A New Finalization Mechanism, OOPSLA'97</p> </div> <ul class="info-attributes"> <li>
+<b>Since</b> 4.03</li> <li>
+<b>Alert unsynchronized_access.</b> Unsynchronized accesses to weak hash tables are a programming error.</li> </ul> </div>  <p><b>Unsynchronized accesses</b></p> <p>Unsynchronized accesses to a weak hash table may lead to an invalid weak hash table state. Thus, concurrent accesses to a weak hash table must be synchronized (for instance with a <a href="mutex#TYPEt"><code class="code"><span class="constructor">Mutex</span>.t</code></a>).</p> <pre id="MODULETYPES" data-type="module type S [Module Ephemeron]" data-language="ocaml">module type S = sig .. end</pre>
+<div class="info"> <p>The output signature of the functors <a href="ephemeron.k1.make"><code class="code"><span class="constructor">Ephemeron</span>.<span class="constructor">K1</span>.<span class="constructor">Make</span></code></a> and <a href="ephemeron.k2.make"><code class="code"><span class="constructor">Ephemeron</span>.<span class="constructor">K2</span>.<span class="constructor">Make</span></code></a>.</p> </div> <pre id="MODULETYPESeededS" data-type="module type SeededS [Module Ephemeron]" data-language="ocaml">module type SeededS = sig .. end</pre>
+<div class="info"> <p>The output signature of the functors <a href="ephemeron.k1.makeseeded"><code class="code"><span class="constructor">Ephemeron</span>.<span class="constructor">K1</span>.<span class="constructor">MakeSeeded</span></code></a> and <a href="ephemeron.k2.makeseeded"><code class="code"><span class="constructor">Ephemeron</span>.<span class="constructor">K2</span>.<span class="constructor">MakeSeeded</span></code></a>.</p> </div> <pre id="MODULEK1" data-type="module K1 [Module Ephemeron]" data-language="ocaml">module K1: sig .. end</pre>
+<div class="info"> <p>Ephemerons with one key.</p> </div> <pre id="MODULEK2" data-type="module K2 [Module Ephemeron]" data-language="ocaml">module K2: sig .. end</pre>
+<div class="info"> <p>Ephemerons with two keys.</p> </div> <pre id="MODULEKn" data-type="module Kn [Module Ephemeron]" data-language="ocaml">module Kn: sig .. end</pre>
+<div class="info"> <p>Ephemerons with arbitrary number of keys of the same type.</p> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 1995-2025 INRIA.<br>
+    <a href="https://ocaml.org/manual/5.4/api/Ephemeron.html" class="_attribution-link">https://ocaml.org/manual/5.4/api/Ephemeron.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
