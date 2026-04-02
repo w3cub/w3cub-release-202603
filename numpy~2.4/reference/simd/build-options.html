@@ -1,0 +1,304 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>CPU Build Options - NumPy 2.4 - W3cubDocs</title>
+  
+  <meta name="description" content="NumPy provides configuration options to optimize performance based on CPU capabilities. These options allow you to specify which CPU features to &hellip;">
+  <meta name="keywords" content="cpu, build, options, numpy, numpy~2.4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/numpy~2.4/reference/simd/build-options.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/numpy~2.4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/numpy~2.4/" class="_nav-link" title="" style="margin-left:0;">NumPy 2.4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="cpu-build-options"> <h1>CPU Build Options</h1> <section id="overview"> <h2>Overview</h2> <p>NumPy provides configuration options to optimize performance based on CPU capabilities. These options allow you to specify which CPU features to support, balancing performance, compatibility, and binary size. This document explains how to use these options effectively across various CPU architectures.</p> </section> <section id="key-configuration-options"> <h2>Key Configuration Options</h2> <p>NumPy uses several build options to control CPU optimizations:</p> <ul class="simple"> <li>
+<p><code>cpu-baseline</code>: The minimum set of CPU features required to run the compiled NumPy.</p> <ul> <li>Default: <code>min</code> (provides compatibility across a wide range of platforms)</li> <li>If your target CPU doesn’t support all specified baseline features, NumPy will fail to load with a Python runtime error</li> </ul> </li> <li>
+<code>cpu-baseline-detect</code>: controls detection of CPU baseline based on compiler flags. Default value is <code>auto</code> that enables detection if <code>-march=</code> or a similar compiler flag is used. The other possible values are <code>enabled</code> and <code>disabled</code> to respective enable or disable it unconditionally.</li> <li>
+<p><code>cpu-dispatch</code>: Additional CPU features for which optimized code paths will be generated.</p> <ul> <li>Default: <code>max</code> (enables all available optimizations)</li> <li>At runtime, NumPy will automatically select the fastest available code path based on your CPU’s capabilities</li> </ul> </li> <li>
+<p><code>disable-optimization</code>: Completely disables all CPU optimizations.</p> <ul> <li>Default: <code>false</code> (optimizations are enabled)</li> <li>When set to <code>true</code>, disables all CPU optimized code including dispatch, SIMD, and loop unrolling</li> <li>Useful for debugging, testing, or in environments where optimization causes issues</li> </ul> </li> </ul> <p>These options are specified at build time via meson-python arguments:</p> <pre data-language="python">pip install . -Csetup-args=-Dcpu-baseline="min" -Csetup-args=-Dcpu-dispatch="max"
+# or through spin
+spin build -- -Dcpu-baseline="min" -Dcpu-dispatch="max"
+</pre> <p><code>cpu-baseline</code> and <code>cpu-dispatch</code> can be set to specific <a class="reference internal" href="#opt-supported-features"><span class="std std-ref">CPU groups, features</span></a>, or <a class="reference internal" href="#opt-special-options"><span class="std std-ref">special options</span></a> that perform specific actions. The following sections describe these options in detail.</p> </section> <section id="common-usage-scenarios"> <h2>Common Usage Scenarios</h2> <section id="building-for-local-use-only"> <h3>Building for Local Use Only</h3> <p>When building for your machine only and not planning to distribute:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-baseline="native" -Csetup-args=-Dcpu-dispatch="none"
+</pre> <p>This automatically detects and uses all CPU features available on your machine.</p> <div class="admonition note"> <p class="admonition-title">Note</p> <p>A fatal error will be raised if <code>native</code> isn’t supported by the host platform.</p> </div> </section> <section id="excluding-specific-features"> <h3>Excluding Specific Features</h3> <p>You may want to exclude certain CPU features from the dispatched features:</p> <pre data-language="python"># For x86-64: exclude all AVX-512 features
+python -m build --wheel -Csetup-args=-Dcpu-dispatch="max -X86_V4"
+
+# For ARM64: exclude SVE
+python -m build --wheel -Csetup-args=-Dcpu-dispatch="max -SVE"
+</pre> <div class="admonition note"> <p class="admonition-title">Note</p> <p>Excluding a feature will also exclude any successor features that are implied by the excluded feature. For example, excluding <code>X86_V4</code> will exclude <code>AVX512_ICL</code> and <code>AVX512_SPR</code> as well.</p> </div> </section> <section id="targeting-older-cpus"> <h3>Targeting Older CPUs</h3> <p>On <code>x86-64</code>, by default the baseline is set to <code>min</code> which maps to <code>X86_V2</code>. This unsuitable for older CPUs (before 2009) or old virtual machines. To address this, set the baseline to <code>none</code>:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-baseline="none"
+</pre> <p>This will create a build that is compatible with all x86 CPUs, but without any manual optimizations or SIMD code paths for the baseline. The build will rely only on dispatched code paths for optimization.</p> </section> <section id="targeting-newer-cpus"> <h3>Targeting Newer CPUs</h3> <p>Raising the baseline improves performance for two main reasons:</p> <ol class="arabic simple"> <li>Dispatched kernels don’t cover all code paths</li> <li>A higher baseline leads to smaller binary size as the compiler won’t generate code paths for excluded dispatched features</li> </ol> <p>For CPUs from 2015 and newer, setting the baseline to <code>X86_V3</code> may be suitable:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-baseline="min+X86_V3"
+</pre> </section> </section> <section id="supported-cpu-features-by-architecture"> <h2 id="opt-supported-features">Supported CPU Features By Architecture</h2> <p>NumPy supports optimized code paths for multiple CPU architectures. Below are the supported feature groups for each architecture. The name of the feature group can be used in the build options <code>cpu-baseline</code> and <code>cpu-dispatch</code>.</p> <section id="x86"> <h3>X86</h3> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>Name</p></th> <th class="head"><p>Implies</p></th> <th class="head"><p>Includes</p></th> </tr> </thead>  <tr>
+<td><p><code>X86_V2</code></p></td> <td></td> <td><p><code>SSE</code> <code>SSE2</code> <code>SSE3</code> <code>SSSE3</code> <code>SSE4_1</code> <code>SSE4_2</code> <code>POPCNT</code> <code>CX16</code> <code>LAHF</code></p></td> </tr> <tr>
+<td><p><code>X86_V3</code></p></td> <td><p><code>X86_V2</code></p></td> <td><p><code>AVX</code> <code>AVX2</code> <code>FMA3</code> <code>BMI</code> <code>BMI2</code> <code>LZCNT</code> <code>F16C</code> <code>MOVBE</code></p></td> </tr> <tr>
+<td><p><code>X86_V4</code></p></td> <td><p><code>X86_V3</code></p></td> <td><p><code>AVX512F</code> <code>AVX512CD</code> <code>AVX512VL</code> <code>AVX512BW</code> <code>AVX512DQ</code></p></td> </tr> <tr>
+<td><p><code>AVX512_ICL</code></p></td> <td><p><code>X86_V4</code></p></td> <td><p><code>AVX512VBMI</code> <code>AVX512VBMI2</code> <code>AVX512VNNI</code> <code>AVX512BITALG</code> <code>AVX512VPOPCNTDQ</code> <code>AVX512IFMA</code> <code>VAES</code> <code>GFNI</code> <code>VPCLMULQDQ</code></p></td> </tr> <tr>
+<td><p><code>AVX512_SPR</code></p></td> <td><p><code>AVX512_ICL</code></p></td> <td><p><code>AVX512FP16</code></p></td> </tr>  </table> </div> <p>These groups correspond to CPU generations:</p> <ul class="simple"> <li>
+<code>X86_V2</code>: x86-64-v2 microarchitectures (CPUs since 2009)</li> <li>
+<code>X86_V3</code>: x86-64-v3 microarchitectures (CPUs since 2015)</li> <li>
+<code>X86_V4</code>: x86-64-v4 microarchitectures (AVX-512 capable CPUs)</li> <li>
+<code>AVX512_ICL</code>: Intel Ice Lake and similar CPUs</li> <li>
+<code>AVX512_SPR</code>: Intel Sapphire Rapids and newer CPUs</li> </ul> <div class="admonition note"> <p class="admonition-title">Note</p> <p>On 32-bit x86, <code>cx16</code> is excluded from <code>X86_V2</code>.</p> </div> </section> <section id="on-ibm-power-big-endian"> <h3>On IBM/POWER big-endian</h3> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>Name</p></th> <th class="head"><p>Implies</p></th> </tr> </thead>  <tr>
+<td><p><code>VSX</code></p></td> <td></td> </tr> <tr>
+<td><p><code>VSX2</code></p></td> <td><p><code>VSX</code></p></td> </tr> <tr>
+<td><p><code>VSX3</code></p></td> <td><p><code>VSX</code> <code>VSX2</code></p></td> </tr> <tr>
+<td><p><code>VSX4</code></p></td> <td><p><code>VSX</code> <code>VSX2</code> <code>VSX3</code></p></td> </tr>  </table> </div> </section> <section id="on-ibm-power-little-endian"> <h3>On IBM/POWER little-endian</h3> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>Name</p></th> <th class="head"><p>Implies</p></th> </tr> </thead>  <tr>
+<td><p><code>VSX</code></p></td> <td><p><code>VSX2</code></p></td> </tr> <tr>
+<td><p><code>VSX2</code></p></td> <td><p><code>VSX</code></p></td> </tr> <tr>
+<td><p><code>VSX3</code></p></td> <td><p><code>VSX</code> <code>VSX2</code></p></td> </tr> <tr>
+<td><p><code>VSX4</code></p></td> <td><p><code>VSX</code> <code>VSX2</code> <code>VSX3</code></p></td> </tr>  </table> </div> </section> <section id="on-armv7-a32"> <h3>On ARMv7/A32</h3> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>Name</p></th> <th class="head"><p>Implies</p></th> </tr> </thead>  <tr>
+<td><p><code>NEON</code></p></td> <td></td> </tr> <tr>
+<td><p><code>NEON_FP16</code></p></td> <td><p><code>NEON</code></p></td> </tr> <tr>
+<td><p><code>NEON_VFPV4</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code></p></td> </tr> <tr>
+<td><p><code>ASIMD</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code></p></td> </tr> <tr>
+<td><p><code>ASIMDHP</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p><code>ASIMDDP</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p><code>ASIMDFHM</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code> <code>ASIMDHP</code></p></td> </tr>  </table> </div> </section> <section id="on-armv8-a64"> <h3>On ARMv8/A64</h3> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>Name</p></th> <th class="head"><p>Implies</p></th> </tr> </thead>  <tr>
+<td><p><code>NEON</code></p></td> <td><p><code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p><code>NEON_FP16</code></p></td> <td><p><code>NEON</code> <code>NEON_VFPV4</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p><code>NEON_VFPV4</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p><code>ASIMD</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code></p></td> </tr> <tr>
+<td><p><code>ASIMDHP</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p><code>ASIMDDP</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p><code>ASIMDFHM</code></p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code> <code>ASIMDHP</code></p></td> </tr>  </table> </div> </section> <section id="on-ibm-zsystem-s390x"> <h3>On IBM/ZSYSTEM(S390X)</h3> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>Name</p></th> <th class="head"><p>Implies</p></th> </tr> </thead>  <tr>
+<td><p><code>VX</code></p></td> <td></td> </tr> <tr>
+<td><p><code>VXE</code></p></td> <td><p><code>VX</code></p></td> </tr> <tr>
+<td><p><code>VXE2</code></p></td> <td><p><code>VX</code> <code>VXE</code></p></td> </tr>  </table> </div> </section> <section id="on-riscv64"> <h3>On RISCV64</h3> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>Name</p></th> <th class="head"><p>Implies</p></th> </tr> </thead>  <tr>
+<td><p><code>RVV</code></p></td> <td></td> </tr>  </table> </div> </section> </section> <section id="special-options"> <h2 id="opt-special-options">Special Options</h2> <p>Beyond specific feature names, you can use these special values:</p> <section id="none"> <h3><code>NONE</code></h3> <p>Enables no features (equivalent to an empty string).</p> </section> <section id="native"> <h3><code>NATIVE</code></h3> <p>Enables all features supported by the host CPU.</p> </section> <section id="detect"> <h3><code>DETECT</code></h3> <p>Detects the features enabled by the compiler. This option is appended by default to <code>cpu-baseline</code> if <code>-march</code>, <code>-mcpu</code>, <code>-xhost</code>, or <code>/QxHost</code> is set in the environment variable <code>CFLAGS</code> unless <code>cpu-baseline-detect</code> is <code>disabled</code>.</p> </section> <section id="min"> <h3><code>MIN</code></h3> <p>Enables the minimum CPU features for each architecture:</p> <div class="pst-scrollable-table-container">
+<table class="table table-left"> <thead> <tr>
+<th class="head"><p>For Arch</p></th> <th class="head"><p>Implies</p></th> </tr> </thead>  <tr>
+<td><p>x86 (32-bit)</p></td> <td><p><code>X86_V2</code></p></td> </tr> <tr>
+<td><p>x86-64</p></td> <td><p><code>X86_V2</code></p></td> </tr> <tr>
+<td><p>IBM/POWER (big-endian)</p></td> <td><p><code>NONE</code></p></td> </tr> <tr>
+<td><p>IBM/POWER (little-endian)</p></td> <td><p><code>VSX</code> <code>VSX2</code></p></td> </tr> <tr>
+<td><p>ARMv7/ARMHF</p></td> <td><p><code>NONE</code></p></td> </tr> <tr>
+<td><p>ARMv8/AArch64</p></td> <td><p><code>NEON</code> <code>NEON_FP16</code> <code>NEON_VFPV4</code> <code>ASIMD</code></p></td> </tr> <tr>
+<td><p>IBM/ZSYSTEM(S390X)</p></td> <td><p><code>NONE</code></p></td> </tr> <tr>
+<td><p>riscv64</p></td> <td><p><code>NONE</code></p></td> </tr>  </table> </div> </section> <section id="max"> <h3><code>MAX</code></h3> <p>Enables all features supported by the compiler and platform.</p> </section> <section id="operator-operators"> <h3>Operator Operators (<code>-</code>/<code>+</code>)</h3> <p>Remove or add specific features, useful with <code>MAX</code>, <code>MIN</code>, and <code>NATIVE</code>:</p> <ul class="simple"> <li>Adding a feature (<code>+</code>) includes all implied features</li> <li>Removing a feature (<code>-</code>) excludes all successor features that imply the removed feature</li> </ul> <p>Examples:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-dispatch="max-X86_V4"
+python -m build --wheel -Csetup-args=-Dcpu-baseline="min+X86_V4"
+</pre> </section> </section> <section id="usage-and-behaviors"> <h2>Usage And Behaviors</h2> <section id="case-insensitivity"> <h3>Case Insensitivity</h3> <p>CPU features and options are case-insensitive:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-dispatch="X86_v4"
+</pre> </section> <section id="mixing-features-across-architectures"> <h3>Mixing Features across Architectures</h3> <p>You can mix features from different architectures:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-baseline="X86_V4 VSX4 SVE"
+</pre> </section> <section id="order-independence"> <h3>Order Independence</h3> <p>The order of specified features doesn’t matter:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-dispatch="SVE X86_V4 x86_v3"
+</pre> </section> <section id="separators"> <h3>Separators</h3> <p>You can use spaces or commas as separators:</p> <pre data-language="python"># All of these are equivalent
+python -m build --wheel -Csetup-args=-Dcpu-dispatch="X86_V2 X86_V4"
+python -m build --wheel -Csetup-args=-Dcpu-dispatch=X86_V2,X86_V4
+</pre> </section> <section id="feature-combination"> <h3>Feature Combination</h3> <p>Features specified in options are automatically combined with all implied features:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-baseline=X86_V4
+</pre> <p>Equivalent to:</p> <pre data-language="python">python -m build --wheel -Csetup-args=-Dcpu-baseline="X86_V2 X86_V3 X86_V4"
+</pre> </section> <section id="baseline-overlapping"> <h3>Baseline Overlapping</h3> <p>Features specified in <code>cpu-baseline</code> will be excluded from the <code>cpu-dispatch</code> features, along with their implied features, but without excluding successor features that imply them.</p> <p>For instance, if you specify <code>cpu-baseline="X86_V4"</code>, it will exclude <code>X86_V4</code> and its implied features <code>X86_V2</code> and <code>X86_V3</code> from the <code>cpu-dispatch</code> features.</p> </section> <section id="compile-time-detection"> <h3>Compile-time Detection</h3> <p>Specifying features to <code>cpu-dispatch</code> or <code>cpu-baseline</code> doesn’t explicitly enable them. Features are detected at compile time, and the maximum available features based on your specified options will be enabled according to toolchain and platform support.</p> <p>This detection occurs by testing feature availability in the compiler through compile-time source files containing common intrinsics for the specified features. If both the compiler and assembler support the feature, it will be enabled.</p> <p>For example, if you specify <code>cpu-dispatch="AVX512_ICL"</code> but your compiler doesn’t support it, the feature will be excluded from the build. However, any implied features will still be enabled if they’re supported.</p> </section> </section> <section id="platform-differences"> <h2 id="opt-platform-differences">Platform differences</h2> <p>Some exceptional conditions force us to link some features together when it come to certain compilers or architectures, resulting in the impossibility of building them separately.</p> <p>These conditions can be divided into two parts, as follows:</p> <p><strong>Architectural compatibility</strong></p> <p>The need to align certain CPU features that are assured to be supported by successive generations of the same architecture, some cases:</p> <ul class="simple"> <li>On ppc64le <code>VSX(ISA 2.06)</code> and <code>VSX2(ISA 2.07)</code> both imply one another since the first generation that supports little-endian mode is <code>Power-8(ISA 2.07)</code>
+</li> <li>On AArch64 <code>NEON NEON_FP16 NEON_VFPV4 ASIMD</code> implies each other since they are part of the hardware baseline.</li> </ul> <p>For example:</p> <pre data-language="python"># On ARMv8/A64, specify NEON is going to enable Advanced SIMD
+# and all predecessor extensions
+python -m build --wheel -Csetup-args=-Dcpu-baseline=neon
+# which is equivalent to
+python -m build --wheel -Csetup-args=-Dcpu-baseline="neon neon_fp16 neon_vfpv4 asimd"
+</pre> <div class="admonition note"> <p class="admonition-title">Note</p> <p>Please take a deep look at <a class="reference internal" href="#opt-supported-features"><span class="std std-ref">Supported CPU Features By Architecture</span></a>, in order to determine the features that imply one another.</p> </div> </section> <section id="build-report"> <h2 id="opt-build-report">Build report</h2> <p>In most cases, the CPU build options do not produce any fatal errors that lead to hanging the build. Most of the errors that may appear in the build log serve as heavy warnings due to the lack of some expected CPU features by the compiler.</p> <p>So we strongly recommend checking the final report log, to be aware of what kind of CPU features are enabled and what are not.</p> <p>You can find the final report of CPU optimizations by tracing meson build log, and here is how it looks on x86_64/gcc:</p> <pre data-language="bash">Test features "X86_V2" : Supported 
+Test features "X86_V3" : Supported 
+Test features "X86_V4" : Supported 
+Test features "AVX512_ICL" : Supported 
+Test features "AVX512_SPR" : Supported 
+Configuring npy_cpu_dispatch_config.h using configuration
+Message: 
+CPU Optimization Options
+  baseline:
+    Requested : min
+    Enabled   : X86_V2
+  dispatch:
+    Requested : max
+    Enabled   : X86_V3 X86_V4 AVX512_ICL AVX512_SPR
+
+Generating multi-targets for "_umath_tests.dispatch.h" 
+  Enabled targets: X86_V3, baseline
+Generating multi-targets for "argfunc.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "x86_simd_argsort.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3
+Generating multi-targets for "x86_simd_qsort.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3
+Generating multi-targets for "x86_simd_qsort_16bit.dispatch.h" 
+  Enabled targets: AVX512_SPR, AVX512_ICL
+Generating multi-targets for "highway_qsort.dispatch.h" 
+  Enabled targets: 
+Generating multi-targets for "highway_qsort_16bit.dispatch.h" 
+  Enabled targets: 
+Generating multi-targets for "loops_arithm_fp.dispatch.h" 
+  Enabled targets: X86_V3, baseline
+Generating multi-targets for "loops_arithmetic.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "loops_comparison.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "loops_exponent_log.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "loops_hyperbolic.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "loops_logical.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "loops_minmax.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "loops_modulo.dispatch.h" 
+  Enabled targets: baseline
+Generating multi-targets for "loops_trigonometric.dispatch.h" 
+  Enabled targets: X86_V4, X86_V3, baseline
+Generating multi-targets for "loops_umath_fp.dispatch.h" 
+  Enabled targets: X86_V4, baseline
+Generating multi-targets for "loops_unary.dispatch.h" 
+  Enabled targets: X86_V4, baseline
+Generating multi-targets for "loops_unary_fp.dispatch.h" 
+  Enabled targets: baseline
+Generating multi-targets for "loops_unary_fp_le.dispatch.h" 
+  Enabled targets: baseline
+Generating multi-targets for "loops_unary_complex.dispatch.h" 
+  Enabled targets: X86_V3, baseline
+Generating multi-targets for "loops_autovec.dispatch.h" 
+  Enabled targets: X86_V3, baseline
+Generating multi-targets for "loops_half.dispatch.h" 
+  Enabled targets: AVX512_SPR, X86_V4, baseline
+WARNING: Project targets '&gt;=1.5.2' but uses feature deprecated since '1.3.0': Source file src/umath/svml/linux/avx512/svml_z0_acos_d_la.s in the 'objects' kwarg is not an object..
+Generating multi-targets for "_simd.dispatch.h" 
+  Enabled targets: X86_V3, X86_V4, baseline
+</pre> </section> <section id="runtime-dispatch"> <h2 id="runtime-simd-dispatch">Runtime Dispatch</h2> <p>Importing NumPy triggers a scan of the available CPU features from the set of dispatchable features. You can restrict this scan by setting the environment variable <code>NPY_DISABLE_CPU_FEATURES</code> to a comma-, tab-, or space-separated list of features to disable.</p> <p>For instance, on <code>x86_64</code> this will disable <code>X86_V4</code>:</p> <pre data-language="python">NPY_DISABLE_CPU_FEATURES="X86_V4"
+</pre> <p>This will raise an error if parsing fails or if the feature was not enabled through the <code>cpu-dispatch</code> build option. If the feature is supported by the build but not available on the current CPU, a warning will be emitted instead.</p> </section> <section id="tracking-dispatched-functions"> <h2>Tracking Dispatched Functions</h2> <p>You can discover which CPU targets are enabled for different optimized functions using the Python function <code>numpy.lib.introspect.opt_func_info</code>.</p> <p>This function offers two optional arguments for filtering results:</p> <ol class="arabic simple"> <li>
+<code>func_name</code> - For refining function names</li> <li>
+<code>signature</code> - For specifying data types in the signatures</li> </ol> <p>For example:</p> <pre data-language="python"> &gt;&gt; func_info = numpy.lib.introspect.opt_func_info(func_name='add|abs', signature='float64|complex64')
+ &gt;&gt; print(json.dumps(func_info, indent=2))
+ {
+  "absolute": {
+    "dd": {
+      "current": "baseline(X86_V2)",
+      "available": "baseline(X86_V2)"
+    },
+    "Ff": {
+      "current": "X86_V3",
+      "available": "X86_V3 baseline(X86_V2)"
+    },
+    "Dd": {
+      "current": "X86_V3",
+      "available": "X86_V3 baseline(X86_V2)"
+    }
+  },
+  "add": {
+    "ddd": {
+      "current": "X86_V3",
+      "available": "X86_V3 baseline(X86_V2)"
+    },
+    "FFF": {
+      "current": "X86_V3",
+      "available": "X86_V3 baseline(X86_V2)"
+    }
+  }
+}
+</pre> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2024 NumPy Developers<br>Licensed under the 3-clause BSD License.<br>
+    <a href="https://numpy.org/doc/2.4/reference/simd/build-options.html" class="_attribution-link">https://numpy.org/doc/2.4/reference/simd/build-options.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

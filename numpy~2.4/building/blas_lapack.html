@@ -1,0 +1,152 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>BLAS and LAPACK - NumPy 2.4 - W3cubDocs</title>
+  
+  <meta name="description" content="When a NumPy build is invoked, BLAS and LAPACK library detection happens automatically. The build system will attempt to locate a suitable library, &hellip;">
+  <meta name="keywords" content="blas, and, lapack, numpy, numpy~2.4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/numpy~2.4/building/blas_lapack.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/numpy~2.4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/numpy~2.4/" class="_nav-link" title="" style="margin-left:0;">NumPy 2.4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="blas-and-lapack"> <h1 id="building-blas-and-lapack">BLAS and LAPACK</h1> <section id="default-behavior-for-blas-and-lapack-selection"> <h2 id="blas-lapack-selection">Default behavior for BLAS and LAPACK selection</h2> <p>When a NumPy build is invoked, BLAS and LAPACK library detection happens automatically. The build system will attempt to locate a suitable library, and try a number of known libraries in a certain order - most to least performant. A typical order is: MKL, Accelerate, OpenBLAS, FlexiBLAS, BLIS, plain <code>libblas</code>/<code>liblapack</code>. This may vary per platform or over releases. That order, and which libraries are tried, can be changed through the <code>blas-order</code> and <code>lapack-order</code> build options, for example:</p> <pre data-language="python">$ python -m pip install . -Csetup-args=-Dblas-order=openblas,mkl,blis -Csetup-args=-Dlapack-order=openblas,mkl,lapack
+</pre> <p>The first suitable library that is found will be used. In case no suitable library is found, the NumPy build will print a warning and then use (slow!) NumPy-internal fallback routines. In order to disallow use of those slow routines, the <code>allow-noblas</code> build option can be used:</p> <pre data-language="python">$ python -m pip install . -Csetup-args=-Dallow-noblas=false
+</pre> <p>By default the LP64 (32-bit integer) interface to BLAS and LAPACK will be used. For building against the ILP64 (64-bit integer) interface, one must use the <code>use-ilp64</code> build option:</p> <pre data-language="python">$ python -m pip install . -Csetup-args=-Duse-ilp64=true
+</pre> </section> <section id="selecting-specific-blas-and-lapack-libraries"> <h2 id="accelerated-blas-lapack-libraries">Selecting specific BLAS and LAPACK libraries</h2> <p>The <code>blas</code> and <code>lapack</code> build options are set to “auto” by default, which means trying all known libraries. If you want to use a specific library, you can set these build options to the library name (typically the lower-case name that <code>pkg-config</code> expects). For example, to select plain <code>libblas</code> and <code>liblapack</code> (this is typically Netlib BLAS/LAPACK on Linux distros, and can be dynamically switched between implementations on conda-forge), use:</p> <pre data-language="python">$ # for a development build
+$ spin build -C-Dblas=blas -C-Dlapack=lapack
+
+$ # to build and install a wheel
+$ python -m build -Csetup-args=-Dblas=blas -Csetup-args=-Dlapack=lapack
+$ pip install dist/numpy*.whl
+
+$ # Or, with pip&gt;=23.1, this works too:
+$ python -m pip install . -Csetup-args=-Dblas=blas -Csetup-args=-Dlapack=lapack
+</pre> <p>Other options that should work (as long as they’re installed with <code>pkg-config</code> support; otherwise they may still be detected but things are inherently more fragile) include <code>openblas</code>, <code>mkl</code>, <code>accelerate</code>, <code>atlas</code> and <code>blis</code>.</p> </section> <section id="using-pkg-config-to-detect-libraries-in-a-nonstandard-location"> <h2>Using pkg-config to detect libraries in a nonstandard location</h2> <p>The way BLAS and LAPACK detection works under the hood is that Meson tries to discover the specified libraries first with <code>pkg-config</code>, and then with CMake. If all you have is a standalone shared library file (e.g., <code>armpl_lp64.so</code> in <code>/a/random/path/lib/</code> and a corresponding header file in <code>/a/random/path/include/</code>), then what you have to do is craft your own pkg-config file. It should have a matching name (so in this example, <code>armpl_lp64.pc</code>) and may be located anywhere. The <code>PKG_CONFIG_PATH</code> environment variable should be set to point to the location of the <code>.pc</code> file. The contents of that file should be:</p> <pre data-language="python">libdir=/path/to/library-dir      # e.g., /a/random/path/lib
+includedir=/path/to/include-dir  # e.g., /a/random/path/include
+version=1.2.3                    # set to actual version
+extralib=-lm -lpthread -lgfortran   # if needed, the flags to link in dependencies
+Name: armpl_lp64
+Description: ArmPL - Arm Performance Libraries
+Version: ${version}
+Libs: -L${libdir} -larmpl_lp64      # linker flags
+Libs.private: ${extralib}
+Cflags: -I${includedir}
+</pre> <p>To check that this works as expected, you should be able to run:</p> <pre data-language="python">$ pkg-config --libs armpl_lp64
+-L/path/to/library-dir -larmpl_lp64
+$ pkg-config --cflags armpl_lp64
+-I/path/to/include-dir
+</pre> </section> <section id="full-list-of-blas-and-lapack-related-build-options"> <h2>Full list of BLAS and LAPACK related build options</h2> <p>BLAS and LAPACK are complex dependencies. Some libraries have more options that are exposed via build options (see <code>meson.options</code> in the root of the repo for all of NumPy’s build options).</p> <ul class="simple"> <li>
+<code>blas</code>: name of the BLAS library to use (default: <code>auto</code>),</li> <li>
+<code>lapack</code>: name of the LAPACK library to use (default: <code>auto</code>),</li> <li>
+<code>allow-noblas</code>: whether or not to allow building without external BLAS/LAPACK libraries (default: <code>true</code>),</li> <li>
+<code>blas-order</code>: order of BLAS libraries to try detecting (default may vary per platform),</li> <li>
+<code>lapack-order</code>: order of LAPACK libraries to try detecting,</li> <li>
+<code>use-ilp64</code>: whether to use the ILP64 interface (default: <code>false</code>),</li> <li>
+<code>blas-symbol-suffix</code>: the symbol suffix to use for the detected libraries (default: <code>auto</code>),</li> <li>
+<code>mkl-threading</code>: which MKL threading layer to use, one of <code>seq</code>, <code>iomp</code>, <code>gomp</code>, <code>tbb</code> (default: <code>auto</code>).</li> </ul> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2024 NumPy Developers<br>Licensed under the 3-clause BSD License.<br>
+    <a href="https://numpy.org/doc/2.4/building/blas_lapack.html" class="_attribution-link">https://numpy.org/doc/2.4/building/blas_lapack.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

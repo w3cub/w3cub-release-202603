@@ -1,0 +1,259 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Using via - NumPy 2.4 - W3cubDocs</title>
+  
+  <meta name="description" content=" scikit-build provides two separate concepts geared towards the users of Python extension modules. ">
+  <meta name="keywords" content="using, scikit-build, numpy, numpy~2.4">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/numpy~2.4/f2py/buildtools/skbuild.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/numpy~2.4.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/numpy~2.4/" class="_nav-link" title="" style="margin-left:0;">NumPy 2.4</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _sphinx">
+				
+				
+<section id="using-via-scikit-build"> <h1 id="f2py-skbuild">Using via scikit-build</h1> <p><code>scikit-build</code> provides two separate concepts geared towards the users of Python extension modules.</p> <ol class="arabic simple"> <li>A <code>setuptools</code> replacement (legacy behaviour)</li> <li>A series of <code>cmake</code> modules with definitions which help building Python extensions</li> </ol> <div class="admonition note"> <p class="admonition-title">Note</p> <p>It is possible to use <code>scikit-build</code>’s <code>cmake</code> modules to <a class="reference external" href="https://scikit-build.readthedocs.io/en/latest/cmake-modules/F2PY.html">bypass the cmake setup mechanism</a> completely, and to write targets which call <code>f2py
+-c</code>. This usage is <strong>not recommended</strong> since the point of these build system documents are to move away from the internal <code>numpy.distutils</code> methods.</p> </div> <p>For situations where no <code>setuptools</code> replacements are required or wanted (i.e. if <code>wheels</code> are not needed), it is recommended to instead use the vanilla <code>cmake</code> setup described in <a class="reference internal" href="cmake#f2py-cmake"><span class="std std-ref">Using via cmake</span></a>.</p> <section id="fibonacci-walkthrough-f77"> <h2>Fibonacci walkthrough (F77)</h2> <p>We will consider the <code>fib</code> example from <a class="reference internal" href="../f2py.getting-started#f2py-getting-started"><span class="std std-ref">Three ways to wrap - getting started</span></a> section.</p> <pre data-language="fortran">C FILE: FIB1.F
+      SUBROUTINE FIB(A,N)
+C
+C     CALCULATE FIRST N FIBONACCI NUMBERS
+C
+      INTEGER N
+      REAL*8 A(N)
+      DO I=1,N
+         IF (I.EQ.1) THEN
+            A(I) = 0.0D0
+         ELSEIF (I.EQ.2) THEN
+            A(I) = 1.0D0
+         ELSE 
+            A(I) = A(I-1) + A(I-2)
+         ENDIF
+      ENDDO
+      END
+C END FILE FIB1.F
+</pre> <section id="cmake-modules-only"> <h3>
+<code>CMake</code> modules only</h3> <p>Consider using the following <code>CMakeLists.txt</code>.</p> <pre data-language="cmake">### setup project ###
+cmake_minimum_required(VERSION 3.9)
+
+project(fibby
+  VERSION 1.0
+  DESCRIPTION "FIB module"
+  LANGUAGES C Fortran
+  )
+
+# Safety net
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(
+    FATAL_ERROR
+      "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there.\n"
+  )
+endif()
+
+# Ensure scikit-build modules
+if (NOT SKBUILD)
+  find_package(PythonInterp 3.8 REQUIRED)
+  # Kanged --&gt; https://github.com/Kitware/torch_liberator/blob/master/CMakeLists.txt
+  # If skbuild is not the driver; include its utilities in CMAKE_MODULE_PATH
+  execute_process(
+    COMMAND "${PYTHON_EXECUTABLE}"
+    -c "import os, skbuild; print(os.path.dirname(skbuild.__file__))"
+    OUTPUT_VARIABLE SKBLD_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  list(APPEND CMAKE_MODULE_PATH "${SKBLD_DIR}/resources/cmake")
+  message(STATUS "Looking in ${SKBLD_DIR}/resources/cmake for CMake modules")
+endif()
+
+# scikit-build style includes
+find_package(PythonExtensions REQUIRED) # for ${PYTHON_EXTENSION_MODULE_SUFFIX}
+
+# Grab the variables from a local Python installation
+# NumPy headers
+execute_process(
+  COMMAND "${PYTHON_EXECUTABLE}"
+  -c "import numpy; print(numpy.get_include())"
+  OUTPUT_VARIABLE NumPy_INCLUDE_DIRS
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+# F2PY headers
+execute_process(
+  COMMAND "${PYTHON_EXECUTABLE}"
+  -c "import numpy.f2py; print(numpy.f2py.get_include())"
+  OUTPUT_VARIABLE F2PY_INCLUDE_DIR
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# Prepping the module
+set(f2py_module_name "fibby")
+set(fortran_src_file "${CMAKE_SOURCE_DIR}/fib1.f")
+set(f2py_module_c "${f2py_module_name}module.c")
+
+# Target for enforcing dependencies
+add_custom_target(genpyf
+  DEPENDS "${fortran_src_file}"
+)
+add_custom_command(
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${f2py_module_c}"
+  COMMAND ${PYTHON_EXECUTABLE}  -m "numpy.f2py"
+                   "${fortran_src_file}"
+                   -m "fibby"
+                   --lower # Important
+  DEPENDS fib1.f # Fortran source
+)
+
+add_library(${CMAKE_PROJECT_NAME} MODULE
+            "${f2py_module_name}module.c"
+            "${F2PY_INCLUDE_DIR}/fortranobject.c"
+            "${fortran_src_file}")
+
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
+                           ${F2PY_INCLUDE_DIR}
+                           ${NumPy_INCLUDE_DIRS}
+                           ${PYTHON_INCLUDE_DIRS})
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES SUFFIX "${PYTHON_EXTENSION_MODULE_SUFFIX}")
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES PREFIX "")
+
+# Linker fixes
+if (UNIX)
+  if (APPLE)
+    set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
+    LINK_FLAGS  '-Wl,-dylib,-undefined,dynamic_lookup')
+  else()
+    set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
+  LINK_FLAGS  '-Wl,--allow-shlib-undefined')
+  endif()
+endif()
+
+add_dependencies(${CMAKE_PROJECT_NAME} genpyf)
+
+install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION fibby)
+</pre> <p>Much of the logic is the same as in <a class="reference internal" href="cmake#f2py-cmake"><span class="std std-ref">Using via cmake</span></a>, however notably here the appropriate module suffix is generated via <code>sysconfig.get_config_var("SO")</code>. The resulting extension can be built and loaded in the standard workflow.</p> <pre data-language="bash">ls .
+# CMakeLists.txt fib1.f
+cmake -S . -B build
+cmake --build build
+cd build
+python -c "import numpy as np; import fibby; a = np.zeros(9); fibby.fib(a); print (a)"
+# [ 0.  1.  1.  2.  3.  5.  8. 13. 21.]
+</pre> </section> <section id="setuptools-replacement"> <h3>
+<code>setuptools</code> replacement</h3> <div class="admonition note"> <p class="admonition-title">Note</p> <p><strong>As of November 2021</strong></p> <p>The behavior described here of driving the <code>cmake</code> build of a module is considered to be legacy behaviour and should not be depended on.</p> </div> <p>The utility of <code>scikit-build</code> lies in being able to drive the generation of more than extension modules, in particular a common usage pattern is the generation of Python distributables (for example for PyPI).</p> <p>The workflow with <code>scikit-build</code> straightforwardly supports such packaging requirements. Consider augmenting the project with a <code>setup.py</code> as defined:</p> <pre data-language="python">from skbuild import setup
+
+setup(
+    name="fibby",
+    version="0.0.1",
+    description="a minimal example package (fortran version)",
+    license="MIT",
+    packages=['fibby'],
+    python_requires="&gt;=3.7",
+)
+</pre> <p>Along with a commensurate <code>pyproject.toml</code></p> <pre data-language="toml">[build-system]
+requires = ["setuptools&gt;=42", "wheel", "scikit-build", "cmake&gt;=3.9", "numpy&gt;=1.21"]
+build-backend = "setuptools.build_meta"
+</pre> <p>Together these can build the extension using <code>cmake</code> in tandem with other standard <code>setuptools</code> outputs. Running <code>cmake</code> through <code>setup.py</code> is mostly used when it is necessary to integrate with extension modules not built with <code>cmake</code>.</p> <pre data-language="bash">ls .
+# CMakeLists.txt fib1.f pyproject.toml setup.py
+python setup.py build_ext --inplace
+python -c "import numpy as np; import fibby.fibby; a = np.zeros(9); fibby.fibby.fib(a); print (a)"
+# [ 0.  1.  1.  2.  3.  5.  8. 13. 21.]
+</pre> <p>Where we have modified the path to the module as <code>--inplace</code> places the extension module in a subfolder.</p> </section> </section> </section><div class="_attribution">
+  <p class="_attribution-p">
+    © 2005–2024 NumPy Developers<br>Licensed under the 3-clause BSD License.<br>
+    <a href="https://numpy.org/doc/2.4/f2py/buildtools/skbuild.html" class="_attribution-link">https://numpy.org/doc/2.4/f2py/buildtools/skbuild.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
