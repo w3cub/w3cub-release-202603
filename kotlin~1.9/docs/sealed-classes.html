@@ -1,0 +1,165 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Classes and Objects&#58; Sealed Classes and Interfaces - Kotlin 1.9 - W3cubDocs</title>
+  
+  <meta name="description" content="Sealed classes and interfaces represent restricted class hierarchies that provide more control over inheritance. All direct subclasses of a sealed &hellip;">
+  <meta name="keywords" content="sealed, classes, and, interfaces, objects, kotlin, kotlin~1.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/kotlin~1.9/docs/sealed-classes.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/kotlin~1.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/kotlin~1.9/" class="_nav-link" title="" style="margin-left:0;">Kotlin 1.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _kotlin">
+				
+				
+<h1 data-toc="sealed-classes" id="sealed-classes.md">Sealed classes and interfaces</h1>
+<p id="de513c35"><em id="7df708c3" class="">Sealed</em> classes and interfaces represent restricted class hierarchies that provide more control over inheritance. All direct subclasses of a sealed class are known at compile time. No other subclasses may appear outside the module and package within which the sealed class is defined. For example, third-party clients can't extend your sealed class in their code. Thus, each instance of a sealed class has a type from a limited set that is known when this class is compiled.</p>
+<p id="e56879cb">The same works for sealed interfaces and their implementations: once a module with a sealed interface is compiled, no new implementations can appear.</p>
+<p id="58b5afff">In some sense, sealed classes are similar to <a href="enum-classes" id="ea8bf5b3"><code class="code ">enum</code></a> classes: the set of values for an enum type is also restricted, but each enum constant exists only as a <em id="1bcb0d47" class="">single instance</em>, whereas a subclass of a sealed class can have <em id="4f19bddb" class="">multiple</em> instances, each with its own state.</p>
+<p id="2ee82db5">As an example, consider a library's API. It's likely to contain error classes to let the library users handle errors that it can throw. If the hierarchy of such error classes includes interfaces or abstract classes visible in the public API, then nothing prevents implementing or extending them in the client code. However, the library doesn't know about errors declared outside it, so it can't treat them consistently with its own classes. With a sealed hierarchy of error classes, library authors can be sure that they know all possible error types and no other ones can appear later.</p>
+<p id="68460cda">To declare a sealed class or interface, put the <code class="code ">sealed</code> modifier before its name:</p>
+<pre class="code" data-language="kotlin">sealed interface Error
+
+sealed class IOError(): Error
+
+class FileReadError(val file: File): IOError()
+class DatabaseError(val source: DataSource): IOError()
+
+object RuntimeError : Error
+</pre>
+<p id="c31478a5">A sealed class is <a href="classes#abstract-classes" id="7a11d51d">abstract</a> by itself, it cannot be instantiated directly and can have <code class="code ">abstract</code> members.</p>
+<p id="ef2a1331">Constructors of sealed classes can have one of two <a href="visibility-modifiers" id="c9a4c646">visibilities</a>: <code class="code ">protected</code> (by default) or <code class="code ">private</code>:</p>
+<pre class="code" data-language="kotlin">sealed class IOError {
+    constructor() { /*...*/ } // protected by default
+    private constructor(description: String): this() { /*...*/ } // private is OK
+    // public constructor(code: Int): this() {} // Error: public and internal are not allowed
+}
+</pre>
+<section class="chapter"><h2 id="location-of-direct-subclasses" data-toc="location-of-direct-subclasses">Location of direct subclasses</h2>
+<p id="2b65360c">Direct subclasses of sealed classes and interfaces must be declared in the same package. They may be top-level or nested inside any number of other named classes, named interfaces, or named objects. Subclasses can have any <a href="visibility-modifiers" id="13f2441c">visibility</a> as long as they are compatible with normal inheritance rules in Kotlin.</p>
+<p id="9bb1d306">Subclasses of sealed classes must have a proper qualified name. They can't be local nor anonymous objects.</p>
+<aside data-type="note" class="prompt" data-title="" id="cf39f336"><p id="4f155ca7"><code class="code ">enum</code> classes can't extend a sealed class (as well as any other class), but they can implement sealed interfaces.</p></aside><p id="e86ba1fc">These restrictions don't apply to indirect subclasses. If a direct subclass of a sealed class is not marked as sealed, it can be extended in any way that its modifiers allow:</p>
+<pre class="code" data-language="kotlin">sealed interface Error // has implementations only in same package and module
+
+sealed class IOError(): Error // extended only in same package and module
+open class CustomError(): Error // can be extended wherever it's visible
+</pre>
+<section class="chapter"><h3 id="inheritance-in-multiplatform-projects" data-toc="inheritance-in-multiplatform-projects">Inheritance in multiplatform projects</h3>
+<p id="8d19cee0">There is one more inheritance restriction in <a href="multiplatform-get-started" id="6fc8223c">multiplatform projects</a>: direct subclasses of sealed classes must reside in the same source set. It applies to sealed classes without the <a href="multiplatform-connect-to-apis" id="151397aa"><code class="code ">expect</code> and <code class="code ">actual</code> modifiers</a>.</p>
+<p id="1df6efb4">If a sealed class is declared as <code class="code ">expect</code> in a common source set and have <code class="code ">actual</code> implementations in platform source sets, both <code class="code ">expect</code> and <code class="code ">actual</code> versions can have subclasses in their source sets. Moreover, if you use a <a href="multiplatform-share-on-platforms#share-code-on-similar-platforms" id="d25b22b0">hierarchical structure</a>, you can create subclasses in any source set between the <code class="code ">expect</code> and <code class="code ">actual</code> declarations.</p>
+<p id="61b04eb3"><a href="multiplatform-share-on-platforms#share-code-on-similar-platforms" id="296828ac">Learn more about the hierarchical structure of multiplatform projects</a>.</p></section></section><section class="chapter"><h2 id="sealed-classes-and-when-expression" data-toc="sealed-classes-and-when-expression">Sealed classes and when expression</h2>
+<p id="d31df6e1">The key benefit of using sealed classes comes into play when you use them in a <a href="control-flow#when-expression" id="5343e5d5"><code class="code ">when</code></a> expression. If it's possible to verify that the statement covers all cases, you don't need to add an <code class="code ">else</code> clause to the statement:</p>
+<pre class="code" data-language="kotlin">fun log(e: Error) = when(e) {
+    is FileReadError -&gt; { println("Error while reading file ${e.file}") }
+    is DatabaseError -&gt; { println("Error while reading from database ${e.source}") }
+    is RuntimeError -&gt;  { println("Runtime error") }
+    // the `else` clause is not required because all the cases are covered
+}
+</pre>
+<aside data-type="note" class="prompt" data-title="" id="b34c0039"><p id="214fd319"><code class="code ">when</code> expressions on <a href="multiplatform-connect-to-apis" id="e9d56b04"><code class="code ">expect</code></a> sealed classes in the common code of multiplatform projects still require an <code class="code ">else</code> branch. This happens because subclasses of <code class="code ">actual</code> platform implementations aren't known in the common code.</p></aside></section><div class="last-modified"> Last modified: 04 April 2023</div>
+
+<div class="navigation-links _bottom"> <a class="navigation-links__prev" href="data-classes">Data classes</a> <a class="navigation-links__next" href="generics">Generics: in, out, where</a> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2023 JetBrains s.r.o. and Kotlin Programming Language contributors<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://kotlinlang.org/docs/sealed-classes.html" class="_attribution-link">https://kotlinlang.org/docs/sealed-classes.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

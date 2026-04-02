@@ -1,0 +1,179 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Types&#58; Type Checks and Casts - Kotlin 1.9 - W3cubDocs</title>
+  
+  <meta name="description" content=" Use the is operator or its negated form !is to perform a runtime check that identifies whether an object conforms to a given type&#58; ">
+  <meta name="keywords" content="type, checks, and, casts, types, kotlin, kotlin~1.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/kotlin~1.9/docs/typecasts.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/kotlin~1.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/kotlin~1.9/" class="_nav-link" title="" style="margin-left:0;">Kotlin 1.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _kotlin">
+				
+				
+<h1 data-toc="typecasts" id="typecasts.md">Type checks and casts</h1>
+<section class="chapter"><h2 id="is-and-is-operators" data-toc="is-and-is-operators">is and !is operators</h2>
+<p id="6eed2ecc">Use the <code class="code ">is</code> operator or its negated form <code class="code ">!is</code> to perform a runtime check that identifies whether an object conforms to a given type:</p>
+<pre class="code" data-language="kotlin">if (obj is String) {
+    print(obj.length)
+}
+
+if (obj !is String) { // same as !(obj is String)
+    print("Not a String")
+} else {
+    print(obj.length)
+}
+</pre></section><section class="chapter"><h2 id="smart-casts" data-toc="smart-casts">Smart casts</h2>
+<p id="e3558d8e">In most cases, you don't need to use explicit cast operators in Kotlin because the compiler tracks the <code class="code ">is</code>-checks and <a href="#unsafe-cast-operator" id="5ad76dc5">explicit casts</a> for immutable values and inserts (safe) casts automatically when necessary:</p>
+<pre class="code" data-language="kotlin">fun demo(x: Any) {
+    if (x is String) {
+        print(x.length) // x is automatically cast to String
+    }
+}
+</pre>
+<p id="15a10330">The compiler is smart enough to know that a cast is safe if a negative check leads to a return:</p>
+<pre class="code" data-language="kotlin">if (x !is String) return
+
+print(x.length) // x is automatically cast to String
+</pre>
+<p id="7d814736">or if it is on the right-hand side of <code class="code ">&amp;&amp;</code> or <code class="code ">||</code> and the proper check (regular or negative) is on the left-hand side:</p>
+<pre class="code" data-language="kotlin">// x is automatically cast to String on the right-hand side of `||`
+if (x !is String || x.length == 0) return
+
+// x is automatically cast to String on the right-hand side of `&amp;&amp;`
+if (x is String &amp;&amp; x.length &gt; 0) {
+    print(x.length) // x is automatically cast to String
+}
+</pre>
+<p id="788f87ef">Smart casts work for <a href="control-flow#when-expression" id="25628c4b"><code class="code ">when</code> expressions</a> and <a href="control-flow#while-loops" id="c45d17e"><code class="code ">while</code> loops</a> as well:</p>
+<pre class="code" data-language="kotlin">when (x) {
+    is Int -&gt; print(x + 1)
+    is String -&gt; print(x.length + 1)
+    is IntArray -&gt; print(x.sum())
+}
+</pre>
+<p id="77f40117">Note that smart casts work only when the compiler can guarantee that the variable won't change between the check and the usage. More specifically, smart casts can be used under the following conditions:</p>
+<ul class="list _bullet" id="8c25b9bb">
+<li class="list__item" id="fdec503"><p><code class="code ">val</code> local variables - always, with the exception of <a href="delegated-properties" id="ff1bb802">local delegated properties</a>.</p></li>
+<li class="list__item" id="bb17f8a4"><p><code class="code ">val</code> properties - if the property is private or internal or if the check is performed in the same <a href="visibility-modifiers#modules" id="ae66a820">module</a> where the property is declared. Smart casts cannot be used on open properties or properties that have custom getters.</p></li>
+<li class="list__item" id="cc228209"><p><code class="code ">var</code> local variables - if the variable is not modified between the check and the usage, is not captured in a lambda that modifies it, and is not a local delegated property.</p></li>
+<li class="list__item" id="aa66f380"><p><code class="code ">var</code> properties - never, because the variable can be modified at any time by other code.</p></li>
+</ul></section><section class="chapter"><h2 id="unsafe-cast-operator" data-toc="unsafe-cast-operator">"Unsafe" cast operator</h2>
+<p id="47927c06">Usually, the cast operator throws an exception if the cast isn't possible. And so, it's called <em id="e2a49db6" class="">unsafe</em>. The unsafe cast in Kotlin is done by the infix operator <code class="code ">as</code>.</p>
+<pre class="code" data-language="kotlin">val x: String = y as String
+</pre>
+<p id="13cd8701">Note that <code class="code ">null</code> cannot be cast to <code class="code ">String</code>, as this type is not <a href="null-safety" id="c0c0b3af">nullable</a>. If <code class="code ">y</code> is null, the code above throws an exception. To make code like this correct for null values, use the nullable type on the right-hand side of the cast:</p>
+<pre class="code" data-language="kotlin">val x: String? = y as String?
+</pre></section><section class="chapter"><h2 id="safe-nullable-cast-operator" data-toc="safe-nullable-cast-operator">"Safe" (nullable) cast operator</h2>
+<p id="e92c967f">To avoid exceptions, use the <em id="93b2e4ad" class="">safe</em> cast operator <code class="code ">as?</code>, which returns <code class="code ">null</code> on failure.</p>
+<pre class="code" data-language="kotlin">val x: String? = y as? String
+</pre>
+<p id="73730783">Note that despite the fact that the right-hand side of <code class="code ">as?</code> is a non-null type <code class="code ">String</code>, the result of the cast is nullable.</p></section><section class="chapter"><h2 id="generics-type-checks-and-casts" data-toc="generics-type-checks-and-casts">Generics type checks and casts</h2>
+<p id="2ad0eeb7">Please see the corresponding section in the <a href="generics#generics-type-checks-and-casts" id="b040b83a">generics documentation page</a> for information on which type checks and casts you can perform with generics.</p></section><div class="last-modified"> Last modified: 10 August 2022</div>
+
+<div class="navigation-links _bottom"> <a class="navigation-links__prev" href="arrays">Arrays</a> <a class="navigation-links__next" href="control-flow">Conditions and loops</a> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2023 JetBrains s.r.o. and Kotlin Programming Language contributors<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://kotlinlang.org/docs/typecasts.html" class="_attribution-link">https://kotlinlang.org/docs/typecasts.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

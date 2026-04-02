@@ -1,0 +1,147 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Coroutines (kotlinx.coroutines)&#58; Coroutines Guide - Kotlin 1.9 - W3cubDocs</title>
+  
+  <meta name="description" content="Kotlin provides only minimal low-level APIs in its standard library to enable other libraries to utilize coroutines. Unlike many other languages &hellip;">
+  <meta name="keywords" content="coroutines, guide, kotlinx, kotlin, kotlin~1.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/kotlin~1.9/docs/coroutines-guide.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/kotlin~1.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/kotlin~1.9/" class="_nav-link" title="" style="margin-left:0;">Kotlin 1.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _kotlin">
+				
+				
+<h1 data-toc="coroutines-guide" id="coroutines-guide.md">Coroutines guide</h1>
+<p id="58373d05">Kotlin provides only minimal low-level APIs in its standard library to enable other libraries to utilize coroutines. Unlike many other languages with similar capabilities, <code class="code ">async</code> and <code class="code ">await</code> are not keywords in Kotlin and are not even part of its standard library. Moreover, Kotlin's concept of <em id="d09437ed" class="">suspending function</em> provides a safer and less error-prone abstraction for asynchronous operations than futures and promises.</p>
+<p id="5d29d8d6"><code class="code ">kotlinx.coroutines</code> is a rich library for coroutines developed by JetBrains. It contains a number of high-level coroutine-enabled primitives that this guide covers, including <code class="code ">launch</code>, <code class="code ">async</code>, and others.</p>
+<p id="4378c8b6">This is a guide about the core features of <code class="code ">kotlinx.coroutines</code> with a series of examples, divided up into different topics.</p>
+<p id="f1b91ac6">In order to use coroutines as well as follow the examples in this guide, you need to add a dependency on the <code class="code ">kotlinx-coroutines-core</code> module as explained <a href="https://github.com/Kotlin/kotlinx.coroutines/blob/master/README.md#using-in-your-projects" id="4a2b6fea" data-external="true" rel="noopener noreferrer">in the project README</a>.</p>
+<section class="chapter"><h2 id="table-of-contents" data-toc="table-of-contents">Table of contents</h2>
+<ul class="list _bullet" id="768fcb9f">
+<li class="list__item" id="9ef06a43"><p><a href="coroutines-basics" id="4c4275e4">Coroutines basics</a></p></li>
+<li class="list__item" id="7bff5629"><p><a href="https://play.kotlinlang.org/hands-on/Introduction%20to%20Coroutines%20and%20Channels" id="9d2edf04" data-external="true" rel="noopener noreferrer">Hands-on: Intro to coroutines and channels</a></p></li>
+<li class="list__item" id="d26e08e"><p><a href="cancellation-and-timeouts" id="6bd69ea8">Cancellation and timeouts</a></p></li>
+<li class="list__item" id="21b3d482"><p><a href="composing-suspending-functions" id="206b4a17">Composing suspending functions</a></p></li>
+<li class="list__item" id="35d80f42"><p><a href="coroutine-context-and-dispatchers" id="d525022a">Coroutine context and dispatchers</a></p></li>
+<li class="list__item" id="21692c7c"><p><a href="flow" id="239a7428">Asynchronous Flow</a></p></li>
+<li class="list__item" id="8b2ba89f"><p><a href="channels" id="610d993c">Channels</a></p></li>
+<li class="list__item" id="53b76d7e"><p><a href="exception-handling" id="6e6d19a6">Coroutine exceptions handling</a></p></li>
+<li class="list__item" id="18cf7d8b"><p><a href="shared-mutable-state-and-concurrency" id="30b193d3">Shared mutable state and concurrency</a></p></li>
+<li class="list__item" id="9283cc71"><p><a href="select-expression" id="6db2f4f9">Select expression (experimental)</a></p></li>
+<li class="list__item" id="1c64d7da"><p><a href="debug-coroutines-with-idea" id="1cbdffa">Tutorial: Debug coroutines using IntelliJ IDEA</a></p></li>
+<li class="list__item" id="2ce151a3"><p><a href="debug-flow-with-idea" id="6c6fa08e">Tutorial: Debug Kotlin Flow using IntelliJ IDEA</a></p></li>
+</ul></section><section class="chapter"><h2 id="additional-references" data-toc="additional-references">Additional references</h2>
+<ul class="list _bullet" id="d8f2b4ce">
+<li class="list__item" id="4096ac08"><p><a href="https://github.com/Kotlin/kotlinx.coroutines/blob/master/ui/coroutines-guide-ui.md" id="d8b400ee" data-external="true" rel="noopener noreferrer">Guide to UI programming with coroutines</a></p></li>
+<li class="list__item" id="45930632"><p><a href="https://github.com/Kotlin/KEEP/blob/master/proposals/coroutines.md" id="6fe2a3e1" data-external="true" rel="noopener noreferrer">Coroutines design document (KEEP)</a></p></li>
+<li class="list__item" id="f04a5815"><p><a href="https://kotlinlang.org/api/kotlinx.coroutines/" id="ec9be018" data-external="true" rel="noopener noreferrer">Full kotlinx.coroutines API reference</a></p></li>
+<li class="list__item" id="d0f8efa4"><p><a href="https://developer.android.com/kotlin/coroutines/coroutines-best-practices" id="86264dc1" data-external="true" rel="noopener noreferrer">Best practices for coroutines in Android</a></p></li>
+<li class="list__item" id="a3158aa9"><p><a href="https://developer.android.com/kotlin/coroutines/additional-resources" id="51f7f7d" data-external="true" rel="noopener noreferrer">Additional Android resources for Kotlin coroutines and flow</a></p></li>
+</ul></section><div class="last-modified"> Last modified: 25 July 2023</div>
+
+<div class="navigation-links _bottom"> <a class="navigation-links__prev" href="time-measurement">Time measurement</a> <a class="navigation-links__next" href="coroutines-basics">Coroutines basics</a> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2023 JetBrains s.r.o. and Kotlin Programming Language contributors<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://kotlinlang.org/docs/coroutines-guide.html" class="_attribution-link">https://kotlinlang.org/docs/coroutines-guide.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>

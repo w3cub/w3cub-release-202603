@@ -1,0 +1,343 @@
+
+<!DOCTYPE HTML>
+
+<html lang="en" class="_theme-default">
+
+<head>
+  <meta charset="utf-8">
+  <title>Lincheck (kotlinx.lincheck)&#58; Write Your First Test With Lincheck - Kotlin 1.9 - W3cubDocs</title>
+  
+  <meta name="description" content="This tutorial demonstrates how to write your first Lincheck test, set up the Lincheck framework, and use its basic API. You will create a new &hellip;">
+  <meta name="keywords" content="write, your, first, test, with, lincheck, kotlinx, kotlin, kotlin~1.9">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="canonical" href="https://docs.w3cub.com/kotlin~1.9/docs/introduction.html">
+  <link href="/favicon.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="/assets/application-68e65cee9bf387bd38209a46e05e3bda50bcea53ffaf6e90c132c1966451285cfbc988b42f051f6d841236cd27a79897de1c1bc0aa1f6bbd99bedd3492ba460e.css">
+  <script type="text/javascript" src="/assets/application-c64b29dbd49655f465d3acd39f96ed0f4bfb8bd3e64e96ba1bd510a5110d74f6363428874963e7d46aec33ad7cf85986182f73091386ca5e424145443d0b345c.js"></script>
+  <script src="/json/kotlin~1.9.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3Q5P5PWHV');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+  src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+
+
+</head>
+
+<body class="docs">
+	<amp-auto-ads type="adsense"
+              data-ad-client="ca-pub-2572770204602497">
+	</amp-auto-ads>
+	<div class="_app">
+	<header class="_header">
+
+  <a class="_home-link" href="/" ></a>
+  <a class="_menu-link"></a>
+  <h1 class="_logo">
+    <a href="/" class="_nav-link" title="API Documentation Browser">W3cubDocs</a>
+  </h1>
+  
+  <span class="_logo-sub-nav">/</span><span class="_logo-sub-nav"><a href="/kotlin~1.9/" class="_nav-link" title="" style="margin-left:0;">Kotlin 1.9</a></span>
+  
+  <nav class="_nav">
+    <a href="https://tools.w3cub.com/?_sp=docs" target="_blank" class="_nav-link ">W3cubTools</a>
+    <a href="/cheatsheets/" class="_nav-link ">Cheatsheets</a>
+    <a href="/about/" class="_nav-link ">About</a>
+  </nav>
+</header>
+	<section class="_sidebar">
+		
+		<form class="_search">
+		  <input type="search" class="_search-input" placeholder="Search&hellip;" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20">
+		  <a class="_search-clear"></a>
+		  <div class="_search-tag"></div>
+		</form>
+		
+		<div class="_list-wrap">
+			<div class="_list">
+			
+			</div>
+		</div>
+	</section>
+	<section class="_container ">
+		<div class="_content">
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="6861657091"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adtop"></div>
+			<div class="_page _kotlin">
+				
+				
+<h1 data-toc="introduction" id="introduction.md">Write your first test with Lincheck</h1>
+<p id="e034cb21">This tutorial demonstrates how to write your first Lincheck test, set up the Lincheck framework, and use its basic API. You will create a new IntelliJ IDEA project with an incorrect concurrent counter implementation and write a test for it, finding and analyzing the bug afterward.</p>
+<section class="chapter"><h2 id="create-a-project" data-toc="create-a-project">Create a project</h2>
+<p id="c1742006">Open an existing Kotlin project in IntelliJ IDEA or <a href="jvm-get-started" id="77575615" data-external="true" rel="noopener noreferrer">create a new one</a>. When creating a project, use the Gradle build system.</p></section><section class="chapter"><h2 id="add-required-dependencies" data-toc="add-required-dependencies">Add required dependencies</h2>
+<ol class="list _decimal" id="d16777f6" type="1">
+<li class="list__item" id="1428b9fb"><p id="4dc9e03e">Open the <code class="code ">build.gradle(.kts)</code> file and make sure that <code class="code ">mavenCentral()</code> is added to the repository list.</p></li>
+<li class="list__item" id="715fb316">
+<p id="90835546">Add the following dependencies to the Gradle configuration:</p>
+<div class="tabs" id="4b8421f0" data-group="build-script" data-anchors="[746d32f2,d53f0a66,bf4c0190,2d466666,4b8421f0]">
+<div class="tabs__content" data-gtm="tab" id="746d32f2" data-sync-tabs="kotlin" data-title="Kotlin"><pre class="code" data-language="kotlin">repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Lincheck dependency
+    testImplementation("org.jetbrains.kotlinx:lincheck:2.22")
+    // This dependency allows you to work with kotlin.test and JUnit:
+    testImplementation("junit:junit:4.13")
+}
+</pre></div>
+<div class="tabs__content" data-gtm="tab" id="bf4c0190" data-sync-tabs="groovy" data-title="Groovy"><pre class="code" data-language="groovy">repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Lincheck dependency
+    testImplementation "org.jetbrains.kotlinx:lincheck:2.22"
+    // This dependency allows you to work with kotlin.test and JUnit:
+    testImplementation "junit:junit:4.13"
+}
+</pre></div>
+</div>
+</li>
+</ol></section><section class="chapter"><h2 id="write-a-concurrent-counter-and-run-the-test" data-toc="write-a-concurrent-counter-and-run-the-test">Write a concurrent counter and run the test</h2>
+<ol class="list _decimal" id="9b8bb88" type="1">
+<li class="list__item" id="2b403c0f">
+<p id="eb4190e3">In the <code class="code ">src/test/kotlin</code> directory, create a <code class="code ">BasicCounterTest.kt</code> file and add the following code with a buggy concurrent counter and a Lincheck test for it:</p>
+<pre class="code" data-language="kotlin">import org.jetbrains.kotlinx.lincheck.annotations.*
+import org.jetbrains.kotlinx.lincheck.*
+import org.jetbrains.kotlinx.lincheck.strategy.stress.*
+import org.junit.*
+
+class Counter {
+    @Volatile
+    private var value = 0
+
+    fun inc(): Int = ++value
+    fun get() = value
+}
+
+class BasicCounterTest {
+    private val c = Counter() // Initial state
+
+    // Operations on the Counter
+    @Operation
+    fun inc() = c.inc()
+
+    @Operation
+    fun get() = c.get()
+
+    @Test // JUnit
+    fun stressTest() = StressOptions().check(this::class) // The magic button
+}
+</pre>
+<p id="2b4ef33a">This Lincheck test automatically:</p>
+<ul class="list _bullet" id="bb2a6dee">
+<li class="list__item" id="5c5570c0"><p>Generates several random concurrent scenarios with the specified <code class="code ">inc()</code> and <code class="code ">get()</code> operations.</p></li>
+<li class="list__item" id="6747bc1f"><p>Performs a lot of invocations for each of the generated scenarios.</p></li>
+<li class="list__item" id="de092458"><p>Verifies that each invocation result is correct.</p></li>
+</ul>
+</li>
+<li class="list__item" id="1950d60">
+<p id="dda530c">Run the test above, and you will see the following error:</p>
+<pre class="code" data-language="plaintext">= Invalid execution results =
+| ------------------- |
+| Thread 1 | Thread 2 |
+| ------------------- |
+| inc(): 1 | inc(): 1 |
+| ------------------- |
+</pre>
+<p id="20004371">Here, Lincheck found an execution that violates the counter atomicity – two concurrent increments ended with the same result <code class="code ">1</code>. It means that one increment has been lost, and the behavior of the counter is incorrect.</p>
+</li>
+</ol></section><section class="chapter"><h2 id="trace-the-invalid-execution" data-toc="trace-the-invalid-execution">Trace the invalid execution</h2>
+<p id="a0a11f12">Besides showing invalid execution results, Lincheck can also provide an interleaving that leads to the error. This feature is accessible with the <a href="testing-strategies#model-checking" id="229056cf">model checking</a> testing strategy, which examines numerous executions with a bounded number of context switches.</p>
+<ol class="list _decimal" id="6a8c591c" type="1">
+<li class="list__item" id="9df521dd">
+<p id="31e25cba">To switch the testing strategy, replace the <code class="code ">options</code> type from <code class="code ">StressOptions()</code> to <code class="code ">ModelCheckingOptions()</code>. The updated <code class="code ">BasicCounterTest</code> class will look like this:</p>
+<pre class="code" data-language="kotlin">import org.jetbrains.kotlinx.lincheck.annotations.*
+import org.jetbrains.kotlinx.lincheck.check
+import org.jetbrains.kotlinx.lincheck.strategy.managed.modelchecking.*
+import org.junit.*
+
+class Counter {
+    @Volatile
+    private var value = 0
+
+    fun inc(): Int = ++value
+    fun get() = value
+}
+
+class BasicCounterTest {
+    private val c = Counter()
+
+    @Operation
+    fun inc() = c.inc()
+
+    @Operation
+    fun get() = c.get()
+
+    @Test
+    fun modelCheckingTest() = ModelCheckingOptions().check(this::class)
+}
+</pre>
+</li>
+<li class="list__item" id="40ccdfc4">
+<p id="7bd79fb8">Run the test again. You will get the execution trace that leads to incorrect results:</p>
+<pre class="code" data-language="plaintext">= Invalid execution results =
+| ------------------- |
+| Thread 1 | Thread 2 |
+| ------------------- |
+| inc(): 1 | inc(): 1 |
+| ------------------- |
+
+The following interleaving leads to the error:
+| --------------------------------------------------------------------- |
+| Thread 1 |                          Thread  2                         |
+| --------------------------------------------------------------------- |
+|          | inc()                                                      |
+|          |   inc(): 1 at BasicCounterTest.inc(BasicCounterTest.kt:18) |
+|          |     value.READ: 0 at Counter.inc(BasicCounterTest.kt:10)   |
+|          |     switch                                                 |
+| inc(): 1 |                                                            |
+|          |     value.WRITE(1) at Counter.inc(BasicCounterTest.kt:10)  |
+|          |     value.READ: 1 at Counter.inc(BasicCounterTest.kt:10)   |
+|          |   result: 1                                                |
+| --------------------------------------------------------------------- |
+</pre>
+<p id="9a299cdd">According to the trace, the following events have occurred:</p>
+<ul class="list _bullet" id="725f50c4">
+<li class="list__item" id="f6f5789"><p><b id="80b611b3" class="">T2</b>: The second thread starts the <code class="code ">inc()</code> operation, reading the current counter value (<code class="code ">value.READ: 0</code>) and pausing.</p></li>
+<li class="list__item" id="cab050cc"><p><b id="9aed14ee" class="">T1</b>: The first thread executes <code class="code ">inc()</code>, which returns <code class="code ">1</code>, and finishes.</p></li>
+<li class="list__item" id="8ecf1755"><p><b id="8d639f46" class="">T2</b>: The second thread resumes and increments the previously obtained counter value, incorrectly updating the counter to <code class="code ">1</code>.</p></li>
+</ul>
+</li>
+</ol>
+<aside data-type="note" class="prompt" data-title="" id="3ab2c3df"><p id="4a78e564"><a href="https://github.com/Kotlin/kotlinx-lincheck/blob/guide/src/jvm/test/org/jetbrains/kotlinx/lincheck/test/guide/BasicCounterTest.kt" id="55213cd1" data-external="true" rel="noopener noreferrer">Get the full code</a>.</p></aside></section><section class="chapter"><h2 id="test-the-java-standard-library" data-toc="test-the-java-standard-library">Test the Java standard library</h2>
+<p id="b7f98316">Let's now find a bug in the standard Java's <code class="code ">ConcurrentLinkedDeque</code> class. The Lincheck test below finds a race between removing and adding an element to the head of the deque:</p>
+<pre class="code" data-language="kotlin">import org.jetbrains.kotlinx.lincheck.*
+import org.jetbrains.kotlinx.lincheck.annotations.*
+import org.jetbrains.kotlinx.lincheck.strategy.managed.modelchecking.*
+import org.junit.*
+import java.util.concurrent.*
+
+class ConcurrentDequeTest {
+    private val deque = ConcurrentLinkedDeque&lt;Int&gt;()
+
+    @Operation
+    fun addFirst(e: Int) = deque.addFirst(e)
+
+    @Operation
+    fun addLast(e: Int) = deque.addLast(e)
+
+    @Operation
+    fun pollFirst() = deque.pollFirst()
+
+    @Operation
+    fun pollLast() = deque.pollLast()
+
+    @Operation
+    fun peekFirst() = deque.peekFirst()
+
+    @Operation
+    fun peekLast() = deque.peekLast()
+
+    @Test
+    fun modelCheckingTest() = ModelCheckingOptions().check(this::class)
+}
+</pre>
+<p id="d4f7ba27">Run <code class="code ">modelCheckingTest()</code>. The test will fail with the following output:</p>
+<pre class="code" data-language="plaintext">= Invalid execution results =
+| ---------------------------------------- |
+|      Thread 1     |       Thread 2       |
+| ---------------------------------------- |
+| addLast(22): void |                      |
+| ---------------------------------------- |
+| pollFirst(): 22   | addFirst(8): void    |
+|                   | peekLast(): 22 [-,1] |
+| ---------------------------------------- |
+
+---
+All operations above the horizontal line | ----- | happen before those below the line
+---
+Values in "[..]" brackets indicate the number of completed operations
+in each of the parallel threads seen at the beginning of the current operation
+---
+
+The following interleaving leads to the error:
+| --------------------------------------------------------------------------------------------------------------------------------- |
+|                                                Thread 1                                                    |       Thread 2       |
+| --------------------------------------------------------------------------------------------------------------------------------- |
+| pollFirst()                                                                                                |                      |
+|   pollFirst(): 22 at ConcurrentDequeTest.pollFirst(ConcurrentDequeTest.kt:17)                              |                      |
+|     first(): Node@1 at ConcurrentLinkedDeque.pollFirst(ConcurrentLinkedDeque.java:915)                     |                      |
+|     item.READ: null at ConcurrentLinkedDeque.pollFirst(ConcurrentLinkedDeque.java:917)                     |                      |
+|     next.READ: Node@2 at ConcurrentLinkedDeque.pollFirst(ConcurrentLinkedDeque.java:925)                   |                      |
+|     item.READ: 22 at ConcurrentLinkedDeque.pollFirst(ConcurrentLinkedDeque.java:917)                       |                      |
+|     prev.READ: null at ConcurrentLinkedDeque.pollFirst(ConcurrentLinkedDeque.java:919)                     |                      |
+|     switch                                                                                                 |                      |
+|                                                                                                            | addFirst(8): void    |
+|                                                                                                            | peekLast(): 22       |
+|     compareAndSet(Node@2,22,null): true at ConcurrentLinkedDeque.pollFirst(ConcurrentLinkedDeque.java:920) |                      |
+|     unlink(Node@2) at ConcurrentLinkedDeque.pollFirst(ConcurrentLinkedDeque.java:921)                      |                      |
+|   result: 22                                                                                               |                      |
+| --------------------------------------------------------------------------------------------------------------------------------- |
+</pre>
+<aside data-type="note" class="prompt" data-title="" id="e153cec1"><p id="a23a8248"><a href="https://github.com/Kotlin/kotlinx-lincheck/blob/guide/src/jvm/test/org/jetbrains/kotlinx/lincheck/test/guide/ConcurrentLinkedDequeTest.kt" id="2b88fc51" data-external="true" rel="noopener noreferrer">Get the full code</a>.</p></aside></section><section class="chapter"><h2 id="next-step" data-toc="next-step">Next step</h2>
+<p id="4d263d88">Choose <a href="testing-strategies" id="f8b88c52">your testing strategy and configure test execution</a>.</p></section><section class="chapter"><h2 id="see-also" data-toc="see-also">See also</h2>
+<ul class="list _bullet" id="c7f376bd">
+<li class="list__item" id="26e988d5"><p><a href="operation-arguments" id="219e2b94">How to generate operation arguments</a></p></li>
+<li class="list__item" id="1fbfe998"><p><a href="constraints" id="3bcaa5fc">Popular algorithm constraints</a></p></li>
+<li class="list__item" id="c0d96135"><p><a href="progress-guarantees" id="7dac7cd0">Checking for non-blocking progress guarantees</a></p></li>
+<li class="list__item" id="c6cd718d"><p><a href="sequential-specification" id="73488410">Define sequential specification of the algorithm</a></p></li>
+</ul></section><div class="last-modified"> Last modified: 25 July 2023</div>
+
+<div class="navigation-links _bottom"> <a class="navigation-links__prev" href="lincheck-guide">Lincheck guide</a> <a class="navigation-links__next" href="testing-strategies">Stress testing and model checking</a> </div>
+<div class="_attribution">
+  <p class="_attribution-p">
+    © 2010–2023 JetBrains s.r.o. and Kotlin Programming Language contributors<br>Licensed under the Apache License, Version 2.0.<br>
+    <a href="https://kotlinlang.org/docs/introduction.html" class="_attribution-link">https://kotlinlang.org/docs/introduction.html</a>
+  </p>
+</div>
+
+				
+			</div>
+			<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2572770204602497"
+     data-ad-slot="1992473792"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			<div id="adbottom"></div>
+		</div>
+	</section>
+
+	</div>
+	<svg style="display:none">
+		<symbol id="icon-dir"><svg viewBox="0 0 20 20"><path d="M15 10c0 .3-.305.515-.305.515l-8.56 5.303c-.625.41-1.135.106-1.135-.67V4.853c0-.777.51-1.078 1.135-.67l8.56 5.305S15 9.702 15 10z"/></svg></symbol>
+	  </svg>
+	  <script type="text/javascript" src="/assets/wr-a2e795e947c83ed35d02d79fd5189e6bbdb2de6f281b7ad471151d7b573691bb11af54de2a346c5a9feb185d1bce7ab6cdc34fff98dde944d076530fea92d4b7.js"></script>
+</body>
+</html>
