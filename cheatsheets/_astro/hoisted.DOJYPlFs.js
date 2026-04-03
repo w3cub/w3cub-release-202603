@@ -1,7 +1,0 @@
-function __vite__mapDeps(indexes) {
-  if (!__vite__mapDeps.viteFileDeps) {
-    __vite__mapDeps.viteFileDeps = []
-  }
-  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
-}
-const d="modulepreload",v=function(t){return"/cheatsheets/"+t},f={},m=function(r,s,u){let l=Promise.resolve();if(s&&s.length>0){const o=document.getElementsByTagName("link");l=Promise.all(s.map(e=>{if(e=v(e),e in f)return;f[e]=!0;const i=e.endsWith(".css"),h=i?'[rel="stylesheet"]':"";if(!!u)for(let c=o.length-1;c>=0;c--){const a=o[c];if(a.href===e&&(!i||a.rel==="stylesheet"))return}else if(document.querySelector(`link[href="${e}"]${h}`))return;const n=document.createElement("link");if(n.rel=i?"stylesheet":d,i||(n.as="script",n.crossOrigin=""),n.href=e,document.head.appendChild(n),i)return new Promise((c,a)=>{n.addEventListener("load",c),n.addEventListener("error",()=>a(new Error(`Unable to preload CSS for ${e}`)))})}))}return l.then(()=>r()).catch(o=>{const e=new Event("vite:preloadError",{cancelable:!0});if(e.payload=o,window.dispatchEvent(e),!e.defaultPrevented)throw o})};function E(t,r){if(typeof IntersectionObserver!="function"){r();return}const s=new IntersectionObserver(u=>{u.forEach(l=>{l.isIntersecting&&(r(),s.unobserve(t))})});s.observe(t)}document.querySelectorAll("[data-js-search-form]").forEach(t=>{t.addEventListener("submit",r=>{r.preventDefault()})});document.querySelectorAll("[data-js-search-input]").forEach(t=>{E(t,async()=>{const{setup:r}=await m(()=>import("./SearchForm.script.wSyJZXN3.js"),__vite__mapDeps([]));r(t)})});export{E as o};
