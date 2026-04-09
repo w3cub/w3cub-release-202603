@@ -1,6 +1,6 @@
 {
-  "version": "2.4.0",
-  "_comment": "WR v2",
+  "version": "3.0.0",
+  "_comment": "WR v3",
 
   "widgets": [
     {
@@ -9,139 +9,113 @@
       "type": "inline-script",
       "stage": "head",
       "priority": 100,
-      "content": "(function(){var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';var lang=navigator.language||'';var euTZ=['Europe/Paris','Europe/Berlin','Europe/Madrid','Europe/Rome','Europe/Amsterdam','Europe/Brussels','Europe/Vienna','Europe/Zurich','Europe/Stockholm','Europe/Copenhagen','Europe/Helsinki','Europe/Dublin','Europe/Prague','Europe/Warsaw','Europe/Budapest','Europe/Athens','Europe/Lisbon'];window.__isEU = euTZ.includes(tz) || /^de|fr|it|es|nl|pl|sv|da|fi|cs|el|pt/i.test(lang);})();"
+      "routeMode": "once",
+      "content": "(function(){var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';var lang=navigator.language||'';var euTZ=['Europe/Paris','Europe/Berlin','Europe/Madrid','Europe/Rome','Europe/Amsterdam','Europe/Brussels','Europe/Vienna','Europe/Zurich','Europe/Stockholm','Europe/Copenhagen','Europe/Helsinki','Europe/Dublin','Europe/Prague','Europe/Warsaw','Europe/Budapest','Europe/Athens','Europe/Lisbon'];window.__isEU=euTZ.includes(tz)||/^de|fr|it|es|nl|pl|sv|da|fi|cs|el|pt/i.test(lang);})();"
     },
 
     {
-      "_comment": "2. Google Analytics SDK",
+      "_comment": "2. Google Analytics SDK — 只加载一次",
       "id": "gtag-sdk",
       "type": "script",
       "src": "https://www.googletagmanager.com/gtag/js?id=G-Y3Q5P5PWHV",
       "inject": { "container": "head" },
       "attrs": { "async": true },
       "stage": "head",
-      "priority": 99
+      "priority": 99,
+      "routeMode": "once"
     },
 
     {
-      "_comment": "3. Google Analytics 初始化",
+      "_comment": "3. Google Analytics 初始化 — 依赖 SDK 加载完成（v3 会真正等待）",
       "id": "gtag-init",
       "type": "inline-script",
       "dependsOn": ["gtag-sdk"],
       "stage": "head",
       "priority": 98,
-      "content": "gtag('js',new Date());gtag('config','G-Y3Q5P5PWHV');"
+      "routeMode": "once",
+      "content": "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','G-Y3Q5P5PWHV');"
     },
+
     {
-      "_comment": "4. Cookie Modal",
+      "_comment": "4. Cookie Modal — EU 用户显示弹窗，非 EU 直接 grant",
       "id": "cookie-modal",
       "type": "inline-script",
       "stage": "load",
       "priority": 10,
-      "content": "(function(){\n  var debug=location.search.includes('debug-consent=1');\n  var isEU=debug?true:(window.__isEU===true);\n  if(debug){console.log('[cookie] debug mode');localStorage.removeItem('cookie_consent');}\n\n  function getConsent(){\n    try{\n      var raw=localStorage.getItem('cookie_consent');\n      if(!raw) return null;\n      var d=JSON.parse(raw);\n      if(typeof d==='string') return d;\n      var m=1000*60*60*24*180;\n      if(Date.now()-d.ts>m){localStorage.removeItem('cookie_consent');return null;}\n      return d.value;\n    }catch(e){return null;}\n  }\n\n  function setConsent(v){\n    localStorage.setItem('cookie_consent',JSON.stringify({value:v,ts:Date.now()}));\n  }\n\n  function grant(){\n    gtag('consent','update',{ad_storage:'granted',analytics_storage:'granted',ad_user_data:'granted',ad_personalization:'granted'});\n  }\n\n  function deny(){\n    gtag('consent','update',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});\n  }\n\n  var saved=getConsent();\n  if(!isEU){grant();if(window.__ads_loadAds)window.__ads_loadAds();return;}\n  if(saved==='accepted'){grant();if(window.__ads_loadAds)window.__ads_loadAds();return;}\n  if(saved==='rejected'){deny();return;}\n\n  // 创建 modal\n  var overlay=document.createElement('div');\n  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;';\n  var modal=document.createElement('div');\n  modal.style.cssText='background:#fff;width:520px;max-width:92%;border-radius:16px;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;';\n  modal.innerHTML=\"<div style='font-size:18px;font-weight:700;margin-bottom:10px;'>🍪 We respect your privacy</div><div style='font-size:13px;color:#444;line-height:1.7;'>We use cookies and JavaScript to make this website work properly, remember your preferences, and improve your experience.</div><div style='font-size:13px;color:#444;line-height:1.7;margin-top:8px;'>We may also use them to understand how the site is used and keep our content free.</div><div style='font-size:12px;color:#666;margin-top:10px;'>We do not collect sensitive personal data. Learn more in our <a href='https://docs.w3cub.com/privacy-policy' target='_blank' style='color:#2563eb;text-decoration:underline;'>Privacy Policy</a>.</div><div style='margin-top:18px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;'><button id='cookie-reject' style='padding:8px 14px;border:none;border-radius:8px;background:#eee;color:#555;cursor:pointer;'>Decline</button><button id='cookie-accept' style='padding:8px 16px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer;'>Accept All</button></div>\";\n  overlay.appendChild(modal);\n  document.body.appendChild(overlay);\n\n  var acceptBtn=modal.querySelector('#cookie-accept');\n  var rejectBtn=modal.querySelector('#cookie-reject');\n\n  acceptBtn.onclick=function(){\n    setConsent('accepted');\n    grant();\n    overlay.remove();\n    if(window.__ads_loadAds)window.__ads_loadAds(); // 点击同意后加载广告\n  };\n  rejectBtn.onclick=function(){\n    setConsent('rejected');\n    deny();\n    overlay.remove();\n  };\n})();"
+      "routeMode": "once",
+      "content": "(function(){var debug=location.search.includes('debug-consent=1');var isEU=debug?true:(window.__isEU===true);if(debug){console.log('[cookie] debug mode');localStorage.removeItem('cookie_consent');}function getConsent(){try{var raw=localStorage.getItem('cookie_consent');if(!raw)return null;var d=JSON.parse(raw);if(typeof d==='string')return d;if(Date.now()-d.ts>1000*60*60*24*180){localStorage.removeItem('cookie_consent');return null;}return d.value;}catch(e){return null;}}function setConsent(v){localStorage.setItem('cookie_consent',JSON.stringify({value:v,ts:Date.now()}));}function grant(){if(window.gtag)gtag('consent','update',{ad_storage:'granted',analytics_storage:'granted',ad_user_data:'granted',ad_personalization:'granted'});}function deny(){if(window.gtag)gtag('consent','update',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});}var saved=getConsent();if(!isEU){grant();if(window.__ads_loadAds)window.__ads_loadAds();return;}if(saved==='accepted'){grant();if(window.__ads_loadAds)window.__ads_loadAds();return;}if(saved==='rejected'){deny();return;}var overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;';var modal=document.createElement('div');modal.style.cssText='background:#fff;width:520px;max-width:92%;border-radius:16px;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;';modal.innerHTML=\"<div style='font-size:18px;font-weight:700;margin-bottom:10px;'>🍪 We respect your privacy</div><div style='font-size:13px;color:#444;line-height:1.7;'>We use cookies and JavaScript to make this website work properly, remember your preferences, and improve your experience.</div><div style='font-size:13px;color:#444;line-height:1.7;margin-top:8px;'>We may also use them to understand how the site is used and keep our content free.</div><div style='font-size:12px;color:#666;margin-top:10px;'>We do not collect sensitive personal data. Learn more in our <a href='https://docs.w3cub.com/privacy-policy' target='_blank' style='color:#2563eb;text-decoration:underline;'>Privacy Policy</a>.</div><div style='margin-top:18px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;'><button id='cookie-reject' style='padding:8px 14px;border:none;border-radius:8px;background:#eee;color:#555;cursor:pointer;'>Decline</button><button id='cookie-accept' style='padding:8px 16px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer;'>Accept All</button></div>\";overlay.appendChild(modal);document.body.appendChild(overlay);modal.querySelector('#cookie-accept').onclick=function(){setConsent('accepted');grant();overlay.remove();if(window.__ads_loadAds)window.__ads_loadAds();};modal.querySelector('#cookie-reject').onclick=function(){setConsent('rejected');deny();overlay.remove();};})();"
     },
+
     {
-      "_comment": "6. Adsense Loader",
+      "_comment": "5. Adsense Loader — 暴露 __ads_loadAds，由 cookie-modal 或自身调用",
       "id": "adsense-loader",
       "type": "inline-script",
       "stage": "load",
       "priority": 97,
-      "content": "(function(){\n  if(window.__ads_loader_init) return;\n  window.__ads_loader_init = true;\n\n  function getConsent(){\n    try{\n      var raw=localStorage.getItem('cookie_consent');\n      if(!raw) return null;\n      var d=JSON.parse(raw);\n      if(typeof d==='string') return d;\n      var m=1000*60*60*24*180;\n      if(Date.now()-d.ts>m){localStorage.removeItem('cookie_consent');return null;}\n      return d.value;\n    }catch(e){return null;}\n  }\n\n  function loadAds(){\n    if(window.__ads_loaded) return;\n    window.__ads_loaded = true;\n\n    // 常规 Adsense\n    var s=document.createElement('script');\n    s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497';\n    s.async=true;\n    s.crossOrigin='anonymous';\n    document.head.appendChild(s);\n\n    // AMP Auto Ads\n    var amp=document.createElement('script');\n    amp.async=true;\n    amp.setAttribute('custom-element','amp-auto-ads');\n    amp.src='https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js';\n    document.head.appendChild(amp);\n\n    // 插入 <amp-auto-ads>\n    if(document.body && !document.querySelector('amp-auto-ads')){\n      var autoAds=document.createElement('amp-auto-ads');\n      autoAds.setAttribute('type','adsense');\n      autoAds.setAttribute('data-ad-client','ca-pub-2572770204602497');\n      document.body.appendChild(autoAds);\n    }\n  }\n\n  // 暴露给全局，cookie-modal 同意后调用\n  window.__ads_loadAds = loadAds;\n\n  var isEU=window.__isEU===true;\n  var saved=getConsent();\n\n  if(!isEU) loadAds();\n  else if(saved==='accepted') loadAds();\n})();"
+      "routeMode": "once",
+      "content": "(function(){if(window.__ads_loader_init)return;window.__ads_loader_init=true;function getConsent(){try{var raw=localStorage.getItem('cookie_consent');if(!raw)return null;var d=JSON.parse(raw);if(typeof d==='string')return d;if(Date.now()-d.ts>1000*60*60*24*180){localStorage.removeItem('cookie_consent');return null;}return d.value;}catch(e){return null;}}function loadAds(){if(window.__ads_loaded)return;window.__ads_loaded=true;var s=document.createElement('script');s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2572770204602497';s.async=true;s.crossOrigin='anonymous';s.onload=function(){window.dispatchEvent(new Event('adsense:ready'));};document.head.appendChild(s);var amp=document.createElement('script');amp.async=true;amp.setAttribute('custom-element','amp-auto-ads');amp.src='https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js';document.head.appendChild(amp);if(document.body&&!document.querySelector('amp-auto-ads')){var autoAds=document.createElement('amp-auto-ads');autoAds.setAttribute('type','adsense');autoAds.setAttribute('data-ad-client','ca-pub-2572770204602497');document.body.appendChild(autoAds);}}window.__ads_loadAds=loadAds;var isEU=window.__isEU===true;var saved=getConsent();if(!isEU)loadAds();else if(saved==='accepted')loadAds();})();"
     },
 
     {
-      "_comment": "7. 顶部广告",
+      "_comment": "6. 顶部广告 HTML",
       "id": "ads-top",
       "type": "html",
       "priority": 90,
       "content": "<ins class=\"adsbygoogle\" style=\"display:block;margin:16px 0\" data-ad-client=\"ca-pub-2572770204602497\" data-ad-slot=\"6861657091\" data-ad-format=\"auto\" data-full-width-responsive=\"true\"></ins>",
-      "inject": {
-        "selector": "#adtop",
-        "position": "beforeend"
-      }
+      "inject": { "selector": "#adtop", "position": "beforeend" }
     },
 
     {
-      "_comment": "8. 顶部广告初始化",
-      "id": "ads-top-init",
-      "type": "inline-script",
-      "dependsOn": ["adsense-loader"],
-      "priority": 89,
-      "content": "(function(){if(!window.adsbygoogle)return;try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}})();"
-    },
-
-    {
-      "_comment": "9. 中间广告",
+      "_comment": "7. 中间广告 HTML",
       "id": "ads-middle",
       "type": "html",
       "priority": 85,
       "content": "<ins class=\"adsbygoogle\" style=\"display:block;margin:24px 0\" data-ad-client=\"ca-pub-2572770204602497\" data-ad-layout=\"in-article\" data-ad-slot=\"6879550993\" data-ad-format=\"fluid\"></ins>",
-      "inject": {
-        "selector": "._page",
-        "position": "beforeend"
-      }
+      "inject": { "selector": "._page", "position": "beforeend" }
     },
 
     {
-      "_comment": "10. 中间广告初始化",
-      "id": "ads-middle-init",
-      "type": "inline-script",
-      "dependsOn": ["adsense-loader"],
-      "priority": 84,
-      "content": "(function(){if(!window.adsbygoogle)return;try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}})();"
-    },
-
-    {
-      "_comment": "11. 底部广告",
+      "_comment": "8. 底部广告 HTML",
       "id": "ads-bottom",
       "type": "html",
       "priority": 80,
       "content": "<ins class=\"adsbygoogle\" style=\"display:block;margin:16px 0\" data-ad-client=\"ca-pub-2572770204602497\" data-ad-slot=\"1992473792\" data-ad-format=\"auto\" data-full-width-responsive=\"true\"></ins>",
-      "inject": {
-        "selector": "#adbottom",
-        "position": "beforeend"
-      }
+      "inject": { "selector": "#adbottom", "position": "beforeend" }
     },
 
     {
-      "_comment": "12. 底部广告初始化",
-      "id": "ads-bottom-init",
+      "_comment": "9. 广告统一初始化 — 等 adsense:ready 事件后 push 所有 ins",
+      "id": "ads-all-init",
       "type": "inline-script",
-      "dependsOn": ["adsense-loader"],
-      "priority": 79,
-      "content": "(function(){if(!window.adsbygoogle)return;try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}})();"
+      "stage": "load",
+      "priority": 75,
+      "content": "(function(){function pushAll(){var ins=document.querySelectorAll('ins.adsbygoogle:not([data-ad-status])');ins.forEach(function(){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}});}if(window.__ads_loaded){if(window.adsbygoogle&&typeof window.adsbygoogle.push==='function'){pushAll();}else{window.addEventListener('adsense:ready',pushAll,{once:true});}}else{window.addEventListener('adsense:ready',pushAll,{once:true});}})();"
     },
 
     {
-      "_comment": "13. Lazy Load",
+      "_comment": "10. Lazy Load — 滚动时补推未初始化的 ins",
       "id": "ads-lazy-trigger",
       "type": "inline-script",
       "priority": 70,
-      "content": "(function(){if(window.__ads_lazy_init)return;window.__ads_lazy_init=true;window.addEventListener('scroll',function(){if(window.__ads_lazy)return;window.__ads_lazy=true;if(window.adsbygoogle){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}},{once:true});})();"
+      "content": "(function(){if(window.__ads_lazy_init)return;window.__ads_lazy_init=true;window.addEventListener('scroll',function(){if(window.__ads_lazy)return;window.__ads_lazy=true;var ins=document.querySelectorAll('ins.adsbygoogle:not([data-ad-status])');ins.forEach(function(){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}});},{once:true});})();"
     },
 
     {
-      "_comment": "14. 顶部自推广",
+      "_comment": "11. 顶部自推广",
       "id": "adtop-image",
       "type": "html",
       "priority": 60,
-      "content": "<div style='text-align:center;margin:1rem 0;'><a href='https://apps.apple.com/us/app/nicasa-image-viewer/id6756032669?mt=12' target='_blank'><img src='/conf/nicasa.png' style='max-width:100%;height:auto;' /></a></div>",
-      "inject": {
-        "selector": "#adtop",
-        "position": "afterend"
-      }
+      "content": "<div style='text-align:center;margin:1rem 0;'><a href='https://apps.apple.com/us/app/nicasa-image-viewer/id6756032669?mt=12' target='_blank'><img src='/conf/nicasa.png' style='max-width:100%;height:auto;' loading='lazy'/></a></div>",
+      "inject": { "selector": "#adtop", "position": "afterend" }
     },
 
     {
-      "_comment": "15. 底部自推广",
+      "_comment": "12. 底部自推广",
       "id": "adbottom-image",
       "type": "html",
       "priority": 55,
-      "content": "<div style='text-align:center;margin:1rem 0;'><a href='https://apps.apple.com/us/app/nicasa-image-viewer/id6756032669?mt=12' target='_blank'><img src='/conf/nicasa.png' style='max-width:100%;height:auto;' /></a></div>",
-      "inject": {
-        "selector": "#adbottom",
-        "position": "beforeend"
-      }
+      "content": "<div style='text-align:center;margin:1rem 0;'><a href='https://apps.apple.com/us/app/nicasa-image-viewer/id6756032669?mt=12' target='_blank'><img src='/conf/nicasa.png' style='max-width:100%;height:auto;' loading='lazy'/></a></div>",
+      "inject": { "selector": "#adbottom", "position": "beforeend" }
     }
 
   ]
